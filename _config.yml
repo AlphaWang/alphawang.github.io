@@ -2,10 +2,10 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://AlphaWang.github.io
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+url: http://alphawang.github.io
+title: Alpha's Blog
+subtitle: Alpha的技术学习笔记.
+author: Alpha Wang
 simple_search: https://www.google.com/search
 description:
 
@@ -70,8 +70,8 @@ github_show_profile_link: true
 github_skip_forks: true
 
 # Twitter
-twitter_user:
-twitter_tweet_button: true
+# twitter_user:
+# twitter_tweet_button: true
 
 # Google +1
 google_plus_one: false
@@ -98,4 +98,4 @@ disqus_show_comment_count: false
 google_analytics_tracking_id:
 
 # Facebook Like
-facebook_like: false
+# facebook_like: false
