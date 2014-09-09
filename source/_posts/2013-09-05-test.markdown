@@ -3,6 +3,6 @@ layout: post
 title: "test"
 date: 2013-04-08 18:26:22 +0800
 comments: true
-categories: 
+categories: Test
 ---
 Hello World TEST!
