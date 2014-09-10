@@ -47,34 +47,34 @@ module Jekyll
   end
 
   # The TagFeed class creates an Atom feed for the specified tag.
-  class TagFeed < Page
+  # class TagFeed < Page
 
-    # Initializes a new TagFeed.
-    #
-    #  +base+         is the String path to the <source>.
-    #  +tag_dir+ is the String path between <source> and the tag folder.
-    #  +tag+     is the tag currently being processed.
-    def initialize(site, base, tag_dir, tag)
-      @site = site
-      @base = base
-      @dir  = tag_dir
-      @name = 'atom.xml'
-      self.process(@name)
-      # Read the YAML data from the layout page.
-      self.read_yaml(File.join(base, '_includes/custom'), 'tag_feed.xml')
-      self.data['tag']    = tag
-      # Set the title for this page.
-      title_prefix             = site.config['tag_title_prefix'] || 'Tag: '
-      self.data['title']       = "#{title_prefix}#{tag}"
-      # Set the meta-description for this page.
-      meta_description_prefix  = site.config['tag_meta_description_prefix'] || 'Tag: '
-      self.data['description'] = "#{meta_description_prefix}#{tag}"
+  #   # Initializes a new TagFeed.
+  #   #
+  #   #  +base+         is the String path to the <source>.
+  #   #  +tag_dir+ is the String path between <source> and the tag folder.
+  #   #  +tag+     is the tag currently being processed.
+  #   def initialize(site, base, tag_dir, tag)
+  #     @site = site
+  #     @base = base
+  #     @dir  = tag_dir
+  #     @name = 'atom.xml'
+  #     self.process(@name)
+  #     # Read the YAML data from the layout page.
+  #     self.read_yaml(File.join(base, '_includes/custom'), 'tag_feed.xml')
+  #     self.data['tag']    = tag
+  #     # Set the title for this page.
+  #     title_prefix             = site.config['tag_title_prefix'] || 'Tag: '
+  #     self.data['title']       = "#{title_prefix}#{tag}"
+  #     # Set the meta-description for this page.
+  #     meta_description_prefix  = site.config['tag_meta_description_prefix'] || 'Tag: '
+  #     self.data['description'] = "#{meta_description_prefix}#{tag}"
 
-      # Set the correct feed URL.
-      self.data['feed_url'] = "#{tag_dir}/#{name}"
-    end
+  #     # Set the correct feed URL.
+  #     self.data['feed_url'] = "#{tag_dir}/#{name}"
+  #   end
 
-  end
+  # end
 
   # The Site class is a built-in Jekyll class with access to global site config information.
   class Site
