@@ -1,0 +1,3 @@
+[submodule ".themes/blanket"]
+	path = .themes/blanket
+	url = git://github.com/octothemes/blanket.git
