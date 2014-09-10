@@ -3,9 +3,9 @@
 # ----------------------- #
 
 url: http://alphawang.github.io
-title: Alpha的技术学习笔记
+title: Alpha's Programming Notes
 maintitle: AlphaJava.com
-subtitle: Alpha的技术学习笔记.
+subtitle: Alpha's Programming Notes | 一个程序员的日常
 author: Alpha Wang
 simple_search: https://www.google.com/search
 description:
@@ -99,7 +99,7 @@ disqus_short_name:
 disqus_show_comment_count: false
 
 # Google Analytics
-google_analytics_tracking_id:
+google_analytics_tracking_id: UA-54659411-1
 
 # Facebook Like
 # facebook_like: false
