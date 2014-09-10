@@ -11,9 +11,9 @@ Mac菜单栏原生的日期时间显示比较简单，例如不能直接查看�
 <!--more-->
 
 ##Day-O
-Day-O的界面风格与原生系统一样：
+Day-O的界面风格与原生系统一样：  
   
-![day0 icon](../images/post/2014/09/mac-day-o.png)  
+![ dayo post title bug ](/images/post/2014/09/mac-day-o.png)  
 它还可以设置不同的时间格式，与系统一致。  
   
 以下是它的About信息：  
@@ -27,8 +27,8 @@ Day-O的界面风格与原生系统一样：
 [addr]:http://shauninman.com/archive/2011/10/20/day_o_mac_menu_bar_clock  
 Day-O的缺点是不支持农历。
 ## 中国农历 for Mac  
-这款中国农历工具提供显示农历功能，并且还标注了节日、节气等信息，菜单栏还可以显示时间和星期。
-![lunar icon](../images/post/2014/09/mac-calendar-cn.png)    
+这款中国农历工具提供显示农历功能，并且还标注了节日、节气等信息，菜单栏还可以显示时间和星期。   
+![ lunar post title bug ](/images/post/2014/09/mac-calendar-cn.png)  
 点[这里][addr2]下载。   
 [addr2]:http://www.appinn.com/calendar-cn-for-os-x/ 
 这个工具的缺点是界面比较粗糙，和原生界面反差比较大，比如图标并不是传统的黑色，界面背景与 Mac 传统也不太一样。强迫症患者表示很难受。  
