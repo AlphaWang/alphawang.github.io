@@ -6,4 +6,5 @@ comments: true
 sharing: true
 footer: true
 ---
-##Constructing...
+Hey, I'm Alpha Wang from Shanghai, PRC.  
+I'm a Java developer. I use this space to share my experiences, experiments and thoughts.   

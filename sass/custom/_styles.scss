@@ -8,3 +8,23 @@
 article blockquote {
 	font-size: 0.9em
 }
+//Blog logo pic
+@media only screen and (min-width: 550px) {
+
+        body > header {
+                background: url("/images/logo.png") no-repeat 0 30px;
+                background-color: #333333;
+        }
+		body > header h1 { padding-left: 50px; }
+        body > header h2 { padding-left: 50px; }
+}
+//倒圆角
+@media only screen and (min-width: 1040px) {
+        body > nav {
+                @include border-top-radius(.4em);
+        }
+
+        body > footer {
+                @include border-bottom-radius(.4em);
+        }
+}
