@@ -4,8 +4,8 @@ title: "Calendar Tools on Mac"
 date: 2014-09-10 17:15:35 +0800
 comments: true
 categories: Mac
-tags: [Mac]
-keywords: mac, tool, date, time, calendar, 时间日期, 农历
+tags: [Mac, Tool]
+keywords: mac, tool, date, time, calendar, Day-O, 农历, 时间日期, 农历
 description: Mac菜单栏原生的日期时间显示比较简单，例如不能直接查看月历，比较不爽。而有一些优秀的Mac日期工具，可以替代原生功能
 ---
 Mac菜单栏原生的日期时间显示比较简单，例如不能直接查看月历，比较不爽。  
