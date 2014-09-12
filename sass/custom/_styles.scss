@@ -16,7 +16,10 @@ article blockquote {
                 background-color: #333333;
         }
 		body > header h1 { padding-left: 50px; }
-        body > header h2 { padding-left: 50px; }
+        body > header h2 { 
+        	padding-left: 50px; 
+        	text-shadow: 1px 1px 4px #020202;
+        }
 }
 //倒圆角
 @media only screen and (min-width: 1040px) {
