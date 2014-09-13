@@ -12,10 +12,13 @@ article blockquote {
 @media only screen and (min-width: 550px) {
 
         body > header {
-                background: url("/images/logo.png") no-repeat 0 30px;
-                background-color: #333333;
+            background: url("/images/logo.png") no-repeat 0 30px;
+            background-color: #333333;
         }
-		body > header h1 { padding-left: 45px; }
+		body > header h1 { 
+			padding-left: 45px; 
+			font-style:italic
+		}
         body > header h2 { 
         	padding-left: 45px; 
         	text-shadow: 1px 1px 4px #020202;
@@ -48,3 +51,9 @@ body>header,body>header>hgroup>h2 {
 	Helvetica, Arial, "STFangsong", "FangSong", "FangSong_GB2312",
 	"Microsoft Sans Serif", "WenQuanYi Micro Hei", sans-serif
 }
+
+.earth {
+	margin-top: 5px;
+}
+
+
