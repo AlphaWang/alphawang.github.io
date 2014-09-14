@@ -10,15 +10,16 @@ description: Mac菜单栏原生的日期时间显示比较简单，例如不能�
 ---
 Mac菜单栏原生的日期时间显示比较简单，例如不能直接查看月历，比较不爽。  
 找到了几个比较优秀的Mac日期工具，可以替代原生功能：  
-<!--more-->
+
 
 ##Day-O
 Day-O的界面风格与原生系统一样：  
   
 ![ dayo post title bug ](/images/post/2014/09/mac-day-o.png)  
 它还可以设置不同的时间格式，与系统一致。  
-  
-正如它的About信息所说，它不能做太多事情。比如对中国用户来说，日历怎么能不显示农历呢：  
+<!--more-->
+
+但是正如它的About信息所说，它不能做太多事情。比如对中国用户来说，日历怎么能不显示农历呢：  
 >Day-O is a menu bar clock replacement with a simple icon and a simple calendar.  
 >I created Day-O because my previous clock replacement started behaving erratically in Lion. Day-O doesn't.  
 >Day-O doesn't do much of anything.   
