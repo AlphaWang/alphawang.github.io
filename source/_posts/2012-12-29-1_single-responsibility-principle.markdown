@@ -3,16 +3,18 @@ layout: post
 title: "[六大设计原则] 1. Single Responsibility Principle"
 date: 2012-12-29 09:14:07 +0800
 comments: true
-categories: Design Patterns
+categories: "DesignPatterns"
 tags: [Design Pattern, SOLID] 
 keywords: Design Pattern, 设计模式, SRP, 单一职责原则, Single Responsibility Principle, 设计原则
-description: 
+description: There should never be more than one reason for a class to change.  应该有且仅有一个原因引起类的变更。（如果类需要变更，那么只可能仅由某一个原因引起） 
+
 ---
 ##定义
 
 SRP，Single Responsibility Principle：  
-There should never be more than one reason for a class to change.  
-应该有且仅有一个原因引起类的变更。（如果类需要变更，那么只可能仅由某一个原因引起）
+
+- There should never be more than one reason for a class to change.  
+>应该有且仅有一个原因引起类的变更。（如果类需要变更，那么只可能仅由某一个原因引起）
 
 ##问题由来
 类T负责两个不同的职责：职责P1，职责P2。当由于职责P1需求发生改变而需要修改类T时，有可能会导致原本运行正常的职责P2功能发生故障。  
