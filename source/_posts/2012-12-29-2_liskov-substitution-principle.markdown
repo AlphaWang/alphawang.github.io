@@ -3,7 +3,7 @@ layout: post
 title: "[六大设计原则] 2. Liskov Substitution Principle"
 date: 2012-12-29 18:07:50 +0800
 comments: true
-categories: "DesignPatterns"
+categories: [Design Patterns]
 tags: [Design Pattern, SOLID] 
 keywords: Design Pattern, 设计模式, 设计原则, LSP, 里氏替换原则, Liskov Substitution Principle
 description: 所有引用基类的地方，都能透明地替换成其子类对象。只要父类能出现的地方，子类就可以出现。里氏替换原则通俗的来讲就是：子类可以扩展父类的功能，但不能改变父类原有的功能。
@@ -46,38 +46,38 @@ LSP，Liskov Substitution Principle：
 
 原有类A，实现减法功能：  
 ```java
-class A{    
-    public int func1(int a, int b){    
-        return a-b;    
+class A {    
+    public int func1(int a, int b) {    
+        return a - b;    
     }    
 }    
 
-public class Client{  
-    public static void main(String[] args){   
+public class Client {  
+    public static void main(String[] args) {   
         A a = new A();    
-        System.out.println("100-50="+a.func1(100, 50)); 
-        System.out.println("100-80="+a.func1(100, 80)); 
+        System.out.println("100-50=" + a.func1(100, 50)); 
+        System.out.println("100-80=" + a.func1(100, 80)); 
     }   
 }  
 ```    
 
 新增需求：新增两数相加、然后再与100求和的功能，由类B来负责  
 ```java
-class B extends A{    
-    public int func1(int a, int b){    
-        return a+b;    
+class B extends A {    
+    public int func1(int a, int b) {    
+        return a + b;    
     }        
-    public int func2(int a, int b){    
-        return func1(a,b)+100;    
+    public int func2(int a, int b) {    
+        return func1(a, b) + 100;    
     }    
 }    
     
-public class Client{    
-    public static void main(String[] args){    
+public class Client {    
+    public static void main(String[] args) {    
         B b = new B();    
-        System.out.println("100-50="+b.func1(100, 50));    
-        System.out.println("100-80="+b.func1(100, 80));    
-        System.out.println("100+20+100="+b.func2(100, 20));    
+        System.out.println("100-50=" + b.func1(100, 50));    
+        System.out.println("100-80=" + b.func1(100, 80));    
+        System.out.println("100+20+100=" + b.func2(100, 20));    
     }    
 }
 ```     

@@ -3,7 +3,7 @@ layout: post
 title: "[六大设计原则] 1. Single Responsibility Principle"
 date: 2012-12-29 09:14:07 +0800
 comments: true
-categories: "DesignPatterns"
+categories: [Design Patterns]
 tags: [Design Pattern, SOLID] 
 keywords: Design Pattern, 设计模式, SRP, 单一职责原则, Single Responsibility Principle, 设计原则
 description: There should never be more than one reason for a class to change.  应该有且仅有一个原因引起类的变更。（如果类需要变更，那么只可能仅由某一个原因引起） 
@@ -33,13 +33,13 @@ SRP，Single Responsibility Principle：
 
 例如原有一个接口，模拟动物呼吸的场景：  
 ``` java
-class Animal{    
-    public void breathe(String animal){    
+class Animal {    
+    public void breathe (String animal) {    
         System.out.println(animal+"呼吸空气");    
     }    
 }    
-public class Client{    
-    public static void main(String[] args){    
+public class Client {    
+    public static void main (String[] args) {    
         Animal animal = new Animal();    
         animal.breathe("牛");    
         animal.breathe("羊");    
@@ -52,21 +52,21 @@ public class Client{
 
 **修改一**：修改时如果遵循单一职责原则，需要将Animal类细分为陆生动物类Terrestrial，水生动物Aquatic，代码如下：  
 ``` java
-class Terrestrial{    
-    public void breathe(String animal){    
+class Terrestrial {    
+    public void breathe(String animal) {    
         System.out.println(animal+"呼吸空气");    
     }    
 }    
-class Aquatic{    
-    public void breathe(String animal){    
+class Aquatic {    
+    public void breathe(String animal) {    
         System.out.println(animal+"呼吸水");    
     }    
 }    
     
 
 
-public class Client{    
-    public static void main(String[] args){    
+public class Client {    
+    public static void main(String[] args) {    
         Terrestrial terrestrial = new Terrestrial();    
         terrestrial.breathe("牛");    
         terrestrial.breathe("羊");    
@@ -81,18 +81,18 @@ BUT，这样修改花销是很大的，除了将原来的类分解之外，还�
 
 **修改二**：直接修改类Animal；虽然违背了单一职责原则，但花销却小的多  
 ``` java
-class Animal{    
-    public void breathe(String animal){    
-        if("鱼".equals(animal)){    
+class Animal {    
+    public void breathe(String animal) {    
+        if ("鱼".equals(animal)) {    
             System.out.println(animal+"呼吸水");    
-        }else{    
+        } else {    
             System.out.println(animal+"呼吸空气");    
         }    
     }    
 }    
     
-public class Client{    
-    public static void main(String[] args){    
+public class Client {    
+    public static void main(String[] args) {    
         Animal animal = new Animal();    
         animal.breathe("牛");    
         animal.breathe("羊");    
@@ -108,17 +108,17 @@ public class Client{
 
 **修改三**：  
 ``` java
-class Animal{    
-    public void breathe(String animal){    
+class Animal {    
+    public void breathe(String animal) {    
         System.out.println(animal+"呼吸空气");    
     }       
-    public void breathe2(String animal){    
+    public void breathe2(String animal) {    
         System.out.println(animal+"呼吸水");    
     }    
 }    
     
-public class Client{    
-    public static void main(String[] args){    
+public class Client {    
+    public static void main(String[] args) {    
         Animal animal = new Animal();    
         animal.breathe("牛");    
         animal.breathe("羊");    
