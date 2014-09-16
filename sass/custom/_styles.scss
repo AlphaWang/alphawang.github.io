@@ -17,7 +17,8 @@ article blockquote {
         }
 		body > header h1 { 
 			padding-left: 45px; 
-			font-style:italic
+			/*font-style:italic; */
+			font-family: "Zapfino","Snell Roundhand","Lucida Handwriting","PT Serif","Georgia","Helvetica Neue",Arial,serif;
 		}
         body > header h2 { 
         	padding-left: 45px; 
@@ -38,18 +39,18 @@ article blockquote {
 //字体
 .serif,body,#content .blog-index a[rel=full-article] {
 	font-family: "PT Serif",Georgia,Times,"Times New Roman", "DIN Next Ultra Light", "Helvetica Neue", 
-	Helvetica, Aria, "Lantinghei SC", "Hiragino Sans GB", STHeiti, "Noto Sans S Chinese", "Microsoft YaHei",
+	Helvetica, Arial, "Lantinghei SC", "Hiragino Sans GB", STHeiti, "Noto Sans S Chinese", "Microsoft YaHei",
 	 "Microsoft Sans Serif", "WenQuanYi Micro Hei", sans-serif
 }
 h1,h1,h2,h3,h4,h5,h6 {
 	font-family:"PT Serif","Georgia","Helvetica Neue", "DIN Next Ultra Light", "Helvetica Neue", 
 	Helvetica, Arial, "Lantinghei SC", "Hiragino Sans GB", STHeiti, "Noto Sans S Chinese", "Microsoft YaHei", 
-	"Microsoft Sans Serif", "WenQuanYi Micro Hei", sans-serif
+	"Microsoft Sans Serif", "WenQuanYi Micro Hei", serif
 }
 body>header,body>header>hgroup>h2 {
 	font-family:"PT Serif","Georgia","Helvetica Neue", "DIN Next Ultra Light", "Helvetica Neue", 
-	Helvetica, Arial, "STFangsong", "FangSong", "FangSong_GB2312",
-	"Microsoft Sans Serif", "WenQuanYi Micro Hei", sans-serif
+	Helvetica, Arial, "STFangsong", "FangSong", "FangSong_GB2312", SimSun,
+	"Microsoft Sans Serif", "WenQuanYi Micro Hei", serif
 }
 
 .earth {
