@@ -1,0 +1,38 @@
+---
+layout: post
+title: "Zapfino: A Cool Font"
+date: 2014-09-16 17:28:52 +0800
+comments: true
+categories: [Web]
+tags: [Web, CSS] 
+keywords: Web, CSS, Font, Zapfino
+description: Zapfino is a cool font for blog titles.
+ 
+---
+I'm looking for some fonts for my blog these days, and find a cool font [Zapfino][wiki] inadvertently.    
+[wiki]: http://en.wikipedia.org/wiki/Zapfino 
+
+Here is how it looks (I tested on Mac chrome, it may looks different on other platforms):   
+![dayo icon](/images/post/2014/09/font-Zapfino.png)  
+
+<!--more-->  
+Umh... The logo looks pale by comparison, I need to find a more fantastic logo later :)      
+
+The font-family defined in my css is shown below.  
+```css css
+body > header h1 {   
+padding-left: 45px;   
+font-family: "Zapfino","Snell Roundhand","Lucida Handwriting","PT Serif","Georgia","Helvetica Neue",Arial,serif;
+}  
+```  
+
+Apprently, this font is suitable for titles, but not contents.   
+
+Here is a blog about web font in more detail: http://www.ruanyifeng.com/blog/2008/06/typography_notes.html    
+  
+BTW, the history of Zapfino is interesting, the development had become seriously delayed: began from 1944, but released in 1998. Cite from wiki：  
+> Zapf remembered a page of calligraphy from his sketchbook from 1944, and considered the possibility of making a typeface from it. ... Siegel also hired Gino Lee, a programmer from Boston, Massachusetts, to help work on the project.
+
+>However, just before the project was completed, Siegel wrote a letter to Zapf, saying that his girlfriend had left him and that he had lost all interest in anything. Siegel abandoned the project and started a new life, working on bringing color to Macintosh computers and later becoming an Internet design expert.
+
+>Zapfino's development had become seriously delayed,... Zapfino was released in 1998 as a Type 1 font. 
