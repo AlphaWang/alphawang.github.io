@@ -9,20 +9,25 @@ keywords: Web, CSS, Font, Zapfino
 description: Zapfino is a cool font for blog titles.
  
 ---
-I'm looking for some fonts for my blog these days, and find a cool font [Zapfino][wiki] inadvertently.    
-[wiki]: http://en.wikipedia.org/wiki/Zapfino 
-
-Here is how it looks (I tested on Mac chrome, it may looks different on other platforms):   
-![dayo icon](/images/post/2014/09/font-Zapfino.png)  
+I'm tring to look for some fonts for my blog these days, and find a cool font [`Zapfino`][wiki] inadvertently.  
+  
+  
+Here is how it looks:   
+  
+[wiki]: http://en.wikipedia.org/wiki/Zapfino   
+![zapfino icon](/images/post/2014/09/font-Zapfino.png)  
 
 <!--more-->  
-Umh... The logo looks pale by comparison, I need to find a more fantastic logo later :)      
+Umh... The logo looks pale by comparison, I need to find a more fantastic logo later :)   
+
+Unfortunately, Zapfino is not installed on Windows by default, so I use `Lucida Handwriting` instead. See below:  
+![lucida icon](/images/post/2014/09/font-LucidaHandwriting.png)   
 
 The font-family defined in my css is shown below.  
 ```css css
 body > header h1 {   
-padding-left: 45px;   
-font-family: "Zapfino","Snell Roundhand","Lucida Handwriting","PT Serif","Georgia","Helvetica Neue",Arial,serif;
+  padding-left: 45px;   
+  font-family: "Zapfino","Snell Roundhand","Lucida Handwriting","PT Serif","Georgia","Helvetica Neue",Arial,serif;
 }  
 ```  
 

@@ -12,7 +12,7 @@ Neither Terminal or iTerm on Mac is white/black color by default, which looks te
 Fortunately, we can do this just by writing a configuration file, then the terminal console or iTerm can look like this:  
 
 
-![dayo icon](/images/post/2014/09/iterm.png)  
+![iterm icon](/images/post/2014/09/iterm.png)  
 <!--more-->
   
 So how can we do this?   
