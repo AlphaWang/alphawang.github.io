@@ -13,16 +13,16 @@ article blockquote {
 
         body > header {
             background: url("/images/logo.png") no-repeat 0 30px;
-            background-size: 120px 120px;
+            background-size: auto 125px;
             background-color: #333333;
         }
 		body > header h1 { 
-			padding-left: 50px; 
+			padding-left: 55px; 
 			/*font-style:italic; */
 			font-family: "Zapfino","Snell Roundhand","Lucida Handwriting","PT Serif","Georgia","Helvetica Neue",Arial,serif;
 		}
         body > header h2 { 
-        	padding-left: 50px; 
+        	padding-left: 55px; 
         	text-shadow: 1px 1px 4px #020202;
         }
 }
