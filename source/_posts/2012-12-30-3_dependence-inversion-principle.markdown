@@ -4,7 +4,7 @@ title: "[六大设计原则] 3. Dependence Inversion Principle"
 date: 2012-12-30 19:41:26 +0800
 comments: true
 categories: [Design Patterns] 
-tags: [Design Pattern, SOLID] 
+tags: [Design Pattern, SOLID, Java] 
 keywords: Design Pattern, 设计模式, 设计原则, DIP, 依赖倒置原则, Dependence Inversion Principle
 description: 
 

@@ -4,7 +4,7 @@ title: "[六大设计原则] 5. Least Knowledge Principle"
 date: 2012-12-31 16:31:41 +0800
 comments: true
 categories: [Design Patterns]
-tags: [Design Pattern, SOLID] 
+tags: [Design Pattern, SOLID, Java] 
 keywords: Design Pattern, 设计模式, 设计原则, LKP, 最少知识原则, Least Knowledge Principle, Law of Demeter  
 description: 最少知识原则（Least Knowledge Principle），又称迪米特法则（LoD，Law of Demeter），是指一个对象应该对其他对象有最少的了解。一个类对自己依赖的类知道的越少越好。 也就是说，对于被依赖的类来说，无论逻辑多么复杂，都尽量地的将逻辑封装在类的内部，对外除了提供的public方法，不对外泄漏任何信息。
 

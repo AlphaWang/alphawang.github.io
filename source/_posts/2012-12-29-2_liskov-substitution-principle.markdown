@@ -4,7 +4,7 @@ title: "[六大设计原则] 2. Liskov Substitution Principle"
 date: 2012-12-29 18:07:50 +0800
 comments: true
 categories: [Design Patterns]
-tags: [Design Pattern, SOLID] 
+tags: [Design Pattern, SOLID, Java] 
 keywords: Design Pattern, 设计模式, 设计原则, LSP, 里氏替换原则, Liskov Substitution Principle
 description: 所有引用基类的地方，都能透明地替换成其子类对象。只要父类能出现的地方，子类就可以出现。里氏替换原则通俗的来讲就是：子类可以扩展父类的功能，但不能改变父类原有的功能。
 

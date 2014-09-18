@@ -4,9 +4,9 @@ title: "[六大设计原则] 6. Open Closed Principle"
 date: 2012-12-31 16:47:20 +0800
 comments: true
 categories: [Design Patterns]
-tags: [Design Pattern, SOLID] 
+tags: [Design Pattern, SOLID, Java] 
 keywords: Design Pattern, 设计模式, 设计原则, OCP, 开闭原则, Open Closed Principle   
-description: 
+description: Software entities like classes, modules and functions should be open for extension but closed for modifications. 一个软件实体应该通过扩展来实现变化，而不是通过修改已有的代码来实现变化。
 
 ---
 ##定义

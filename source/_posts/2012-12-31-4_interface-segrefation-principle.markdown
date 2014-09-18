@@ -4,7 +4,7 @@ title: "[六大设计原则] 4. Interface Segrefation Principle"
 date: 2012-12-31 16:11:26 +0800
 comments: true
 categories: [Design Patterns]
-tags: [Design Pattern, SOLID] 
+tags: [Design Pattern, SOLID, Java] 
 keywords: Design Pattern, 设计模式, 设计原则, ISP, 接口隔离原则, Interface Segregation Principle  
 description: Clients should not be forced to depend upon interfaces that they don't use. The dependency of one class to another one should depend on the smallest possible interface.  客户端只依赖于它所需要的接口；它需要什么接口就提供什么接口，把不需要的接口剔除掉。类间的依赖关系应建立在最小的接口上。即，接口尽量细化，接口中的方法尽量少 
 

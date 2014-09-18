@@ -4,7 +4,7 @@ title: "[六大设计原则] 1. Single Responsibility Principle"
 date: 2012-12-29 09:14:07 +0800
 comments: true
 categories: [Design Patterns]
-tags: [Design Pattern, SOLID] 
+tags: [Design Pattern, SOLID, Java] 
 keywords: Design Pattern, 设计模式, SRP, 单一职责原则, Single Responsibility Principle, 设计原则
 description: There should never be more than one reason for a class to change.  应该有且仅有一个原因引起类的变更。（如果类需要变更，那么只可能仅由某一个原因引起） 
 
