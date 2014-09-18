@@ -9,7 +9,7 @@ keywords: Design Pattern, Java, Utility Classes, 工具类
 description:   
 
 ---
-This post is a summary of [this artical](http://www.javacodegeeks.com/2014/09/oop-alternative-to-utility-classes.html) and [this](http://blogs.msdn.com/b/nickmalik/archive/2005/09/06/461404.aspx).
+This post is a summary of [this artical](http://www.javacodegeeks.com/2014/09/oop-alternative-to-utility-classes.html) and [this one](http://blogs.msdn.com/b/nickmalik/archive/2005/09/06/461404.aspx).
 
 		
 ##What's Utility Classes  
