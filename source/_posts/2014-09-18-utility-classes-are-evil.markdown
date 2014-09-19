@@ -17,7 +17,7 @@ A utility class is a class filled with static methods.  It is usually used to is
 >`StringUtils`, `IOUtils`, `FileUtils` from Apache Commons; `Iterables` and `Iterators` from Guava, and `Files` from JDK7 are perfect examples of utility classes.  
 
 ##Why Utility Classes  
-If you have two classes `A` and `B`, and have a method `f()` that both must use, then the most naive approach is to repeat the function as a method in both classes. However, this violates the [`Don't repeat yourself (DRY)`][dry] approach to programming.   
+If you have two classes `A` and `B`, and have a method `f()` that both must use, then the most naive approach is to repeat the function as a method in both classes. However, this violates the [Don't repeat yourself (DRY)][dry] approach to programming.   
 
 [dry]:http://en.wikipedia.org/wiki/Don't_repeat_yourself  
     
@@ -166,7 +166,7 @@ In an object-oriented world, there is no data; there are only objects and their 
 
 
 
-##Reference
+##References
 http://www.javacodegeeks.com/2014/09/oop-alternative-to-utility-classes.html  
 http://blogs.msdn.com/b/nickmalik/archive/2005/09/06/461404.aspx  
 http://www.marshallward.org/avoiding-utility-classes.html  
