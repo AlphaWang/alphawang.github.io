@@ -17,3 +17,7 @@ group :development do
 end
 
 gem 'sinatra', '~> 1.4.2'
+
+gem 'flickraw'
+gem 'builder', '> 2.0.0'
+gem 'persistent_memoize'

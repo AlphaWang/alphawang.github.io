@@ -106,3 +106,11 @@ google_analytics_tracking_id: UA-54659411-1
 
 # Share
 weibo_share: true
+
+# Flickr
+flickr:
+  api_key: a6d0ce13f0f6c98f6c4ab8f31436c438
+  shared_secret: 6680f399aee90fad
+
+
+
