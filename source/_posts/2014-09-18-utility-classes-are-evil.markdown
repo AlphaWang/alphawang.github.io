@@ -6,7 +6,7 @@ comments: true
 categories: [Java]
 tags: [Design Pattern, Java] 
 keywords: Design Pattern, Java, Utility Classes, 工具类   
-description:   
+description: A utility class is a class filled with static methods. However, in an object-oriented world, utility classes are considered a very bad practice.  The use of utility classes to be an antipattern. More specifically, it violates common design principles   
 
 ---
 This post is a summary of [this artical](http://www.javacodegeeks.com/2014/09/oop-alternative-to-utility-classes.html) and [this one](http://blogs.msdn.com/b/nickmalik/archive/2005/09/06/461404.aspx).

@@ -3,7 +3,10 @@ layout: post
 title: "Integrate Octopress with Flickr"
 date: 2014-09-22 15:59:15 +0800
 comments: true
-categories: 
+categories: [Site]
+tags: [Site, Web, Photography]  
+keywords: OctoPress, Flickr, plugin, Photography  
+description: OctoPress-Flickr是一款可以将Flickr中的某个图片插入到你的octopress博文中的插件。
 
 ---
 
@@ -17,7 +20,8 @@ Octopress Blog有一个很酷的[插件][github]，可以将Flickr中的某个�
 <!--more-->  
 
 使用起来非常简单，只需要在博文中插入类似如下内容：  
-```  
+
+```
 // 注意：要删除\
 
 // 插入图片  
@@ -25,7 +29,7 @@ Octopress Blog有一个很酷的[插件][github]，可以将Flickr中的某个�
 
 // 插入相册  
 \{\% flickr_set 72157647828539946 q \%\}   
-```
+```  
 
 当然，在这之前要安装这个插件。
 
@@ -68,13 +72,46 @@ bundle install
 ```
 @import "plugins/**/*";
 ```
+  
+**4、插入图片**  
+
+至此，你就可以在blog里插入Flickr图片了，只要找到图片id或者相册id，然后像本文开头那样写到文章即可。  
+
+这个插件提供了2个新的tag，分别用来插入单个图片和相册，语法如下：
+
+```  
+
+\{\% flickr_image id [preview-size [alignment [caption]] \%\}  
+\{\% flickr_set id [preview-size [desc|nodesc]] \%\}  
+
+```  
 
 
-至此，你就可以在blog里插入Flickr图片了，只要找到图片id或者相册id，然后像本文开头那样写到文章即可。 
+`preview-size`用一个字符来表示图片大小： 
+
+- o : "Original", no maximum dimension  
+- b : "Large", 1024px
+- z : "Medium 640", 640px
+- n : "Small 320", 320px
+- m : "Small", 240px,
+- t : "Thumbnail", 100px
+- q : "Large Square", 150px
+- s : "Square", 75px
+
+
+
+`alignment`可以设为`left`, `right`, 或者`center`。 
  
-不过点击图片，会跳转到Flickr页面去，我们可以用Fancybox达到在当前页面弹出图片。
+`caption` 是图片标题。
+
+
+ 
+>不过仅仅这样还有个小问题：点击图片，会跳转到Flickr页面去，我们可以用Fancybox达到在当前页面弹出图片。
 
 ##安装Fancybox
+
+Fancybox的效果是这样的：  
+![ fancybox ](/images/post/2014/09/fancybox.png)  
 
 去[Fancybox官网][fancybox]下载并解压，将`source`目录中的文件拷贝到`octopress/source/fancybox`目录中。  
 [fancybox]: http://fancyapps.com/fancybox/  
@@ -82,9 +119,9 @@ bundle install
   
 接下来将octopress-flickr插件中的`source/_includes/custom/fancybox_head.html`文件拷贝到Octopress相应目录中。  
 
-编辑`source/_includes/head.html`，在末尾插入：
+编辑`source/_includes/head.html`文件，在末尾插入：  
 ```  
-{% include custom/fancybox_head.html %}   
+\{\% include custom/fancybox_head.html \%\}   
 ```    
 
 然后修改`sass/base/_theme.scss`：
