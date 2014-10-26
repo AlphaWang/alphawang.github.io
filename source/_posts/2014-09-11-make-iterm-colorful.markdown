@@ -75,4 +75,18 @@ The order of the attributes are as follows:
 
 
 >I'm tring to write my blog in English, please leave a message to me if you find any mistake, I'll appreciate it :)  
->我会尽量用英文来写博客，如果你发现任何语法错误或表达错误，不要犹豫，请帮忙斧正，感激不尽！
+>我会尽量用英文来写博客，如果你发现任何语法错误或表达错误，不要犹豫，请帮忙斧正，感激不尽！  
+
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 789*90 -->
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+</p>

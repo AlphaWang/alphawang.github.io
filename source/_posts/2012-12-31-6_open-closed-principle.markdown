@@ -58,4 +58,17 @@ Open Closed Principle:
 - 面向对象开发的要求
 
 ##建议
-开闭原则是最基础的原则，前5个原则都是开闭原则的具体形态。
+开闭原则是最基础的原则，前5个原则都是开闭原则的具体形态。  
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 789*90 -->
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+</p>

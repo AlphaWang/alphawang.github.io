@@ -40,4 +40,17 @@ BTW, the history of Zapfino is interesting, the development had become seriously
 
 >However, just before the project was completed, Siegel wrote a letter to Zapf, saying that his girlfriend had left him and that he had lost all interest in anything. Siegel abandoned the project and started a new life, working on bringing color to Macintosh computers and later becoming an Internet design expert.
 
->Zapfino's development had become seriously delayed,... Zapfino was released in 1998 as a Type 1 font. 
+>Zapfino's development had become seriously delayed,... Zapfino was released in 1998 as a Type 1 font.   
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 789*90 -->
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+</p>

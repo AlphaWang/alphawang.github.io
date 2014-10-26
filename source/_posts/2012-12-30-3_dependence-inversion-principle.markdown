@@ -123,4 +123,19 @@ DIP的本质是通过抽象（接口、抽象类）使各个类或模块的实�
 - 变量的表面类型尽量使接口或抽象类
 - 任何类都不应该从具体类派生*——否则就会依赖具体类。
 - 尽量不要重写父类中已实现的方法——否则父类就不是一个真正适合被继承的抽象。
-- 结合里氏替代原则使用
+- 结合里氏替代原则使用   
+
+
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>

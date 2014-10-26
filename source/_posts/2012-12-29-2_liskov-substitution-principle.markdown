@@ -106,4 +106,18 @@ LSP为继承定义了一个规范，包括四层含义：
 在实际编程中，我们常常会通过重写父类的方法来完成新的功能，这样写起来虽然简单，但是整个继承体系的可复用性会比较差，特别是运用多态比较频繁时，程序运行出错的几率非常大。  
 父类中凡是已经实现好的方法（相对于抽象方法而言），实际上是在设定一系列的规范和契约，虽然它不强制要求所有的子类必须遵从这些契约，但是如果子类对这些非抽象方法任意修改，就会对整个继承体系造成破坏。而里氏替换原则就是表达了这一层含义。  
 
->里氏替换原则通俗的来讲就是：子类可以扩展父类的功能，但不能改变父类原有的功能。
+>里氏替换原则通俗的来讲就是：子类可以扩展父类的功能，但不能改变父类原有的功能。  
+
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>

@@ -77,4 +77,17 @@ public float getTemp(){
 ##建议
 
 迪米特法则的核心观念是：类间解耦。  
-其结果是产生了大量中转或跳转类。
+其结果是产生了大量中转或跳转类。  
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 789*90 -->
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+</p>

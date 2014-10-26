@@ -38,6 +38,18 @@ Day-O的界面风格与原生系统一样：
  
 <br/>    
 我想说：  
->有谁知道更美观的农历工具的话，请告诉我吧……
+>有谁知道更美观的农历工具的话，请告诉我吧……     
 
 
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 789*90 -->
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+</p>

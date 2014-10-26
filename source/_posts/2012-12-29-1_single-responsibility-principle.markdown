@@ -142,4 +142,20 @@ public class Client {
 ##建议
 
 对于单一职责原则，建议 接口一定要做到单一职责，类的设计尽量做到只有一个原因引起变化。  
-只有逻辑足够简单，才可以在代码级别上违反单一职责原则；只有类中方法数量足够少，才可以在方法级别上违反单一职责原则；
+只有逻辑足够简单，才可以在代码级别上违反单一职责原则；只有类中方法数量足够少，才可以在方法级别上违反单一职责原则；    
+
+
+
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>

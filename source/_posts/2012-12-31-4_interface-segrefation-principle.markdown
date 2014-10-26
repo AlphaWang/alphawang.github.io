@@ -58,4 +58,18 @@ Interface Segregation Principle:
 二者审视角度不同：  
   
 - 单一职责原则要求的是类和接口职责单一，注重的是职责，这是业务逻辑上的划分；  
-- 接口隔离原则要求接口的方法尽量少。。。
+- 接口隔离原则要求接口的方法尽量少。。。  
+
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 789*90 -->
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+</p>
