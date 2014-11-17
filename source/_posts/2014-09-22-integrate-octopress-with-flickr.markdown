@@ -12,7 +12,7 @@ description: OctoPress-Flickr是一款可以将Flickr中的某个图片插入到
 
 Octopress Blog有一个很酷的[插件][github]，可以将Flickr中的某个图片插入到你的博文中。像这样：    
 [github]: https://github.com/neilk/octopress-flickr  
-{% flickr_image 15313566521 o %}
+\{\% flickr_image 15313566521 o \%\}
 
 
 还可以把Flickr某个相册中的所有图片都插入进来，像[这样][set]。  

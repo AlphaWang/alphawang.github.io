@@ -37,6 +37,7 @@ description: 如何在前端用ajax将基本数组传递给SpringMVC Controller?
   locale: 'zh_CN'
 }  
 ```  
+<!--more-->
 其中locale是一个字符串，products是一个对象数组。该对象的attributes属性名是不固定的，例如有的产品的attributes是volume+color，而有的则是size+color；所以这个attributes属性我们用Map来表示。  
 
 ## 传递基本数组
@@ -128,7 +129,10 @@ public class AttributeMapWrapper {
 - http://stackoverflow.com/questions/17987234/passing-json-array-from-javascript-to-spring-mvc-controller  
 
 
-但是我在本地没有测试成功。我目前的做法是利用HttpServletRequest获取传回的string，然后利用Gson转换为对象。  
+基本思路是通过`@RequestBody`来获取Map，但是我在本地没有测试成功，可能原因是这里输入的并不是单一的数组，还有一个和数组并列的locale变量。  
+
+### HttpServletRequest + GSon
+可以利用HttpServletRequest获取传回的string，然后利用Gson转换为对象。  
 ``` java 
     public List<Item> matchItems(
   @RequestParam(required = false, value = "Locale") String locale
@@ -153,13 +157,36 @@ public class ParameterWrapper {
     Map<String, String> attributes;
 }
 ```
-这样就能成功接收本文开头那种对象数组参数了。
+这样就能成功接收本文开头那种对象数组参数了。  
 
-## TODO
+### @RequestBody  
+HttpServletRequest方法显得太过于底层，过于面向细节。上文说到因为和数组并列有个locale变量，导致无法使用@RequestBody，那是否可以通过修改API输入参数的设计来解决呢，把locale变量放到`ParameterWrapper`中是否就可以使用@RequestBody了呢？  
+当然可以，代码如下：  
 
-这个方法看起来比较笨，理应有更好的办法，待日后找到了再更新本文。  
-stackoverflow上的那两个方法为什么在本地测试不成功也需要进一步研究。
+``` java
+    public List<Item> matchItems(@RequestBody ParameterWrapper[] params) {
 
+    ...
+
+```
+
+``` java
+@Data
+public class ParameterWrapper {
+    Long transactionId;
+    Long categoryId;
+    String barcode;
+    String productName;
+    String itemName;
+    String locale;
+//    @SerializedName("attributes")
+    Map<String, String> attributes;
+}
+```
+
+## 总结
+
+本文讨论了如何往Spring MVC Controller中传入基本数组、传入Map、传入对象数组。当遇到技术瓶颈时，不妨换个思路，有时修改一下设计就能豁然开朗。
 
 
 

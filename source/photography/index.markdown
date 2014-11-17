@@ -7,6 +7,6 @@ sharing: true
 footer: true
 ---
 
-{% flickr_set 72157647828539946 m %}  
+\{\% flickr_set 72157647828539946 m \%\}  
 
 Find more photos on my [Flickr](https://www.flickr.com/photos/127921586@N07/)
