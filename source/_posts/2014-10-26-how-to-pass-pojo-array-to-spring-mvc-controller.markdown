@@ -184,6 +184,10 @@ public class ParameterWrapper {
 }
 ```
 
+如果不能移动locale的位置该怎么办呢？可以再建一个类，其中包含两个变量：  
+- `ParameterWrapper[]`   
+- `String locale`   
+
 ## 总结
 
 本文讨论了如何往Spring MVC Controller中传入基本数组、传入Map、传入对象数组。当遇到技术瓶颈时，不妨换个思路，有时修改一下设计就能豁然开朗。
