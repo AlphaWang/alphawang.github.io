@@ -4,7 +4,7 @@ title: "Make Mac Terminal Console / iTerm Colorful"
 date: 2014-09-11 14:36:31 +0800
 comments: true
 categories: Mac
-tags: [Mac, Terminal] 
+tags: [Mac, Tool] 
 keywords: mac, tool, iterm, terminal, color, 终端, 颜色
 description: 无论是Mac的Terminal终端，还是iTerm，默认都是黑白色的，比较单调。最起码应该支持目录和文件用不同的颜色显示。好在我们可以通过自己配置命令终端的颜色。Neither Terminal or iTerm on Mac is white/black color by default, which looks tedious. What if different entries shown in different colors? 
 ---

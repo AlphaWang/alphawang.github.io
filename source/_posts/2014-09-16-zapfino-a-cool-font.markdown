@@ -4,7 +4,7 @@ title: "Zapfino: A Cool Font"
 date: 2014-09-16 17:28:52 +0800
 comments: true
 categories: [Web]
-tags: [Web, CSS] 
+tags: [Web, CSS, Site] 
 keywords: Web, CSS, Font, Zapfino
 description: Zapfino is a cool font for blog titles.
  

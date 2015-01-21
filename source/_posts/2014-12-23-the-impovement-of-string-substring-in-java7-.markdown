@@ -4,7 +4,7 @@ title: "Is the Improvement of String.substring() in Java7 Really Reasonable? "
 date: 2014-12-24 15:59:15 +0800
 comments: true
 categories: [Java]
-tags: [Java, source code]  
+tags: [Java, Source Code, JDK, String]  
 keywords: Java, String, substring, List, sublist   
 description: String#substring() 在Java6和Java7中的实现是不一样的。这是因为Java6的实现可能导致内存问题，所以Java7中为了改善这个问题修改了实现方式。那么Java7中的实现就真的合理吗？
 
@@ -37,7 +37,7 @@ Java中字符串是通过字符数组来支持实现的，在JDK6中，String类
 
 可以参考Java6中的源代码：
 
-```     
+```java      
 //Java 6
 String(int offset, int count, char value[]) {
      this.value = value;

@@ -4,7 +4,7 @@ title: "Uml Class Diagram of Collection and Map "
 date: 2014-11-15 14:05:15 +0800
 comments: true
 categories: [Java]
-tags: [Java]  
+tags: [Java, JDK, Collection]  
 keywords: java.util.Collection和java.util.Map详细类图
 
 ---
