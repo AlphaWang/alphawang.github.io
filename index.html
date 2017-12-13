@@ -1,11 +1,28 @@
 ---
-layout: simple
+layout: default
 title: Alpha's Blog
 ---
-　　<h2>{{ page.title }}</h2>
-　　<p>最新文章</p>
-　　<ul>
-    　　　　{% for post in site.posts %}
-    　　　　　　<li>{{ post.date | date_to_string }} <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
-    　　　　{% endfor %}
-    </ul>
+<div id="posts">
+	<h2>Posts</h2>
+		{% for post in site.posts %}
+		<div class="post">
+			<div>
+				<span class="post_date">{{ post.date | date_to_string }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a>
+			</div>
+			<div class="post_summary">{{ post.summary }}</div>
+		</div>	
+		{% endfor %}
+</div>
+
+<hr/>
+
+<div id="blurb">
+	<p>
+		<strong>Samurai:</strong> Hakuin, where do I go when I die?<br/>
+		<strong>Hakuin:</strong> I have no idea.<br/>
+		<strong>Samurai:</strong> What do you mean you don't know? You're a Zen master!<br/>
+		<strong>Hakuin:</strong> Yes, but not a dead one.<br/>
+	</p>
+</div>
+
+<hr/>

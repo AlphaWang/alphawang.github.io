@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8" />
+	<meta name="author" content="Alpha Wang" />
+	<meta name="robots" content="all" />
+
+	<title>{{ page.title }}</title>
+	
+	<style type="text/css" media="all">
+		@import "/static/css/alpha.css";
+		@import "/static/css/syntax.css";
+	</style>	
+</head>
+
+<body id="main">
+
+	<div id="content">
+		<div id="header" align="center">
+			<h1><a href="/" title="Alpha's Blog">{{ site.title }}</a></h1>
+		</div>
+		
+		<div id="content_body">
+			{{ content }}
+		</div>
+		
+		<div id="footer">
+			<div id="navigation">
+				<span class="navitem"><a href="http://github.com/alphawang" title="Alpha's github repo">GitHub</a></span> |
+				<span class="navitem"><a href="/resume.html" title="Alpha's resume">Resume</a></span> |
+				<span class="navitem"><a href="/static/pgp.txt" title="PGP Key">PGP Key</a></span> |
+				<span class="navitem"><a href="http://weibo.com/zhongxingwang" title="twitter">Weibo</a></span> |
+				<span class="navitem">
+					<a href="http://feeds.feedburner.com/MojobojoDotCom" rel="alternate" type="application/rss+xml">
+						<img src="http://www.feedburner.com/fb/images/pub/feed-icon16x16.png" alt="" style="vertical-align:middle;border:0"/>
+					</a>
+				</span>
+			</div>
+		</div>
+	</div>
+	
+</body>
+</html>
