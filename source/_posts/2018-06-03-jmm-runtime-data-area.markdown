@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "JMM: Java Runtime Data Area"
-date: 2015-03-24 14:00:40 +0800
+date: 2018-06-03 14:00:40 +0800
 comments: true
 categories: [Java]
 tags: [Java, JVM, JMM]
