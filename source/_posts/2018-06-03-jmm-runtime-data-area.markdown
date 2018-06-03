@@ -9,7 +9,7 @@ keywords: Java, JVM, JMM, 内存模型, Runtime Data Area, 运行时数据区
 description: JVM 运行时数据区。
 ---
 
-# JVM结构
+
 下图展示了JVM的主要结构：
 ![user icon](/images/post/2018/jmm/runtime-data-area.png)
 
@@ -19,13 +19,15 @@ description: JVM 运行时数据区。
 - 执行引擎
 - 本地方法接口
 
-# 运行时数据区（Runtime Data Area）
 运行时数据区又分为：
 1. 程序计数器
 2. Java栈
 3. 本地方法栈
 4. 方法区
 5. 堆
+
+
+<!--more-->
 
 其中 方法区 和 堆 是所有Java线程共享的，而Java栈、本地方法栈、PC寄存器则由每个线程私有。
 

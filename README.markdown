@@ -2,6 +2,11 @@
 
 https://www.jianshu.com/p/31920a0cab81
 
+```
+rake generate
+rake preview
+rake deploy
+```
 
 ## What is Octopress?
 
