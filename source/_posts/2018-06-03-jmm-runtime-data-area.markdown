@@ -52,7 +52,7 @@ Java栈的主要任务是存储方法参数、局部变量、中间运算结果�
 OOM:
 - 如果线程请求的栈深度大于JVM所允许的深度，则抛出StackOverflowError。
 - 如果VM可以动态扩展，但是扩展是无法申请到足够的内存，则抛出OutOfMemoryError。
-- 可以通过减少-Xss，同时循环调用某个方法，模拟StackOverflowError
+- 可以通过减少-Xss，同时递归调用某个方法，模拟StackOverflowError
 
 它分为三部分：局部变量区、操作数栈、帧数据区。
 
