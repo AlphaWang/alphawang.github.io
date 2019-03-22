@@ -1,14 +1,6 @@
+## Octopress 3.0
 
-## How 
-http://blog.bibitiger.cn/blog/2016/05/13/makeupoctopress/
-
-```
-rake new_post["Post Title"]
-rake generate
-rake preview
-rake deploy
-```
-
+Note: Octopress 3.0 is in development at https://github.com/octopress/octopress
 
 ## What is Octopress?
 
@@ -31,7 +23,7 @@ fix to our docs repo](https://github.com/octopress/docs).
 
 ## Contributing
 
-[![Build Status](https://travis-ci.org/imathis/octopress.png?branch=master)](https://travis-ci.org/imathis/octopress)
+[![Build Status](https://travis-ci.org/imathis/octopress.svg?branch=master)](https://travis-ci.org/imathis/octopress)
 
 We love to see people contributing to Octopress, whether it's a bug report, feature suggestion or a pull request. At the moment, we try to keep the core slick and lean, focusing on basic blogging needs, so some of your suggestions might not find their way into Octopress. For those ideas, we started a [list of 3rd party plug-ins](https://github.com/imathis/octopress/wiki/3rd-party-plugins), where you can link your own Octopress plug-in repositories. For the future, we're thinking about ways to easier add them into our main releases.
 
@@ -50,4 +42,4 @@ THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR I
 
 #### If you want to be awesome.
 - Proudly display the 'Powered by Octopress' credit in the footer.
-- Add your site to the Wiki so we can watch the community grow.
+- [Add your site to the Wiki](https://github.com/imathis/octopress/wiki/Octopress-Sites/_edit) so we can watch the community grow.
