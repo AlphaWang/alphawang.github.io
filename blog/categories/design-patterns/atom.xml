@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Design Patterns | Alpha's Programming Notes]]></title>
+  <link href="http://alphawang.github.io/blog/categories/design-patterns/atom.xml" rel="self"/>
+  <link href="http://alphawang.github.io/"/>
+  <updated>2019-03-22T12:22:53+08:00</updated>
+  <id>http://alphawang.github.io/</id>
+  <author>
+    <name><![CDATA[Alpha Wang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[[六大设计原则] 6. Open Closed Principle]]></title>
+    <link href="http://alphawang.github.io/blog/2012/12/6_open-closed-principle/"/>
+    <updated>2012-12-31T16:47:20+08:00</updated>
+    <id>http://alphawang.github.io/blog/2012/12/6_open-closed-principle</id>
+    <content type="html"><![CDATA[<h2>定义</h2>
+
+<p>Open Closed Principle:</p>
+
+<ul>
+<li>Software entities like classes, modules and functions should be open for extension but closed for modifications.
+
+<blockquote><p><strong>对扩展开放，对修改关闭。</strong>  <br/>
+一个软件实体应该通过扩展来实现变化，而不是通过修改已有的代码来实现变化。<em>——but，并不意味着不做任何修改；底层模块的扩展，必然要有高层模块进行耦合</em>。</p></blockquote></li>
+</ul>
+
+
+<p>“变化”可分为三种类型：</p>
+
+<ul>
+<li>逻辑变化——不涉及其他模块，可修改原有类中的方法；</li>
+<li>子模块变化——会对其他模块产生影响，通过扩展来完成变化；</li>
+<li>可见视图变化——界面变化，有时需要通过扩展来完成变化。</li>
+</ul>
+
+
+<h2>问题由来</h2>
+
+<p>在软件的生命周期内，因为变化、升级和维护等原因需要对软件原有代码进行修改时，可能会给旧代码中引入错误，也可能会使我们不得不对整个功能进行重构，并且需要原有代码经过重新测试。</p>
+
+<!--more-->
+
+
+<h2>解决方案</h2>
+
+<p>当软件需要变化时，尽量通过扩展软件实体的行为来实现变化，而不是通过修改已有的代码来实现变化。<br/>
+这要求：</p>
+
+<p><strong>1、抽象约束（要实现对扩展开放，首要前提就是抽象约束）</strong></p>
+
+<p>通过接口或抽象类可以约束一组可能变化的行为，并能实现对扩展开放。包含三层含义：</p>
+
+<ul>
+<li>通过接口或抽象类可以约束扩展，对扩展进行边界限定，不允许出现在接口抽象类中不存在的public方法；</li>
+<li>参数类型、引用对象尽量使用接口或抽象类，而不是实现类；</li>
+<li>抽象应尽量保持稳定，一旦确定即不允许修改。</li>
+</ul>
+
+
+<p><strong>2、元数据（metadata）控制模块行为</strong> <br/>
+元数据，即用来描述环境和数据的数据，即配置数据。例如SpingContext。</p>
+
+<p><strong>3、制定项目章程</strong></p>
+
+<p><strong>4、封装变化</strong><br/>
+封装可能发生的变化。将相同的变化封装到一个接口或抽象类中；将不同的变化封装到不同的接口或抽象类中。</p>
+
+<h2>好处</h2>
+
+<ul>
+<li>易于单元测试
+
+<blockquote><p>如果直接修改已有代码，则需要同时修改单元测试类；而通过扩展，则只需生成一个测试类。</p></blockquote></li>
+<li>可提高复用性</li>
+<li>可提高可维护性</li>
+<li>面向对象开发的要求</li>
+</ul>
+
+
+<h2>建议</h2>
+
+<p>开闭原则是最基础的原则，前5个原则都是开闭原则的具体形态。</p>
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[六大设计原则] 5. Least Knowledge Principle]]></title>
+    <link href="http://alphawang.github.io/blog/2012/12/5_least-knowledge-principle/"/>
+    <updated>2012-12-31T16:31:41+08:00</updated>
+    <id>http://alphawang.github.io/blog/2012/12/5_least-knowledge-principle</id>
+    <content type="html"><![CDATA[<h2>定义</h2>
+
+<p>最少知识原则（Least Knowledge Principle），又称迪米特法则（LoD，Law of Demeter），是指一个对象应该对其他对象有最少的了解。
+一个类对自己依赖的类知道的越少越好。<br/>
+也就是说，对于被依赖的类来说，无论逻辑多么复杂，都尽量地的将逻辑封装在类的内部，对外除了提供的public方法，不对外泄漏任何信息。</p>
+
+<h2>问题由来</h2>
+
+<p>类与类之间的关系越密切，耦合度越大，当一个类发生改变时，对另一个类的影响也越大。</p>
+
+<!--more-->
+
+
+<h2>解决方案</h2>
+
+<p>迪米特法则包含4层含义：</p>
+
+<p><strong>1、只和朋友交流</strong></p>
+
+<p>Only talk to your immediate friends. 两个对象之间的耦合就成为朋友关系。即，出现在成员变量、方法输入输出参数中的类就是朋友；局部变量不属于朋友。</p>
+
+<blockquote><p>不与无关的对象发生耦合！</p></blockquote>
+
+<p>方针：不要调用从另一个方法中返回的对象中的方法！只应该调用以下方法：</p>
+
+<ul>
+<li>该对象本身的方法</li>
+<li>该对象中的任何组件的方法</li>
+<li>方法参数中传入的对象的方法</li>
+<li>方法内部实例化的对象的方法</li>
+</ul>
+
+
+<p>【例】：Teacher类可以命令TeamLeader对Students进行清点，则Teacher无需和Students耦合，只需和TeamLeader耦合即可。</p>
+
+<p>【反例】：<br/>
+<code>java 反例
+public float getTemp(){  
+     Thermometer t = station.getThermometer(); //温度计对象
+     return t.getTemp();  
+}
+</code></p>
+
+<p>客户端不应该了解气象站类中的温度计对象；应在气象站类中直接加入获取温度的方法。<br/>
+改为：
+<code>java 修改后
+public float getTemp(){  
+      return station.getTemp();  
+}
+</code></p>
+
+<p><strong>2、朋友间也应该有距离</strong></p>
+
+<p>即使是朋友类之间也不能无话不说，无所不知。</p>
+
+<blockquote><p>一个类公开的public属性或方法应该尽可能少！</p></blockquote>
+
+<p><strong>3、是自己的就是自己的</strong></p>
+
+<p>如果一个方法放在本类中也可以、放在其他类中也可以，怎么办？</p>
+
+<blockquote><p>如果一个方法放在本类中，既不增加类间关系，也对本类不产生负面影响，就放置在本类中。</p></blockquote>
+
+<p><strong>4、谨慎使用Serializable</strong></p>
+
+<p>否则，若后来修改了属性，序列化时会抛异常NotSerializableException。</p>
+
+<h2>建议</h2>
+
+<p>迪米特法则的核心观念是：类间解耦。<br/>
+其结果是产生了大量中转或跳转类。</p>
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[六大设计原则] 4. Interface Segrefation Principle]]></title>
+    <link href="http://alphawang.github.io/blog/2012/12/4_interface-segrefation-principle/"/>
+    <updated>2012-12-31T16:11:26+08:00</updated>
+    <id>http://alphawang.github.io/blog/2012/12/4_interface-segrefation-principle</id>
+    <content type="html"><![CDATA[<h2>定义</h2>
+
+<p>Interface Segregation Principle:</p>
+
+<ul>
+<li><p>Clients should not be forced to depend upon interfaces that they don&rsquo;t use.</p>
+
+<blockquote><p>客户端只依赖于它所需要的接口；它需要什么接口就提供什么接口，把不需要的接口剔除掉。</p></blockquote></li>
+<li><p>The dependency of one class to another one should depend on the smallest possible interface.</p>
+
+<blockquote><p>类间的依赖关系应建立在最小的接口上。<br/>
+即，接口尽量细化，接口中的方法尽量少</p></blockquote></li>
+</ul>
+
+
+<h2>问题由来</h2>
+
+<p>类<code>A</code>通过接口<code>I</code>依赖类<code>B</code>，类<code>C</code>通过接口<code>I</code>依赖类<code>D</code>。如果接口<code>I</code>对于类<code>A</code>和类<code>B</code>来说不是最小接口，则类<code>B</code>和类<code>D</code>必须去实现他们不需要的方法。</p>
+
+<!--more-->
+
+
+<h2>解决方案</h2>
+
+<p>将臃肿的接口I拆分为独立的几个接口，类A和类C分别与他们需要的接口建立依赖关系。包含4层含义：</p>
+
+<p><strong>1、接口要尽量小</strong></p>
+
+<p>不能出现Fat Interface；但是要有限度，首先不能违反单一职责原则（不能一个接口对应半个职责）。</p>
+
+<p><strong>2、接口要高内聚</strong></p>
+
+<p>在接口中尽量少公布public方法。<br/>
+接口是对外的承诺，承诺越少对系统的开发越有利。</p>
+
+<p><strong>3、定制服务</strong></p>
+
+<p>只提供访问者需要的方法。例如，为管理员提供IComplexSearcher接口，为公网提供ISimpleSearcher接口。</p>
+
+<p><strong>4、接口的设计是有限度的</strong></p>
+
+<h2>建议</h2>
+
+<ul>
+<li>一个接口只服务于一个子模块或业务逻辑；</li>
+<li>通过业务逻辑压缩接口中的public方法；</li>
+<li>已被污染了的接口，尽量去修改；若变更的风险较大，则采用适配器模式转化处理；</li>
+<li>拒绝盲从</li>
+</ul>
+
+
+<h2>与单一职责原则的区别</h2>
+
+<p>二者审视角度不同：</p>
+
+<ul>
+<li>单一职责原则要求的是类和接口职责单一，注重的是职责，这是业务逻辑上的划分；</li>
+<li>接口隔离原则要求接口的方法尽量少。。。</li>
+</ul>
+
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[六大设计原则] 3. Dependence Inversion Principle]]></title>
+    <link href="http://alphawang.github.io/blog/2012/12/3_dependence-inversion-principle/"/>
+    <updated>2012-12-30T19:41:26+08:00</updated>
+    <id>http://alphawang.github.io/blog/2012/12/3_dependence-inversion-principle</id>
+    <content type="html"><![CDATA[<h2>定义</h2>
+
+<p>DIP，Dependence Inversion Principle:</p>
+
+<ul>
+<li>High level modules should not depend upon low level modules. Both should depend upon abstractions.</li>
+<li>Abstractions should not depend upon details. Details should depend upon abstractions.</li>
+</ul>
+
+
+<p>即“面向接口编程”：</p>
+
+<ul>
+<li>高层模块不应该依赖低层模块，两者都应该依赖其抽象；
+
+<blockquote><p>模块间的依赖通过抽象发生。实现类之间不发生直接的依赖关系（eg. 类B被用作类A的方法中的参数），其依赖关系是通过接口或抽象类产生的；</p></blockquote></li>
+<li>抽象不应该依赖细节；
+
+<blockquote><p>接口或抽象类不依赖于实现类</p></blockquote></li>
+<li>细节应该依赖抽象；
+
+<blockquote><p>实现类依赖接口或抽象类</p></blockquote>
+
+<pre><code>  **何为“倒置”？**  
+  依赖正置：类间的依赖是实实在在的实现类间的依赖，即面向实现编程，这是正常人的思维方式；     
+  而依赖倒置是对现实世界进行抽象，产生了抽象间的依赖，代替了人们传统思维中的事物间的依赖。
+</code></pre></li>
+</ul>
+
+
+<!--more-->
+
+
+<h2>问题由来</h2>
+
+<p>类A直接依赖类B，假如要将类A改为依赖类C，则必须通过修改类A的代码来达成。<br/>
+这种场景下，类A一般是高层模块，负责复杂的业务逻辑；类B和类C是低层模块，负责基本的原子操作；假如修改类A，会给程序带来不必要的风险。</p>
+
+<p><strong>示例（类间的耦合性）：</strong></p>
+
+<p>例如有一个Driver，可以驾驶Benz：
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Driver</span> <span class="o">{&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">drive</span><span class="o">(</span><span class="n">Benz</span> <span class="n">benz</span><span class="o">)</span> <span class="o">{&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>        <span class="n">benz</span><span class="o">.</span><span class="na">run</span><span class="o">();&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="o">}&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'><span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Benz</span> <span class="o">{&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="n">Benz开动</span><span class="o">&amp;</span><span class="n">hellip</span><span class="o">;&amp;</span><span class="n">rdquo</span><span class="o">;);&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="o">}&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>问题来了：现在有变更，Driver不仅要驾驶Benz，还需要驾驶BMW，怎么办？<br/>
+Driver和Benz是紧耦合的，导致可维护性大大降低、稳定性大大降低（增加一个车就需要修改Driver，Driver是不稳定的）。</p>
+
+<p><strong>示例（并行开发风险性）：</strong></p>
+
+<p>如上例，Benz类没开发完成前，Driver是不能编译的！不能并行开发！</p>
+
+<h2>解决办法</h2>
+
+<p>将类A修改为依赖接口I，类B和类C各自实现接口I，类A通过接口I间接与类B或者类C发生联系，则会大大降低修改类A的几率。</p>
+
+<p>上例中，新增一个抽象ICar接口，ICar不依赖于BMW和Benz两个实现类（抽象不依赖于细节）。<br/>
+1）Driver和ICar实现类松耦合<br/>
+2）接口定下来，Driver和BMW就可独立开发了，并可独立地进行单元测试</p>
+
+<h2>依赖的三种写法</h2>
+
+<p><strong>1、构造函数传递依赖对象（构造函数注入）</strong></p>
+
+<pre><code class="java">public interface IDriver {  
+    public void drive();  
+}  
+
+public class Driver implements IDriver {  
+    private ICar car;    
+    public Driver(**ICar** _car) {  
+        this.car = _car;  
+    }   
+    public void drive() {  
+        this.car.run();  
+    }  
+}
+</code></pre>
+
+<p><strong>2、setter方法传递依赖对象（setter依赖注入）</strong></p>
+
+<pre><code class="java">public interface IDriver{  
+    public void setCar(ICar car);  
+    public void drive();  
+}  
+
+public class Driver implements IDriver {  
+    private ICar car;  
+    public void setCar(**ICar** car) {  
+        this.car = car;  
+    }  
+    public void drive() {  
+        this.car.run();  
+    }  
+}  
+</code></pre>
+
+<p><strong>3、接口声明依赖对象（接口注入）</strong></p>
+
+<h2>好处</h2>
+
+<p>依赖倒置可以减少类间的耦合性、降低并行开发引起的风险。</p>
+
+<h2>建议</h2>
+
+<p>DIP的核心是面向接口编程；<br/>
+DIP的本质是通过抽象（接口、抽象类）使各个类或模块的实现彼此独立，不互相影响。</p>
+
+<p>在项目中遵循以下原则：</p>
+
+<ul>
+<li>每个类尽量都有接口或抽象类</li>
+<li>变量的表面类型尽量使接口或抽象类</li>
+<li>任何类都不应该从具体类派生*——否则就会依赖具体类。</li>
+<li>尽量不要重写父类中已实现的方法——否则父类就不是一个真正适合被继承的抽象。</li>
+<li>结合里氏替代原则使用</li>
+</ul>
+
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[六大设计原则] 2. Liskov Substitution Principle]]></title>
+    <link href="http://alphawang.github.io/blog/2012/12/2_liskov-substitution-principle/"/>
+    <updated>2012-12-29T18:07:50+08:00</updated>
+    <id>http://alphawang.github.io/blog/2012/12/2_liskov-substitution-principle</id>
+    <content type="html"><![CDATA[<h2>定义</h2>
+
+<p>LSP，Liskov Substitution Principle：</p>
+
+<ul>
+<li>If for each object <code>s</code> of type <code>S</code>, there is an object <code>t</code> of type <code>T</code> such that for all programs <code>P</code> defined in terms of <code>T</code>, the behavior of <code>P</code> is unchanged when <code>s</code> is substituted for <code>t</code> when <code>S</code> is a subtype of <code>T</code>.</li>
+<li>Functions that use pointers or references to base classes must be able to user objects of derived classes without knowing it.
+
+<blockquote><p>所有引用基类的地方，都能透明地替换成其子类对象。只要父类能出现的地方，子类就可以出现。</p></blockquote></li>
+</ul>
+
+
+<p>里氏替换原则通俗的来讲就是：子类可以扩展父类的功能，但不能改变父类原有的功能。</p>
+
+<h2>问题由来</h2>
+
+<p>引入里氏替换原则能充分发挥继承的优点、减少继承的弊端。</p>
+
+<!--more-->
+
+
+<p><strong>继承的优点：</strong></p>
+
+<ul>
+<li>代码共享，减少创建类的工作量；每个子类都有父类的方法和属性；</li>
+<li>提高代码重用性；</li>
+<li>子类可以形似父类，但又异于父类；</li>
+<li>提高代码可扩展性；</li>
+<li>提高产品开放性。</li>
+</ul>
+
+
+<p><strong>继承的缺点：</strong></p>
+
+<ul>
+<li>继承是侵入性的：<em>只要继承，就必须拥有父类的属性和方法；</em></li>
+<li>降低代码的灵活性：<em>子类必须拥有父类的属性和方法，让子类自由的世界多了些约束；</em></li>
+<li>增强了耦合性：<em>当父类的属性和方法被修改时，必须要考虑子类的修改。</em></li>
+</ul>
+
+
+<p><strong>示例（继承的缺点）：</strong></p>
+
+<p>原有类A，实现减法功能：<br/>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">A</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">func1</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="o">;</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="o">}</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'><span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Client</span> <span class="o">{&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span> <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>        <span class="n">A</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">A</span><span class="o">();</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="mi">100</span><span class="o">-</span><span class="mi">50</span><span class="o">=&amp;</span><span class="n">rdquo</span><span class="o">;</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="na">func1</span><span class="o">(</span><span class="mi">100</span><span class="o">,</span> <span class="mi">50</span><span class="o">));</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="mi">100</span><span class="o">-</span><span class="mi">80</span><span class="o">=&amp;</span><span class="n">rdquo</span><span class="o">;</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="na">func1</span><span class="o">(</span><span class="mi">100</span><span class="o">,</span> <span class="mi">80</span><span class="o">));</span>
+</span><span class='line'>    <span class="o">}</span> <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'><span class="o">}&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>新增需求：新增两数相加、然后再与100求和的功能，由类B来负责<br/>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">B</span> <span class="kd">extends</span> <span class="n">A</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">func1</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">;</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="o">}</span>      <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">func2</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nf">func1</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">+</span> <span class="mi">100</span><span class="o">;</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="o">}</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'><span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Client</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>        <span class="n">B</span> <span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">B</span><span class="o">();</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="mi">100</span><span class="o">-</span><span class="mi">50</span><span class="o">=&amp;</span><span class="n">rdquo</span><span class="o">;</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="na">func1</span><span class="o">(</span><span class="mi">100</span><span class="o">,</span> <span class="mi">50</span><span class="o">));</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="mi">100</span><span class="o">-</span><span class="mi">80</span><span class="o">=&amp;</span><span class="n">rdquo</span><span class="o">;</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="na">func1</span><span class="o">(</span><span class="mi">100</span><span class="o">,</span> <span class="mi">80</span><span class="o">));</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="mi">100</span><span class="o">+</span><span class="mi">20</span><span class="o">+</span><span class="mi">100</span><span class="o">=&amp;</span><span class="n">rdquo</span><span class="o">;</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="na">func2</span><span class="o">(</span><span class="mi">100</span><span class="o">,</span> <span class="mi">20</span><span class="o">));</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'>    <span class="o">}</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>OOPS! 原本运行正常的相减功能发生了错误。原因就是类B在给方法起名时无意中重写了父类的方法！</p>
+
+<blockquote><p>有一功能P1，由类A完成。现需要将功能P1进行扩展，扩展后的功能为P，其中P由原有功能P1与新功能P2组成。新功能P由类A的子类B来完成，则子类B在完成新功能P2的同时，有可能会导致原有功能P1发生故障。</p></blockquote>
+
+<h2>解决方案</h2>
+
+<p>LSP为继承定义了一个规范，包括四层含义：<br/>
+<strong>1. 子类必须完全实现父类的方法</strong><br/>
+如果子类不能完整地实现父类的方法，或者父类的某些方法在子类中已经发生畸变；则建议不要用继承，而采用依赖、聚集、组合等关系代替继承。<br/>
+例如：父类AbstractGun有shoot()方法，其子类ToyGun不能完整实现父类的方法（玩具枪不能射击，ToyGun.shoot()中没有任何处理逻辑），则应该断开继承关系，另外建一个AbstractToy父类。</p>
+
+<p><strong>2. 子类可以有自己的个性</strong><br/>
+即，在子类出现的地方，父类未必就能替代。</p>
+
+<p><strong>3. <code>重载</code>或实现父类方法时，输入参数可以被放大（入参可以更宽松）</strong> <br/>
+否则，用子类替换父类后，会变成执行子类重载后的方法，而该方法可能“歪曲”父类的意图，可能引起业务逻辑混乱。</p>
+
+<p><strong>4. <code>重写</code>或实现父类方法时，返回类型可以被缩小（返回类型更严格）</strong></p>
+
+<h2>建议</h2>
+
+<p>在实际编程中，我们常常会通过重写父类的方法来完成新的功能，这样写起来虽然简单，但是整个继承体系的可复用性会比较差，特别是运用多态比较频繁时，程序运行出错的几率非常大。<br/>
+父类中凡是已经实现好的方法（相对于抽象方法而言），实际上是在设定一系列的规范和契约，虽然它不强制要求所有的子类必须遵从这些契约，但是如果子类对这些非抽象方法任意修改，就会对整个继承体系造成破坏。而里氏替换原则就是表达了这一层含义。</p>
+
+<blockquote><p>里氏替换原则通俗的来讲就是：子类可以扩展父类的功能，但不能改变父类原有的功能。</p></blockquote>
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+]]></content>
+  </entry>
+  
+</feed>

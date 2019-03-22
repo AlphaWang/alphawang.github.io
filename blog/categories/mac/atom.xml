@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Mac | Alpha's Programming Notes]]></title>
+  <link href="http://alphawang.github.io/blog/categories/mac/atom.xml" rel="self"/>
+  <link href="http://alphawang.github.io/"/>
+  <updated>2019-03-22T12:22:53+08:00</updated>
+  <id>http://alphawang.github.io/</id>
+  <author>
+    <name><![CDATA[Alpha Wang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Make Mac Terminal Console / iTerm Colorful]]></title>
+    <link href="http://alphawang.github.io/blog/2014/09/make-iterm-colorful/"/>
+    <updated>2014-09-11T14:36:31+08:00</updated>
+    <id>http://alphawang.github.io/blog/2014/09/make-iterm-colorful</id>
+    <content type="html"><![CDATA[<p>Neither Terminal or iTerm on Mac is white/black color by default, which looks tedious. What if different entries shown in different colors?<br/>
+Fortunately, we can do this just by writing a configuration file, then the terminal console or iTerm can look like this:</p>
+
+<p><img src="/images/post/2014/09/iterm.png" alt="iterm icon" /></p>
+
+<!--more-->
+
+
+<p>So how can we do this? <br/>
+It&rsquo;s very simple, just create a file named <code>~/.bash_profile</code>, and fill it with the following content:</p>
+
+<p>``` bash ~./bash_profile</p>
+
+<h1>enables colorin the terminal bash shell export</h1>
+
+<p>export CLICOLOR=1</p>
+
+<h1>sets up thecolor scheme for list export</h1>
+
+<p>export LSCOLORS=gxfxcxdxbxegedabagacad</p>
+
+<h1>sets up theprompt color (currently a green similar to linux terminal)</h1>
+
+<p>export PS1=&lsquo;[\033[01;32m]\u@\h[\033[00m]:[\033[01;36m]\w[\033[00m]\$ &rsquo;</p>
+
+<h1>enables colorfor iTerm</h1>
+
+<p>export TERM=xterm-color
+```</p>
+
+<p><br/>
+If you are not satisfied with that color, you can change the value of LSCOLORS.</p>
+
+<p>The value of LSCOLORS describes what color to use for which attribute when colors are enabled with CLICOLOR.  This string is a concatenation of pairs of the format fb, where f is the foreground color and b is the background color.</p>
+
+<p>The color designators are as follows:</p>
+
+<ul>
+<li>a     black</li>
+<li>b     red</li>
+<li>c     green</li>
+<li>d     brown</li>
+<li>e     blue</li>
+<li>f     magenta</li>
+<li>g     cyan</li>
+<li>h     light grey</li>
+<li>A     bold black, usually shows up as dark grey</li>
+<li>B     bold red</li>
+<li>C     bold green</li>
+<li>D     bold brown, usually shows up as yellow</li>
+<li>E     bold blue</li>
+<li>F     bold magenta</li>
+<li>G     bold cyan</li>
+<li>H     bold light grey; looks like bright white</li>
+<li>x     default foreground or background</li>
+</ul>
+
+
+<p>The order of the attributes are as follows:</p>
+
+<ol>
+<li>directory</li>
+<li>symbolic link</li>
+<li>socket</li>
+<li>pipe</li>
+<li>executable</li>
+<li>block special</li>
+<li>character special</li>
+<li>executable with setuid bit set</li>
+<li>executable with setgid bit set</li>
+<li>directory writable to others, with sticky bit</li>
+<li>directory writable to others, without sticky bit</li>
+</ol>
+
+
+<blockquote><p>I&rsquo;m tring to write my blog in English, please leave a message to me if you find any mistake, I&rsquo;ll appreciate it :)<br/>
+我会尽量用英文来写博客，如果你发现任何语法错误或表达错误，不要犹豫，请帮忙斧正，感激不尽！</p></blockquote>
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Calendar Tools on Mac]]></title>
+    <link href="http://alphawang.github.io/blog/2014/09/mac-calendar-tool/"/>
+    <updated>2014-09-10T17:15:35+08:00</updated>
+    <id>http://alphawang.github.io/blog/2014/09/mac-calendar-tool</id>
+    <content type="html"><![CDATA[<p>Mac菜单栏原生的日期时间显示比较简单，例如不能直接查看月历，比较不爽。<br/>
+找到了几个比较优秀的Mac日期工具，可以替代原生功能：</p>
+
+<h2>Day-O</h2>
+
+<p>Day-O的界面风格与原生系统一样：</p>
+
+<p><img src="/images/post/2014/09/mac-day-o.png" alt=" dayo post title bug " /></p>
+
+<!--more-->  
+
+
+<p>它还可以设置不同的时间格式，与系统一致。</p>
+
+<p>但是正如它的About信息所说，它不能做太多事情。比如对中国用户来说，日历怎么能不显示农历呢：</p>
+
+<blockquote><p>Day-O is a menu bar clock replacement with a simple icon and a simple calendar.<br/>
+I created Day-O because my previous clock replacement started behaving erratically in Lion. Day-O doesn&rsquo;t.<br/>
+Day-O doesn&rsquo;t do much of anything.</p></blockquote>
+
+<p>点<a href="http://shauninman.com/archive/2011/10/20/day_o_mac_menu_bar_clock">这里</a>下载。</p>
+
+<h2>中国农历 for Mac</h2>
+
+<p>这款工具解决了Day-O的问题，它提供显示农历功能，并且还标注了节日、节气等信息，菜单栏还可以显示时间和星期。 <br/>
+<img src="/images/post/2014/09/mac-calendar-cn.png" alt=" lunar post title bug " /><br/>
+点<a href="http://www.appinn.com/calendar-cn-for-os-x/">这里</a>下载。 <br/>
+但是这个工具的缺点也比较明显，界面比较粗糙，和原生界面反差比较大，比如图标并不是传统的黑色，界面背景与 Mac 传统也不太一样。强迫症患者表示很难受。</p>
+
+<p><br/>  <br/>
+我想说：</p>
+
+<blockquote><p>有谁知道更美观的农历工具的话，请告诉我吧……</p></blockquote>
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+]]></content>
+  </entry>
+  
+</feed>

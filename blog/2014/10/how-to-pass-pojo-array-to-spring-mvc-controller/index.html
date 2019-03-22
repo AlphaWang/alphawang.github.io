@@ -1,0 +1,711 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>How to Pass POJO Array to Spring MVC Controller - Alpha's Programming Notes</title>
+  <meta name="author" content="Alpha Wang">
+
+  
+  <meta name="description" content="如何在前端用ajax将基本数组传递给SpringMVC Controller? 如何在前端用ajax将Map对象传递给SpringMVC Controller? 如何在前端用ajax将对象数组传递给SpringMVC Controller?">
+  <meta name="keywords" content="POJO Array, Spring MVC">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://alphawang.github.io/blog/2014/10/how-to-pass-pojo-array-to-spring-mvc-controller">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Alpha's Programming Notes" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script>
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+
+$(document).bind('DOMNodeInserted', function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-54659411-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">AlphaWang.com</a></h1>
+  
+    <h2>Alpha's Programming Notes | 一个程序员的日常</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:alphawang.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/tag-cloud/">Tags</a></li>
+  <li><a href="/photography/">Photo</a></li>
+  <li><a href="/about/">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">How to Pass POJO Array to Spring MVC Controller</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-10-26T15:59:15+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:59 pm</span></time>
+          | <a href="#comments" id="uyan_count_unit" du="" su="">0 Comments</a>
+            <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>问题</h2>
+
+<p>最近遇到个需求，需要将一个对象数组从前端用ajax传递给后端的Spring MVC Controller，例如传递如下数据：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'>  products: [
+</span><span class='line'>    {
+</span><span class='line'>      category: 100,
+</span><span class='line'>      name: 'iPad',
+</span><span class='line'>      attributes: {
+</span><span class='line'>        volume: '32G',
+</span><span class='line'>        color: 'white'
+</span><span class='line'>      }
+</span><span class='line'>    },
+</span><span class='line'>    {
+</span><span class='line'>      category: 200,
+</span><span class='line'>      name: 'xx t-shirt',
+</span><span class='line'>      attributes: {
+</span><span class='line'>        size: 'M',
+</span><span class='line'>        color: 'red'
+</span><span class='line'>      }
+</span><span class='line'>    }
+</span><span class='line'>    
+</span><span class='line'>  ],
+</span><span class='line'>  locale: 'zh_CN'
+</span><span class='line'>}  </span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<!--more-->
+
+
+<p>其中locale是一个字符串，products是一个对象数组。该对象的attributes属性名是不固定的，例如有的产品的attributes是volume+color，而有的则是size+color；所以这个attributes属性我们用Map来表示。</p>
+
+<h2>传递基本数组</h2>
+
+<p>首先看看如何传递基本类型数组，例如Long[]。<br/>
+在后端接收该参数时很简单，只需要使用Long[]类型的@RequestParam即可，例如：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/test/findproduct&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
+</span><span class='line'><span class="nd">@ResponseBody</span>
+</span><span class='line'><span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span> <span class="nf">findProduct</span><span class="o">(</span>
+</span><span class='line'>  <span class="nd">@RequestParam</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&quot;objectValues&quot;</span><span class="o">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">false</span><span class="o">)</span> <span class="n">String</span><span class="o">[]</span> <span class="n">objectValues</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'> <span class="c1">//注意value=&quot;objectValues&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>前端代码如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>            <span class="n">$</span><span class="o">.</span><span class="na">ajax</span><span class="o">({</span>
+</span><span class='line'>                <span class="nl">type:</span> <span class="s">&quot;POST&quot;</span><span class="o">,</span>
+</span><span class='line'>                <span class="nl">contentType:</span> <span class="err">&#39;</span><span class="n">application</span><span class="o">/</span><span class="n">x</span><span class="o">-</span><span class="n">www</span><span class="o">-</span><span class="n">form</span><span class="o">-</span><span class="n">urlencoded</span><span class="o">;</span> <span class="n">charset</span><span class="o">=</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span><span class="o">;</span><span class="err">&#39;</span><span class="o">,</span>
+</span><span class='line'>                <span class="nl">url:</span> <span class="err">&#39;</span><span class="o">/</span><span class="n">kcci</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">findproduct</span><span class="err">&#39;</span><span class="o">,</span>
+</span><span class='line'>                <span class="nl">data:</span> <span class="o">{</span>
+</span><span class='line'>                    <span class="nl">objectValues:</span> <span class="o">[</span><span class="mi">1000</span><span class="o">,</span> <span class="mi">1001</span><span class="o">,</span> <span class="mi">1002</span><span class="o">]</span>
+</span><span class='line'>                <span class="o">},</span>
+</span><span class='line'>                <span class="nl">traditional:</span> <span class="kc">true</span><span class="o">,</span>
+</span><span class='line'>                <span class="nl">success:</span> <span class="n">function</span><span class="o">(</span><span class="n">items</span><span class="o">){</span> <span class="o">},</span>
+</span><span class='line'>                <span class="nl">error:</span> <span class="n">function</span><span class="o">(</span><span class="n">ejqXHR</span><span class="o">,</span> <span class="n">textStatus</span><span class="o">,</span> <span class="n">errorThrown</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
+</span><span class='line'>            <span class="o">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h3>关于traditional: true</h3>
+
+<p>注意ajax中有个参数<code>traditional: true</code>，<strong>网上很多文章说只有这样才能让Java后台识别数组参数，但貌似并非如此</strong>。
+traditional默认值为false，jquery会深度序列化参数对象，以适应如PHP和Ruby on Rails框架。序列化后的格式为：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">objectValues</span><span class="o">[]:</span><span class="mi">1000</span>
+</span><span class='line'><span class="n">objectValues</span><span class="o">[]:</span><span class="mi">1001</span>
+</span><span class='line'><span class="n">objectValues</span><span class="o">[]:</span><span class="mi">1002</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>但servelt api无法处理，我们可以通过设置traditional: true阻止深度序列化，这样序列化结果如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nl">objectValues:</span><span class="mi">1000</span>
+</span><span class='line'><span class="nl">objectValues:</span><span class="mi">1001</span>
+</span><span class='line'><span class="nl">objectValues:</span><span class="mi">1002</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>区别仅仅是参数名不一样，那么是否将后台的<code>@RequestParam(value="objectValues"）</code>改成<code>@RequestParam(value="objectValues[]")</code>，就能接收traditional:false的参数了呢？测试下来貌似确实是可以的！</p>
+
+<h2>传递Map</h2>
+
+<p>前文说到要传递的对象中有个Map属性，那么如果只仅仅传递Map参数应该怎么做呢？如果直接使用Map类型的RequestParam，例如<code>@RequestParam(required = false) Map&lt;String, String&gt; params</code>，那么这个params参数实际是所有传入参数的集合。如果我们发送的参数是：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">{</span>
+</span><span class='line'> <span class="nl">objectValues:</span> <span class="o">[</span><span class="mi">1000</span><span class="o">,</span> <span class="mi">1001</span><span class="o">,</span> <span class="mi">1002</span><span class="o">],</span>
+</span><span class='line'> <span class="nl">attributes:</span> <span class="o">{</span>
+</span><span class='line'>  <span class="nl">COLOR:</span> <span class="err">&#39;</span><span class="n">red</span><span class="err">&#39;</span><span class="o">,</span>
+</span><span class='line'>  <span class="nl">SIZE:</span> <span class="sc">&#39;M&#39;</span>
+</span><span class='line'> <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+那么接收到的params为：<br/>
+<img src="/images/post/2014/10/mapParams.png" alt="params icon" /></p>
+
+<p>可见这个params里不仅有attributes这个Map，还有其他参数。</p>
+
+<p>如果要让params仅仅包含我们关心的attributes map改怎么处理呢？我们需要自己新建一个Wrapper类：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Data</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AttributeMapWrapper</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">attributes</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+然后在Controller方法参数里这样写：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@ModelAttribute</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;attributes&quot;</span><span class="o">)</span> <span class="n">AttributeMapWrapper</span> <span class="n">attrWrapper</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>传递对象数组</h2>
+
+<p>前面讲了如何传递基本数组和Map，那么现在问题来了，如何才能传递对象数组呢？<br/>
+网络上能找到一些方法，例如下面这两个：</p>
+
+<ul>
+<li><a href="http://stackoverflow.com/questions/14459171/spring-mvc-and-jquery-post-request-with-array-of-pojo">http://stackoverflow.com/questions/14459171/spring-mvc-and-jquery-post-request-with-array-of-pojo</a></li>
+<li><a href="http://stackoverflow.com/questions/17987234/passing-json-array-from-javascript-to-spring-mvc-controller">http://stackoverflow.com/questions/17987234/passing-json-array-from-javascript-to-spring-mvc-controller</a></li>
+</ul>
+
+
+<p>基本思路是通过<code>@RequestBody</code>来获取Map，但是我在本地没有测试成功，可能原因是这里输入的并不是单一的数组，还有一个和数组并列的locale变量。</p>
+
+<h3>HttpServletRequest + GSon</h3>
+
+<p>可以利用HttpServletRequest获取传回的string，然后利用Gson转换为对象。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span> <span class="nf">matchItems</span><span class="o">(</span>
+</span><span class='line'>  <span class="nd">@RequestParam</span><span class="o">(</span><span class="n">required</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">value</span> <span class="o">=</span> <span class="s">&quot;Locale&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="n">locale</span>
+</span><span class='line'>  <span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'><span class="n">Gson</span> <span class="n">gson</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Gson</span><span class="o">();</span>
+</span><span class='line'><span class="n">List</span><span class="o">&lt;</span><span class="n">ParameterWrapper</span><span class="o">&gt;</span> <span class="n">param</span> <span class="o">=</span> <span class="n">gson</span><span class="o">.</span><span class="na">fromJson</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;paramList&quot;</span><span class="o">),</span>
+</span><span class='line'><span class="k">new</span> <span class="n">TypeToken</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">ParameterWrapper</span><span class="o">&gt;&gt;(){}.</span><span class="na">getType</span><span class="o">());</span>
+</span><span class='line'><span class="o">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>这里为参数对象写了一个Wrapper类：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Data</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ParameterWrapper</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Long</span> <span class="n">transactionId</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">Long</span> <span class="n">categoryId</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">barcode</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">productName</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">itemName</span><span class="o">;</span>
+</span><span class='line'><span class="c1">//    @SerializedName(&quot;attributes&quot;)</span>
+</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">attributes</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这样就能成功接收本文开头那种对象数组参数了。</p>
+
+<h3>@RequestBody</h3>
+
+<p>HttpServletRequest方法显得太过于底层，过于面向细节。上文说到因为和数组并列有个locale变量，导致无法使用@RequestBody，那是否可以通过修改API输入参数的设计来解决呢，把locale变量放到<code>ParameterWrapper</code>中是否就可以使用@RequestBody了呢？<br/>
+当然可以，代码如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span> <span class="nf">matchItems</span><span class="o">(</span><span class="nd">@RequestBody</span> <span class="n">ParameterWrapper</span><span class="o">[]</span> <span class="n">params</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Data</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ParameterWrapper</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Long</span> <span class="n">transactionId</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">Long</span> <span class="n">categoryId</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">barcode</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">productName</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">itemName</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">locale</span><span class="o">;</span>
+</span><span class='line'><span class="c1">//    @SerializedName(&quot;attributes&quot;)</span>
+</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">attributes</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>如果不能移动locale的位置该怎么办呢？可以再建一个类，其中包含两个变量：<br/>
+- <code>ParameterWrapper[]</code> <br/>
+- <code>String locale</code></p>
+
+<h2>总结</h2>
+
+<p>本文讨论了如何往Spring MVC Controller中传入基本数组、传入Map、传入对象数组。当遇到技术瓶颈时，不妨换个思路，有时修改一下设计就能豁然开朗。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alpha Wang</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-10-26T15:59:15+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:59 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/java/'>java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  	<!-- JiaThis Button BEGIN -->
+<!--
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"王中兴V"
+	},
+	showClose:true,
+	shortUrl:false,
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jiathis_r.js?uid=1965224&btn=r2.gif&move=0" charset="utf-8"></script>
+-->
+<!-- JiaThis Button END -->
+
+<!--Baidu Share-->
+<div class="bdsharebuttonbox">
+<a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+<a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+<a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+<a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+<a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+<a href="#" class="bds_more" data-cmd="more"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"",
+"bdStyle":"2", //1
+"bdSize":"24"},
+"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!--Nav-->
+<p class="meta">
+  
+    <a class="basic-alignment left" href="/blog/2014/09/integrate-octopress-with-flickr/" title="Previous Post: Integrate Octopress with Flickr">&laquo; Integrate Octopress with Flickr</a>
+  
+  
+    <a class="basic-alignment right" href="/blog/2014/11/collection-map-uml%20copy/" title="Next Post: Uml Class Diagram of Collection and Map ">Uml Class Diagram of Collection and Map  &raquo;</a>
+  
+</p>
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 728*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:728px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="2039334876"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+	
+	<!-- 789*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+</p>
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/09/integrate-octopress-with-flickr/" title="Previous Post: Integrate Octopress with Flickr">&laquo; Integrate Octopress with Flickr</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/11/collection-map-uml%20copy/" title="Next Post: Uml Class Diagram of Collection and Map ">Uml Class Diagram of Collection and Map  &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+ <h1>Categories</h1>
+ <ul id="categories">
+	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (6)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
+<li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
+
+ </ul>
+</section>
+<section>
+<h1>Tags</h1>
+<ul class="tag-cloud">
+	<a style="font-size: 90%" href="/blog/tags/css/">CSS</a>
+<a style="font-size: 119%" href="/blog/tags/collection/">Collection</a>
+<a style="font-size: 171%" href="/blog/tags/design-pattern/">Design Pattern</a>
+<a style="font-size: 119%" href="/blog/tags/guava/">Guava</a>
+<a style="font-size: 171%" href="/blog/tags/jdk/">JDK</a>
+<a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
+<a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
+<a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
+<a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
+<a style="font-size: 119%" href="/blog/tags/site/">Site</a>
+<a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
+<a style="font-size: 164%" href="/blog/tags/source-code/">Source Code</a>
+<a style="font-size: 90%" href="/blog/tags/spring-mvc/">Spring MVC</a>
+<a style="font-size: 119%" href="/blog/tags/spring-solr/">Spring Solr</a>
+<a style="font-size: 136%" href="/blog/tags/string/">String</a>
+<a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
+<a style="font-size: 119%" href="/blog/tags/web/">Web</a>
+<a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+
+</ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2019/03/%5B%E8%AF%95%E8%AF%91%5DDapper,%20a%20Large-Scale%20Distributed%20Systems%20Tracing%20Infrastructure/">[试译] Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/06/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/google-guava-collections/">Google Guava: 2. Collections</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/google-guava-dealing-with-null/">Google Guava: 1. Dealing With Null</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/key-solr-concepts/">Key Solr Concepts</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/AlphaWang">@AlphaWang</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'AlphaWang',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/1919wang@gmail.com?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+<section>
+  <h1>Visitors Map</h1>
+  <div class="earth">
+  <script type="text/javascript" src="//rk.revolvermaps.com/0/0/1.js?i=awaok66hddi&amp;s=250&amp;m=0&amp;v=false&amp;r=false&amp;b=01070a&amp;n=false&amp;c=ff8500" async="async"></script>
+  </div>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Alpha Wang -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

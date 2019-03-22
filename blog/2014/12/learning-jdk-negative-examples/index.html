@@ -1,0 +1,1172 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Learning JDK Source Code: Negative Examples - Alpha's Programming Notes</title>
+  <meta name="author" content="Alpha Wang">
+
+  
+  <meta name="description" content="本文记录了一些Java源码中设计不合理之处、违反设计模式之处，以及其他可以改进的地方。">
+  <meta name="keywords" content="Java, Design Patterns">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://alphawang.github.io/blog/2014/12/learning-jdk-negative-examples">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Alpha's Programming Notes" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script>
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+
+$(document).bind('DOMNodeInserted', function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-54659411-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">AlphaWang.com</a></h1>
+  
+    <h2>Alpha's Programming Notes | 一个程序员的日常</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:alphawang.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/tag-cloud/">Tags</a></li>
+  <li><a href="/photography/">Photo</a></li>
+  <li><a href="/about/">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Learning JDK Source Code: Negative Examples</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-12-01T15:00:45+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>3:00 pm</span></time>
+          | <a href="#comments" id="uyan_count_unit" du="" su="">0 Comments</a>
+            <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>本文记录了一些Java源码中设计不合理之处、违反设计模式之处，以及其他可以改进的地方。</p>
+
+<!--more-->
+
+
+<h1>1. 构造对象语法</h1>
+
+<h2>参数化类型的构造函数啰嗦</h2>
+
+<p>如果你调用参数化类的构造函数，那么你必须要指定类型参数，即便上下文中已明确了类型参数。这通常要求你连续两次提供类型参数：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Map</span> <span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span> <span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>而假设HashMap提供了如下静态工厂：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span>  <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">HashMap</span> <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">newInstance</span><span class="o">(){</span>
+</span><span class='line'>   <span class="k">return</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>那么你就可以讲上文冗长的声明替换为如下这种简洁的形式：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Map</span> <span class="o">&lt;</span> <span class="n">String</span><span class="o">,</span> <span class="n">List</span> <span class="o">&lt;</span> <span class="n">String</span> <span class="o">&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="n">HashMap</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>补充1：<code>com.google.common.collect.Lists</code>可以解决这个问题：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">List</span> <span class="o">&lt;</span> <span class="n">String</span> <span class="o">&gt;</span> <span class="n">l</span> <span class="o">=</span> <span class="n">Lists</span><span class="o">.</span><span class="na">newArrayList</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>     <span class="kd">public</span>   <span class="kd">static</span>  <span class="n">ArrayList</span>  <span class="nf">newArrayList</span> <span class="o">()</span>
+</span><span class='line'>    <span class="o">{</span>
+</span><span class='line'>         <span class="k">return</span>   <span class="k">new</span>  <span class="nf">ArrayList</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>补充2：Java7做了优化，可以这样声明：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Map</span> <span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span> <span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>2. 创建了不必要的对象</h1>
+
+<h2>Boolean(String)</h2>
+
+<p><code>Boolean(String)</code>有点多余，因为已经有<strong>静态工厂方法</strong>：<code>Boolean.valueOf(String)</code>，它比Boolean(String)更可取。</p>
+
+<p>构造函数每次被调用时都会创建一个新对象，而静态工厂方法则从来不要求这样做，实际上也不会这么做。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="nf">Boolean</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">(</span><span class="n">toBoolean</span><span class="o">(</span><span class="n">s</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">toBoolean</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="o">((</span><span class="n">name</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">name</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">&quot;true&quot;</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="n">Boolean</span> <span class="nf">valueOf</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nf">toBoolean</span><span class="o">(</span><span class="n">s</span><span class="o">)</span> <span class="o">?</span> <span class="n">TRUE</span> <span class="o">:</span> <span class="n">FALSE</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Boolean</span> <span class="n">TRUE</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Boolean</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Boolean</span> <span class="n">FALSE</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Boolean</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>3. 误用finalize</h1>
+
+<p>要避免用finalize来释放资源，而<strong>应该提供一个显式的终止方法</strong>。例如FileInputStream.close();</p>
+
+<p><strong>finalizer的作用之一是，可以充当“安全网”，以防对象所有者忘记调用显式的终止方法</strong>。虽然不能保证finalizer会被及时调用，但当客户端没有调用显式终止方法时，迟一点释放资源总比不释放好。不过如果finalizer发现有未被终止的资源，则必须打印一条警告，表明客户端代码有bug，需要修复。</p>
+
+<p>唯一声称保证finalizer()会被执行的方法是<code>System.runFinalizersOnExit</code>，以及<code>Runtime.runFinalizersOnExit</code>。</p>
+
+<blockquote><p>但这两个方法都有致命缺陷并且都已弃用。</p></blockquote>
+
+<h2>FileInputStream.finalize()</h2>
+
+<p>JDK有四个类（<code>FileInputStream</code>、<code>FileOutputStream</code>、<code>Timer</code>、<code>Connection</code>）使用了finalizer作为安全网，以防显式终止方法未被调用。不幸的是，这些finalizer都没有打印警告。当API发布后，这种警告一般就不能添加到API了，因为可能破坏已有的客户端代码。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Ensures that the &lt;code&gt;close&lt;/code&gt; method of this file input stream is</span>
+</span><span class='line'><span class="cm"> * called when there are no more references to it.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @exception  IOException  if an I/O error occurs.</span>
+</span><span class='line'><span class="cm"> * @see        java.io.FileInputStream#close()</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">protected</span> <span class="kt">void</span> <span class="nf">finalize</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class='line'>    <span class="c1">// should log an error!</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">((</span><span class="n">fd</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">&amp;&amp;</span>  <span class="o">(</span><span class="n">fd</span> <span class="o">!=</span> <span class="n">FileDescriptor</span><span class="o">.</span><span class="na">in</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">close</span><span class="o">();</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>4. 违反equals约定</h1>
+
+<h2>URL.equals()</h2>
+
+<p><code>java.net.UR</code>L的equals方法依赖于对URL中主机的IP地址的比较，而将主机名转译成IP地址需要访问网络，随着时间推移，并不保证能返回相同的结果。</p>
+
+<p>——<strong>违反一致性</strong>。这就会导致URL的equals方法违反约定，并且已经在实践中引起问题了。</p>
+
+<blockquote><p>不幸的是，由于兼容性需求，这一行为无法改变。除了少数例外情况，equals方法必须对驻留在内存中的对象进行确定性计算。</p></blockquote>
+
+<h2>Timestamp.euals()</h2>
+
+<p><code>java.sql.Timestamp</code>扩展了<code>java.util.Date</code>类并增加了<code>nanoseconds</code>字段。其equals方法<strong>违反了对称性</strong>：如果Timestamp和Date被用于同一个集合中，或以其他什么方式混在一起使用，则会引起错误的行为。</p>
+
+<blockquote><p>无法在扩展可实例化类（即非抽象类）的时候，增加一个值组件，同时又保证equals约定。</p></blockquote>
+
+<p><code>Timestamp</code>有一个免责声明，提醒程序员不要混用Date和Timestamp。虽然只要不混用他们就不会有麻烦，但是谁都不能阻止你混用他们，而结果导致的错误将会很难调试。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * Note: This method is not symmetric with respect to the</span>
+</span><span class='line'><span class="cm"> * &lt;code&gt;equals(Object)&lt;/code&gt; method in the base class.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Object</span> <span class="n">ts</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">ts</span> <span class="k">instanceof</span> <span class="n">Timestamp</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">equals</span><span class="o">((</span><span class="n">Timestamp</span><span class="o">)</span><span class="n">ts</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>5. compareTo与equals不一致</h1>
+
+<p>compareTo方法的等同性测试必须与equals方法的结果相同。如果遵守了这一条，则称compareTo方法所施加的顺序与equals一致；反之则称为与equals不一致。</p>
+
+<p>当然与equals不一致的compareTo方法仍然是可以工作的。但是，如果一个有序集合包含了该类的元素，则这个集合可能就不能遵守相应集合接口（Collection、Set、Map）的通用约定。这是因为<strong>这些集合接口的通用约定是基于equals方法的，但是有序集合却使用了compareTo而非equals来执行等同性测试</strong>。</p>
+
+<h2>BigDecimal.compareTo()</h2>
+
+<p>BigDecimal类的compareTo方法与equals不一致：</p>
+
+<ul>
+<li>如果创建一个<code>HashSet</code>实例，并添加两个元素<code>new BigDecimal("1.0")</code>和<code>new BigDecimal("1.00")</code>，则集合会包含两个元素，因为这两个实例通过equals检测并不相等；</li>
+<li>而如果使用<code>TreeSet</code>而非HashSet，则集合中会只包含一个元素，因为这两个实例通过compareTo检测是相等的。</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">compareTo</span><span class="o">(</span><span class="n">BigDecimal</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>   <span class="c1">// Quick path for equal scale and non-inflated case.</span>
+</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">scale</span> <span class="o">==</span> <span class="n">val</span><span class="o">.</span><span class="na">scale</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>       <span class="kt">long</span> <span class="n">xs</span> <span class="o">=</span> <span class="n">intCompact</span><span class="o">;</span>
+</span><span class='line'>       <span class="kt">long</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="na">intCompact</span><span class="o">;</span>
+</span><span class='line'>       <span class="k">if</span> <span class="o">(</span><span class="n">xs</span> <span class="o">!=</span> <span class="n">INFLATED</span> <span class="o">&amp;&amp;</span> <span class="n">ys</span> <span class="o">!=</span> <span class="n">INFLATED</span><span class="o">)</span>
+</span><span class='line'>           <span class="k">return</span> <span class="n">xs</span> <span class="o">!=</span> <span class="n">ys</span> <span class="o">?</span> <span class="o">((</span><span class="n">xs</span> <span class="o">&gt;</span> <span class="n">ys</span><span class="o">)</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">:</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>   <span class="o">}</span>
+</span><span class='line'>   <span class="kt">int</span> <span class="n">xsign</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">signum</span><span class="o">();</span>
+</span><span class='line'>   <span class="kt">int</span> <span class="n">ysign</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="na">signum</span><span class="o">();</span>
+</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">xsign</span> <span class="o">!=</span> <span class="n">ysign</span><span class="o">)</span>
+</span><span class='line'>       <span class="k">return</span> <span class="o">(</span><span class="n">xsign</span> <span class="o">&gt;</span> <span class="n">ysign</span><span class="o">)</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">xsign</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span>
+</span><span class='line'>       <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'>   <span class="kt">int</span> <span class="n">cmp</span> <span class="o">=</span> <span class="n">compareMagnitude</span><span class="o">(</span><span class="n">val</span><span class="o">);</span>
+</span><span class='line'>   <span class="k">return</span> <span class="o">(</span><span class="n">xsign</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">?</span> <span class="n">cmp</span> <span class="o">:</span> <span class="o">-</span><span class="n">cmp</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">Object</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>   <span class="k">if</span> <span class="o">(!(</span><span class="n">x</span> <span class="k">instanceof</span> <span class="n">BigDecimal</span><span class="o">))</span>
+</span><span class='line'>       <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>   <span class="n">BigDecimal</span> <span class="n">xDec</span> <span class="o">=</span> <span class="o">(</span><span class="n">BigDecimal</span><span class="o">)</span> <span class="n">x</span><span class="o">;</span>
+</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="k">this</span><span class="o">)</span>
+</span><span class='line'>       <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">scale</span> <span class="o">!=</span> <span class="n">xDec</span><span class="o">.</span><span class="na">scale</span><span class="o">)</span>
+</span><span class='line'>       <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>   <span class="kt">long</span> <span class="n">s</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">intCompact</span><span class="o">;</span>
+</span><span class='line'>   <span class="kt">long</span> <span class="n">xs</span> <span class="o">=</span> <span class="n">xDec</span><span class="o">.</span><span class="na">intCompact</span><span class="o">;</span>
+</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">s</span> <span class="o">!=</span> <span class="n">INFLATED</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>       <span class="k">if</span> <span class="o">(</span><span class="n">xs</span> <span class="o">==</span> <span class="n">INFLATED</span><span class="o">)</span>
+</span><span class='line'>           <span class="n">xs</span> <span class="o">=</span> <span class="n">compactValFor</span><span class="o">(</span><span class="n">xDec</span><span class="o">.</span><span class="na">intVal</span><span class="o">);</span>
+</span><span class='line'>       <span class="k">return</span> <span class="n">xs</span> <span class="o">==</span> <span class="n">s</span><span class="o">;</span>
+</span><span class='line'>   <span class="o">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">xs</span> <span class="o">!=</span> <span class="n">INFLATED</span><span class="o">)</span>
+</span><span class='line'>       <span class="k">return</span> <span class="n">xs</span> <span class="o">==</span> <span class="n">compactValFor</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">intVal</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">inflate</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">xDec</span><span class="o">.</span><span class="na">inflate</span><span class="o">());</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>6. 接口设计问题</h1>
+
+<h2>Cloneable接口</h2>
+
+<p>Cloneable接口的目的是作为对象的一个mixin接口，表明对象允许克隆；但这个目的没有达到。</p>
+
+<p>其主要缺点是，Cloneable缺少一个<code>clone()</code>方法，而<code>Object.clone()</code>是受保护的。</p>
+
+<p>通常，实现接口是为了表明类可以为它的客户做些什么；而<strong>Cloneable却改变了超类中受保护方法的行为</strong>。</p>
+
+<blockquote><p>——区别java.rmi.Remote接口，其中也不具有任何方法，它是一个记号接口。</p></blockquote>
+
+<h1>7. public类不应暴露其内部字段</h1>
+
+<p>如果一个类可以被包外访问，那么就要提供访问方法，以便可以灵活地改变类的内部表示。如果public类暴露了其数据域，那就不能在将来改变内部表示了。</p>
+
+<h2>Point</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Point</span> <span class="kd">extends</span> <span class="n">Point2D</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span> <span class="o">{</span>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * The X coordinate of this &lt;code&gt;Point&lt;/code&gt;.</span>
+</span><span class='line'><span class="cm">     * If no X coordinate is set it will default to 0.</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * The Y coordinate of this &lt;code&gt;Point&lt;/code&gt;.</span>
+</span><span class='line'><span class="cm">     * If no Y coordinate is set it will default to 0.</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="n">y</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Dimension</h2>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Dimension</span> <span class="kd">extends</span> <span class="n">Dimension2D</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span> <span class="o">{</span>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * The width dimension; negative values can be used.</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="n">width</span><span class="o">;</span>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * The height dimension; negative values can be used.</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="n">height</span><span class="o">;</span>
+</span><span class='line'> <span class="err">```</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="err">#</span> <span class="mi">8</span><span class="o">.</span> <span class="n">不可变类的设计</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="nl">不可变类无需提供拷贝构造函数:</span> <span class="n">String</span><span class="o">(</span><span class="n">String</span>  <span class="n">original</span><span class="o">)</span><span class="err">：</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">不可变对象可以自由共享</span><span class="err">，</span><span class="n">所以无需进行保护性拷贝</span><span class="err">。</span><span class="n">实际上你根本无需做任何拷贝</span><span class="err">，</span><span class="o">**</span><span class="n">因为这些拷贝始终与源对象相等</span><span class="o">**</span><span class="err">。</span><span class="n">因此</span><span class="err">，</span><span class="o">**</span><span class="n">你不需要</span><span class="err">，</span><span class="n">也不应该为不可变类提供clone方法或者拷贝构造函数</span><span class="o">**</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">【</span><span class="n">反例</span><span class="err">】</span><span class="n">这一点在Java平台早期并没有被很好地理解</span><span class="err">，</span><span class="n">导致String类具有拷贝构造函数</span><span class="err">，</span><span class="n">应该尽量不去用这个函数</span><span class="err">。</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>/**
+ * Initializes a newly created {@code String} object so that it represents
+ * the same sequence of characters as the argument; in other words, the
+ * newly created string is a copy of the argument string. Unless an
+ * explicit copy of {@code original} is needed, use of this constructor is
+ * unnecessary since Strings are immutable.
+ *
+ * @param  original
+ *         A {@code String}
+ */
+public String(String original) {
+    this.value = original.value;
+    this.hash = original.hash;
+}
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">##</span> <span class="nl">不可变类应该不能继承:</span> <span class="n">BigInteger</span> <span class="o">/</span> <span class="n">BigDecimal</span><span class="err">：</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">当BigInteger和BigDecimal编写出来时</span><span class="err">，</span><span class="n">对于</span><span class="err">“</span><span class="o">**</span><span class="n">不可变类实际上必须final</span><span class="o">**</span><span class="err">”</span><span class="n">并没有得到广泛的理解</span><span class="err">，</span><span class="n">所以这两个类的方法都可以被重写</span><span class="err">。</span><span class="n">不幸的是</span><span class="err">，</span><span class="n">为了保持向后兼容</span><span class="err">，</span><span class="n">这个问题一直没有得到修正</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">如果你编写的类的安全性依赖于</span><span class="err">（</span><span class="n">来自不可信客户端的</span><span class="err">）</span><span class="n">BigInteger或BigDecimal的不可变性</span><span class="err">，</span><span class="n">那么就必须检查参数是真正的BigInteger</span><span class="o">/</span><span class="n">BigDecimal</span><span class="err">，</span><span class="n">还是不可信任的子类实例</span><span class="err">。</span><span class="n">如果是后者</span><span class="err">，</span><span class="n">你必须把它当成是可变的</span><span class="err">，</span><span class="n">并进行保护性拷贝</span><span class="err">：</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>public static BigInteger safeInstance(BigInteger val) {
+   if (val.getClass() != BigInteger.class )
+          return new BigInteger(val.toByteArray());
+   return val;</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">##</span> <span class="n">Date</span><span class="o">,</span>  <span class="n">Point</span><span class="err">：</span><span class="n">理应设计成不可变类</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">应该永远让小的值对象不可变</span><span class="err">，</span><span class="n">例如PhoneNumber</span><span class="err">、</span><span class="n">Complex</span><span class="err">。</span>
+</span><span class='line'><span class="n">Java平台库中有许多这种类</span><span class="err">，</span><span class="n">例如</span><span class="err">`</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Date</span><span class="err">`、`</span><span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">Point</span><span class="err">`，</span><span class="n">它们理论上应当是不可变的</span><span class="err">，</span><span class="n">但实际上却是可变的</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">EnumSet理应不可变</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="err">#</span> <span class="mi">9</span><span class="o">.</span> <span class="n">异常设计</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">finally中应该禁止return</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">It</span> <span class="n">is</span> <span class="n">especially</span> <span class="n">difficult</span> <span class="n">to</span> <span class="n">understand</span> <span class="n">the</span> <span class="n">behavior</span> <span class="n">of</span> <span class="n">a</span> <span class="n">program</span> <span class="n">that</span> <span class="n">executes</span> <span class="n">a</span> <span class="k">break</span><span class="o">,</span> <span class="k">continue</span><span class="o">,</span> <span class="n">or</span> <span class="k">return</span> <span class="n">statement</span> <span class="n">in</span> <span class="n">a</span> <span class="n">Try</span> <span class="n">block</span> <span class="n">only</span> <span class="n">to</span> <span class="n">have</span> <span class="n">the</span> <span class="n">statement</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">behavior</span> <span class="n">vetoed</span> <span class="n">by</span> <span class="n">a</span> <span class="k">finally</span> <span class="n">block</span><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">**</span><span class="n">Never</span> <span class="n">exit</span> <span class="n">a</span> <span class="k">finally</span> <span class="n">block</span> <span class="n">with</span> <span class="n">a</span> <span class="k">return</span><span class="o">,</span> <span class="k">break</span><span class="o">,</span> <span class="k">continue</span><span class="o">,</span> <span class="n">or</span> <span class="k">throw</span><span class="o">,</span> <span class="n">and</span> <span class="n">never</span> <span class="n">allow</span> <span class="n">a</span> <span class="n">checked</span> <span class="n">exception</span> <span class="n">to</span> <span class="n">propagate</span> <span class="n">out</span> <span class="n">of</span> <span class="n">a</span> <span class="k">finally</span> <span class="n">block</span><span class="o">.**</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>static boolean decision() { 
+    try { 
+        return true; 
+    } finally { 
+        return false; 
+    } 
+}
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">这个程序返回false</span><span class="err">。</span><span class="n">无论try块是否正常执行完</span><span class="err">，</span><span class="n">finnaly都会被执行</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">finally中应该禁止抛出异常</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">另外</span><span class="err">，</span><span class="n">finally中应该禁止抛出异常</span><span class="err">。</span><span class="n">否则finally中剩下的语句就不会执行</span><span class="err">，</span><span class="n">破坏逻辑</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">继承方法抛出的异常</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">The</span> <span class="n">set</span> <span class="n">of</span> <span class="n">checked</span> <span class="n">exceptions</span> <span class="n">that</span> <span class="n">a</span> <span class="n">method</span> <span class="n">can</span> <span class="k">throw</span> <span class="n">is</span> <span class="n">the</span> <span class="o">**</span><span class="n">intersection</span><span class="o">**</span> <span class="n">of</span> <span class="n">the</span> <span class="n">sets</span> <span class="n">of</span> <span class="n">checked</span> <span class="n">exceptions</span> <span class="n">that</span> <span class="n">it</span> <span class="n">is</span> <span class="n">declared</span> <span class="n">to</span> <span class="k">throw</span> <span class="n">in</span> <span class="n">all</span> <span class="n">applicable</span> <span class="n">types</span><span class="o">,</span> <span class="o">**</span><span class="n">not</span> <span class="n">the</span> <span class="n">union</span><span class="o">**.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>interface Type1 {
+     void f() throws CloneNotSupportedException;
+}</p>
+
+<p>interface Type2 {
+     void f() throws InterruptedException;
+}</p>
+
+<p>interface Type3 extends Type1, Type2 {
+}</p>
+
+<p>public class Arcane3 implements Type3 {</p>
+
+<pre><code> public void f() { 
+    System.out.println( "Hello world" ); 
+}
+
+ public static void main(String[] args) { 
+    Type3 t3 = new Arcane3(); 
+     t3.f();   // 不抛异常！！！
+}
+</code></pre>
+
+<p>}</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>
+</span><span class='line'><span class="err">#</span> <span class="mi">10</span><span class="o">.</span> <span class="n">类型转换</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">int相乘可能溢出</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">两个int相乘</span><span class="err">，</span><span class="n">得到的还是int</span><span class="err">，</span><span class="n">这就可能溢出</span><span class="err">！</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>long MICROS_PER_DAY = 24 * 60 * 60 * 1000 * 1000; //不精确
+long MICROS_PER_DAY = 24 L * 60 * 60 * 1000 * 1000; //精确</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">应该自动切换到更大的类型</span><span class="err">，</span><span class="n">以避免溢出</span><span class="err">；</span>
+</span><span class='line'><span class="n">或者直接抛出Exception</span><span class="err">，</span><span class="n">都比溢出要好</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">mixed</span><span class="o">-</span><span class="n">type</span> <span class="n">computations</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">如果遇到跨类型计算</span><span class="err">，</span><span class="n">jdk会把低类型自动提升为高类型</span><span class="err">，</span><span class="n">然后再计算</span><span class="err">。</span><span class="n">但这种转换有时会导致问题</span><span class="err">。</span><span class="n">例如</span><span class="err">：</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Long.toHexString(0x100000000L + 0xcafebabe); //cafebabe</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">因为是long</span> <span class="o">+</span> <span class="kt">int</span><span class="err">，</span><span class="n">所以后面的int会自动提升为long</span><span class="err">，</span><span class="n">再计算</span><span class="err">。</span><span class="n">即被提升为0xffffffffcafebabeL</span><span class="err">。</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>  0xffffffffcafebabeL
++ 0x0000000100000000L
+= 0x00000000cafebabeL</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">所以得到cafebase</span><span class="err">，</span><span class="n">而不是想象中的1cafebabe</span><span class="err">。</span>
+</span><span class='line'><span class="n">我们得出教训</span><span class="err">：</span><span class="o">**</span><span class="n">跨类型计算可能带来混淆</span><span class="err">，</span><span class="n">所以要坚决避免</span><span class="err">！</span><span class="o">**</span><span class="n">上例可以改为如下</span><span class="err">：</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Long.toHexString(0x100000000L + 0xcafebabeL); //1cafebabe</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">&gt;</span> <span class="n">Negative</span> <span class="n">hex</span> <span class="n">literals</span> <span class="n">appear</span> <span class="n">positive</span><span class="err">。</span><span class="n">十六进制的字面值</span><span class="err">，</span><span class="n">其最高位代表正负</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">三元运算符的操作数类型</span>
+</span><span class='line'><span class="n">要注意三元运算符</span><span class="err">，</span><span class="n">它没有要求第二和第三个操作数类型一致</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="mi">1</span><span class="o">.</span> <span class="n">如果类型都为T</span><span class="err">；</span><span class="n">则结果为T</span><span class="err">。</span>
+</span><span class='line'><span class="mi">2</span><span class="o">.</span> <span class="n">如果其中一个类型T为byte</span><span class="o">/</span><span class="n">shor</span><span class="o">/</span><span class="kt">char</span><span class="err">，</span><span class="n">另一个是int常量</span><span class="err">；</span><span class="n">则结果为T</span><span class="err">。</span>
+</span><span class='line'><span class="mi">3</span><span class="o">.</span> <span class="n">如果为其他情况</span><span class="err">，</span><span class="n">则结果为提升类型</span><span class="err">。</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>char x = &lsquo;X&rsquo;;
+int i = 0;
+System.out.print(false ? i : x); //输出88，结果为int类型</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">理应强制要求他们类型一致</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span><span class="o">+=</span><span class="n">和</span><span class="o">-=</span><span class="n">的自动类型转换</span><span class="err">：</span><span class="n">损失精度</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">`</span><span class="o">+=</span><span class="err">`、`</span><span class="o">-=</span><span class="err">`</span><span class="n">等运算符会自动类型转换</span><span class="err">，</span><span class="n">即将计算结果自动转换为左侧操作数的类型</span><span class="err">。</span><span class="n">这有时会导致意想不到的问题</span><span class="err">。</span>
+</span><span class='line'><span class="n">例如</span><span class="err">：</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>short x = 0;
+int i = 123456;
+x += i; //自动转换为short，损失精度，但不报错
+x = x + i; // Won&rsquo;t compile - &ldquo;possible loss of precision&rdquo;</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">应该不要做自动类型转换</span><span class="err">，</span><span class="n">以编译报错提醒用户</span><span class="err">。（</span><span class="n">与第二句普通赋值语句保持一致</span><span class="err">）</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">-</span> <span class="err">——</span><span class="n">另外一个问题</span><span class="err">，`</span><span class="o">+=</span><span class="err">`</span><span class="n">左侧不能为Object</span><span class="err">，</span><span class="n">例如</span><span class="err">：</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Object x = &ldquo;Buy &rdquo;;
+String i = &ldquo;Effective Java!&rdquo;;
+x = x + i;  //合法
+x += i;     //非法</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>
+</span><span class='line'><span class="o">-</span> <span class="err">——</span><span class="n">Narrowing</span> <span class="n">Primitive</span> <span class="n">Conversion</span>
+</span><span class='line'><span class="n">An</span> <span class="n">unfortunate</span> <span class="n">fact</span> <span class="n">about</span> <span class="n">the</span> <span class="n">compound</span> <span class="n">assignment</span> <span class="n">operators</span> <span class="n">is</span> <span class="n">that</span> <span class="n">they</span> <span class="n">can</span> <span class="n">silently</span> <span class="n">perform</span> <span class="n">narrowing</span> <span class="n">primitive</span> <span class="n">conversions</span> <span class="o">,</span> <span class="n">which</span> <span class="n">are</span> <span class="n">conversions</span> <span class="n">from</span> <span class="n">one</span> <span class="n">numeric</span> <span class="n">type</span> <span class="n">to</span> <span class="n">a</span> <span class="n">less</span> <span class="n">expressive</span> <span class="n">numeric</span> <span class="n">type</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>short i = -1;</p>
+
+<p>while (i != 0)
+    i >>>= 1;</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="mi">1</span><span class="o">.</span> <span class="n">初始值为0xffff</span><span class="err">；</span>
+</span><span class='line'><span class="mi">2</span><span class="o">.</span> <span class="n">执行</span><span class="o">&gt;&gt;&gt;=</span><span class="n">时</span><span class="err">，</span><span class="n">先将其提升为int</span><span class="err">，</span><span class="n">变为0xffffffff</span><span class="err">；</span>
+</span><span class='line'><span class="mi">3</span><span class="o">.</span> <span class="n">接着移位</span><span class="err">，</span><span class="n">变为0x7fffffff</span><span class="err">；</span>
+</span><span class='line'><span class="mi">4</span><span class="o">.</span> <span class="n">接着赋值回i</span><span class="err">，</span><span class="n">这时会执行从int到short的转换</span><span class="err">，</span><span class="n">变为0xffff</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">所以上例是一个无限循环</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="err">#</span> <span class="mi">11</span><span class="o">.</span> <span class="n">语言设计</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">long字面值可以用小写L</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">用小写L容易与数字1混淆</span><span class="err">！</span>
+</span><span class='line'><span class="n">应该强制用大写L</span><span class="err">，</span><span class="n">小写L非法</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">重写toString</span><span class="o">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Object numbers = new char[] { &lsquo;1&rsquo;, &lsquo;2&rsquo;, &lsquo;3&rsquo; };
+System.out.println(numbers); // [C@16f0472</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">貌似Array应该默认重写toString方法</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">不能静态导入Arrays</span><span class="o">.</span><span class="na">toString</span><span class="o">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">为了解决上一个问题</span><span class="err">，</span><span class="n">你可能想静态导入Arrays</span><span class="o">.</span><span class="na">toString</span><span class="o">()</span><span class="err">，</span><span class="n">然后调用</span><span class="err">：</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>toString(numbers);</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">但是会编译报错</span><span class="err">，</span><span class="n">编译器去查找当前类的toString</span><span class="o">()</span><span class="n">方法</span><span class="err">，</span><span class="n">发现参数不匹配</span><span class="err">。。</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">String</span><span class="o">(</span><span class="kt">byte</span><span class="o">[])</span><span class="n">依赖于默认字符集</span>
+</span><span class='line'>
+</span><span class='line'><span class="nf">String</span><span class="o">(</span><span class="kt">byte</span><span class="o">[])</span><span class="n">的文档说明</span><span class="err">，</span><span class="n">它依赖于默认字符集</span><span class="err">：</span>
+</span><span class='line'><span class="o">&gt;</span> <span class="n">Constructs</span> <span class="n">a</span> <span class="k">new</span> <span class="n">String</span> <span class="n">by</span> <span class="n">decoding</span> <span class="n">the</span> <span class="n">specified</span> <span class="kt">byte</span> <span class="n">array</span> <span class="o">**</span><span class="n">using</span> <span class="n">the</span> <span class="n">platform</span><span class="err">&#39;</span><span class="n">s</span> <span class="k">default</span> <span class="n">charset</span><span class="o">**.</span> <span class="n">The</span> <span class="n">length</span> <span class="n">of</span> <span class="n">the</span> <span class="k">new</span> <span class="n">String</span> <span class="n">is</span> <span class="n">a</span> <span class="n">function</span> <span class="n">of</span> <span class="n">the</span> <span class="n">charset</span><span class="o">,</span> <span class="n">and</span> <span class="n">hence</span> <span class="n">may</span> <span class="n">not</span> <span class="n">be</span> <span class="n">equal</span> <span class="n">to</span> <span class="n">the</span> <span class="n">length</span> <span class="n">of</span> <span class="n">the</span> <span class="kt">byte</span> <span class="n">array</span><span class="o">.</span> <span class="n">The</span> <span class="n">behavior</span> <span class="n">of</span> <span class="k">this</span> <span class="n">constructor</span> <span class="n">when</span> <span class="n">the</span> <span class="n">given</span> <span class="n">bytes</span> <span class="n">are</span> <span class="n">not</span> <span class="n">valid</span> <span class="n">in</span> <span class="n">the</span> <span class="k">default</span> <span class="n">charset</span> <span class="n">is</span> <span class="n">unspecified</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">但是JRE的默认字符集依赖于操作系统和locale</span><span class="err">。</span><span class="n">所以</span><span class="err">，</span><span class="n">it</span> <span class="n">was</span> <span class="n">not</span> <span class="n">such</span> <span class="n">a</span> <span class="n">good</span> <span class="n">idea</span> <span class="n">to</span> <span class="n">provide</span> <span class="n">a</span> <span class="nf">String</span><span class="o">(</span><span class="kt">byte</span><span class="o">[])</span> <span class="n">constructor</span> <span class="n">that</span> <span class="n">depends</span> <span class="n">on</span> <span class="n">the</span> <span class="k">default</span> <span class="nl">charset:</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>String str = new String(bytes, &ldquo;ISO-8859-1&rdquo;);</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">final字段与final方法的含义完全不同</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">Thread</span><span class="o">.</span><span class="na">run</span><span class="o">()</span><span class="n">不应该公开</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">-</span> <span class="n">Thread</span><span class="o">.</span><span class="na">run</span><span class="o">()</span><span class="n">是一个public方法</span><span class="err">，</span><span class="n">很可能导致被误调用</span><span class="err">——</span><span class="n">想调start</span><span class="o">()</span><span class="err">，</span><span class="n">结果却调了run</span><span class="o">()</span> <span class="err">。</span>
+</span><span class='line'><span class="o">-</span> <span class="n">If</span> <span class="err">`</span><span class="n">Thread</span><span class="err">`</span> <span class="n">didn</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">have</span> <span class="n">a</span> <span class="kd">public</span> <span class="err">`</span><span class="n">run</span><span class="err">`</span> <span class="n">method</span><span class="o">,</span> <span class="n">it</span> <span class="n">would</span> <span class="n">be</span> <span class="n">impossible</span> <span class="k">for</span> <span class="n">programmers</span> <span class="n">to</span> <span class="n">invoke</span> <span class="n">it</span> <span class="n">accidentally</span><span class="o">.</span>
+</span><span class='line'><span class="o">-</span> <span class="n">The</span> <span class="err">`</span><span class="n">Thread</span><span class="err">`</span> <span class="kd">class</span> <span class="nc">has</span> <span class="n">a</span> <span class="kd">public</span> <span class="err">`</span><span class="n">run</span><span class="err">`</span> <span class="n">method</span> <span class="n">because</span> <span class="n">it</span> <span class="kd">implements</span> <span class="err">`</span><span class="n">Runnable</span><span class="err">`</span><span class="o">,</span> <span class="n">but</span> <span class="n">it</span> <span class="n">didn</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">have</span> <span class="n">to</span> <span class="n">be</span> <span class="n">that</span> <span class="n">way</span><span class="o">.</span>
+</span><span class='line'><span class="o">-</span> <span class="n">An</span> <span class="n">alternative</span> <span class="n">design</span> <span class="n">would</span> <span class="n">be</span> <span class="k">for</span> <span class="n">each</span> <span class="err">`</span><span class="n">Thread</span><span class="err">`</span> <span class="n">instance</span> <span class="n">to</span> <span class="n">encapsulate</span> <span class="n">a</span> <span class="err">`</span><span class="n">Runnable</span><span class="err">`</span><span class="o">,</span> <span class="n">giving</span> <span class="n">rise</span> <span class="n">to</span> <span class="n">composition</span> <span class="n">in</span> <span class="n">place</span> <span class="n">of</span> <span class="kd">interface</span> <span class="nc">inheritance</span><span class="o">.</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="n">方法名不合理</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">methods</span> <span class="n">should</span> <span class="n">have</span> <span class="n">names</span> <span class="n">that</span> <span class="n">describe</span> <span class="n">their</span> <span class="n">primary</span> <span class="n">functions</span><span class="o">.</span> <span class="n">Given</span> <span class="n">the</span> <span class="n">behavior</span> <span class="n">of</span> <span class="err">`</span><span class="n">Thread</span><span class="o">.</span><span class="na">interrupted</span><span class="err">`</span><span class="o">,</span> <span class="n">it</span> <span class="n">should</span> <span class="n">have</span> <span class="n">been</span> <span class="n">named</span> <span class="err">`</span><span class="n">clearInterruptStatus</span><span class="err">`</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>/<em>*
+* Tests if some Thread has been interrupted. The interrupted state
+* is reset or not based on the value of ClearInterrupted that is
+* passed.
+</em>/</p>
+
+<p>private native boolean isInterrupted( boolean ClearInterrupted );</p>
+
+<p>public static boolean interrupted() {
+  return currentThread().isInterrupted( true );
+}</p>
+
+<p>public boolean isInterrupted() {
+  return isInterrupted( false );
+}
+```</p>
+
+<h2>shadow local variables</h2>
+
+<p>perhaps it makes sense to forbid shadowing of type parameters, in the same way that shadowing of local variables is forbidden.</p>
+
+<p>未完待续。。。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alpha Wang</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-12-01T15:00:45+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>3:00 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/java/'>java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  	<!-- JiaThis Button BEGIN -->
+<!--
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"王中兴V"
+	},
+	showClose:true,
+	shortUrl:false,
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jiathis_r.js?uid=1965224&btn=r2.gif&move=0" charset="utf-8"></script>
+-->
+<!-- JiaThis Button END -->
+
+<!--Baidu Share-->
+<div class="bdsharebuttonbox">
+<a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+<a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+<a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+<a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+<a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+<a href="#" class="bds_more" data-cmd="more"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"",
+"bdStyle":"2", //1
+"bdSize":"24"},
+"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!--Nav-->
+<p class="meta">
+  
+    <a class="basic-alignment left" href="/blog/2014/11/how-to-implement-a-hashmap/" title="Previous Post: How to Implement a HashMap ">&laquo; How to Implement a HashMap </a>
+  
+  
+    <a class="basic-alignment right" href="/blog/2014/12/learning-jdk-positive-examples/" title="Next Post: Learning JDK Source Code: Positive Examples">Learning JDK Source Code: Positive Examples &raquo;</a>
+  
+</p>
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 728*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:728px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="2039334876"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+	
+	<!-- 789*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+</p>
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/11/how-to-implement-a-hashmap/" title="Previous Post: How to Implement a HashMap ">&laquo; How to Implement a HashMap </a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/12/learning-jdk-positive-examples/" title="Next Post: Learning JDK Source Code: Positive Examples">Learning JDK Source Code: Positive Examples &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+ <h1>Categories</h1>
+ <ul id="categories">
+	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (6)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
+<li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
+
+ </ul>
+</section>
+<section>
+<h1>Tags</h1>
+<ul class="tag-cloud">
+	<a style="font-size: 90%" href="/blog/tags/css/">CSS</a>
+<a style="font-size: 119%" href="/blog/tags/collection/">Collection</a>
+<a style="font-size: 171%" href="/blog/tags/design-pattern/">Design Pattern</a>
+<a style="font-size: 119%" href="/blog/tags/guava/">Guava</a>
+<a style="font-size: 171%" href="/blog/tags/jdk/">JDK</a>
+<a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
+<a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
+<a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
+<a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
+<a style="font-size: 119%" href="/blog/tags/site/">Site</a>
+<a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
+<a style="font-size: 164%" href="/blog/tags/source-code/">Source Code</a>
+<a style="font-size: 90%" href="/blog/tags/spring-mvc/">Spring MVC</a>
+<a style="font-size: 119%" href="/blog/tags/spring-solr/">Spring Solr</a>
+<a style="font-size: 136%" href="/blog/tags/string/">String</a>
+<a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
+<a style="font-size: 119%" href="/blog/tags/web/">Web</a>
+<a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+
+</ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2019/03/%5B%E8%AF%95%E8%AF%91%5DDapper,%20a%20Large-Scale%20Distributed%20Systems%20Tracing%20Infrastructure/">[试译] Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/06/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/google-guava-collections/">Google Guava: 2. Collections</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/google-guava-dealing-with-null/">Google Guava: 1. Dealing With Null</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/key-solr-concepts/">Key Solr Concepts</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/AlphaWang">@AlphaWang</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'AlphaWang',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/1919wang@gmail.com?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+<section>
+  <h1>Visitors Map</h1>
+  <div class="earth">
+  <script type="text/javascript" src="//rk.revolvermaps.com/0/0/1.js?i=awaok66hddi&amp;s=250&amp;m=0&amp;v=false&amp;r=false&amp;b=01070a&amp;n=false&amp;c=ff8500" async="async"></script>
+  </div>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Alpha Wang -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

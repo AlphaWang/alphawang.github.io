@@ -1,0 +1,1298 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Learning JDK Source Code: Positive Examples - Alpha's Programming Notes</title>
+  <meta name="author" content="Alpha Wang">
+
+  
+  <meta name="description" content="本文记录了一些Java源码中的良好编程习惯、运用的设计模式。">
+  <meta name="keywords" content="Java, Design Patterns">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://alphawang.github.io/blog/2014/12/learning-jdk-positive-examples">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Alpha's Programming Notes" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script>
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+
+$(document).bind('DOMNodeInserted', function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-54659411-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">AlphaWang.com</a></h1>
+  
+    <h2>Alpha's Programming Notes | 一个程序员的日常</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:alphawang.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/tag-cloud/">Tags</a></li>
+  <li><a href="/photography/">Photo</a></li>
+  <li><a href="/about/">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Learning JDK Source Code: Positive Examples</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-12-02T16:21:09+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2014</span></span> <span class='time'>4:21 pm</span></time>
+          | <a href="#comments" id="uyan_count_unit" du="" su="">0 Comments</a>
+            <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>本文记录了一些Java源码中的良好编程习惯、运用的设计模式。</p>
+
+<!--more-->
+
+
+<h1>编程习惯</h1>
+
+<h2>1. 用工厂方法替代构造函数</h2>
+
+<h3>Boolean.valueOf()</h3>
+
+<p>通过一个boolean简单类型，构造Boolean对象引用。</p>
+
+<blockquote><p><strong>优点：无需每次被调用时都创建一个新对象。同时使得类可以严格控制在哪个时刻有哪些实例存在 </strong></p></blockquote>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Returns a &lt;code&gt;Boolean&lt;/code&gt; with a value represented by the</span>
+</span><span class='line'><span class="cm"> * specified string.  The &lt;code&gt;Boolean&lt;/code&gt; returned represents a</span>
+</span><span class='line'><span class="cm"> * true value if the string argument is not &lt;code&gt;null&lt;/code&gt;</span>
+</span><span class='line'><span class="cm"> * and is equal, ignoring case, to the string {@code &quot;true&quot;}.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @param   s   a string.</span>
+</span><span class='line'><span class="cm"> * @return  the &lt;code&gt;Boolean&lt;/code&gt; value represented by the string.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="n">Boolean</span> <span class="nf">valueOf</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nf">toBoolean</span><span class="o">(</span><span class="n">s</span><span class="o">)</span> <span class="o">?</span> <span class="n">TRUE</span> <span class="o">:</span> <span class="n">FALSE</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>静态工厂方法Boolean.valueOf(String)几乎总是比构造函数Boolean(String)更可取。构造函数每次被调用时都会创建一个新对象，而静态工厂方法则从来不要求这样做，实际上也不会这么做。</p>
+
+<h3>BigInteger.probablePrime()</h3>
+
+<p>构造方法<code>BigInteger(int, int, Random)</code>返回一个可能为素数的BigInteger，而用一个名为<code>BigInteger.probablePrime()</code>的静态工厂方法就更好。（JDK1.4最终增加了这个方法。）</p>
+
+<blockquote><p><strong>优点：方法名对客户端更友好</strong></p></blockquote>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BigInteger</span> <span class="kd">extends</span> <span class="n">Number</span> <span class="kd">implements</span> <span class="n">Comparable</span><span class="o">&lt;</span><span class="n">BigInteger</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>   <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * Returns a positive BigInteger that is probably prime, with the</span>
+</span><span class='line'><span class="cm">     * specified bitLength. The probability that a BigInteger returned</span>
+</span><span class='line'><span class="cm">     * by this method is composite does not exceed 2&lt;sup&gt;-100&lt;/sup&gt;.</span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="n">BigInteger</span> <span class="nf">probablePrime</span><span class="o">(</span><span class="kt">int</span> <span class="n">bitLength</span><span class="o">,</span> <span class="n">Random</span> <span class="n">rnd</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">bitLength</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">)</span>
+</span><span class='line'>        <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArithmeticException</span><span class="o">(</span><span class="s">&quot;bitLength &lt; 2&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="c1">// The cutoff of 95 was chosen empirically for best performance</span>
+</span><span class='line'>        <span class="k">return</span> <span class="o">(</span><span class="n">bitLength</span> <span class="o">&lt;</span> <span class="n">SMALL_PRIME_THRESHOLD</span> <span class="o">?</span>
+</span><span class='line'>                <span class="n">smallPrime</span><span class="o">(</span><span class="n">bitLength</span><span class="o">,</span> <span class="n">DEFAULT_PRIME_CERTAINTY</span><span class="o">,</span> <span class="n">rnd</span><span class="o">)</span> <span class="o">:</span>
+</span><span class='line'>                <span class="n">largePrime</span><span class="o">(</span><span class="n">bitLength</span><span class="o">,</span> <span class="n">DEFAULT_PRIME_CERTAINTY</span><span class="o">,</span> <span class="n">rnd</span><span class="o">));</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>EnumSet</h3>
+
+<p>JDK1.5引入的<code>java.util.EnumSet</code>类没有public构造函数，只有静态工厂方法。根据底层枚举类型的大小，这些工厂方法可以返回两种实现：</p>
+
+<ul>
+<li>如果拥有64个或更少的元素（大多数枚举类型都是这样），静态工厂方法返回一个<code>RegularEnumSet</code>实例，用单个<code>long</code>来支持；</li>
+<li>如果枚举类型拥有65个或更多的元素，静态工厂方法则返回<code>JumboEnumSet</code>实例，用<code>long数组</code>来支持。</li>
+</ul>
+
+
+<blockquote><p><strong>优点：静态工厂方法能返回任意子类型的对象。可以根据参数的不同，而返回不同的类型。</strong></p></blockquote>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">EnumSet</span><span class="o">&lt;</span><span class="n">E</span> <span class="kd">extends</span> <span class="n">Enum</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;&gt;</span> <span class="kd">extends</span> <span class="n">AbstractSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="kd">implements</span> <span class="n">Cloneable</span><span class="o">,</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span>
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * Creates an empty enum set with the specified element type.</span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     * @param elementType the class object of the element type for this enum</span>
+</span><span class='line'><span class="cm">     *     set</span>
+</span><span class='line'><span class="cm">     * @throws NullPointerException if &lt;tt&gt;elementType&lt;/tt&gt; is null</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">E</span> <span class="kd">extends</span> <span class="n">Enum</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;&gt;</span> <span class="n">EnumSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="nf">noneOf</span><span class="o">(</span><span class="n">Class</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">elementType</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Enum</span><span class="o">[]</span> <span class="n">universe</span> <span class="o">=</span> <span class="n">getUniverse</span><span class="o">(</span><span class="n">elementType</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">universe</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">ClassCastException</span><span class="o">(</span><span class="n">elementType</span> <span class="o">+</span> <span class="s">&quot; not an enum&quot;</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">universe</span><span class="o">.</span><span class="na">length</span> <span class="o">&lt;=</span> <span class="mi">64</span><span class="o">)</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">new</span> <span class="n">RegularEnumSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;(</span><span class="n">elementType</span><span class="o">,</span> <span class="n">universe</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">else</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">new</span> <span class="n">JumboEnumSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;(</span><span class="n">elementType</span><span class="o">,</span> <span class="n">universe</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">class</span> <span class="nc">RegularEnumSet</span><span class="o">&lt;</span><span class="n">E</span> <span class="kd">extends</span> <span class="n">Enum</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;&gt;</span> <span class="kd">extends</span> <span class="n">EnumSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">class</span> <span class="nc">JumboEnumSet</span><span class="o">&lt;</span><span class="n">E</span> <span class="kd">extends</span> <span class="n">Enum</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;&gt;</span> <span class="kd">extends</span> <span class="n">EnumSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'> <span class="err">```</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="err">###</span> <span class="n">Collections</span><span class="o">.</span><span class="na">unmodifiableMap</span><span class="o">(</span><span class="n">Map</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Java集合框架中有32个集合接口的便利实现</span><span class="err">，</span><span class="n">提供不可修改的集合</span><span class="err">、</span><span class="n">同步集合等等</span><span class="err">。</span><span class="n">几乎所有的实现都通过一个不可实例化类</span><span class="err">（`</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Collections</span><span class="err">`）</span><span class="n">中的静态工厂方法导出</span><span class="err">，</span><span class="n">返回对象的类都是非public的</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&gt;</span> <span class="o">**</span><span class="n">优点</span><span class="err">：</span><span class="n">静态工厂方法能返回任意子类型的对象</span><span class="err">。</span><span class="n">可以返回一个对象而无需使相应的类public</span><span class="err">。</span><span class="n">用这种方式隐藏实现类能够产生一个非常紧凑的API</span><span class="o">**</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>public class Collections {
+    /<em>*
+     * Returns an unmodifiable view of the specified map.  This method
+     * allows modules to provide users with &ldquo;read-only&rdquo; access to internal
+     * maps.  Query operations on the returned map &ldquo;read through&rdquo;
+     * to the specified map, and attempts to modify the returned
+     * map, whether direct or via its collection views, result in an
+     * <tt>UnsupportedOperationException</tt>.<p>
+     *
+     </em>/
+    public static &lt;K,V> Map&lt;K,V> unmodifiableMap(Map&lt;? extends K, ? extends V> m) {
+        return new UnmodifiableMap&lt;K,V>(m);
+    }</p>
+
+<pre><code>private static class UnmodifiableMap&lt;K,V&gt; implements Map&lt;K,V&gt;, Serializable {
+  }
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">##</span> <span class="mi">2</span><span class="o">.</span> <span class="n">私有化构造函数</span><span class="err">，</span><span class="n">实现Singleton</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">###</span> <span class="n">Arrays</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">这种工具类设计出来并不是为了实例化它</span><span class="err">。</span><span class="n">然而</span><span class="err">，</span><span class="n">如果不显式地编写构造函数</span><span class="err">，</span><span class="n">编译器则会提供一个公共的无参数的默认构造方法</span><span class="err">。</span>
+</span><span class='line'><span class="n">所以将构造函数私有化</span><span class="err">：</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>public class Arrays {
+    // Suppresses default constructor, ensuring non-instantiability.
+    private Arrays() {
+    }
+ ```</p>
+
+<p>当然，还可以在这个私有构造器内部加上 <code>throw new AssertionError()</code>，可以确保该方法不会再类内部被意外调用。</p>
+
+<p><strong>这种习惯用法的副作用是类不能被子类化了</strong>。子类的所有构造函数必须首先隐式或显式地调用父类构造函数，而在这种用法下，子类就没有可访问的父类构造函数可调用了。</p>
+
+<h3>TimeUnit</h3>
+
+<p><code>java.util.concurrent.TimeUnit</code>使用枚举来实现Singleton：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">enum</span> <span class="n">TimeUnit</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">MILLISECONDS</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kd">public</span> <span class="kt">long</span> <span class="nf">toNanos</span><span class="o">(</span><span class="kt">long</span> <span class="n">d</span><span class="o">)</span>   <span class="o">{</span> <span class="k">return</span> <span class="nf">x</span><span class="o">(</span><span class="n">d</span><span class="o">,</span> <span class="n">C2</span><span class="o">/</span><span class="n">C0</span><span class="o">,</span> <span class="n">MAX</span><span class="o">/(</span><span class="n">C2</span><span class="o">/</span><span class="n">C0</span><span class="o">));</span> <span class="o">}</span>
+</span><span class='line'>        <span class="kd">public</span> <span class="kt">long</span> <span class="nf">toMicros</span><span class="o">(</span><span class="kt">long</span> <span class="n">d</span><span class="o">)</span>  <span class="o">{</span> <span class="k">return</span> <span class="nf">x</span><span class="o">(</span><span class="n">d</span><span class="o">,</span> <span class="n">C2</span><span class="o">/</span><span class="n">C1</span><span class="o">,</span> <span class="n">MAX</span><span class="o">/(</span><span class="n">C2</span><span class="o">/</span><span class="n">C1</span><span class="o">));</span> <span class="o">}</span>
+</span><span class='line'>        <span class="kd">public</span> <span class="kt">long</span> <span class="nf">toMillis</span><span class="o">(</span><span class="kt">long</span> <span class="n">d</span><span class="o">)</span>  <span class="o">{</span> <span class="k">return</span> <span class="n">d</span><span class="o">;</span> <span class="o">}</span>
+</span><span class='line'>        <span class="kd">public</span> <span class="kt">long</span> <span class="nf">toSeconds</span><span class="o">(</span><span class="kt">long</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="n">d</span><span class="o">/(</span><span class="n">C3</span><span class="o">/</span><span class="n">C2</span><span class="o">);</span> <span class="o">}</span>
+</span><span class='line'>        <span class="kd">public</span> <span class="kt">long</span> <span class="nf">toMinutes</span><span class="o">(</span><span class="kt">long</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="n">d</span><span class="o">/(</span><span class="n">C4</span><span class="o">/</span><span class="n">C2</span><span class="o">);</span> <span class="o">}</span>
+</span><span class='line'>        <span class="kd">public</span> <span class="kt">long</span> <span class="nf">toHours</span><span class="o">(</span><span class="kt">long</span> <span class="n">d</span><span class="o">)</span>   <span class="o">{</span> <span class="k">return</span> <span class="n">d</span><span class="o">/(</span><span class="n">C5</span><span class="o">/</span><span class="n">C2</span><span class="o">);</span> <span class="o">}</span>
+</span><span class='line'>        <span class="kd">public</span> <span class="kt">long</span> <span class="nf">toDays</span><span class="o">(</span><span class="kt">long</span> <span class="n">d</span><span class="o">)</span>    <span class="o">{</span> <span class="k">return</span> <span class="n">d</span><span class="o">/(</span><span class="n">C6</span><span class="o">/</span><span class="n">C2</span><span class="o">);</span> <span class="o">}</span>
+</span><span class='line'>        <span class="kd">public</span> <span class="kt">long</span> <span class="nf">convert</span><span class="o">(</span><span class="kt">long</span> <span class="n">d</span><span class="o">,</span> <span class="n">TimeUnit</span> <span class="n">u</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="n">u</span><span class="o">.</span><span class="na">toMillis</span><span class="o">(</span><span class="n">d</span><span class="o">);</span> <span class="o">}</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="nf">excessNanos</span><span class="o">(</span><span class="kt">long</span> <span class="n">d</span><span class="o">,</span> <span class="kt">long</span> <span class="n">m</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="mi">0</span><span class="o">;</span> <span class="o">}</span>
+</span><span class='line'>    <span class="o">},</span>
+</span><span class='line'>    <span class="n">SECONDS</span> <span class="o">{</span>
+</span><span class='line'>       <span class="o">.....</span>
+</span><span class='line'>    <span class="o">},</span>
+</span><span class='line'>    <span class="n">MINUTES</span> <span class="o">{</span>
+</span><span class='line'>       <span class="o">.....</span>
+</span><span class='line'>    <span class="o">},</span>
+</span><span class='line'>    <span class="n">HOURS</span> <span class="o">{</span>
+</span><span class='line'>       <span class="o">......</span>
+</span><span class='line'>    <span class="o">},</span>
+</span><span class='line'>    <span class="n">DAYS</span> <span class="o">{</span>
+</span><span class='line'>       <span class="o">.....</span>
+</span><span class='line'>    <span class="o">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// TimeUnit.sleep()用来替代Thread.sleep()</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">sleep</span><span class="o">(</span><span class="kt">long</span> <span class="n">timeout</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">timeout</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="kt">long</span> <span class="n">ms</span> <span class="o">=</span> <span class="n">toMillis</span><span class="o">(</span><span class="n">timeout</span><span class="o">);</span>
+</span><span class='line'>            <span class="kt">int</span> <span class="n">ns</span> <span class="o">=</span> <span class="n">excessNanos</span><span class="o">(</span><span class="n">timeout</span><span class="o">,</span> <span class="n">ms</span><span class="o">);</span>
+</span><span class='line'>            <span class="n">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="n">ms</span><span class="o">,</span> <span class="n">ns</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>3. 避免创建不必要的对象</h2>
+
+<h3>Map.keySet()</h3>
+
+<p>Map接口的keySet()方法返回Map对象的一个Set视图，包含该Map的所有key。
+看起来好像每次调用keySet()都需要创建一个新的Set实例。而实际上，虽然返回的Set通常是可变的，但返回的对象在功能上是等同的：<strong>如果其中一个返回对象改变，其他对象也会改变，因为他们的底层都是同一个Map实例</strong>。虽然创建多个KeySet视图对象并没有害处，但也没有必要。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">AbstractMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * Each of these fields are initialized to contain an instance of the</span>
+</span><span class='line'><span class="cm">     * appropriate view the first time this view is requested.  The views are</span>
+</span><span class='line'><span class="cm">     * stateless, so there&#39;s no reason to create more than one of each.</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>   <span class="kd">transient</span> <span class="kd">volatile</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span>        <span class="n">keySet</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>   <span class="kd">public</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span> <span class="nf">keySet</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">keySet</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">keySet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AbstractSet</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="o">.....</span>
+</span><span class='line'>        <span class="o">};</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">keySet</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'> <span class="err">```</span>
+</span><span class='line'><span class="n">注意在构造keySet之前</span> <span class="n">对齐进行了null检查</span><span class="err">；</span><span class="n">只有当它是null时才会初始化</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="mi">4</span><span class="o">.</span> <span class="n">消除无用的对象引用</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">###</span> <span class="n">LinkedHashMap</span><span class="o">.</span><span class="na">removeEldestEntry</span><span class="o">()</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="n">缓存实体的生命周期不容易确定</span><span class="err">，</span><span class="n">随着时间推移</span><span class="err">，</span><span class="n">实体的价值越来越低</span><span class="err">。</span><span class="n">在这种情况下</span><span class="err">，</span><span class="n">缓存应该不定期地清理无用的实体</span><span class="err">。</span><span class="n">可以通过一个后台线程来清理</span><span class="err">（</span><span class="n">可能是</span><span class="err">`</span><span class="n">Timer</span><span class="err">`</span><span class="n">或</span><span class="err">`</span><span class="n">ScheduledThreadPoolExecutor</span><span class="err">`），</span><span class="n">也可以在给缓存添加新实体时进行清理</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">LikedHashMap可利用其removeEldestEntry</span><span class="err">，</span><span class="n">删除较老的实体</span><span class="err">：</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>public class LinkedHashMap&lt;K,V>
+    extends HashMap&lt;K,V>
+    implements Map&lt;K,V>
+{
+   /<strong>
+     * It causes newly allocated entry to get inserted at the end of the linked list and
+     * removes the eldest entry if appropriate.
+     */
+    void addEntry(int hash, K key, V value, int bucketIndex) {
+        createEntry(hash, key, value, bucketIndex);
+        // Remove eldest entry if instructed, else grow capacity if appropriate
+        Entry&lt;K,V> eldest = header.after;
+        if (removeEldestEntry(eldest)) {
+            removeEntryForKey(eldest.key);
+        } else {
+            if (size >= threshold)
+                resize(2 * table.length);
+        }
+    }
+    /</strong>
+     * Returns <tt>true</tt> if this map should remove its eldest entry.
+     * This method is invoked by <tt>put</tt> and <tt>putAll</tt> after
+     * inserting a new entry into the map.<br/>
+     *
+     * Sample use:
+     * <pre>
+     *     private static final int MAX_ENTRIES = 100;
+     *
+     *     protected boolean removeEldestEntry(Map.Entry eldest) {
+     *        return size() > MAX_ENTRIES;
+     *     }
+     * </pre>
+     *
+     */
+    protected boolean removeEldestEntry(Map.Entry&lt;K,V> eldest) {
+        return false;
+    }</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">——</span><span class="n">可以继承LinkedHashMap</span><span class="err">，</span><span class="n">覆盖其removeEldestEntry方法</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&gt;</span> <span class="n">注</span><span class="err">：</span><span class="n">如果想要缓存中的对象只要不被引用</span><span class="err">，</span><span class="n">就自动清理</span><span class="err">；</span><span class="n">则可以用WeakHashMap</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="mi">5</span><span class="o">.</span> <span class="n">如果指定了toString返回值的格式</span><span class="err">，</span><span class="n">则应该提供一个对应的静态工厂方法或构造函数</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="err">###</span> <span class="n">BigInteger</span><span class="o">.</span><span class="na">toString</span><span class="o">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> <br/>
+    /<em>*
+     * Returns the String representation of this BigInteger in the
+     * given radix.<br/>
+     *
+     </em>/
+    public String toString(int radix) {</p>
+
+<pre><code>/**
+ * Returns the decimal String representation of this BigInteger.
+ */
+public String toString() {
+    return toString(10);
+}
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>
+</span><span class='line'><span class="n">对应的构造函数如下</span><span class="err">。</span><span class="n">这样程序员能容易地在对象及其字符串表示之间来回转换</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>/**
+ * Translates the decimal String representation of a BigInteger into a
+ * BigInteger.  
+ */
+public BigInteger(String val) {
+    this(val, 10);
+}
+/**
+ * Translates the String representation of a BigInteger in the specified
+ * radix into a BigInteger.  
+ */
+public BigInteger(String val, int radix) { 
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">##</span> <span class="mi">6</span><span class="o">.</span> <span class="n">不可变对象</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">###</span> <span class="nl">共享不可变对象内部信息:</span>  <span class="n">BigInteger</span><span class="o">.</span><span class="na">negate</span><span class="o">()</span><span class="err">：</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="o">&gt;</span> <span class="n">我们可以自由地共享不可变对象</span><span class="err">，</span><span class="n">还可以共享他们的内部信息</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">【</span><span class="n">例</span><span class="err">】</span><span class="n">BigInteger类内部使用了一个符号数值表示法</span><span class="err">（</span><span class="n">sign</span><span class="o">-</span><span class="n">magnitude</span> <span class="n">representation</span><span class="err">），</span><span class="n">符号用一个int表示</span><span class="err">，</span><span class="n">数值则用一个int数组表示</span><span class="err">。`</span><span class="n">negate</span><span class="o">()</span><span class="err">`</span><span class="n">方法会创建一个数值相同但符号相反的新</span><span class="err">`</span><span class="n">BigInteger</span><span class="err">`，</span><span class="n">该方法不需要拷贝数组</span><span class="err">，</span><span class="n">新创建的BigInteger只需要指向源对象中的数组即可</span><span class="err">。</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>/**
+ * Returns a BigInteger whose value is {@code (-this)}.
+ *
+ * @return {@code -this}
+ */
+public BigInteger negate() {
+      return new BigInteger(this.mag, -this.signum);
+}
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>
+</span><span class='line'><span class="err">###</span> <span class="nl">鼓励重用现有不可变实例:</span> <span class="n">BigInteger</span><span class="o">.</span><span class="na">ZERO</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">**</span><span class="n">不可变对象生来就是线程安全的</span><span class="err">，</span><span class="n">他们不需要同步</span><span class="o">**</span><span class="err">。</span><span class="n">当多个线程并发访问不可变对象时</span><span class="err">，</span><span class="n">他们不会遭到破坏</span><span class="err">。</span><span class="n">这无疑是实现线程安全的最容易的方法</span><span class="err">。</span><span class="n">实际上</span><span class="err">，</span><span class="n">不会有线程能观察到其他线程对不可变对象的影响</span><span class="err">。</span><span class="n">所以不可变对象可以被自由地共享</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">不可变类应当利用这种优势</span><span class="err">，</span><span class="n">鼓励客户端尽可能重用现有实例</span><span class="err">。</span><span class="n">一个简单的方法是为常用的值提供public</span> <span class="kd">static</span> <span class="n">final的常量</span><span class="err">。</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>public static final BigInteger ZERO = new BigInteger(new int[0], 0);
+public static final BigInteger ONE = valueOf(1);
+public static final BigInteger TEN = valueOf(10);
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">###</span> <span class="n">为不可变类提供companion</span> <span class="nl">class:</span>  <span class="n">String</span> <span class="n">vs</span><span class="o">.</span> <span class="n">StringBuilder</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">不可变类的一个缺点是</span><span class="err">，</span><span class="n">对于每个不同的值都需要一个单独的对象</span><span class="err">。</span><span class="n">那么在执行复杂的多步操作时</span><span class="err">，</span><span class="n">每一步都会创建一个新的对象</span><span class="err">。</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">通过提供</span><span class="err">`</span><span class="n">companion</span> <span class="n">class</span><span class="err">`</span><span class="n">可以解决这个问题</span><span class="err">。</span><span class="n">例如当需要对</span><span class="err">`</span><span class="n">String</span><span class="err">`</span><span class="n">执行复杂操作时</span><span class="err">，</span><span class="n">建议使用</span><span class="err">`</span><span class="n">StringBuilder</span><span class="err">`。</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="err">###</span> <span class="n">不可变类中可以有nonfinal域</span><span class="err">，</span><span class="nl">用于存储缓存:</span> <span class="n">String</span><span class="o">.</span><span class="na">hashCode</span><span class="o">()</span><span class="err">：</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">不可变类所有域必须是final的</span><span class="err">。</span><span class="n">实际上这些规则比较强硬</span><span class="err">，</span><span class="n">为了提供性能可以有所放松</span><span class="err">。</span><span class="n">实际上应该是没有方法能够对类的状态产生外部可见的改变</span><span class="err">（</span><span class="n">no</span> <span class="n">method</span> <span class="n">may</span> <span class="n">produce</span> <span class="n">an</span> <span class="n">externally</span> <span class="n">visible</span> <span class="n">change</span> <span class="n">in</span> <span class="n">the</span> <span class="n">object</span><span class="err">’</span><span class="n">s</span> <span class="n">state</span><span class="err">）。</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">然而</span><span class="err">，</span><span class="n">一些不可变类拥有一个或多个nonfinal域</span><span class="err">，</span><span class="n">用于缓存昂贵计算的结果</span><span class="err">。</span><span class="n">这个技巧可以很好地工作</span><span class="err">，</span><span class="n">因为对象是不可变的</span><span class="err">，</span><span class="n">保证了相同的计算总是返回同样的结果</span><span class="err">。</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>/** Cache the hash code for the string */
+private int hash; // Default to 0
+
+public int hashCode() {
+  int h = hash;
+  int len = count;
+  if (h == 0 &amp;&amp; len &gt; 0) {
+    int off = offset;
+    char val[] = value;
+        for (int i = 0; i &lt; len; i++) {
+            h = 31*h + val[off++];
+        }
+        hash = h;
+  }
+  return h;
+}
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="err">#</span> <span class="n">设计模式</span>
+</span><span class='line'>
+</span><span class='line'><span class="err">##</span> <span class="mi">1</span><span class="o">.</span> <span class="n">Template</span> <span class="n">Method</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'><span class="err">###</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">sort</span><span class="o">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>// Arrays<br/>
+   public static void sort(Object[] a) {<br/>
+        &hellip;<br/>
+        ComparableTimSort.sort(a);<br/>
+    }</p>
+
+<p>// ComparableTimSort<br/>
+   static void sort(Object[] a, int lo, int hi) {<br/>
+        &hellip;<br/>
+        binarySort(a, lo, hi, lo + initRunLen);</p>
+
+<p>   }</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">```</span>
+</span><span class='line'>    <span class="c1">//算法框架  </span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">binarySort</span><span class="o">(</span><span class="n">Object</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">,</span> <span class="kt">int</span> <span class="n">start</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">assert</span> <span class="n">lo</span> <span class="o">&lt;=</span> <span class="n">start</span> <span class="o">&amp;&amp;</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">hi</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">start</span> <span class="o">==</span> <span class="n">lo</span><span class="o">)</span>
+</span><span class='line'>            <span class="n">start</span><span class="o">++;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span> <span class="o">;</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">hi</span><span class="o">;</span> <span class="n">start</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&quot;unchecked&quot;</span><span class="o">)</span>
+</span><span class='line'>            <span class="n">Comparable</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">pivot</span> <span class="o">=</span> <span class="o">(</span><span class="n">Comparable</span><span class="o">)</span> <span class="n">a</span><span class="o">[</span><span class="n">start</span><span class="o">];</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// Set left (and right) to the index where a[start] (pivot) belongs  </span>
+</span><span class='line'>            <span class="o">....</span>
+</span><span class='line'>            <span class="k">while</span> <span class="o">(</span><span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="o">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">right</span><span class="o">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>                <span class="k">if</span> <span class="o">(</span><span class="n">pivot</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">a</span><span class="o">[</span><span class="n">mid</span><span class="o">])</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="c1">//compareTo这个算法步骤，是由各个Comparable的子类定义的  </span>
+</span><span class='line'>                    <span class="n">right</span> <span class="o">=</span> <span class="n">mid</span><span class="o">;</span>
+</span><span class='line'>                <span class="k">else</span>
+</span><span class='line'>                    <span class="n">left</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>            <span class="o">}</span>
+</span><span class='line'>            <span class="o">....</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>Q：这个算法框架并不是设计在父类中，而是在一个工具类中</p>
+
+<p>A：是的，与教科书上模板方法的定义有差异；因为sort要适用于所有数组，所以提供了一个Arrays工具类。但仍然是模板方法模式</p>
+
+<h3>InputStream.read()</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'> <span class="c1">//算法框架  </span>
+</span><span class='line'> <span class="kd">public</span> <span class="kt">int</span> <span class="nf">read</span><span class="o">(</span><span class="kt">byte</span> <span class="n">b</span><span class="o">[],</span> <span class="kt">int</span> <span class="n">off</span><span class="o">,</span> <span class="kt">int</span> <span class="n">len</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class='line'>        <span class="o">...</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="n">read</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="o">...</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//算法步骤由子类实现  </span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">int</span> <span class="nf">read</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>JFrame.paint()</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// JFrame  </span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">(</span><span class="n">Graphics</span> <span class="n">g</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">paint</span><span class="o">(</span><span class="n">g</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyFrame</span> <span class="kd">extends</span> <span class="n">JFrame</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">MyFrame</span><span class="o">(){</span>
+</span><span class='line'>        <span class="kd">super</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">setDefaultCloseOperation</span><span class="o">(</span><span class="n">JFrame</span><span class="o">.</span><span class="na">EXIT_ON_CLOSE</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mi">300</span><span class="o">,</span><span class="mi">300</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">setVisible</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@Override</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">paint</span><span class="o">(</span><span class="n">Graphics</span> <span class="n">g</span><span class="o">){</span> <span class="c1">//重定义算法步骤  </span>
+</span><span class='line'>        <span class="kd">super</span><span class="o">.</span><span class="na">paint</span><span class="o">(</span><span class="n">g</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">g</span><span class="o">.</span><span class="na">drawString</span><span class="o">(</span><span class="s">&quot;I rule !&quot;</span><span class="o">,</span> <span class="mi">100</span><span class="o">,</span> <span class="mi">100</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+</span><span class='line'>        <span class="n">MyFrame</span> <span class="n">frame</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">MyFrame</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h3>Applet.init()/start()/stop()/destroy()/paint()</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// Applet  </span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span> <span class="c1">//什么也不做的hook  </span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Beans  </span>
+</span><span class='line'>   <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">instantiate</span><span class="o">(</span><span class="n">ClassLoader</span> <span class="n">cls</span><span class="o">,</span> <span class="n">String</span> <span class="n">beanName</span><span class="o">,</span>
+</span><span class='line'>                    <span class="n">BeanContext</span> <span class="n">beanContext</span><span class="o">,</span> <span class="n">AppletInitializer</span> <span class="n">initializer</span><span class="o">)</span>
+</span><span class='line'>                        <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">ClassNotFoundException</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>                <span class="c1">// If it was deserialized then it was already init-ed.  </span>
+</span><span class='line'>                <span class="c1">// Otherwise we need to initialize it.  </span>
+</span><span class='line'>
+</span><span class='line'>                <span class="k">if</span> <span class="o">(!</span><span class="n">serialized</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>                    <span class="c1">// We need to set a reasonable initial size, as many  </span>
+</span><span class='line'>                    <span class="c1">// applets are unhappy if they are started without  </span>
+</span><span class='line'>                    <span class="c1">// having been explicitly sized.  </span>
+</span><span class='line'>                    <span class="n">applet</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mi">100</span><span class="o">,</span><span class="mi">100</span><span class="o">);</span>
+</span><span class='line'>                    <span class="n">applet</span><span class="o">.</span><span class="na">init</span><span class="o">();</span> <span class="c1">//调用hook  </span>
+</span><span class='line'>                <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>Applet中的init()/start()/stop()/destroy()/paint()这些方法，都是hook。</p>
+
+<h2>2. Iterator</h2>
+
+<h3>Collection.iterator()</h3>
+
+<h2>3. Adapter</h2>
+
+<h3>RunnableAdapter</h3>
+
+<p>完整类名：<code>java.util.concurrent.Executors.RunnableAdapter&lt;T&gt;</code></p>
+
+<p>我们知道<code>FutureTask</code>接受一个<code>Callable</code>参数，那如果我们现有的是<code>Runnable</code>该怎么办呢？
+<code>FutureTask</code>本身提供了适配：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Creates a &lt;tt&gt;FutureTask&lt;/tt&gt; that will upon running, execute the given &lt;tt&gt;Callable&lt;/tt&gt;.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="nf">FutureTask</span><span class="o">(</span><span class="n">Callable</span><span class="o">&lt;</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">callable</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">sync</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Sync</span><span class="o">(</span><span class="n">callable</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Creates a &lt;tt&gt;FutureTask&lt;/tt&gt; that will upon running, execute the given &lt;tt&gt;Runnable&lt;/tt&gt;</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="nf">FutureTask</span><span class="o">(</span><span class="n">Runnable</span> <span class="n">runnable</span><span class="o">,</span> <span class="n">V</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">sync</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Sync</span><span class="o">(</span><span class="n">Executors</span><span class="o">.</span><span class="na">callable</span><span class="o">(</span><span class="n">runnable</span><span class="o">,</span> <span class="n">result</span><span class="o">));</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> Executors.callable()返回Adapter对象：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">Callable</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">callable</span><span class="o">(</span><span class="n">Runnable</span> <span class="n">task</span><span class="o">,</span> <span class="n">T</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="n">RunnableAdapter</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">task</span><span class="o">,</span> <span class="n">result</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/** --Adapter!--</span>
+</span><span class='line'><span class="cm"> * A callable that runs given task and returns given result</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">RunnableAdapter</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="n">Callable</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>  <span class="c1">//Target</span>
+</span><span class='line'>    <span class="kd">final</span> <span class="n">Runnable</span> <span class="n">task</span><span class="o">;</span> <span class="c1">//Adaptee</span>
+</span><span class='line'>    <span class="kd">final</span> <span class="n">T</span> <span class="n">result</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">RunnableAdapter</span><span class="o">(</span><span class="n">Runnable</span>  <span class="n">task</span><span class="o">,</span> <span class="n">T</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">task</span> <span class="o">=</span> <span class="n">task</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">T</span> <span class="nf">call</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">task</span><span class="o">.</span><span class="na">run</span><span class="o">();</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>AbstractExecutorService.submit()也用到了这个Adapter：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>   <span class="kd">public</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">Future</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">submit</span><span class="o">(</span><span class="n">Runnable</span> <span class="n">task</span><span class="o">,</span> <span class="n">T</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">task</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="nf">NullPointerException</span><span class="o">();</span>
+</span><span class='line'>        <span class="n">RunnableFuture</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">ftask</span> <span class="o">=</span> <span class="n">newTaskFor</span><span class="o">(</span><span class="n">task</span><span class="o">,</span> <span class="n">result</span><span class="o">);</span>
+</span><span class='line'>        <span class="n">execute</span><span class="o">(</span><span class="n">ftask</span><span class="o">);</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">ftask</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">RunnableFuture</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">newTaskFor</span><span class="o">(</span><span class="n">Runnable</span> <span class="n">runnable</span><span class="o">,</span> <span class="n">T</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">FutureTask</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">runnable</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>未完待续。。。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alpha Wang</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-12-02T16:21:09+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2014</span></span> <span class='time'>4:21 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/java/'>java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  	<!-- JiaThis Button BEGIN -->
+<!--
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"王中兴V"
+	},
+	showClose:true,
+	shortUrl:false,
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jiathis_r.js?uid=1965224&btn=r2.gif&move=0" charset="utf-8"></script>
+-->
+<!-- JiaThis Button END -->
+
+<!--Baidu Share-->
+<div class="bdsharebuttonbox">
+<a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+<a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+<a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+<a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+<a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+<a href="#" class="bds_more" data-cmd="more"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"",
+"bdStyle":"2", //1
+"bdSize":"24"},
+"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!--Nav-->
+<p class="meta">
+  
+    <a class="basic-alignment left" href="/blog/2014/12/learning-jdk-negative-examples/" title="Previous Post: Learning JDK Source Code: Negative Examples">&laquo; Learning JDK Source Code: Negative Examples</a>
+  
+  
+    <a class="basic-alignment right" href="/blog/2014/12/what-is-string-intern/" title="Next Post: What's String.intern()">What's String.intern() &raquo;</a>
+  
+</p>
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 728*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:728px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="2039334876"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+	
+	<!-- 789*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+</p>
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/2014/12/learning-jdk-negative-examples/" title="Previous Post: Learning JDK Source Code: Negative Examples">&laquo; Learning JDK Source Code: Negative Examples</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/2014/12/what-is-string-intern/" title="Next Post: What's String.intern()">What's String.intern() &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+ <h1>Categories</h1>
+ <ul id="categories">
+	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (6)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
+<li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
+
+ </ul>
+</section>
+<section>
+<h1>Tags</h1>
+<ul class="tag-cloud">
+	<a style="font-size: 90%" href="/blog/tags/css/">CSS</a>
+<a style="font-size: 119%" href="/blog/tags/collection/">Collection</a>
+<a style="font-size: 171%" href="/blog/tags/design-pattern/">Design Pattern</a>
+<a style="font-size: 119%" href="/blog/tags/guava/">Guava</a>
+<a style="font-size: 171%" href="/blog/tags/jdk/">JDK</a>
+<a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
+<a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
+<a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
+<a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
+<a style="font-size: 119%" href="/blog/tags/site/">Site</a>
+<a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
+<a style="font-size: 164%" href="/blog/tags/source-code/">Source Code</a>
+<a style="font-size: 90%" href="/blog/tags/spring-mvc/">Spring MVC</a>
+<a style="font-size: 119%" href="/blog/tags/spring-solr/">Spring Solr</a>
+<a style="font-size: 136%" href="/blog/tags/string/">String</a>
+<a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
+<a style="font-size: 119%" href="/blog/tags/web/">Web</a>
+<a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+
+</ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2019/03/%5B%E8%AF%95%E8%AF%91%5DDapper,%20a%20Large-Scale%20Distributed%20Systems%20Tracing%20Infrastructure/">[试译] Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2018/06/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/google-guava-collections/">Google Guava: 2. Collections</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/03/google-guava-dealing-with-null/">Google Guava: 1. Dealing With Null</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/key-solr-concepts/">Key Solr Concepts</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/AlphaWang">@AlphaWang</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'AlphaWang',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/1919wang@gmail.com?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+<section>
+  <h1>Visitors Map</h1>
+  <div class="earth">
+  <script type="text/javascript" src="//rk.revolvermaps.com/0/0/1.js?i=awaok66hddi&amp;s=250&amp;m=0&amp;v=false&amp;r=false&amp;b=01070a&amp;n=false&amp;c=ff8500" async="async"></script>
+  </div>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Alpha Wang -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

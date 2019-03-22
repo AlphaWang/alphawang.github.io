@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Site | Alpha's Programming Notes]]></title>
+  <link href="http://alphawang.github.io/blog/categories/site/atom.xml" rel="self"/>
+  <link href="http://alphawang.github.io/"/>
+  <updated>2019-03-22T12:22:53+08:00</updated>
+  <id>http://alphawang.github.io/</id>
+  <author>
+    <name><![CDATA[Alpha Wang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Integrate Octopress With Flickr]]></title>
+    <link href="http://alphawang.github.io/blog/2014/09/integrate-octopress-with-flickr/"/>
+    <updated>2014-09-22T15:59:15+08:00</updated>
+    <id>http://alphawang.github.io/blog/2014/09/integrate-octopress-with-flickr</id>
+    <content type="html"><![CDATA[<p>Octopress Blog有一个很酷的<a href="https://github.com/neilk/octopress-flickr">插件</a>，可以将Flickr中的某个图片插入到你的博文中。像这样：  <br/>
+{\% flickr_image 15313566521 o \%}</p>
+
+<p>还可以把Flickr某个相册中的所有图片都插入进来，像<a href="http://alphawang.com/photography/">这样</a>。</p>
+
+<!--more-->  
+
+
+<p>使用起来非常简单，只需要在博文中插入类似如下内容：</p>
+
+<pre><code>// 注意：要删除\
+
+// 插入图片  
+\{\% flickr_image 15313566521 o \%\}
+
+// 插入相册  
+\{\% flickr_set 72157647828539946 q \%\}   
+</code></pre>
+
+<p>当然，在这之前要安装这个插件。</p>
+
+<h2>安装octopress-flickr</h2>
+
+<p>基本上按照<a href="https://github.com/neilk/octopress-flickr">github</a>上的步骤就可以顺利安装。<br/>
+主要步骤如下。</p>
+
+<p><strong>1、获取Flickr api key</strong></p>
+
+<p>首先去<a href="http://www.flickr.com/services/developer/api/">Flickr</a>获取一个api key以及对应的secret。然后将它们写入<code>_config.yml</code>：<br/>
+<code>
+flickr:  
+  api_key: &lt;api_key&gt;  
+  shared_secret: &lt;shared_secret&gt;  
+</code><br/>
+<strong>2、获取插件</strong><br/>
+git clone <a href="https://github.com/neilk/octopress-flickr">插件</a>到本地，拷贝其中的<code>.rb</code>和<code>.scss</code>文件到Octopress得相应目录中。 <br/>
+<strong>3、安装插件</strong><br/>
+在Gemfile文件中新增如下几行：</p>
+
+<pre><code class="">  gem 'flickraw'  
+  gem 'builder', '&gt; 2.0.0'  
+  gem 'persistent_memoize'  
+</code></pre>
+
+<p>运行命令：
+<code>
+bundle install
+</code></p>
+
+<p>并确保<code>sass/screen.scss</code>以如下行结尾：<br/>
+<code>
+@import "plugins/**/*";
+</code></p>
+
+<p><strong>4、插入图片</strong></p>
+
+<p>至此，你就可以在blog里插入Flickr图片了，只要找到图片id或者相册id，然后像本文开头那样写到文章即可。</p>
+
+<p>这个插件提供了2个新的tag，分别用来插入单个图片和相册，语法如下：</p>
+
+<pre><code class="">
+\{\% flickr_image id [preview-size [alignment [caption]] \%\}  
+\{\% flickr_set id [preview-size [desc|nodesc]] \%\}  
+</code></pre>
+
+<p><code>preview-size</code>用一个字符来表示图片大小：</p>
+
+<ul>
+<li>o : &ldquo;Original&rdquo;, no maximum dimension</li>
+<li>b : &ldquo;Large&rdquo;, 1024px</li>
+<li>z : &ldquo;Medium 640&rdquo;, 640px</li>
+<li>n : &ldquo;Small 320&rdquo;, 320px</li>
+<li>m : &ldquo;Small&rdquo;, 240px,</li>
+<li>t : &ldquo;Thumbnail&rdquo;, 100px</li>
+<li>q : &ldquo;Large Square&rdquo;, 150px</li>
+<li>s : &ldquo;Square&rdquo;, 75px</li>
+</ul>
+
+
+<p><code>alignment</code>可以设为<code>left</code>, <code>right</code>, 或者<code>center</code>。</p>
+
+<p><code>caption</code> 是图片标题。</p>
+
+<blockquote><p>不过仅仅这样还有个小问题：点击图片，会跳转到Flickr页面去，我们可以用Fancybox达到在当前页面弹出图片。</p></blockquote>
+
+<h2>安装Fancybox</h2>
+
+<p>Fancybox的效果是这样的：<br/>
+<img src="/images/post/2014/09/fancybox.png" alt=" fancybox " /></p>
+
+<p>去<a href="http://fancyapps.com/fancybox/">Fancybox官网</a>下载并解压，将<code>source</code>目录中的文件拷贝到<code>octopress/source/fancybox</code>目录中。<br/>
+接下来将octopress-flickr插件中的<code>source/_includes/custom/fancybox_head.html</code>文件拷贝到Octopress相应目录中。</p>
+
+<p>编辑<code>source/_includes/head.html</code>文件，在末尾插入：<br/>
+<code>  
+\{\% include custom/fancybox_head.html \%\}   
+</code></p>
+
+<p>然后修改<code>sass/base/_theme.scss</code>：
+<code>  
+body {
+-  &gt; div {
++  &gt; #main {
+     border-bottom: 1px solid $page-border-bottom;
+-    &gt; div {
++    &gt; #content {
+       border-right: 1px solid $sidebar-border;
+     }
+   }
+</code></p>
+
+<p>大功告成。</p>
+
+<h2>设置导航</h2>
+
+<p>你还可以在导航栏设置一个页面来专门显示Flickr中的照片流。执行：
+<code>  
+rake new_page['photography']
+</code></p>
+
+<p>按照本文开头的语法，添加一个相册到相应的index.makrdown中。<br/>
+<code>
+// 注意：要删除\
+\{\% flickr_set 72157647828539946 q \%\}    
+</code></p>
+
+<p>在<code>source/_includes/custom/navigation.html</code>中添加导航:<br/>
+<code>
+&lt;li&gt;&lt;a href="http://alphawang.github.io/photography"&gt;Photography&lt;/a&gt;&lt;/li&gt;
+</code></p>
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+
+
+]]></content>
+  </entry>
+  
+</feed>
