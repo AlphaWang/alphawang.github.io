@@ -4,7 +4,7 @@
   <title><![CDATA[Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-03-24T11:50:47+08:00</updated>
+  <updated>2019-03-24T12:03:21+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -12,15 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[[试译] Dapper, a Large-Scale Distributed Systems Tracing Infrastructure]]></title>
-    <link href="http://alphawang.github.io/blog/2019/03/%5B%E8%AF%95%E8%AF%91%5DDapper,%20a%20Large-Scale%20Distributed%20Systems%20Tracing%20Infrastructure/"/>
-    <updated>2019-03-22T11:26:19+08:00</updated>
-    <id>http://alphawang.github.io/blog/2019/03/[试译]Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</id>
-    <content type="html"><![CDATA[
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[JMM: Java Runtime Data Area]]></title>
@@ -5552,6 +5543,110 @@ Day-O doesn&rsquo;t do much of anything.</p></blockquote>
 <h2>建议</h2>
 
 <p>开闭原则是最基础的原则，前5个原则都是开闭原则的具体形态。</p>
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[六大设计原则] 5. Least Knowledge Principle]]></title>
+    <link href="http://alphawang.github.io/blog/2012/12/5_least-knowledge-principle/"/>
+    <updated>2012-12-31T16:31:41+08:00</updated>
+    <id>http://alphawang.github.io/blog/2012/12/5_least-knowledge-principle</id>
+    <content type="html"><![CDATA[<h2>定义</h2>
+
+<p>最少知识原则（Least Knowledge Principle），又称迪米特法则（LoD，Law of Demeter），是指一个对象应该对其他对象有最少的了解。
+一个类对自己依赖的类知道的越少越好。<br/>
+也就是说，对于被依赖的类来说，无论逻辑多么复杂，都尽量地的将逻辑封装在类的内部，对外除了提供的public方法，不对外泄漏任何信息。</p>
+
+<h2>问题由来</h2>
+
+<p>类与类之间的关系越密切，耦合度越大，当一个类发生改变时，对另一个类的影响也越大。</p>
+
+<!--more-->
+
+
+<h2>解决方案</h2>
+
+<p>迪米特法则包含4层含义：</p>
+
+<p><strong>1、只和朋友交流</strong></p>
+
+<p>Only talk to your immediate friends. 两个对象之间的耦合就成为朋友关系。即，出现在成员变量、方法输入输出参数中的类就是朋友；局部变量不属于朋友。</p>
+
+<blockquote><p>不与无关的对象发生耦合！</p></blockquote>
+
+<p>方针：不要调用从另一个方法中返回的对象中的方法！只应该调用以下方法：</p>
+
+<ul>
+<li>该对象本身的方法</li>
+<li>该对象中的任何组件的方法</li>
+<li>方法参数中传入的对象的方法</li>
+<li>方法内部实例化的对象的方法</li>
+</ul>
+
+
+<p>【例】：Teacher类可以命令TeamLeader对Students进行清点，则Teacher无需和Students耦合，只需和TeamLeader耦合即可。</p>
+
+<p>【反例】：</p>
+
+<figure class='code'><figcaption><span>反例</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">float</span> <span class="nf">getTemp</span><span class="o">(){</span>
+</span><span class='line'>     <span class="n">Thermometer</span> <span class="n">t</span> <span class="o">=</span> <span class="n">station</span><span class="o">.</span><span class="na">getThermometer</span><span class="o">();</span> <span class="c1">//温度计对象 </span>
+</span><span class='line'>     <span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="na">getTemp</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>客户端不应该了解气象站类中的温度计对象；应在气象站类中直接加入获取温度的方法。<br/>
+改为：</p>
+
+<figure class='code'><figcaption><span>修改后</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">float</span> <span class="nf">getTemp</span><span class="o">(){</span>
+</span><span class='line'>      <span class="k">return</span> <span class="n">station</span><span class="o">.</span><span class="na">getTemp</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>2、朋友间也应该有距离</strong></p>
+
+<p>即使是朋友类之间也不能无话不说，无所不知。</p>
+
+<blockquote><p>一个类公开的public属性或方法应该尽可能少！</p></blockquote>
+
+<p><strong>3、是自己的就是自己的</strong></p>
+
+<p>如果一个方法放在本类中也可以、放在其他类中也可以，怎么办？</p>
+
+<blockquote><p>如果一个方法放在本类中，既不增加类间关系，也对本类不产生负面影响，就放置在本类中。</p></blockquote>
+
+<p><strong>4、谨慎使用Serializable</strong></p>
+
+<p>否则，若后来修改了属性，序列化时会抛异常NotSerializableException。</p>
+
+<h2>建议</h2>
+
+<p>迪米特法则的核心观念是：类间解耦。<br/>
+其结果是产生了大量中转或跳转类。</p>
 
 <!--Google Adsense-->
 

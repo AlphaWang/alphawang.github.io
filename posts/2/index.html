@@ -9,7 +9,7 @@
   <meta name="author" content="Alpha Wang">
 
   
-  <meta name="description" content="本文记录了一些Java源码中设计不合理之处、违反设计模式之处，以及其他可以改进的地方。 ">
+  <meta name="description" content="作为一个Java开发民工，对HashMap可以说是经常使用的，不过要是想更好地使用它，还是需要了解其内部实现原理的。当了解了实现原理后，自己实现一个HashMap也就不难了。 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -127,43 +127,6 @@ $(document).ready(
     <div id="content">
       <div class="blog-index">
   
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/12/learning-jdk-negative-examples/">Learning JDK Source Code: Negative Examples</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-12-01T15:00:45+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>3:00 pm</span></time>
-          | <a href="/blog/2014/12/learning-jdk-negative-examples/#comments" id="uyan_count_unit" du="" su="">0 Comments</a>
-            <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>本文记录了一些Java源码中设计不合理之处、违反设计模式之处，以及其他可以改进的地方。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/12/learning-jdk-negative-examples/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
   
   
     <article>
@@ -605,6 +568,51 @@ Fortunately, we can do this just by writing a configuration file, then the termi
 
     </article>
   
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2012/12/5_least-knowledge-principle/">[六大设计原则] 5. Least Knowledge Principle</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-12-31T16:31:41+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2012</span></span> <span class='time'>4:31 pm</span></time>
+          | <a href="/blog/2012/12/5_least-knowledge-principle/#comments" id="uyan_count_unit" du="" su="">0 Comments</a>
+            <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>定义</h2>
+
+<p>最少知识原则（Least Knowledge Principle），又称迪米特法则（LoD，Law of Demeter），是指一个对象应该对其他对象有最少的了解。
+一个类对自己依赖的类知道的越少越好。<br/>
+也就是说，对于被依赖的类来说，无论逻辑多么复杂，都尽量地的将逻辑封装在类的内部，对外除了提供的public方法，不对外泄漏任何信息。</p>
+
+<h2>问题由来</h2>
+
+<p>类与类之间的关系越密切，耦合度越大，当一个类发生改变时，对另一个类的影响也越大。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2012/12/5_least-knowledge-principle/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -660,10 +668,6 @@ Fortunately, we can do this just by writing a configuration file, then the termi
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/2019/03/%5B%E8%AF%95%E8%AF%91%5DDapper,%20a%20Large-Scale%20Distributed%20Systems%20Tracing%20Infrastructure/">[试译] Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
-      </li>
-    
-      <li class="post">
         <a href="/blog/2018/06/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
       </li>
     
@@ -677,6 +681,10 @@ Fortunately, we can do this just by writing a configuration file, then the termi
     
       <li class="post">
         <a href="/blog/2015/01/key-solr-concepts/">Key Solr Concepts</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/2015/01/introduction-to-apache-solr/">Introduction to Apache Solr</a>
       </li>
     
   </ul>
