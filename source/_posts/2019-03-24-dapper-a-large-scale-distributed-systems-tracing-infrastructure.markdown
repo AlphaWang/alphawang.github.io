@@ -268,13 +268,13 @@ Google AdWords系统围绕关键词定位准则和相关文字广告的大型数
 
 当从头开始重新设计一个广告审查服务时，团队从第一个系统原型开始，直到最终的系统维护，都使用了Dapper。他们的服务通过Dapper有了以下方面的提高：
 
-**性能：**开发人员跟踪请求延迟目标的进度，精确找到可优化的机会。Dapper还被用来找出关键路径中的不必要请求序列（这种不必要请求通常源于不是开发者自己开发的子系统），然后促使相关团队修复这些问题。
+**性能（Performance）：**开发人员跟踪请求延迟目标的进度，精确找到可优化的机会。Dapper还被用来找出关键路径中的不必要请求序列（这种不必要请求通常源于不是开发者自己开发的子系统），然后促使相关团队修复这些问题。
 
-**正确性：**广告审查服务是围绕大型数据库系统的。系统同时具有只读副本服务器(廉价访问)，以及可读写的主服务器(昂贵访问)。他们通过Dapper找到了好些不必要地访问主服务器而不是访问副本服务器的查询。Dapper现在可用于解释主服务器被直接访问的原因，确保重要系统的不变式。
+**正确性（Correctness）：**广告审查服务是围绕大型数据库系统的。系统同时具有只读副本服务器(廉价访问)，以及可读写的主服务器(昂贵访问)。他们通过Dapper找到了好些不必要地访问主服务器而不是访问副本服务器的查询。Dapper现在可用于解释主服务器被直接访问的原因，确保重要系统的不变式。
 
-**理解性：**广告审查查询跨越多种类型的系统，包括BigTable(即前文提到的数据库)、多维索引服务、以及许多其他 C++ 和 Java 后端服务。Dapper跟踪用来评估总查询成本，促进对业务重新设计，使得系统依赖的负载最小。
+**理解性（Understanding）：**广告审查查询跨越多种类型的系统，包括BigTable(即前文提到的数据库)、多维索引服务、以及许多其他 C++ 和 Java 后端服务。Dapper跟踪用来评估总查询成本，促进对业务重新设计，使得系统依赖的负载最小。
 
-**测试：**新代码的发布会经过一个Dapper跟踪的QA过程，验证正确的系统行为和性能。这个过程中发现了很多问题，包括广告审查代码自身的问题，及其依赖包的问题。
+**测试（Testing）：**新代码的发布会经过一个Dapper跟踪的QA过程，验证正确的系统行为和性能。这个过程中发现了很多问题，包括广告审查代码自身的问题，及其依赖包的问题。
 
 广告审查团队广泛使用了Dapper标注API。Guice开源的AOP框架用来在重要的软件组件上标注`@Traced`。跟踪信息进一步标注的信息有重要子程序的输入输出大小、状态消息、以及其他调试信息；否则这些信息会被发到日志文件中。
 
@@ -336,37 +336,27 @@ Dapper在Google内部的广泛使用还为我们提供了关于其局限性的�
 
 **跟踪批量负载（Tracing batch workloads）：**Dapper的设计是针对在线服务系统，最初的目标是了解Google的用户请求引起的系统行为。然而，离线的数据密集型负载也可以从对性能的洞悉中获益，例如适合MapReduce模型的负载。在这种情况下，我们需要把trace id关联到一些其他的有意义的工作单元，例如输入数据的key(或key范围)，或是一个MapReduce shard。
 
-**寻找根本原因：**Dapper可以有效确定系统中的哪个部分正在速度变慢，但并不总是足够找出问题的根本原因。举个例子，一个请求变慢可能并不是因为他自己的行为，而是因为其他请求还排在他前面。程序可以利用应用级别的标注把队列大小和过载情况转播到跟踪系统。同时，如果这种情况很常见，那么在ProfileMe<sup>[11]</sup>中提出的成对采样技术就很有用了。它对两个时间重叠的请求进行采样、并观察它们在系统中的相对延迟。
+**寻找根本原因（Finding a root cause）：**Dapper可以有效地确定系统中的哪个部分正在经历速度变慢，但并不总是足够找出问题的根本原因。举个例子，一个请求变慢可能并不是因为他自己的行为，而是因为其他请求还排在他前面。程序可以利用应用级别的标注把队列大小和过载情况转播到跟踪系统。同时，如果这种情况很常见，那么在ProfileMe<sup>[11]</sup>中提出的成对采样技术就很有用了。它对两个时间重叠的请求进行采样、并观察它们在系统中的相对延迟。
 
-
-
-
-
-
-
-寻找根源：Dapper可以有效地确定系统中的哪一部分致使系统整个速度变慢，但并不总是能够找出问题的根源。例如，一个请求很慢有可能不是因为它自己的行为，而是由于队列中其他排在它前面的(queued ahead of)请求还没处理完。程序可以使用应用级的annotation把队列的大小或过载情况写入跟踪系统。此外，如果这种情况屡见不鲜，那么在ProfileMe[11]中提到的成对的采样技术可以解决这个问题。它由两个时间重叠的采样率组成，并观察它们在整个系统中的相对延迟。
-记录内核级的信息：一些内核可见的事件的详细信息有时对确定问题根源是很有用的。我们有一些工具，能够跟踪或以其他方式描述内核的执行，但是，想用通用的或是不那么突兀的方式，是很难把这些信息到捆绑到用户级别的跟踪上下文中。我们正在研究一种妥协的解决方案，我们在用户层面上把一些内核级的活动参数做快照，然后绑定他们到一个活动的span上。
+**记录内核级别的信息（Logging kernel-level information）：**内核可见事件的详细信息有时对确定问题根本原因很有用。我们有一些工具能够跟踪或者描述内核的执行，但是要想将这些信息绑定到用户级别的跟踪上下文上，用通用或是不那么突兀的方式是很难的。我们正在研究一种可能的妥协方案，对用户层面上的一些内核级别活动参数做快照，将其关联到一个活动span上。
 
 ## 8 相关工作
 
 
+
+
+
+8. 在分布式系统跟踪领域，有一套完整的体系，一部分系统主要关注定位到故障位置，其他的目标是针对性能进行优化。 Dapper确实被用于发现系统问题，但它更通常用于探查性能不足，以及提高全面大规模的工作负载下的系统行为的理解。
+
+与Dapper相关的黑盒监控系统，比如Project5[1]，WAP5[15]和Sherlock[2]，可以说不依赖运行库的情况下，黑盒监控系统能够实现更高的应用级透明。黑盒的缺点是一定程度上不够精确，并可能在统计推断关键路径时带来更大的系统损耗。
+
+对于分布式系统监控来说，基于Annotation的中间件或应用自身是一个可能是更受欢迎的解决办法.拿Pip[14]和Webmon[16]系统举例，他们更依赖于应用级的Annotation，而X-Trace[12]，Pinpoint[9]和Magpie[3]大多集中在对库和中间件的修改。Dapper更接近后者。像Pinpoint，X-Trace，和早期版本的Magpie一样，Dapper采用了全局标识符把分布式系统中各部分相关的事件联系在一起。和这些系统类似，Dapper尝试避免使用应用级Annotation，而是把的植入隐藏在通用组件模块内。Magpie放弃使用全局ID，仍然试图正确的完成请求的正确传播，他通过采用应用系统各自写入的事件策略，最终也能精确描述不同事件之间关系。但是目前还不清楚Magpie在实际环境中实现透明性这些策略到底多么有效。 X-Trace的核心Annotation比Dapper更有野心一些，因为X-Trace系统对于跟踪的收集，不仅在跟踪节点层面上，而且在节点内部不同的软件层也会进行跟踪。而我们对于组件的低性能损耗的要求迫使我们不能采用X-Trace这样的模型，而是朝着把一个请求连接起来完整跟踪所能做到的最小代价而努力。而Dapper的跟踪仍然可以从可选的应用级Annotation中获益。
 
 ## 9 总结
 
 
 
 
-
-
-
-8. 相关产品
-在分布式系统跟踪领域，有一套完整的体系，一部分系统主要关注定位到故障位置，其他的目标是针对性能进行优化。 Dapper确实被用于发现系统问题，但它更通常用于探查性能不足，以及提高全面大规模的工作负载下的系统行为的理解。
-
-与Dapper相关的黑盒监控系统，比如Project5[1]，WAP5[15]和Sherlock[2]，可以说不依赖运行库的情况下，黑盒监控系统能够实现更高的应用级透明。黑盒的缺点是一定程度上不够精确，并可能在统计推断关键路径时带来更大的系统损耗。
-
-对于分布式系统监控来说，基于Annotation的中间件或应用自身是一个可能是更受欢迎的解决办法.拿Pip[14]和Webmon[16]系统举例，他们更依赖于应用级的Annotation，而X-Trace[12]，Pinpoint[9]和Magpie[3]大多集中在对库和中间件的修改。Dapper更接近后者。像Pinpoint，X-Trace，和早期版本的Magpie一样，Dapper采用了全局标识符把分布式系统中各部分相关的事件联系在一起。和这些系统类似，Dapper尝试避免使用应用级Annotation，而是把的植入隐藏在通用组件模块内。Magpie放弃使用全局ID，仍然试图正确的完成请求的正确传播，他通过采用应用系统各自写入的事件策略，最终也能精确描述不同事件之间关系。但是目前还不清楚Magpie在实际环境中实现透明性这些策略到底多么有效。 X-Trace的核心Annotation比Dapper更有野心一些，因为X-Trace系统对于跟踪的收集，不仅在跟踪节点层面上，而且在节点内部不同的软件层也会进行跟踪。而我们对于组件的低性能损耗的要求迫使我们不能采用X-Trace这样的模型，而是朝着把一个请求连接起来完整跟踪所能做到的最小代价而努力。而Dapper的跟踪仍然可以从可选的应用级Annotation中获益。
-
-9. 总结
 在本文中，我们介绍Dapper这个Google的生产环境下的分布式系统跟踪平台，并汇报了我们开发和使用它的相关经验。 Dapper几乎在部署在所有的Google系统上，并可以在不需要应用级修改的情况下进行跟踪，而且没有明显的性能影响。Dapper对于开发人员和运维团队带来的好处，可以从我们主要的跟踪用户界面的广泛使用上看出来，另外我们还列举了一些Dapper的使用用例来说明Dapper的作用，这些用例有些甚至都没有Dapper开发团队参与，而是被应用的开发者开发出来的。
 
 据我们所知，这是第一篇汇报生产环境下分布式系统跟踪框架的论文。事实上，我们的主要贡献源于这个事实：论文中回顾的这个系统已经运行两年之久。我们发现，结合对开发人员提供简单API和对应用系统完全透明来增强跟踪的这个决定，是非常值得的。
@@ -375,5 +365,41 @@ Dapper在Google内部的广泛使用还为我们提供了关于其局限性的�
 
 最后，通过开放Dapper跟踪仓库给内部开发者，我们促使更多的基于跟踪仓库的分析工具的产生，而仅仅由Dapper团队默默的在信息孤岛中埋头苦干的结果远达不到现在这么大的规模，这个决定促使了设计和实施的展开。
 
-Acknowledgments
+## Acknowledgments 
+
 We thank Mahesh Palekar, Cliff Biffle, Thomas Kotzmann, Kevin Gibbs, Yonatan Zunger, Michael Kleber, and Toby Smith for their experimental data and feedback about Dapper experiences. We also thank Silvius Rus for his assistance with load testing. Most importantly, though, we thank the outstanding team of engineers who have continued to develop and improve Dapper over the years; in order of appearance, Sharon Perl, Dick Sites, Rob von Behren, Tony DeWitt, Don Pazel, Ofer Zajicek, Anthony Zana, Hyang-Ah Kim, Joshua MacDonald, Dan Sturman, Glenn Willen, Alex Kehlenbeck, Brian McBarron, Michael Kleber, Chris Povirk, Bradley White, Toby Smith, Todd Derr, Michael De Rosa, and Athicha Muthitacharoen. They have all done a tremendous amount of work to make Dapper a day-to-day reality at Google.
+
+## References
+
+[1]  M. K. Aguilera, J. C. Mogul, J. L. Wiener, P. Reynolds, and A. Muthitacharoen. Performance Debugging for Dis- tributed Systems of Black Boxes. In *Proceedings of the 19th ACM Symposium on Operating Systems Principles*, December 2003. 
+
+[2]  P. Bahl, R. Chandra, A. Greenberg, S. Kandula, D. A. Maltz, and M. Zhang. Towards Highly Reliable Enter- prise Network Services Via Inference of Multi-level De- pendencies. In *Proceedings of SIGCOMM*, 2007. 
+
+[3]  P.Barham,R.Isaacs,R.Mortier,andD.Narayanan.Mag- pie: online modelling and performance-aware systems. In *Proceedings of USENIX HotOS IX*, 2003. 
+
+[4]  L. A. Barroso, J. Dean, and U. Ho ̈lzle. Web Search for a Planet: The Google Cluster Architecture. *IEEE Micro*, 23(2):22–28, March/April 2003. 
+
+[5]  T. O. G. Blog. Developers, start your engines. http://googleblog.blogspot.com/2008/04/developers- start-your-engines.html, 2007. 
+
+[6]  T. O. G. Blog. Universal search: The best answer is still the best answer. http://googleblog.blogspot.com/2007/05/universal- search-best-answer-is-still.html, 2007. 
+
+[7]  M. Burrows. The Chubby lock service for loosely- coupled distributed systems. In *Proceedings of the 7th USENIX Symposium on Operating Systems Design and Implementation*, pages 335 – 350, 2006. 
+
+[8]  F. Chang, J. Dean, S. Ghemawat, W. C. Hsieh, D. A. Wal- lach, M. Burrows, T. Chandra, A. Fikes, and R. E. Gru- ber. Bigtable: A Distributed Storage System for Struc- tured Data. In *Proceedings of the 7th USENIX Sympo- sium on Operating Systems Design and Implementation (OSDI’06)*, November 2006. 
+
+[9]  M. Y. Chen, E. Kiciman, E. Fratkin, A. fox, and E. Brewer. Pinpoint: Problem Determination in Large, Dynamic Internet Services. In *Proceedings of ACM In- ternational Conference on Dependable Systems and Net- works*, 2002. 
+
+[10]  J. Dean and S. Ghemawat. MapReduce: Simplified Data Processing on Large Clusters. In *Proceedings of the 6th USENIX Symposium on Operating Systems Design and Implementation (OSDI’04)*, pages 137 – 150, December 2004. 
+
+[11]  J. Dean, J. E. Hicks, C. A. Waldspurger, W. E. Weihl, and G. Chrysos. ProfileMe: Hardware Support for Instruction-Level Profiling on Out-of-Order Processors. In *Proceedings of the IEEE/ACM International Sympo- sium on Microarchitecture*, 1997. 
+
+[12]  R. Fonseca, G. Porter, R. H. Katz, S. Shenker, and I. Sto- ica. X-Trace: A Pervasive Network Tracing Framework. In *Proceedings of USENIX NSDI*, 2007. 
+
+[13]  B. Lee and K. Bourrillion. The Guice Project Home Page. http://code.google.com/p/google-guice/, 2007. 
+
+[14]  P. Reynolds, C. Killian, J. L. Wiener, J. C. Mogul, M. A. Shah, and A. Vahdat. Pip: Detecting the Unexpected in Distributed Systems. In *Proceedings of USENIX NSDI*, 2006. 
+
+[15]  P. Reynolds, J. L. Wiener, J. C. Mogul, M. K. Aguilera, and A. Vahdat. WAP5: Black Box Performance Debug- ging for Wide-Area Systems. In *Proceedings of the 15th International World Wide Web Conference*, 2006. 
+
+[16]  P. K. G. T. Gschwind, K. Eshghi and K. Wurster. Web- Mon: A Performance Profiler for Web Transactions. In *E-Commerce Workshop*, 2002. 
+
