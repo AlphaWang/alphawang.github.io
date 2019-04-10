@@ -9,16 +9,7 @@
   <meta name="author" content="Alpha Wang">
 
   
-  <meta name="description" content="下图展示了JVM的主要结构： 可以看出，JVM主要由以下几部分组成：
-- 类加载器子系统
-- 运行时数据区（内存空间）
-- 执行引擎
-- 本地方法接口 运行时数据区又分为：
-1. 程序计数器
-2. Java栈
-3. 本地方法栈
-4. 方法区
-5. 堆 ">
+  <meta name="description" content="最近在研究分布式链路追踪系统，Google的DAPPER当然是必读的论文了。目前网上能搜到一些中文翻译版，然而读下来感觉翻译比较生硬；这里试着基于前人的成果重新翻译一遍这个论文，权当是个人的学习笔记，如果同时能给其他人带来好处那更好了。 原文：https://ai.google/research/ &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -136,6 +127,51 @@ $(document).ready(
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/2019/03/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-03-24T12:04:46+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2019</span></span> <span class='time'>12:04 pm</span></time>
+          | <a href="/blog/2019/03/dapper-a-large-scale-distributed-systems-tracing-infrastructure/#comments" id="uyan_count_unit" du="" su="">0 Comments</a>
+            <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>最近在研究分布式链路追踪系统，Google的DAPPER当然是必读的论文了。目前网上能搜到一些中文翻译版，然而读下来感觉翻译比较生硬；这里试着基于前人的成果重新翻译一遍这个论文，权当是个人的学习笔记，如果同时能给其他人带来好处那更好了。</p></blockquote>
+
+<p>原文：<a href="https://ai.google/research/pubs/pub36356">https://ai.google/research/pubs/pub36356</a></p>
+
+<h2>摘要</h2>
+
+<p>现代互联网服务通常都是复杂的大规模分布式系统。这些系统由多个软件模块构成，这些软件模块可能由不同的团队开发、可能使用不同的编程语言实现、可能布在横跨多个数据中心的几千台服务器上。这种环境下就急需能帮助理解系统行为、能用于分析性能问题的工具。</p>
+
+<p>本文将介绍Dapper（Google生产环境下的分布式跟踪系统）的设计，并阐述它是如何满足在一个超大规模系统上达到<strong>低损耗</strong>（low overhead）、<strong>应用透明</strong>（application-level transparency）、<strong>大范围部署</strong>（ubiquitous deployment）这三个需求的。Dapper与其他一些跟踪系统的概念类似，尤其是Magpie和X-Trace，但是我们进行了一些特定的设计，所以它才能成功应用在我们的环境上，例如使用了采样、并限制公用库的大小。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/2019/03/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -523,43 +559,6 @@ $(document).ready(
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/2014/12/learning-jdk-negative-examples/">Learning JDK Source Code: Negative Examples</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-12-01T15:00:45+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2014</span></span> <span class='time'>3:00 pm</span></time>
-          | <a href="/blog/2014/12/learning-jdk-negative-examples/#comments" id="uyan_count_unit" du="" su="">0 Comments</a>
-            <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>本文记录了一些Java源码中设计不合理之处、违反设计模式之处，以及其他可以改进的地方。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/2014/12/learning-jdk-negative-examples/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -574,6 +573,7 @@ $(document).ready(
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (6)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
@@ -605,12 +605,19 @@ $(document).ready(
 <a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
 <a style="font-size: 119%" href="/blog/tags/web/">Web</a>
 <a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+<a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
+<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
 
 </ul>
 </section>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/2019/03/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
+      </li>
     
       <li class="post">
         <a href="/blog/2018/06/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
@@ -626,10 +633,6 @@ $(document).ready(
     
       <li class="post">
         <a href="/blog/2015/01/key-solr-concepts/">Key Solr Concepts</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/2015/01/introduction-to-apache-solr/">Introduction to Apache Solr</a>
       </li>
     
   </ul>
