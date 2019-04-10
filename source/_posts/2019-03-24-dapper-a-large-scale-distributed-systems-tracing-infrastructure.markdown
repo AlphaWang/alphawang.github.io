@@ -10,8 +10,14 @@ description: Google Dapper论文的翻译
 ---
 
 > 最近在研究分布式链路追踪系统，Google的DAPPER当然是必读的论文了。目前网上能搜到一些中文翻译版，然而读下来感觉翻译比较生硬；这里试着基于前人的成果重新翻译一遍这个论文，权当是个人的学习笔记，如果同时能给其他人带来好处那更好了。
+>
+> 如您发现有翻译错误，恳请提交github PR: <https://github.com/AlphaWang/alpha-dapper-translation>
 
-原文：https://ai.google/research/pubs/pub36356
+- 原文：https://ai.google/research/pubs/pub36356
+
+- 译文原始地址：<http://alphawang.com/blog/2019/03/dapper-a-large-scale-distributed-systems-tracing-infrastructure/>
+
+
 
 ## 摘要
 
@@ -53,7 +59,7 @@ Dapper的另一个重要特征是我们实现的应用透明程度非常高。�
 
 分布式服务的跟踪系统需要记录在一次请求后系统完成的所有工作的信息。举个例子，图-1展示了拥有5台服务器的服务：一个前端服务器A，两个中间层B和C，两个后端服务器D和E。当用户发起请求到前端服务器A之后，会发送两个RPC调用到B和C。B马上会返回结果，但是C还需要继续调用后端服务器D和E，然后返回结果给A，A再响应最初的请求。对这个请求来说，一个简单的分布式跟踪系统需要记录每台机器上的每次信息发送和接收的信息标识符和时间戳。
 
-![dapper-1_tree](/images/post/2019/dapper/dapper-1_tree.png)
+![dapper-1_tree]()
 
 *(图-1. 由用户请求X发起的穿过一个简单服务系统的请求路径。字母标识的节点表示分布式系统中的处理过程)*
 
@@ -65,13 +71,13 @@ Dapper的另一个重要特征是我们实现的应用透明程度非常高。�
 
 在Dapper跟踪树中，树节点是基本单元，我们称之为`span`。节点之间的连线表示span与其`父span`之间的关系。虽然节点在整个跟踪树中的位置是独立的，但span也是一个简单的时间戳日志，其中编码了这个span的开始时间、结束时间、RPC时间数据、以及0或多个应用程序相关的标注，我们将在2.3节中讨论这些内容。
 
-![dapper-2_span](/images/post/2019/dapper/dapper-2_span.png)
+![dapper-2_span]()
 
 *(图-2. Dapper跟踪树中5个span的临时关系)*
 
 图2阐释了spans是如何构造成更大的跟踪结构的。Dapper为每个span记录了一个可读的`span name`、`span id`和`parent id`，这样就能重建出一次分布式跟踪过程中不同span之间的关系。没有parent id的span被称为`根span`。一次特定跟踪的所有相关span会共享同一个通用的`trace id` (trace id在图中没有绘出)。所有这些ID可以是全局唯一的64位整数。在一个典型的Dapper跟踪中，我们希望每个RPC对应一个span，每一个组件层对应跟踪树上的一个层级。
 
-![dapper-3_span_detail](/images/post/2019/dapper/dapper-3_span_detail.png)
+![dapper-3_span_detail]()
 
 *(图-3. span的详细视图)*
 
@@ -93,7 +99,7 @@ Dapper的跟踪数据是语言无关的，生产环境中的许多跟踪结合�
 
 上述性能测量点足够推导出复杂分布式系统的跟踪细节，这使得Dapper的核心功能也适用于那些不可修改的Google应用程序。然而，Dapper也允许应用程序开发者添加额外的信息，以丰富Dapper的跟踪数据，从而帮助监控更高级别的系统行为，或者帮助调试问题。我们允许用户通过一个简单的API来定义带时间戳的标注，其核心代码如图4所示。这些标注支持任意内容。为了保护Dapper用户不至于意外加入太多日志，每个跟踪span都可配置一个标注量的上限。应用程序级别的标注是不能替代结构化的span信息以及RPC信息的。
 
-![dapper-4_annotation](/images/post/2019/dapper/dapper-4_annotation.png)
+![dapper-4_annotation]()
 
 *(图-4. Dapper标注API在C++和Java中的通用使用模式)*
 
@@ -105,7 +111,7 @@ Dapper的一个关键设计目标是低损耗，因为如果一个新工具的�
 
 ### 2.5 跟踪收集
 
-![dapper-5_collection](/images/post/2019/dapper/dapper-5_collection.png)
+![dapper-5_collection]()
 
 (图-5. Dapper收集管道概览)
 
@@ -244,7 +250,7 @@ Dapper在Google的使用有三类：使用DAPI的持久在线web应用，可在�
 
 绝大多数情况下，人们通过基于web的用户交互接口来使用Dapper。篇幅所限我们不能展示每一个特性，不过图6列出了一个典型的用户工作流。
 
-![dapper-6_workflow](/images/post/2019/dapper/dapper-6_workflow.png)
+![dapper-6_workflow]()
 
 *(图-6. 通用Dapper用户接口中的一个典型用户工作流)*
 
@@ -293,7 +299,7 @@ Google维护了一个从运行进程中不断收集并集中异常报告的服�
 一个工程师在调试长尾延迟的过程中建立了一个小型库，可以根据DAPI `Trace`对象推断出层次性的关键路径。这些关键路径结构可用来诊断问题、为全文搜索可预期的性能改进调整优先级。Dapper的这项工作引出了下列发现：
 
 - 关键路径上短暂的网络性能退化不会影响系统吞吐量，但能对延迟异常值产生巨大影响。在图7中，大多数全文搜索的慢跟踪都在关键路径上有网络退化。
-  ![dapper-7_network-lag](/images/post/2019/dapper/dapper-7_network-lag.png) 
+  ![dapper-7_network-lag]() 
   (图-7. 关键路径上遇到非正常网络延迟的全文搜索跟踪，与端到端请求延迟的关系)
 - 许多有问题的昂贵的查询模式都源自服务间不经意的交互。一旦发现，他们往往很容易纠正；但是在没有Dapper时如何发现他们是很困难的。
 - 通用查询是从Dapper之外的安全日志仓库中获取，并且使用Dapper的唯一trace id，与Dapper仓库做关联。这种映射随后被用于构建全文搜索每个独立子系统中的慢查询列表。
@@ -395,4 +401,6 @@ We thank Mahesh Palekar, Cliff Biffle, Thomas Kotzmann, Kevin Gibbs, Yonatan Zun
 [15]  P. Reynolds, J. L. Wiener, J. C. Mogul, M. K. Aguilera, and A. Vahdat. WAP5: Black Box Performance Debug- ging for Wide-Area Systems. In *Proceedings of the 15th International World Wide Web Conference*, 2006. 
 
 [16]  P. K. G. T. Gschwind, K. Eshghi and K. Wurster. Web- Mon: A Performance Profiler for Web Transactions. In *E-Commerce Workshop*, 2002. 
+
+
 
