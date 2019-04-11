@@ -4,7 +4,7 @@
   <title><![CDATA[Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-04-11T00:19:15+08:00</updated>
+  <updated>2019-04-11T13:46:58+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Dapper, a Large-Scale Distributed Systems Tracing Infrastructure]]></title>
-    <link href="http://alphawang.github.io/blog/2019/03/dapper-a-large-scale-distributed-systems-tracing-infrastructure/"/>
+    <link href="http://alphawang.github.io/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/"/>
     <updated>2019-03-24T12:04:46+08:00</updated>
-    <id>http://alphawang.github.io/blog/2019/03/dapper-a-large-scale-distributed-systems-tracing-infrastructure</id>
+    <id>http://alphawang.github.io/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure</id>
     <content type="html"><![CDATA[<blockquote><p>最近在研究分布式链路追踪系统，Google的DAPPER当然是必读的论文了。目前网上能搜到一些中文翻译版，然而读下来感觉翻译比较生硬；这里试着基于前人的成果重新翻译一遍这个论文，权当是个人的学习笔记，如果同时能给其他人带来好处那更好了。</p>
 
 <p>如您发现有翻译错误，恳请提交github PR: <a href="https://github.com/AlphaWang/alpha-dapper-translation">https://github.com/AlphaWang/alpha-dapper-translation</a></p></blockquote>
@@ -72,7 +72,7 @@
 
 <p>分布式服务的跟踪系统需要记录在一次请求后系统完成的所有工作的信息。举个例子，图-1展示了拥有5台服务器的服务：一个前端服务器A，两个中间层B和C，两个后端服务器D和E。当用户发起请求到前端服务器A之后，会发送两个RPC调用到B和C。B马上会返回结果，但是C还需要继续调用后端服务器D和E，然后返回结果给A，A再响应最初的请求。对这个请求来说，一个简单的分布式跟踪系统需要记录每台机器上的每次信息发送和接收的信息标识符和时间戳。</p>
 
-<p><img src="" alt="dapper-1_tree" /></p>
+<p><img src="http://alphawang.github.io/images/post/2019/dapper/dapper-1_tree.png" alt="dapper-1_tree" /></p>
 
 <p><em>(图-1. 由用户请求X发起的穿过一个简单服务系统的请求路径。字母标识的节点表示分布式系统中的处理过程)</em></p>
 
@@ -84,13 +84,13 @@
 
 <p>在Dapper跟踪树中，树节点是基本单元，我们称之为<code>span</code>。节点之间的连线表示span与其<code>父span</code>之间的关系。虽然节点在整个跟踪树中的位置是独立的，但span也是一个简单的时间戳日志，其中编码了这个span的开始时间、结束时间、RPC时间数据、以及0或多个应用程序相关的标注，我们将在2.3节中讨论这些内容。</p>
 
-<p><img src="" alt="dapper-2_span" /></p>
+<p><img src="http://alphawang.github.io/images/post/2019/dapper/dapper-2_span.png" alt="dapper-2_span" /></p>
 
 <p><em>(图-2. Dapper跟踪树中5个span的临时关系)</em></p>
 
 <p>图2阐释了spans是如何构造成更大的跟踪结构的。Dapper为每个span记录了一个可读的<code>span name</code>、<code>span id</code>和<code>parent id</code>，这样就能重建出一次分布式跟踪过程中不同span之间的关系。没有parent id的span被称为<code>根span</code>。一次特定跟踪的所有相关span会共享同一个通用的<code>trace id</code> (trace id在图中没有绘出)。所有这些ID可以是全局唯一的64位整数。在一个典型的Dapper跟踪中，我们希望每个RPC对应一个span，每一个组件层对应跟踪树上的一个层级。</p>
 
-<p><img src="" alt="dapper-3_span_detail" /></p>
+<p><img src="http://alphawang.github.io/images/post/2019/dapper/dapper-3_span_detail.png" alt="dapper-3_span_detail" /></p>
 
 <p><em>(图-3. span的详细视图)</em></p>
 
@@ -115,7 +115,7 @@
 
 <p>上述性能测量点足够推导出复杂分布式系统的跟踪细节，这使得Dapper的核心功能也适用于那些不可修改的Google应用程序。然而，Dapper也允许应用程序开发者添加额外的信息，以丰富Dapper的跟踪数据，从而帮助监控更高级别的系统行为，或者帮助调试问题。我们允许用户通过一个简单的API来定义带时间戳的标注，其核心代码如图4所示。这些标注支持任意内容。为了保护Dapper用户不至于意外加入太多日志，每个跟踪span都可配置一个标注量的上限。应用程序级别的标注是不能替代结构化的span信息以及RPC信息的。</p>
 
-<p><img src="" alt="dapper-4_annotation" /></p>
+<p><img src="http://alphawang.github.io/images/post/2019/dapper/dapper-4_annotation.png" alt="dapper-4_annotation" /></p>
 
 <p><em>(图-4. Dapper标注API在C++和Java中的通用使用模式)</em></p>
 
@@ -127,9 +127,9 @@
 
 <h3>2.5 跟踪收集</h3>
 
-<p><img src="" alt="dapper-5_collection" /></p>
+<p><img src="http://alphawang.github.io/images/post/2019/dapper/dapper-5_collection.png" alt="dapper-5_collection" /></p>
 
-<p>(图-5. Dapper收集管道概览)</p>
+<p><em>(图-5. Dapper收集管道概览)</em></p>
 
 <p>Dapper的跟踪记录和收集管道氛围三个阶段(如图5)。首先，把span数据写入(1)到本地日志文件。然后Dapper守护进程从所有生产主机中将他们拉取出来(2)，最终写入(3)到Dapper的Bigtable仓库中。Bigtable中的行表示一次跟踪，列表示一个span。Bigtable对稀疏表格布局的支持正适合这种情况，因为每个跟踪都可能有任意多个span。跟踪数据收集即将应用程序二进制数据传输到中央仓库，其延迟中位数小于15秒。98分位延迟呈现双峰形；大约75%时间里，98分位延迟小于2分钟，但是在另外25%时间里可能会涨到几小时。</p>
 
@@ -320,7 +320,7 @@
 
 <p>绝大多数情况下，人们通过基于web的用户交互接口来使用Dapper。篇幅所限我们不能展示每一个特性，不过图6列出了一个典型的用户工作流。</p>
 
-<p><img src="" alt="dapper-6_workflow" /></p>
+<p><img src="http://alphawang.github.io/images/post/2019/dapper/dapper-6_workflow.png" alt="dapper-6_workflow" /></p>
 
 <p><em>(图-6. 通用Dapper用户接口中的一个典型用户工作流)</em></p>
 
@@ -373,8 +373,8 @@
 
 <ul>
 <li>关键路径上短暂的网络性能退化不会影响系统吞吐量，但能对延迟异常值产生巨大影响。在图7中，大多数全文搜索的慢跟踪都在关键路径上有网络退化。
-<img src="" alt="dapper-7_network-lag" />
-(图-7. 关键路径上遇到非正常网络延迟的全文搜索跟踪，与端到端请求延迟的关系)</li>
+<img src="http://alphawang.github.io/images/post/2019/dapper/dapper-7_network-lag.png" alt="dapper-7_network-lag" />
+<em>(图-7. 关键路径上遇到非正常网络延迟的全文搜索跟踪，与端到端请求延迟的关系)</em></li>
 <li>许多有问题的昂贵的查询模式都源自服务间不经意的交互。一旦发现，他们往往很容易纠正；但是在没有Dapper时如何发现他们是很困难的。</li>
 <li>通用查询是从Dapper之外的安全日志仓库中获取，并且使用Dapper的唯一trace id，与Dapper仓库做关联。这种映射随后被用于构建全文搜索每个独立子系统中的慢查询列表。</li>
 </ul>
@@ -482,9 +482,9 @@
   
   <entry>
     <title type="html"><![CDATA[JMM: Java Runtime Data Area]]></title>
-    <link href="http://alphawang.github.io/blog/2018/06/jmm-runtime-data-area/"/>
+    <link href="http://alphawang.github.io/blog/jmm-runtime-data-area/"/>
     <updated>2018-06-03T14:00:40+08:00</updated>
-    <id>http://alphawang.github.io/blog/2018/06/jmm-runtime-data-area</id>
+    <id>http://alphawang.github.io/blog/jmm-runtime-data-area</id>
     <content type="html"><![CDATA[<p>下图展示了JVM的主要结构：
 <img src="http://alphawang.github.io/images/post/2018/jmm/runtime-data-area.png" alt="user icon" /></p>
 
@@ -620,9 +620,9 @@ JVM在Eden Space中会开辟一小块独立的TLAB（Thread Local Allocation Buf
   
   <entry>
     <title type="html"><![CDATA[Google Guava: 2. Collections]]></title>
-    <link href="http://alphawang.github.io/blog/2015/03/google-guava-collections/"/>
+    <link href="http://alphawang.github.io/blog/google-guava-collections/"/>
     <updated>2015-03-24T14:00:40+08:00</updated>
-    <id>http://alphawang.github.io/blog/2015/03/google-guava-collections</id>
+    <id>http://alphawang.github.io/blog/google-guava-collections</id>
     <content type="html"><![CDATA[<blockquote><p>Please ref to the demo code: <code>git clone https://github.com/AlphaWang/guava-demo.git</code></p></blockquote>
 
 <p>The Guava library has its history rooted in working with collections, starting out as <code>google-collections</code>. The Google Collections Library has long since been abandoned, and all the functionality from the original library has been merged into Guava.</p>
@@ -1169,9 +1169,9 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[Google Guava: 1. Dealing With Null]]></title>
-    <link href="http://alphawang.github.io/blog/2015/03/google-guava-dealing-with-null/"/>
+    <link href="http://alphawang.github.io/blog/google-guava-dealing-with-null/"/>
     <updated>2015-03-23T14:00:40+08:00</updated>
-    <id>http://alphawang.github.io/blog/2015/03/google-guava-dealing-with-null</id>
+    <id>http://alphawang.github.io/blog/google-guava-dealing-with-null</id>
     <content type="html"><![CDATA[<blockquote><p>Please ref to the demo code: <code>git clone https://github.com/AlphaWang/guava-demo.git</code></p></blockquote>
 
 <p>Many of Guava&rsquo;s utilities are designed to fail fast in the presence of null rather than allow nulls to be used.</p>
@@ -1401,9 +1401,9 @@ api:</li>
   
   <entry>
     <title type="html"><![CDATA[Key Solr Concepts]]></title>
-    <link href="http://alphawang.github.io/blog/2015/01/key-solr-concepts/"/>
+    <link href="http://alphawang.github.io/blog/key-solr-concepts/"/>
     <updated>2015-01-20T16:00:40+08:00</updated>
-    <id>http://alphawang.github.io/blog/2015/01/key-solr-concepts</id>
+    <id>http://alphawang.github.io/blog/key-solr-concepts</id>
     <content type="html"><![CDATA[<blockquote><p>本文是《Solr In Action》读书笔记，包含第3章</p></blockquote>
 
 <!--more-->
@@ -1756,9 +1756,9 @@ It merely serves as a normalization factor to attempt to make scores between que
   
   <entry>
     <title type="html"><![CDATA[Introduction to Apache Solr]]></title>
-    <link href="http://alphawang.github.io/blog/2015/01/introduction-to-apache-solr/"/>
+    <link href="http://alphawang.github.io/blog/introduction-to-apache-solr/"/>
     <updated>2015-01-20T15:28:10+08:00</updated>
-    <id>http://alphawang.github.io/blog/2015/01/introduction-to-apache-solr</id>
+    <id>http://alphawang.github.io/blog/introduction-to-apache-solr</id>
     <content type="html"><![CDATA[<blockquote><p>本文是《Solr In Action》读书笔记，包含第1~2章</p></blockquote>
 
 <!--more-->
@@ -1925,9 +1925,9 @@ in comparison to query execution, results construction is a slow process.</li>
   
   <entry>
     <title type="html"><![CDATA[Is the Improvement of String.substring() in Java7 Really Reasonable?]]></title>
-    <link href="http://alphawang.github.io/blog/2014/12/the-impovement-of-string-substring-in-java7-/"/>
+    <link href="http://alphawang.github.io/blog/the-impovement-of-string-substring-in-java7-/"/>
     <updated>2014-12-24T15:59:15+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/12/the-impovement-of-string-substring-in-java7-</id>
+    <id>http://alphawang.github.io/blog/the-impovement-of-string-substring-in-java7-</id>
     <content type="html"><![CDATA[<p><code>String#substring()</code>在Java6和Java7中的实现是不一样的。这是因为Java6的实现可能导致内存问题，所以Java7中为了改善这个问题修改了实现方式。那么Java7中的实现就真的合理吗？</p>
 
 <p>首先让我们来猜测一下，Java是如何实现substring功能的。由于String是不可变的，可能我们会猜测实现机制如下图：</p>
@@ -2096,9 +2096,9 @@ in comparison to query execution, results construction is a slow process.</li>
   
   <entry>
     <title type="html"><![CDATA[How String in Switch Works in Java 7]]></title>
-    <link href="http://alphawang.github.io/blog/2014/12/how-string-in-switch-works-in-java7/"/>
+    <link href="http://alphawang.github.io/blog/how-string-in-switch-works-in-java7/"/>
     <updated>2014-12-20T10:02:33+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/12/how-string-in-switch-works-in-java7</id>
+    <id>http://alphawang.github.io/blog/how-string-in-switch-works-in-java7</id>
     <content type="html"><![CDATA[<p>支持switch字符串是Java7增加的一个新特性，那么它的底层是如何实现的呢？我们来看一个switch String的例子，然后分析编译器是如何处理的。</p>
 
 <!--more-->
@@ -2260,9 +2260,9 @@ in comparison to query execution, results construction is a slow process.</li>
   
   <entry>
     <title type="html"><![CDATA[What's String.intern()]]></title>
-    <link href="http://alphawang.github.io/blog/2014/12/what-is-string-intern/"/>
+    <link href="http://alphawang.github.io/blog/what-is-string-intern/"/>
     <updated>2014-12-15T15:23:45+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/12/what-is-string-intern</id>
+    <id>http://alphawang.github.io/blog/what-is-string-intern</id>
     <content type="html"><![CDATA[<p>Java语言中有8种基本类型和一种比较特殊的类型<code>String</code>。为了使这些类型在运行过程中速度更快，更节省内存，都提供了一种常量池的概念。常量池就类似一个Java系统级别提供的缓存。</p>
 
 <p>其中8种基本类型的常量池都是系统协调的，而<code>String</code>类型的常量池比较特殊。它的主要使用方法有两种：</p>
@@ -2555,9 +2555,9 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
   
   <entry>
     <title type="html"><![CDATA[Learning JDK Source Code: Positive Examples]]></title>
-    <link href="http://alphawang.github.io/blog/2014/12/learning-jdk-positive-examples/"/>
+    <link href="http://alphawang.github.io/blog/learning-jdk-positive-examples/"/>
     <updated>2014-12-02T16:21:09+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/12/learning-jdk-positive-examples</id>
+    <id>http://alphawang.github.io/blog/learning-jdk-positive-examples</id>
     <content type="html"><![CDATA[<p>本文记录了一些Java源码中的良好编程习惯、运用的设计模式。</p>
 
 <!--more-->
@@ -3444,9 +3444,9 @@ public int hashCode() {
   
   <entry>
     <title type="html"><![CDATA[Learning JDK Source Code: Negative Examples]]></title>
-    <link href="http://alphawang.github.io/blog/2014/12/learning-jdk-negative-examples/"/>
+    <link href="http://alphawang.github.io/blog/learning-jdk-negative-examples/"/>
     <updated>2014-12-01T15:00:45+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/12/learning-jdk-negative-examples</id>
+    <id>http://alphawang.github.io/blog/learning-jdk-negative-examples</id>
     <content type="html"><![CDATA[<p>本文记录了一些Java源码中设计不合理之处、违反设计模式之处，以及其他可以改进的地方。</p>
 
 <!--more-->
@@ -4207,9 +4207,9 @@ System.out.println(numbers); // [C@16f0472</p>
   
   <entry>
     <title type="html"><![CDATA[How to Implement a HashMap]]></title>
-    <link href="http://alphawang.github.io/blog/2014/11/how-to-implement-a-hashmap/"/>
+    <link href="http://alphawang.github.io/blog/how-to-implement-a-hashmap/"/>
     <updated>2014-11-17T19:24:35+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/11/how-to-implement-a-hashmap</id>
+    <id>http://alphawang.github.io/blog/how-to-implement-a-hashmap</id>
     <content type="html"><![CDATA[<p>作为一个Java开发民工，对<code>HashMap</code>可以说是经常使用的，不过要是想更好地使用它，还是需要了解其内部实现原理的。当了解了实现原理后，自己实现一个HashMap也就不难了。</p>
 
 <!--more-->
@@ -4958,9 +4958,9 @@ HashMap的解决办法就是采用<code>链地址法</code>。</p>
   
   <entry>
     <title type="html"><![CDATA[Uml Class Diagram of Collection and Map]]></title>
-    <link href="http://alphawang.github.io/blog/2014/11/collection-map-uml%20copy/"/>
+    <link href="http://alphawang.github.io/blog/collection-map-uml%20copy/"/>
     <updated>2014-11-15T14:05:15+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/11/collection-map-uml copy</id>
+    <id>http://alphawang.github.io/blog/collection-map-uml copy</id>
     <content type="html"><![CDATA[<p>网络上能搜到很多Java集合类的UML类图，但是大多不够明晰；所以我之前自己绘制了一份，在这里贴出来：</p>
 
 <p><img src="http://alphawang.github.io/images/post/2014/11/collection.jpg" alt="collection icon" /></p>
@@ -4973,9 +4973,9 @@ HashMap的解决办法就是采用<code>链地址法</code>。</p>
   
   <entry>
     <title type="html"><![CDATA[How to Pass POJO Array to Spring MVC Controller]]></title>
-    <link href="http://alphawang.github.io/blog/2014/10/how-to-pass-pojo-array-to-spring-mvc-controller/"/>
+    <link href="http://alphawang.github.io/blog/how-to-pass-pojo-array-to-spring-mvc-controller/"/>
     <updated>2014-10-26T15:59:15+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/10/how-to-pass-pojo-array-to-spring-mvc-controller</id>
+    <id>http://alphawang.github.io/blog/how-to-pass-pojo-array-to-spring-mvc-controller</id>
     <content type="html"><![CDATA[<h2>问题</h2>
 
 <p>最近遇到个需求，需要将一个对象数组从前端用ajax传递给后端的Spring MVC Controller，例如传递如下数据：</p>
@@ -5275,9 +5275,9 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
   
   <entry>
     <title type="html"><![CDATA[Integrate Octopress With Flickr]]></title>
-    <link href="http://alphawang.github.io/blog/2014/09/integrate-octopress-with-flickr/"/>
+    <link href="http://alphawang.github.io/blog/integrate-octopress-with-flickr/"/>
     <updated>2014-09-22T15:59:15+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/09/integrate-octopress-with-flickr</id>
+    <id>http://alphawang.github.io/blog/integrate-octopress-with-flickr</id>
     <content type="html"><![CDATA[<p>Octopress Blog有一个很酷的<a href="https://github.com/neilk/octopress-flickr">插件</a>，可以将Flickr中的某个图片插入到你的博文中。像这样：  <br/>
 {\% flickr_image 15313566521 o \%}</p>
 
@@ -5481,9 +5481,9 @@ git clone <a href="https://github.com/neilk/octopress-flickr">插件</a>到本�
   
   <entry>
     <title type="html"><![CDATA[Utility Classes Are Evil]]></title>
-    <link href="http://alphawang.github.io/blog/2014/09/utility-classes-are-evil/"/>
+    <link href="http://alphawang.github.io/blog/utility-classes-are-evil/"/>
     <updated>2014-09-18T15:30:18+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/09/utility-classes-are-evil</id>
+    <id>http://alphawang.github.io/blog/utility-classes-are-evil</id>
     <content type="html"><![CDATA[<p>This post is a summary of <a href="http://www.javacodegeeks.com/2014/09/oop-alternative-to-utility-classes.html">this artical</a> and <a href="http://blogs.msdn.com/b/nickmalik/archive/2005/09/06/461404.aspx">this one</a>.</p>
 
 <h2>What&rsquo;s Utility Classes</h2>
@@ -5712,9 +5712,9 @@ The OO alternative is:</p>
   
   <entry>
     <title type="html"><![CDATA[Zapfino: A Cool Font]]></title>
-    <link href="http://alphawang.github.io/blog/2014/09/zapfino-a-cool-font/"/>
+    <link href="http://alphawang.github.io/blog/zapfino-a-cool-font/"/>
     <updated>2014-09-16T17:28:52+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/09/zapfino-a-cool-font</id>
+    <id>http://alphawang.github.io/blog/zapfino-a-cool-font</id>
     <content type="html"><![CDATA[<p>I&rsquo;m tring to look for some fonts for my blog these days, and find a cool font <a href="http://en.wikipedia.org/wiki/Zapfino"><code>Zapfino</code></a> inadvertently.</p>
 
 <p>Here is how it looks:</p>
@@ -5776,9 +5776,9 @@ The OO alternative is:</p>
   
   <entry>
     <title type="html"><![CDATA[Make Mac Terminal Console / iTerm Colorful]]></title>
-    <link href="http://alphawang.github.io/blog/2014/09/make-iterm-colorful/"/>
+    <link href="http://alphawang.github.io/blog/make-iterm-colorful/"/>
     <updated>2014-09-11T14:36:31+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/09/make-iterm-colorful</id>
+    <id>http://alphawang.github.io/blog/make-iterm-colorful</id>
     <content type="html"><![CDATA[<p>Neither Terminal or iTerm on Mac is white/black color by default, which looks tedious. What if different entries shown in different colors?<br/>
 Fortunately, we can do this just by writing a configuration file, then the terminal console or iTerm can look like this:</p>
 
@@ -5883,9 +5883,9 @@ If you are not satisfied with that color, you can change the value of LSCOLORS.<
   
   <entry>
     <title type="html"><![CDATA[Calendar Tools on Mac]]></title>
-    <link href="http://alphawang.github.io/blog/2014/09/mac-calendar-tool/"/>
+    <link href="http://alphawang.github.io/blog/mac-calendar-tool/"/>
     <updated>2014-09-10T17:15:35+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/09/mac-calendar-tool</id>
+    <id>http://alphawang.github.io/blog/mac-calendar-tool</id>
     <content type="html"><![CDATA[<p>Mac菜单栏原生的日期时间显示比较简单，例如不能直接查看月历，比较不爽。<br/>
 找到了几个比较优秀的Mac日期工具，可以替代原生功能：</p>
 
@@ -5940,9 +5940,9 @@ Day-O doesn&rsquo;t do much of anything.</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[[六大设计原则] 6. Open Closed Principle]]></title>
-    <link href="http://alphawang.github.io/blog/2012/12/6_open-closed-principle/"/>
+    <link href="http://alphawang.github.io/blog/6_open-closed-principle/"/>
     <updated>2012-12-31T16:47:20+08:00</updated>
-    <id>http://alphawang.github.io/blog/2012/12/6_open-closed-principle</id>
+    <id>http://alphawang.github.io/blog/6_open-closed-principle</id>
     <content type="html"><![CDATA[<h2>定义</h2>
 
 <p>Open Closed Principle:</p>

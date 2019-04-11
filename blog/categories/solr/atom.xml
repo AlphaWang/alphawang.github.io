@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Solr | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/solr/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-04-11T00:19:15+08:00</updated>
+  <updated>2019-04-11T13:46:58+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Key Solr Concepts]]></title>
-    <link href="http://alphawang.github.io/blog/2015/01/key-solr-concepts/"/>
+    <link href="http://alphawang.github.io/blog/key-solr-concepts/"/>
     <updated>2015-01-20T16:00:40+08:00</updated>
-    <id>http://alphawang.github.io/blog/2015/01/key-solr-concepts</id>
+    <id>http://alphawang.github.io/blog/key-solr-concepts</id>
     <content type="html"><![CDATA[<blockquote><p>本文是《Solr In Action》读书笔记，包含第3章</p></blockquote>
 
 <!--more-->
@@ -352,9 +352,9 @@ It merely serves as a normalization factor to attempt to make scores between que
   
   <entry>
     <title type="html"><![CDATA[Introduction to Apache Solr]]></title>
-    <link href="http://alphawang.github.io/blog/2015/01/introduction-to-apache-solr/"/>
+    <link href="http://alphawang.github.io/blog/introduction-to-apache-solr/"/>
     <updated>2015-01-20T15:28:10+08:00</updated>
-    <id>http://alphawang.github.io/blog/2015/01/introduction-to-apache-solr</id>
+    <id>http://alphawang.github.io/blog/introduction-to-apache-solr</id>
     <content type="html"><![CDATA[<blockquote><p>本文是《Solr In Action》读书笔记，包含第1~2章</p></blockquote>
 
 <!--more-->

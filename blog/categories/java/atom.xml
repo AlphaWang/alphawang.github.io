@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Java | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-04-11T00:19:15+08:00</updated>
+  <updated>2019-04-11T13:46:58+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[JMM: Java Runtime Data Area]]></title>
-    <link href="http://alphawang.github.io/blog/2018/06/jmm-runtime-data-area/"/>
+    <link href="http://alphawang.github.io/blog/jmm-runtime-data-area/"/>
     <updated>2018-06-03T14:00:40+08:00</updated>
-    <id>http://alphawang.github.io/blog/2018/06/jmm-runtime-data-area</id>
+    <id>http://alphawang.github.io/blog/jmm-runtime-data-area</id>
     <content type="html"><![CDATA[<p>下图展示了JVM的主要结构：
 <img src="/images/post/2018/jmm/runtime-data-area.png" alt="user icon" /></p>
 
@@ -153,9 +153,9 @@ JVM在Eden Space中会开辟一小块独立的TLAB（Thread Local Allocation Buf
   
   <entry>
     <title type="html"><![CDATA[Google Guava: 2. Collections]]></title>
-    <link href="http://alphawang.github.io/blog/2015/03/google-guava-collections/"/>
+    <link href="http://alphawang.github.io/blog/google-guava-collections/"/>
     <updated>2015-03-24T14:00:40+08:00</updated>
-    <id>http://alphawang.github.io/blog/2015/03/google-guava-collections</id>
+    <id>http://alphawang.github.io/blog/google-guava-collections</id>
     <content type="html"><![CDATA[<blockquote><p>Please ref to the demo code: <code>git clone https://github.com/AlphaWang/guava-demo.git</code></p></blockquote>
 
 <p>The Guava library has its history rooted in working with collections, starting out as <code>google-collections</code>. The Google Collections Library has long since been abandoned, and all the functionality from the original library has been merged into Guava.</p>
@@ -712,9 +712,9 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[Google Guava: 1. Dealing With Null]]></title>
-    <link href="http://alphawang.github.io/blog/2015/03/google-guava-dealing-with-null/"/>
+    <link href="http://alphawang.github.io/blog/google-guava-dealing-with-null/"/>
     <updated>2015-03-23T14:00:40+08:00</updated>
-    <id>http://alphawang.github.io/blog/2015/03/google-guava-dealing-with-null</id>
+    <id>http://alphawang.github.io/blog/google-guava-dealing-with-null</id>
     <content type="html"><![CDATA[<blockquote><p>Please ref to the demo code: <code>git clone https://github.com/AlphaWang/guava-demo.git</code></p></blockquote>
 
 <p>Many of Guava&rsquo;s utilities are designed to fail fast in the presence of null rather than allow nulls to be used.</p>
@@ -921,9 +921,9 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
   
   <entry>
     <title type="html"><![CDATA[Is the Improvement of String.substring() in Java7 Really Reasonable?]]></title>
-    <link href="http://alphawang.github.io/blog/2014/12/the-impovement-of-string-substring-in-java7-/"/>
+    <link href="http://alphawang.github.io/blog/the-impovement-of-string-substring-in-java7-/"/>
     <updated>2014-12-24T15:59:15+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/12/the-impovement-of-string-substring-in-java7-</id>
+    <id>http://alphawang.github.io/blog/the-impovement-of-string-substring-in-java7-</id>
     <content type="html"><![CDATA[<p><code>String#substring()</code>在Java6和Java7中的实现是不一样的。这是因为Java6的实现可能导致内存问题，所以Java7中为了改善这个问题修改了实现方式。那么Java7中的实现就真的合理吗？</p>
 
 <p>首先让我们来猜测一下，Java是如何实现substring功能的。由于String是不可变的，可能我们会猜测实现机制如下图：</p>
@@ -1043,9 +1043,9 @@ public String substring(int beginIndex, int endIndex) {
   
   <entry>
     <title type="html"><![CDATA[How String in Switch Works in Java 7]]></title>
-    <link href="http://alphawang.github.io/blog/2014/12/how-string-in-switch-works-in-java7/"/>
+    <link href="http://alphawang.github.io/blog/how-string-in-switch-works-in-java7/"/>
     <updated>2014-12-20T10:02:33+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/12/how-string-in-switch-works-in-java7</id>
+    <id>http://alphawang.github.io/blog/how-string-in-switch-works-in-java7</id>
     <content type="html"><![CDATA[<p>支持switch字符串是Java7增加的一个新特性，那么它的底层是如何实现的呢？我们来看一个switch String的例子，然后分析编译器是如何处理的。</p>
 
 <!--more-->

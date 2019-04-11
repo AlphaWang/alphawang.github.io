@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Site | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/site/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-04-11T00:19:15+08:00</updated>
+  <updated>2019-04-11T13:46:58+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Integrate Octopress With Flickr]]></title>
-    <link href="http://alphawang.github.io/blog/2014/09/integrate-octopress-with-flickr/"/>
+    <link href="http://alphawang.github.io/blog/integrate-octopress-with-flickr/"/>
     <updated>2014-09-22T15:59:15+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/09/integrate-octopress-with-flickr</id>
+    <id>http://alphawang.github.io/blog/integrate-octopress-with-flickr</id>
     <content type="html"><![CDATA[<p>Octopress Blog有一个很酷的<a href="https://github.com/neilk/octopress-flickr">插件</a>，可以将Flickr中的某个图片插入到你的博文中。像这样：  <br/>
 {\% flickr_image 15313566521 o \%}</p>
 

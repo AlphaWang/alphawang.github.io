@@ -1,0 +1,644 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Utility Classes Are Evil - Alpha's Programming Notes</title>
+  <meta name="author" content="Alpha Wang">
+
+  
+  <meta name="description" content="A utility class is a class filled with static methods. However, in an object-oriented world, utility classes are considered a very bad practice. The &hellip;">
+  <meta name="keywords" content="Design Pattern, Java, Utility Classes, 工具类">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://alphawang.github.io/blog/utility-classes-are-evil">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Alpha's Programming Notes" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script>
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+
+$(document).bind('DOMNodeInserted', function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-54659411-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">AlphaWang.com</a></h1>
+  
+    <h2>Alpha's Programming Notes | 一个程序员的日常</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:alphawang.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/tag-cloud/">Tags</a></li>
+  <li><a href="/photography/">Photo</a></li>
+  <li><a href="/about/">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Utility Classes Are Evil</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-09-18T15:30:18+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:30 pm</span></time>
+          | <a href="#comments" id="uyan_count_unit" du="" su="">0 Comments</a>
+            <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This post is a summary of <a href="http://www.javacodegeeks.com/2014/09/oop-alternative-to-utility-classes.html">this artical</a> and <a href="http://blogs.msdn.com/b/nickmalik/archive/2005/09/06/461404.aspx">this one</a>.</p>
+
+<h2>What&rsquo;s Utility Classes</h2>
+
+<p>A utility class is a class filled with static methods.  It is usually used to isolate a &ldquo;useful&rdquo; algorithm.</p>
+
+<blockquote><p><code>StringUtils</code>, <code>IOUtils</code>, <code>FileUtils</code> from Apache Commons; <code>Iterables</code> and <code>Iterators</code> from Guava, and <code>Files</code> from JDK7 are perfect examples of utility classes.</p></blockquote>
+
+<h2>Why Utility Classes</h2>
+
+<p>If you have two classes <code>A</code> and <code>B</code>, and have a method <code>f()</code> that both must use, then the most naive approach is to repeat the function as a method in both classes. However, this violates the <a href="http://en.wikipedia.org/wiki/Don't_repeat_yourself">Don&rsquo;t repeat yourself (DRY)</a> approach to programming.</p>
+
+<p>The most natural solution is inheritance, but it&rsquo;s not always beneficial for <code>A</code> and <code>B</code> to be subclasses of some parent class. In my case, <code>A</code> was already a subclass of another class, while <code>B</code> was not. There was no way to make <code>A</code> and <code>B</code> subclasses of a parent class without breaking that other relationship.</p>
+
+<p>The alternative is to define the utility class: a public static class that sits in the global namespace, awaiting anyone to &ldquo;borrow&rdquo; them.</p>
+
+<p>They are not bad in themselves, but they do imply relationships between your data that are not explicitly defined. Also, if your static class has any static variables, then <code>A</code> and <code>B</code> never really know what they&rsquo;re getting into when they use it.</p>
+
+<!--more-->
+
+
+<h2>Disadvantage</h2>
+
+<p>However, in an object-oriented world, utility classes are considered a very bad practice.<br/>
+The use of utility classes to be an antipattern. More specifically, it violates common design principles:</p>
+
+<h3>Single Responsibility Principle</h3>
+
+<blockquote><p>A class should have one and only one reason to change</p></blockquote>
+
+<p>You can design utility classes where all of the methods related to a single set of responsibilities.  That is entirely possible.  Therefore, I would note that this principle does not conflict with the notion of utility classes at all.<br/>
+That said, I&rsquo;ve often seen helper classes that violate this principle.  They become &ldquo;catch all&rdquo; classes (or God Classes) that contain any method that the developer can&rsquo;t find another place for.  (e.g. a class containing a helper method for URL encoding, a method for looking up a password, and a method for writing an update to the config file&hellip; This class would violate the Single Responsibility Principle).</p>
+
+<h3>Liskov Substitution Principle</h3>
+
+<blockquote><p>Derived classes must be substitutable for their base classes</p></blockquote>
+
+<p>This is kind of a no-op in that a utility class cannot have a derived class.  OK.  Does that mean that utility classes violate LSP?  I&rsquo;d say not.  A helper class looses the advantages of OO completely, an in that sense, LSP doesn&rsquo;t matter&hellip; but it doesn&rsquo;t violate it.</p>
+
+<h3>Interface Segregation Principle</h3>
+
+<blockquote><p>Class interfaces should be fine-grained and client specific</p></blockquote>
+
+<p>another no-op.  Since utility classes do not derive from an interface, it is difficult to apply this principle with any degree of seperation from the Single Responsibility Principle.</p>
+
+<h3>The Open Closed Principle</h3>
+
+<blockquote><p>classes should be open for extension and closed for modification</p></blockquote>
+
+<p>You cannot extend a utility class.  Since all methods are static, you cannot derive anything that extends from it.  In addition, the code that uses it doesn&rsquo;t create an object, so there is no way to create a child object that modifies any of the algorithms in a utility class.  They are all &ldquo;unchangable&rdquo;.</p>
+
+<p>As such, a helper class simply fails to provide one of the key aspects of object oriented design: the ability for the original developer to create a general answer, and for another developer to extend it, change it, make it more applicable.  If you assume that you do not know everything, and that you may not be creating the &ldquo;perfect&rdquo; class for every person, then utility classes will be an anathema to you.</p>
+
+<h3>The Dependency Inversion Principle</h3>
+
+<blockquote><p>Depend on abstractions, not concrete implementations</p></blockquote>
+
+<p>This is a simple and powerful principle that produces more testable code and better systems.  If you minimize the coupling between a class and the classes that it depends upon, you produce code that can be used more flexibly, and reused more easily.</p>
+
+<p>However, a utility class cannot participate in the Dependency Inversion Principle.  It cannot derive from an interface, nor implement a base class.  No one creates an object that can be extended with a helper class.  This is the &ldquo;partner&rdquo; of the Liskov Substitution Principle, but while utility classes do not violate the LSP, they do violate the DIP.</p>
+
+<hr />
+
+<p><strong>In summary, utility classes are not proper objects; therefore, they don’t fit into object-oriented world. They were inherited from procedural programming, mostly because most were used to a functional decomposition paradigm back then.</strong></p>
+
+<p>And there are other aritcals about this topic:  <a href="http://blogs.msdn.com/b/nickmalik/archive/2005/09/06/461404.aspx">Are Helper Classes Evil?</a> by Nick Malik, <a href="http://smart421.wordpress.com/2011/08/31/why-helper-singletons-and-utility-classes-are-mostly-bad-2/">Why helper, singletons and utility classes are mostly bad</a> by Simon Hart, <a href="http://www.marshallward.org/avoiding-utility-classes.html">Avoiding Utility Classes</a> by Marshal Ward, <a href="http://www.jroller.com/DhavalDalal/entry/kill_that_util_class">Kill That Util Class!</a> by Dhaval Dalal, <a href="http://www.robbagby.com/posts/helper-classes-are-a-code-smell/">Helper Classes Are A Code Smell</a> by Rob Bagby.</p>
+
+<h2>Object-Oriented Alternative</h2>
+
+<h3>Example1</h3>
+
+<p>Let&rsquo;s take <code>NumberUtils</code> for example:</p>
+
+<figure class='code'><figcaption><span>Utility Class</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// This is a terrible design, don&#39;t reuse</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">NumberUtils</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">max</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span> <span class="o">?</span> <span class="n">a</span> <span class="o">:</span> <span class="n">b</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In an object-oriented paradigm, we should instantiate and compose objects, thus letting them manage data when and how they desire. Instead of calling supplementary static functions, we should create objects that are capable of exposing the behaviour we are seeking:</p>
+
+<figure class='code'><figcaption><span>OO Class</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Max</span> <span class="kd">implements</span> <span class="n">Number</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">a</span><span class="o">;</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">b</span><span class="o">;</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="nf">Max</span><span class="o">(</span><span class="kt">int</span> <span class="n">x</span><span class="o">,</span> <span class="kt">int</span> <span class="n">y</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">a</span> <span class="o">=</span> <span class="n">x</span><span class="o">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">b</span> <span class="o">=</span> <span class="n">y</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="nd">@Override</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">int</span> <span class="nf">intValue</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">a</span> <span class="o">&gt;</span> <span class="k">this</span><span class="o">.</span><span class="na">b</span> <span class="o">?</span> <span class="k">this</span><span class="o">.</span><span class="na">a</span> <span class="o">:</span> <span class="k">this</span><span class="o">.</span><span class="na">b</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This procedural call:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="n">NumberUtils</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="mi">5</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>
+Will become object-oriented:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">int</span> <span class="n">max</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Max</span><span class="o">(</span><span class="mi">10</span><span class="o">,</span> <span class="mi">5</span><span class="o">).</span><span class="na">intValue</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Example2</h3>
+
+<p>Say, for instance, you want to read a text file, split it into lines, trim every line and then save the results in another file. This is can be done with <code>FileUtils</code> from Apache Commons:</p>
+
+<figure class='code'><figcaption><span>Utility Class   </span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span><span class="n">File</span> <span class="n">in</span><span class="o">,</span> <span class="n">File</span> <span class="n">out</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Collection</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">src</span> <span class="o">=</span> <span class="n">FileUtils</span><span class="o">.</span><span class="na">readLines</span><span class="o">(</span><span class="n">in</span><span class="o">,</span> <span class="s">&quot;UTF-8&quot;</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">Collection</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">dest</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;(</span><span class="n">src</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+</span><span class='line'>  <span class="k">for</span> <span class="o">(</span><span class="n">String</span> <span class="n">line</span> <span class="o">:</span> <span class="n">src</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">dest</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">line</span><span class="o">.</span><span class="na">trim</span><span class="o">());</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="n">FileUtils</span><span class="o">.</span><span class="na">writeLines</span><span class="o">(</span><span class="n">out</span><span class="o">,</span> <span class="n">dest</span><span class="o">,</span> <span class="s">&quot;UTF-8&quot;</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p> <br/>
+The above code may look clean; however, this is procedural programming, not object-oriented. We are manipulating data (bytes and bits) and explicitly instructing the computer from where to retrieve them and then where to put them on every single line of code. We’re defining a procedure of execution.<br/>
+The OO alternative is:</p>
+
+<figure class='code'><figcaption><span>OO classes</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">void</span> <span class="nf">transform</span><span class="o">(</span><span class="n">File</span> <span class="n">in</span><span class="o">,</span> <span class="n">File</span> <span class="n">out</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Collection</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">src</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Trimmed</span><span class="o">(</span>
+</span><span class='line'>    <span class="k">new</span> <span class="nf">FileLines</span><span class="o">(</span><span class="k">new</span> <span class="nf">UnicodeFile</span><span class="o">(</span><span class="n">in</span><span class="o">))</span>
+</span><span class='line'>  <span class="o">);</span>
+</span><span class='line'>  <span class="n">Collection</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">dest</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">FileLines</span><span class="o">(</span>
+</span><span class='line'>    <span class="k">new</span> <span class="nf">UnicodeFile</span><span class="o">(</span><span class="n">out</span><span class="o">)</span>
+</span><span class='line'>  <span class="o">);</span>
+</span><span class='line'>  <span class="n">dest</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">src</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p><code>FileLines</code> implements <code>Collection&lt;String&gt;</code> and encapsulates all file reading and writing operations. An instance of <code>FileLines</code> behaves exactly as a collection of strings and hides all I/O operations. When we iterate it — a file is being read. When we addAll() to it — a file is being written.</p>
+
+<p><code>Trimmed</code> also implements <code>Collection&lt;String&gt;</code> and encapsulates a collection of strings (Decorator pattern). Every time the next line is retrieved, it gets trimmed.</p>
+
+<p>All classes taking participation in the snippet are rather small: <code>Trimmed</code>, <code>FileLines</code>, and <code>UnicodeFile</code>. <strong>Each of them is responsible for its own single feature, thus following perfectly the single responsibility principle.</strong></p>
+
+<p>On our side, as users of the library, this may be not so important, but for their developers it is an imperative. It is much easier to develop, maintain and unit-test class <code>FileLines</code> rather than using a readLines() method in a 80+ methods and 3000 lines utility class <code>FileUtils</code>. Seriously, look at its source code.</p>
+
+<h3>Lazy Execution</h3>
+
+<p>An object-oriented approach enables lazy execution. The in file is not read until its data is required. If we fail to open out due to some I/O error, the first file won’t even be touched. The whole show starts only after we call addAll().</p>
+
+<p>All lines in the second snippet, except the last one, instantiate and compose smaller objects into bigger ones. This object composition is rather cheap for the CPU since it doesn’t cause any data transformations.</p>
+
+<p>Besides that, it is obvious that the second script runs in O(1) space, while the first one executes in O(n). This is the consequence of our procedural approach to data in the first script.</p>
+
+<p>In an object-oriented world, there is no data; there are only objects and their behavior!</p>
+
+<h2>References</h2>
+
+<p><a href="http://www.javacodegeeks.com/2014/09/oop-alternative-to-utility-classes.html">http://www.javacodegeeks.com/2014/09/oop-alternative-to-utility-classes.html</a><br/>
+<a href="http://blogs.msdn.com/b/nickmalik/archive/2005/09/06/461404.aspx">http://blogs.msdn.com/b/nickmalik/archive/2005/09/06/461404.aspx</a><br/>
+<a href="http://www.marshallward.org/avoiding-utility-classes.html">http://www.marshallward.org/avoiding-utility-classes.html</a></p>
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+  <!-- 789*90 -->
+  <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+  <ins class="adsbygoogle"
+       style="display:inline-block;width:789px;height:90px"
+       data-ad-client="ca-pub-6393503301700908"
+       data-ad-slot="7806666870"></ins>
+  <script>
+  (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</p>
+
+
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alpha Wang</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-09-18T15:30:18+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:30 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/java/'>java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  	<!-- JiaThis Button BEGIN -->
+<!--
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"王中兴V"
+	},
+	showClose:true,
+	shortUrl:false,
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jiathis_r.js?uid=1965224&btn=r2.gif&move=0" charset="utf-8"></script>
+-->
+<!-- JiaThis Button END -->
+
+<!--Baidu Share-->
+<div class="bdsharebuttonbox">
+<a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+<a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+<a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+<a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+<a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+<a href="#" class="bds_more" data-cmd="more"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"",
+"bdStyle":"2", //1
+"bdSize":"24"},
+"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!--Nav-->
+<p class="meta">
+  
+    <a class="basic-alignment left" href="/blog/zapfino-a-cool-font/" title="Previous Post: Zapfino: A Cool Font">&laquo; Zapfino: A Cool Font</a>
+  
+  
+    <a class="basic-alignment right" href="/blog/integrate-octopress-with-flickr/" title="Next Post: Integrate Octopress with Flickr">Integrate Octopress with Flickr &raquo;</a>
+  
+</p>
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 728*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:728px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="2039334876"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+	
+	<!-- 789*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+</p>
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/zapfino-a-cool-font/" title="Previous Post: Zapfino: A Cool Font">&laquo; Zapfino: A Cool Font</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/integrate-octopress-with-flickr/" title="Next Post: Integrate Octopress with Flickr">Integrate Octopress with Flickr &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+ <h1>Categories</h1>
+ <ul id="categories">
+	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (6)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
+<li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
+
+ </ul>
+</section>
+<section>
+<h1>Tags</h1>
+<ul class="tag-cloud">
+	<a style="font-size: 90%" href="/blog/tags/css/">CSS</a>
+<a style="font-size: 119%" href="/blog/tags/collection/">Collection</a>
+<a style="font-size: 171%" href="/blog/tags/design-pattern/">Design Pattern</a>
+<a style="font-size: 119%" href="/blog/tags/guava/">Guava</a>
+<a style="font-size: 171%" href="/blog/tags/jdk/">JDK</a>
+<a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
+<a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
+<a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
+<a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
+<a style="font-size: 119%" href="/blog/tags/site/">Site</a>
+<a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
+<a style="font-size: 164%" href="/blog/tags/source-code/">Source Code</a>
+<a style="font-size: 90%" href="/blog/tags/spring-mvc/">Spring MVC</a>
+<a style="font-size: 119%" href="/blog/tags/spring-solr/">Spring Solr</a>
+<a style="font-size: 136%" href="/blog/tags/string/">String</a>
+<a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
+<a style="font-size: 119%" href="/blog/tags/web/">Web</a>
+<a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+<a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
+<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+
+</ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/google-guava-dealing-with-null/">Google Guava: 1. Dealing With Null</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/key-solr-concepts/">Key Solr Concepts</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/AlphaWang">@AlphaWang</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'AlphaWang',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/1919wang@gmail.com?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+<section>
+  <h1>Visitors Map</h1>
+  <div class="earth">
+  <script type="text/javascript" src="//rk.revolvermaps.com/0/0/1.js?i=awaok66hddi&amp;s=250&amp;m=0&amp;v=false&amp;r=false&amp;b=01070a&amp;n=false&amp;c=ff8500" async="async"></script>
+  </div>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Alpha Wang -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

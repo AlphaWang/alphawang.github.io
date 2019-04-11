@@ -1,0 +1,708 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>What's String.intern() - Alpha's Programming Notes</title>
+  <meta name="author" content="Alpha Wang">
+
+  
+  <meta name="description" content="分析String.intern()机制，及其使用场景。">
+  <meta name="keywords" content="Java, String, intern">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://alphawang.github.io/blog/what-is-string-intern">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Alpha's Programming Notes" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script>
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+
+$(document).bind('DOMNodeInserted', function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-54659411-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">AlphaWang.com</a></h1>
+  
+    <h2>Alpha's Programming Notes | 一个程序员的日常</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:alphawang.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/tag-cloud/">Tags</a></li>
+  <li><a href="/photography/">Photo</a></li>
+  <li><a href="/about/">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">What's String.intern()</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-12-15T15:23:45+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:23 pm</span></time>
+          | <a href="#comments" id="uyan_count_unit" du="" su="">0 Comments</a>
+            <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Java语言中有8种基本类型和一种比较特殊的类型<code>String</code>。为了使这些类型在运行过程中速度更快，更节省内存，都提供了一种常量池的概念。常量池就类似一个Java系统级别提供的缓存。</p>
+
+<p>其中8种基本类型的常量池都是系统协调的，而<code>String</code>类型的常量池比较特殊。它的主要使用方法有两种：</p>
+
+<ul>
+<li>直接使用双引号声明出来的<code>String</code>对象会直接存储在常量池中。</li>
+<li>如果不是用双引号声明的<code>String</code>对象，可以使用<code>String.intern()</code>方法。<strong>intern方法会从字符串常量池中查询当前字符串是否存在，若不存在就会将当前字符串放入常量池中</strong></li>
+</ul>
+
+
+<!--more-->
+
+
+<h2>源码</h2>
+
+<p>Jdk中源码如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/** </span>
+</span><span class='line'><span class="cm"> * Returns a canonical representation for the string object. </span>
+</span><span class='line'><span class="cm"> * &lt;p&gt; </span>
+</span><span class='line'><span class="cm"> * A pool of strings, initially empty, is maintained privately by the </span>
+</span><span class='line'><span class="cm"> * class &lt;code&gt;String&lt;/code&gt;. </span>
+</span><span class='line'><span class="cm"> * &lt;p&gt; </span>
+</span><span class='line'><span class="cm"> * When the intern method is invoked, if the pool already contains a </span>
+</span><span class='line'><span class="cm"> * string equal to this &lt;code&gt;String&lt;/code&gt; object as determined by </span>
+</span><span class='line'><span class="cm"> * the {@link #equals(Object)} method, then the string from the pool is </span>
+</span><span class='line'><span class="cm"> * returned. Otherwise, this &lt;code&gt;String&lt;/code&gt; object is added to the </span>
+</span><span class='line'><span class="cm"> * pool and a reference to this &lt;code&gt;String&lt;/code&gt; object is returned. </span>
+</span><span class='line'><span class="cm"> * &lt;p&gt; </span>
+</span><span class='line'><span class="cm"> * It follows that for any two strings &lt;code&gt;s&lt;/code&gt; and &lt;code&gt;t&lt;/code&gt;, </span>
+</span><span class='line'><span class="cm"> * &lt;code&gt;s.intern()&amp;nbsp;==&amp;nbsp;t.intern()&lt;/code&gt; is &lt;code&gt;true&lt;/code&gt; </span>
+</span><span class='line'><span class="cm"> * if and only if &lt;code&gt;s.equals(t)&lt;/code&gt; is &lt;code&gt;true&lt;/code&gt;. </span>
+</span><span class='line'><span class="cm"> * &lt;p&gt; </span>
+</span><span class='line'><span class="cm"> * All literal strings and string-valued constant expressions are </span>
+</span><span class='line'><span class="cm"> * interned. String literals are defined in section 3.10.5 of the </span>
+</span><span class='line'><span class="cm"> * &lt;cite&gt;The Java&amp;trade; Language Specification&lt;/cite&gt;. </span>
+</span><span class='line'><span class="cm"> * </span>
+</span><span class='line'><span class="cm"> * @return  a string that has the same contents as this string, but is </span>
+</span><span class='line'><span class="cm"> *          guaranteed to be from a pool of unique strings. </span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">native</span> <span class="n">String</span> <span class="nf">intern</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个方法是一个 native 的方法，但注释写的非常明了：</p>
+
+<blockquote><p>如果常量池中存在当前字符串，就会直接返回当前字符串；如果常量池中没有此字符串，会将此字符串放入常量池中后，再返回。</p></blockquote>
+
+<p>native方法的大体实现逻辑是：
+JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code>StringTable#intern()</code>方法跟Java中的<code>HashMap</code>的实现是差不多的, 只是不能自动扩容。默认大小是1009。</p>
+
+<p>要注意的是，String的String Pool是一个固定大小的<code>Hashtable</code>，默认值大小长度是1009，如果放进String Pool的String非常多，就会造成Hash冲突严重，从而导致链表会很长，而链表长了后直接会造成的影响就是当调用<code>String.intern()</code>时性能会大幅下降（因为要一个一个找）。</p>
+
+<p>在 jdk6中<code>StringTable</code>是固定的，就是1009的长度，<strong>所以如果常量池中的字符串过多就会导致效率下降很快</strong>。在jdk7中，<code>StringTable</code>的长度可以通过一个参数指定：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">-</span><span class="nl">XX:</span><span class="n">StringTableSize</span><span class="o">=</span><span class="mi">99991</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Java6 和 Java7 下 intern 的区别</h2>
+
+<p>相信很多 JAVA 程序员都做做类似 <code>String s = new String("abc")</code>这个语句创建了几个对象的题目。 这种题目主要就是为了考察程序员对字符串对象的常量池掌握与否。</p>
+
+<blockquote><p>上述的语句中是创建了2个对象，第一个对象是"abc"字符串存储在常量池中，第二个对象在Heap中的 String 对象。</p></blockquote>
+
+<p>来看一段代码：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">s</span><span class="o">.</span><span class="na">intern</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span> <span class="o">==</span> <span class="n">s2</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">String</span> <span class="n">s3</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">)</span> <span class="o">+</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">s3</span><span class="o">.</span><span class="na">intern</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">s4</span> <span class="o">=</span> <span class="s">&quot;11&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s3</span> <span class="o">==</span> <span class="n">s4</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>打印结果是</p>
+
+<ul>
+<li>jdk6 下<code>false false</code></li>
+<li>jdk7 下<code>false true</code></li>
+</ul>
+
+
+<p>然后将<code>s3.intern();</code>语句下调一行，放到<code>String s4 = "11";</code>后面。将<code>s.intern();</code> 放到S<code>tring s2 = "1";</code>后面：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">s</span><span class="o">.</span><span class="na">intern</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span> <span class="o">==</span> <span class="n">s2</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">String</span> <span class="n">s3</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">)</span> <span class="o">+</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">String</span> <span class="n">s4</span> <span class="o">=</span> <span class="s">&quot;11&quot;</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">s3</span><span class="o">.</span><span class="na">intern</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s3</span> <span class="o">==</span> <span class="n">s4</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>打印结果为：</p>
+
+<ul>
+<li>jdk6 下<code>false false</code></li>
+<li>jdk7 下<code>false false</code></li>
+</ul>
+
+
+<h3>Java6</h3>
+
+<p><img src="/images/post/2014/12/string-intern-jdk6.png" alt="user icon" /></p>
+
+<p>注：图中绿色线条代表 string 对象的内容指向。 黑色线条代表地址指向。</p>
+
+<p>Java6中上述的所有打印都是 false 的，因为 <strong>jdk6中的常量池是放在 Perm 区中的</strong>，Perm 区和正常的 Heap 区域是完全分开的。</p>
+
+<p>使用引号声明的字符串都是会直接在字符串常量池中生成，而 new 出来的 String 对象是放在 JAVA Heap 区域。所以拿一个Heap 区域的对象地址和字符串常量池的对象地址进行比较肯定是不相同的，即使调用<code>String.intern()</code>方法也是没有任何关系的。</p>
+
+<h3>Java7</h3>
+
+<p>在 Java6 以及以前的版本中，字符串的常量池是放在堆的 Perm 区的，Perm 区是一个类静态的区域，主要存储一些加载类的信息，常量池，方法片段等内容，默认大小只有4m，一旦常量池中大量使用 intern 是会直接产生<code>java.lang.OutOfMemoryError: PermGen space</code>错误的。</p>
+
+<p>所以<strong>在 jdk7 的版本中，字符串常量池已经从 Perm 区移到正常的 Heap 区域了</strong>。</p>
+
+<p><img src="/images/post/2014/12/string-intern-jdk7.png" alt="user icon" /></p>
+
+<p>在第一段代码中，先看 s3和s4字符串。</p>
+
+<ul>
+<li><p><code>String s3 = new String("1") + new String("1");</code>，这句代码中现在生成了2最终个对象，是字符串常量池中的“1” 和 Heap 中的 s3引用指向的对象。中间还有2个匿名的<code>new String("1")</code>我们不去讨论它们。此时s3引用对象内容是"11"，但此时常量池中是没有 “11”对象的。</p></li>
+<li><p>接下来<code>s3.intern();</code>这一句代码，是将 s3中的“11”字符串放入 String 常量池中，因为此时常量池中不存在“11”字符串，因此常规做法是跟 jdk6 图中表示的那样，在常量池中生成一个 &ldquo;11&rdquo; 的对象，关键点是 jdk7 中常量池不在 Perm 区域了。所以常量池中不需要再存储一份对象了，可以直接存储堆中的引用。这份引用指向 s3 引用的对象。 也就是说引用地址是相同的。</p></li>
+<li><p>最后<code>String s4 = "11";</code> 这句代码中"11"是显示声明的，因此会直接去常量池中创建，创建的时候发现已经有这个对象了，此时也就是指向 s3 引用对象的一个引用。所以 s4 引用就指向和 s3 一样了。因此最后的比较 <code>s3 == s4</code> 是 true。</p></li>
+</ul>
+
+
+<p>再看 s 和 s2 对象。</p>
+
+<ul>
+<li><p><code>String s = new String("1");</code> 第一句代码，生成了2个对象。常量池中的“1” 和 Heap 中的字符串对象。<code>s.intern();</code> s 对象去常量池中寻找后发现 “1” 已经在常量池里了。 &ndash; 这一点与s3/s4不一样。</p></li>
+<li><p>接下来<code>String s2 = "1";</code> 这句代码是生成一个 s2的引用指向常量池中的“1”对象。 结果就是 s 和 s2 的引用地址明显不同。&ndash; ？？？？？</p></li>
+</ul>
+
+
+<p><img src="/images/post/2014/12/string-intern-jdk7.png" alt="user icon" /></p>
+
+<p>来看第二段代码：</p>
+
+<ul>
+<li><p>第一段代码和第二段代码的改变就是 <code>s3.intern();</code> 的顺序是放在<code>String s4 = "11";</code>后了。这样，首先执行<code>String s4 = "11";</code>声明 s4 的时候常量池中是不存在“11”对象的，执行完毕后，“11“对象是 s4 声明产生的新对象。然后再执行<code>s3.intern();</code>时，常量池中“11”对象已经存在了，因此 s3 和 s4 的引用是不同的。</p></li>
+<li><p>第二段代码中的 s 和 s2 代码中，<code>s.intern();</code>，这一句往后放也不会有什么影响了，因为对象池中在执行第一句代码<code>String s = new String("1");</code>的时候已经生成“1”对象了。下边的s2声明都是直接从常量池中取地址引用的。 s 和 s2 的引用地址是不会相等的。</p></li>
+</ul>
+
+
+<h3>小结</h3>
+
+<p>从上述的例子代码可以看出<strong> jdk7 版本对 intern 操作和常量池都做了一定的修改</strong>。主要包括2点：</p>
+
+<ul>
+<li><p>将String常量池 从 Perm 区移动到了 Java Heap区。</p></li>
+<li><p>调用<code>String#intern()</code> 方法时，如果存在堆中的对象，会直接保存对象的引用，而不会重新创建对象。</p></li>
+</ul>
+
+
+<h2>使用场景</h2>
+
+<h3>正例</h3>
+
+<p>如果用到了大量相同的String，那么可以使用<code>String#intern()</code>，例如：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">MAX</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="mi">10000</span><span class="o">;</span>
+</span><span class='line'><span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">arr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">[</span><span class="n">MAX</span><span class="o">];</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Integer</span><span class="o">[]</span> <span class="n">DB_DATA</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Integer</span><span class="o">[</span><span class="mi">10</span><span class="o">];</span>
+</span><span class='line'>    <span class="n">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Random</span><span class="o">(</span><span class="mi">10</span> <span class="o">*</span> <span class="mi">10000</span><span class="o">);</span>
+</span><span class='line'>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">DB_DATA</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">DB_DATA</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="kt">long</span> <span class="n">t</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+</span><span class='line'>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">MAX</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="c1">//arr[i] = new String(String.valueOf(DB_DATA[i % DB_DATA.length]));</span>
+</span><span class='line'>         <span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">DB_DATA</span><span class="o">[</span><span class="n">i</span> <span class="o">%</span> <span class="n">DB_DATA</span><span class="o">.</span><span class="na">length</span><span class="o">])).</span><span class="na">intern</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">((</span><span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">-</span> <span class="n">t</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;ms&quot;</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">gc</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>运行的参数是：<code>-Xmx2g -Xms2g -Xmn1500M</code></p>
+
+<ul>
+<li>不使用 intern 的代码生成了1000w 个字符串，占用了大约640m 空间。</li>
+<li>使用了 intern 的代码生成了1345个字符串，占用总空间 133k 左右。</li>
+</ul>
+
+
+<p>其实通过观察程序中只是用到了10个字符串，所以准确计算后应该是正好相差100w 倍。虽然例子有些极端，但确实能准确反应出<strong> intern 使用后产生的巨大空间节省</strong>。</p>
+
+<p>另外，使用了 intern 方法后时间上有了一些增长。这是因为程序中每次都是用了 <code>new String</code> 后，然后又进行 intern 操作的耗时时间，这一点如果在内存空间充足的情况下确实是无法避免的，但我们平时使用时，内存空间肯定不是无限大的，<strong>不使用 intern 占用空间导致 jvm 垃圾回收的时间是要远远大于这点时间的</strong>。</p>
+
+<h3>反例</h3>
+
+<p>上文提到：
+在 jdk6中<code>StringTable</code>是固定的，就是1009的长度，<strong>所以如果常量池中的字符串过多就会导致效率下降很快</strong>。在jdk7中，<code>StringTable</code>的长度可以通过一个参数指定：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">-</span><span class="nl">XX:</span><span class="n">StringTableSize</span><span class="o">=</span><span class="mi">99991</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>所以不能无用intern，把太多字符串放到常量池中。</p>
+
+<h2>Reference</h2>
+
+<p><a href="http://tech.meituan.com/in_depth_understanding_string_intern.html">http://tech.meituan.com/in_depth_understanding_string_intern.html</a></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alpha Wang</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2014-12-15T15:23:45+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:23 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/java/'>java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  	<!-- JiaThis Button BEGIN -->
+<!--
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"王中兴V"
+	},
+	showClose:true,
+	shortUrl:false,
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jiathis_r.js?uid=1965224&btn=r2.gif&move=0" charset="utf-8"></script>
+-->
+<!-- JiaThis Button END -->
+
+<!--Baidu Share-->
+<div class="bdsharebuttonbox">
+<a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+<a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+<a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+<a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+<a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+<a href="#" class="bds_more" data-cmd="more"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"",
+"bdStyle":"2", //1
+"bdSize":"24"},
+"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!--Nav-->
+<p class="meta">
+  
+    <a class="basic-alignment left" href="/blog/learning-jdk-positive-examples/" title="Previous Post: Learning JDK Source Code: Positive Examples">&laquo; Learning JDK Source Code: Positive Examples</a>
+  
+  
+    <a class="basic-alignment right" href="/blog/how-string-in-switch-works-in-java7/" title="Next Post: How String in Switch Works in Java 7">How String in Switch Works in Java 7 &raquo;</a>
+  
+</p>
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 728*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:728px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="2039334876"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+	
+	<!-- 789*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+</p>
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/learning-jdk-positive-examples/" title="Previous Post: Learning JDK Source Code: Positive Examples">&laquo; Learning JDK Source Code: Positive Examples</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/how-string-in-switch-works-in-java7/" title="Next Post: How String in Switch Works in Java 7">How String in Switch Works in Java 7 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+ <h1>Categories</h1>
+ <ul id="categories">
+	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (6)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
+<li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
+
+ </ul>
+</section>
+<section>
+<h1>Tags</h1>
+<ul class="tag-cloud">
+	<a style="font-size: 90%" href="/blog/tags/css/">CSS</a>
+<a style="font-size: 119%" href="/blog/tags/collection/">Collection</a>
+<a style="font-size: 171%" href="/blog/tags/design-pattern/">Design Pattern</a>
+<a style="font-size: 119%" href="/blog/tags/guava/">Guava</a>
+<a style="font-size: 171%" href="/blog/tags/jdk/">JDK</a>
+<a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
+<a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
+<a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
+<a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
+<a style="font-size: 119%" href="/blog/tags/site/">Site</a>
+<a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
+<a style="font-size: 164%" href="/blog/tags/source-code/">Source Code</a>
+<a style="font-size: 90%" href="/blog/tags/spring-mvc/">Spring MVC</a>
+<a style="font-size: 119%" href="/blog/tags/spring-solr/">Spring Solr</a>
+<a style="font-size: 136%" href="/blog/tags/string/">String</a>
+<a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
+<a style="font-size: 119%" href="/blog/tags/web/">Web</a>
+<a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+<a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
+<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+
+</ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/google-guava-dealing-with-null/">Google Guava: 1. Dealing With Null</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/key-solr-concepts/">Key Solr Concepts</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/AlphaWang">@AlphaWang</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'AlphaWang',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/1919wang@gmail.com?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+<section>
+  <h1>Visitors Map</h1>
+  <div class="earth">
+  <script type="text/javascript" src="//rk.revolvermaps.com/0/0/1.js?i=awaok66hddi&amp;s=250&amp;m=0&amp;v=false&amp;r=false&amp;b=01070a&amp;n=false&amp;c=ff8500" async="async"></script>
+  </div>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Alpha Wang -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

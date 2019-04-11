@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Mac | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/mac/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-04-11T00:19:15+08:00</updated>
+  <updated>2019-04-11T13:46:58+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Make Mac Terminal Console / iTerm Colorful]]></title>
-    <link href="http://alphawang.github.io/blog/2014/09/make-iterm-colorful/"/>
+    <link href="http://alphawang.github.io/blog/make-iterm-colorful/"/>
     <updated>2014-09-11T14:36:31+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/09/make-iterm-colorful</id>
+    <id>http://alphawang.github.io/blog/make-iterm-colorful</id>
     <content type="html"><![CDATA[<p>Neither Terminal or iTerm on Mac is white/black color by default, which looks tedious. What if different entries shown in different colors?<br/>
 Fortunately, we can do this just by writing a configuration file, then the terminal console or iTerm can look like this:</p>
 
@@ -116,9 +116,9 @@ If you are not satisfied with that color, you can change the value of LSCOLORS.<
   
   <entry>
     <title type="html"><![CDATA[Calendar Tools on Mac]]></title>
-    <link href="http://alphawang.github.io/blog/2014/09/mac-calendar-tool/"/>
+    <link href="http://alphawang.github.io/blog/mac-calendar-tool/"/>
     <updated>2014-09-10T17:15:35+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/09/mac-calendar-tool</id>
+    <id>http://alphawang.github.io/blog/mac-calendar-tool</id>
     <content type="html"><![CDATA[<p>Mac菜单栏原生的日期时间显示比较简单，例如不能直接查看月历，比较不爽。<br/>
 找到了几个比较优秀的Mac日期工具，可以替代原生功能：</p>
 

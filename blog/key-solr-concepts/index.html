@@ -1,0 +1,768 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Key Solr Concepts - Alpha's Programming Notes</title>
+  <meta name="author" content="Alpha Wang">
+
+  
+  <meta name="description" content="介绍了Solr中的主要概念，包括document, inverted index。以及Query，Relevancy，Precision，Recall等概念。">
+  <meta name="keywords" content="Solr in action, Solr, introduction, concept">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://alphawang.github.io/blog/key-solr-concepts">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Alpha's Programming Notes" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script>
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+
+$(document).bind('DOMNodeInserted', function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-54659411-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">AlphaWang.com</a></h1>
+  
+    <h2>Alpha's Programming Notes | 一个程序员的日常</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:alphawang.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/tag-cloud/">Tags</a></li>
+  <li><a href="/photography/">Photo</a></li>
+  <li><a href="/about/">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Key Solr Concepts</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-01-20T16:00:40+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:00 pm</span></time>
+          | <a href="#comments" id="uyan_count_unit" du="" su="">0 Comments</a>
+            <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><blockquote><p>本文是《Solr In Action》读书笔记，包含第3章</p></blockquote>
+
+<!--more-->
+
+
+<h1>Chpater 03. Key Solr Concepts</h1>
+
+<h2>Basic</h2>
+
+<ul>
+<li><code>Document</code>:</li>
+</ul>
+
+
+<p>A document is a collection of fields that map to particular field types defined in a schema.</p>
+
+<blockquote><p>Solr is a document storage and retrieval engine. Every piece of data submitted to Solr for processing is a document.</p></blockquote>
+
+<ul>
+<li><code>Inverted index</code>:</li>
+</ul>
+
+
+<p>Maps each word/term in the corpus to all of the documents in which it appears.</p>
+
+<blockquote><p>determin textually similar words, understand synonyms, remove unimportant words, score each result&hellip; Solr accomplishes all of this by using an index that maps content to documents instead of mapping documents to content as in a traditional database model.</p></blockquote>
+
+<p><img src="/images/post/2015/01/solr-inverted-index.png" alt="user icon" /></p>
+
+<h2>Query</h2>
+
+<p>通过Inverted Index，可以实现如下查询：</p>
+
+<ul>
+<li><p><code>Required Terms</code>: new AND house; +new +house</p></li>
+<li><p><code>Optional Terms</code>: new house; new OR house.  (default)</p></li>
+<li><p><code>Negated Terms</code>: new house NOT rental; new house -rental</p></li>
+<li><p><code>Phrases</code>: &ldquo;new home&rdquo; OR &ldquo;new house&rdquo;</p></li>
+<li><p><code>Grouped expressions</code>: New AND (house OR  home)</p></li>
+</ul>
+
+
+<p>为了支持Phrase查询：</p>
+
+<ul>
+<li><code>Term Position</code>: recording of the relative position of terms within a document. can tell us where in the document each term appears.
+
+<blockquote><p>存储在inverted index中，可用于支持<code>Phrase查询</code>。</p></blockquote></li>
+</ul>
+
+
+<h2>Fuzzy matching</h2>
+
+<p><code>Fuzzy matching</code> is defined as the ability to perform inexact matches on terms in the search index. For example,</p>
+
+<ul>
+<li><code>Wildcard searching</code></li>
+</ul>
+
+
+<p>search for any words that start with a particular prefix.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>offi*
+</span><span class='line'>off*r
+</span><span class='line'>off?r</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>注意：</p>
+
+<blockquote><ol>
+<li>the more characters you specify at the beginning of the term before the wildcard, the faster the query should run.</li>
+<li>执行<code>leading wildcard</code>(*ing)会很耗时，可以通过<code>ReversedWildcardFilterFactory</code>来解决，不过这样会增加index时间，并减慢整体查询速度。</li>
+</ol>
+</blockquote>
+
+<ul>
+<li><code>Range searching</code></li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>title:{boat TO boulder}  //exclusive
+</span><span class='line'>price:[12.99 TO 14.99]  //inclusive</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li><code>Fuzzy searching</code> / <code>Edit-distance searching</code></li>
+</ul>
+
+
+<p>find spelling variations within one or two characters (handle spelling errors).</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>administrator~ //Matches: adminstrator, administrater, administratior, and so forth 
+</span><span class='line'>administrator~2 //Matches within 2 edit distances. </span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>Solr provides the ability to handle character variations using edit-distance measurements based upon Damerau-Levenshtein distances, which account for more than 80% of all human misspellings.</p>
+
+<p>An <code>edit distance</code> is defined as an insertion, a deletion, a substitution, or a transposition of characters.</p></blockquote>
+
+<ul>
+<li><code>Proximity searching</code></li>
+</ul>
+
+
+<p>match two terms within some maximum distance of each other.
+e.g. search:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>"chief executive officer" OR "chief financial officer" OR "chief marketing officer" OR "chief technology officer" OR ... </span></code></pre></td></tr></table></div></figure>
+
+
+<p>改进：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>"chief officer"~1</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Solr内部用<code>tem positions</code>来计算edit distance.</p>
+
+<h2>Relevancy</h2>
+
+<p>Solr calculaes a <code>relevancy score</code> for each document and then sorting the search results from the high- est score to the lowest.</p>
+
+<h3>Similarity</h3>
+
+<p>【Q】那么relevancy score是如何计算的？受哪些因素的影响呢？</p>
+
+<p>【A】Similarity:</p>
+
+<ul>
+<li>Solr’s relevancy scores are based upon the <code>Similarity</code> class, which can be defined on a per-field basis in Solr’s <code>schema.xml</code>.</li>
+<li><code>Similarity</code> is a Java class that defines how a relevancy score is calculated based upon the results of a query.</li>
+</ul>
+
+
+<p>实现原理：<strong>two-pass model</strong></p>
+
+<ol>
+<li>First, it makes use of a <code>Boolean model</code> to filter out any documents that do not match the customer’s query.</li>
+<li>Then it uses a <code>vector space model</code> for scoring and drawing the query as a vector, as well as an additional vector for each document.</li>
+<li>The similarity score for each document is based upon the <code>cosine</code> between the query vector and that document’s vector.</li>
+</ol>
+
+
+<p><img src="/images/post/2015/01/solr-relevancy-vector.png" alt="user icon" /></p>
+
+<p>【Q】显然，重点是如何算出合理的vector？</p>
+
+<p>【A】算法如下：</p>
+
+<p><img src="/images/post/2015/01/solr-relevancy-algorithm.png" alt="user icon" /></p>
+
+<ul>
+<li>term frequency (<code>tf</code>),</li>
+<li>inverse document frequency (<code>idf</code>),</li>
+<li>term boosts (<code>t.getBoost</code>),</li>
+<li>field normalization (<code>norm</code>),</li>
+<li>coordination factor (<code>coord</code>),</li>
+<li>query normalization (<code>queryNorm</code>)</li>
+</ul>
+
+
+<h3>Term Frequency</h3>
+
+<ul>
+<li><code>Term frequency (tf)</code> is a measure of how often a particular term appears in a matching document.</li>
+<li>The more times the search term appears within a document, the more relevant that document is considered.
+
+<blockquote><p>并非线性关系；而用了平方根。见上图。</p></blockquote></li>
+</ul>
+
+
+<h3>Inverse Document Frequency</h3>
+
+<ul>
+<li><code>Inverse document frequency (idf)</code>, a measure of how “rare” a search term is, is calcu- lated by finding the document frequency (<em>how many total documents the search term appears within</em>), and calculating its inverse.</li>
+<li><code>Term frequency</code> and <code>inverse document frequency</code>, when multiplied together in the relevancy calculation, provide a nice counterbalance :</li>
+<li>The <code>term frequency</code> elevates terms that appear multiple times within a document,</li>
+<li>whereas the <code>inverse document frequency</code> penalizes those terms that appear commonly across many documents.
+
+<blockquote><p>作用：减少common words对评分的影响。</p></blockquote></li>
+</ul>
+
+
+<h3>Boosting</h3>
+
+<p>If you have domain knowledge about your content—you know that certain fields or terms are more (or less) important than others—you can supply boosts at either indexing time or query time to ensure that the weights of those fields or terms are adjusted accordingly.</p>
+
+<ul>
+<li>Query-time boosting</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>title:(solrinaction)^2.5description:(solrinaction) 
+</span><span class='line'>title:(solr^2in^.01action^1.5)^3OR"solrinaction"^2.5 </span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Index-time boosting</li>
+</ul>
+
+
+<p>it’s possible to boost documents or fields within documents at index time</p>
+
+<h3>Filed Normalization</h3>
+
+<blockquote><p>The default Solr relevancy formula calculates three kinds of normalization factors (norms): <code>field norms</code>, <code>query norms</code>, and the <code>coord factor</code>.</p></blockquote>
+
+<ul>
+<li>The <code>field normalization factor (field norm)</code> is a combination of factors describing the importance of a particular field on a per-document basis.</li>
+</ul>
+
+
+<p>This byte packs a lot of information:</p>
+
+<ol>
+<li>the boost set on the document when indexed,</li>
+<li>the boost set on the field when indexed,</li>
+<li>and a length normalization factor that penalizes longer documents and helps shorter documents</li>
+</ol>
+
+
+<h3>Query Normalization</h3>
+
+<p><code>Query Norm</code> does not affect the overall relevancy ordering, as the same queryNorm is applied to all documents.
+It merely serves as a normalization factor to attempt to make scores between queries comparable.</p>
+
+<h3>The Coord Factor</h3>
+
+<p>Its role is to measure how much of the query each document matches.</p>
+
+<h2>Precision and Recall</h2>
+
+<h3>Precision:</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Correct Matches / # Total Results Returned</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Precision is a measure of how “good” each of the results of a query is,</li>
+<li>but it pays no attention to how thorough it is; *a query that returns one single correct doc- ument out of a million other correct documents is still considered perfectly precise. *</li>
+<li>Precision is answering the question: “Were the documents that came back the ones I was looking for?”</li>
+</ul>
+
+
+<h3>Recall</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Correct Matches / (# Correct Matches + # Missed Matches)</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>Recall is a measure of how thorough the search results are.</li>
+<li>Recall is answering the question: “How many of the correct documents were returned?”</li>
+</ul>
+
+
+<p>区别：</p>
+
+<ul>
+<li>Precision is high when the results returned are correct; Recall is high when the correct results are present.</li>
+<li>Recall does not care that all of the results are correct. Precision does not care that all of the results are present.</li>
+</ul>
+
+
+<p>平衡：</p>
+
+<ul>
+<li>measuring for <code>Recall</code> across the entire result set;</li>
+<li>measuring for<code>Precision</code> only within the first page (or few pages) of search results.</li>
+</ul>
+
+
+<h2>Searching at Scale</h2>
+
+<p>Solr is able to scale to handle billions of documents and an infinite number of queries by adding servers.</p>
+
+<h3>The denormalized document</h3>
+
+<ul>
+<li>A <code>denormalized document</code> is one in which all fields are self-contained within the document, even if the values in those fields are duplicated across many documents.</li>
+<li>优点：extreme scalability. Because we can make the assumption that each document is self-contained（自包含）, this means that we can also partition documents across multiple servers without having to keep related documents on the same server (because documents are independent of one another)</li>
+</ul>
+
+
+<blockquote><ul>
+<li>不同document的字段值会有重复。</li>
+<li>与传统关系数据库不一样！</li>
+</ul>
+</blockquote>
+
+<h3>Distributed Searching</h3>
+
+<ul>
+<li>sometimes your search servers may become overloaded by either <em>too many queries at a time</em> or by <em>too much data needing to be searched through</em> for a single server to handle.</li>
+<li>后一种情况的解决办法：aggregated search:</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>http://box1:8983/solr/core1/select?q=*:*&shards=box1:8983/solr/core1, 
+</span><span class='line'>          box2:8983/solr/core2,box2:8983/solr/core3
+</span><span class='line'>// 注意core2和core3是在同一个server</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>distributed search across multiple Solr cores is run in parallel on each of those index partitions</li>
+</ul>
+
+
+<blockquote><p>即：<code>partition</code>, <code>shard</code>；将大量的数据分区到不同的core，然后通过aggregated search并行地同时在这些core上进行查询。</p></blockquote>
+
+<h3>Clusters vs. Servers</h3>
+
+<ul>
+<li>the servers for this use case are mutually dependent. If one becomes unavailable for searching, they all become unavailable for searching and begin failing</li>
+<li>上例中，如果box2服务器挂掉，返回结果就会报错。</li>
+<li>Solr provides excellent built-in cluster-management capabilities through the use of Apache ZooKeeper</li>
+</ul>
+
+
+<h2>Limits</h2>
+
+<ul>
+<li>Solr is NOT relational in any way across documents. It’s not well suited for joining significant amounts of data across different fields on different documents, and <strong>it can’t perform join operations at all across multiple servers</strong>.</li>
+<li>The denormalized nature of Solr can be particularly problematic when the data in one field that is shared across many documents changes</li>
+<li><p>you can insert, delete, and update documents, but not sin- gle fields (easily).</p>
+
+<blockquote><p>whenever a new field is added to Solr or the contents of an existing field have changed, every single document in the Solr index must be reprocessed in its entirety before the data will be populated for the new field in all documents.</p></blockquote></li>
+<li><p>Solr is not optimized for processing quite long queries (thousands of terms) or returning quite large result sets to users.</p></li>
+<li>elastic scalability: the ability to automatically add and remove servers and redistribute content to handle load.</li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alpha Wang</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2015-01-20T16:00:40+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:00 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/solr/'>solr</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  	<!-- JiaThis Button BEGIN -->
+<!--
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"王中兴V"
+	},
+	showClose:true,
+	shortUrl:false,
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jiathis_r.js?uid=1965224&btn=r2.gif&move=0" charset="utf-8"></script>
+-->
+<!-- JiaThis Button END -->
+
+<!--Baidu Share-->
+<div class="bdsharebuttonbox">
+<a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+<a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+<a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+<a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+<a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+<a href="#" class="bds_more" data-cmd="more"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"",
+"bdStyle":"2", //1
+"bdSize":"24"},
+"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!--Nav-->
+<p class="meta">
+  
+    <a class="basic-alignment left" href="/blog/introduction-to-apache-solr/" title="Previous Post: Introduction to Apache Solr">&laquo; Introduction to Apache Solr</a>
+  
+  
+    <a class="basic-alignment right" href="/blog/google-guava-dealing-with-null/" title="Next Post: Google Guava: 1. Dealing with Null">Google Guava: 1. Dealing with Null &raquo;</a>
+  
+</p>
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 728*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:728px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="2039334876"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+	
+	<!-- 789*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+</p>
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/introduction-to-apache-solr/" title="Previous Post: Introduction to Apache Solr">&laquo; Introduction to Apache Solr</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/google-guava-dealing-with-null/" title="Next Post: Google Guava: 1. Dealing with Null">Google Guava: 1. Dealing with Null &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+ <h1>Categories</h1>
+ <ul id="categories">
+	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (6)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
+<li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
+
+ </ul>
+</section>
+<section>
+<h1>Tags</h1>
+<ul class="tag-cloud">
+	<a style="font-size: 90%" href="/blog/tags/css/">CSS</a>
+<a style="font-size: 119%" href="/blog/tags/collection/">Collection</a>
+<a style="font-size: 171%" href="/blog/tags/design-pattern/">Design Pattern</a>
+<a style="font-size: 119%" href="/blog/tags/guava/">Guava</a>
+<a style="font-size: 171%" href="/blog/tags/jdk/">JDK</a>
+<a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
+<a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
+<a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
+<a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
+<a style="font-size: 119%" href="/blog/tags/site/">Site</a>
+<a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
+<a style="font-size: 164%" href="/blog/tags/source-code/">Source Code</a>
+<a style="font-size: 90%" href="/blog/tags/spring-mvc/">Spring MVC</a>
+<a style="font-size: 119%" href="/blog/tags/spring-solr/">Spring Solr</a>
+<a style="font-size: 136%" href="/blog/tags/string/">String</a>
+<a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
+<a style="font-size: 119%" href="/blog/tags/web/">Web</a>
+<a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+<a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
+<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+
+</ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/google-guava-dealing-with-null/">Google Guava: 1. Dealing With Null</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/key-solr-concepts/">Key Solr Concepts</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/AlphaWang">@AlphaWang</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'AlphaWang',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/1919wang@gmail.com?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+<section>
+  <h1>Visitors Map</h1>
+  <div class="earth">
+  <script type="text/javascript" src="//rk.revolvermaps.com/0/0/1.js?i=awaok66hddi&amp;s=250&amp;m=0&amp;v=false&amp;r=false&amp;b=01070a&amp;n=false&amp;c=ff8500" async="async"></script>
+  </div>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Alpha Wang -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

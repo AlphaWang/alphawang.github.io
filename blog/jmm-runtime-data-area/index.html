@@ -1,0 +1,551 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>JMM: Java Runtime Data Area - Alpha's Programming Notes</title>
+  <meta name="author" content="Alpha Wang">
+
+  
+  <meta name="description" content="JVM 运行时数据区。">
+  <meta name="keywords" content="Java, JVM, JMM, 内存模型, Runtime Data Area, 运行时数据区">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://alphawang.github.io/blog/jmm-runtime-data-area">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Alpha's Programming Notes" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script>
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+
+$(document).bind('DOMNodeInserted', function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-54659411-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">AlphaWang.com</a></h1>
+  
+    <h2>Alpha's Programming Notes | 一个程序员的日常</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:alphawang.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/tag-cloud/">Tags</a></li>
+  <li><a href="/photography/">Photo</a></li>
+  <li><a href="/about/">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">JMM: Java Runtime Data Area</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2018-06-03T14:00:40+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2018</span></span> <span class='time'>2:00 pm</span></time>
+          | <a href="#comments" id="uyan_count_unit" du="" su="">0 Comments</a>
+            <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>下图展示了JVM的主要结构：
+<img src="/images/post/2018/jmm/runtime-data-area.png" alt="user icon" /></p>
+
+<p>可以看出，JVM主要由以下几部分组成：
+- 类加载器子系统
+- 运行时数据区（内存空间）
+- 执行引擎
+- 本地方法接口</p>
+
+<p>运行时数据区又分为：
+1. 程序计数器
+2. Java栈
+3. 本地方法栈
+4. 方法区
+5. 堆</p>
+
+<!--more-->
+
+
+<p>其中 方法区 和 堆 是所有Java线程共享的，而Java栈、本地方法栈、PC寄存器则由每个线程私有。</p>
+
+<h2>1. 程序计数器（Program Counter Register）</h2>
+
+<p>程序计数器可以看做是当前线程所执行的字节码的行号指示器。
+字节码解释器工作时，通过改变这个计数器的值来选取下一条需要执行的字节码指令。</p>
+
+<p>线程私有：
+- 为了线程切换后能够恢复到正确的执行位置，每条线程都需要有一个独立的程序计数器。</p>
+
+<p>OOM：
+- 不会出现OOM。</p>
+
+<h2>2. Java栈（Java Stack）</h2>
+
+<p>Java栈描述的是Java方法执行的内存模型。
+Java栈由栈帧组成，一个帧对应一个方法调用。调用方法时压入栈帧，方法返回时弹出栈帧并抛弃。
+Java栈的主要任务是存储方法参数、局部变量、中间运算结果，并且提供部分其它模块工作需要的数据。</p>
+
+<p>线程私有：
+- 前面已经提到Java栈是线程私有的，这就保证了线程安全性，使得程序员无需考虑栈同步访问的问题，只有线程本身可以访问它自己的局部变量区。</p>
+
+<p>OOM:
+- 如果线程请求的栈深度大于JVM所允许的深度，则抛出StackOverflowError。
+- 如果VM可以动态扩展，但是扩展是无法申请到足够的内存，则抛出OutOfMemoryError。
+- 可以通过减少-Xss，同时递归调用某个方法，模拟StackOverflowError</p>
+
+<p>它分为三部分：局部变量区、操作数栈、帧数据区。</p>
+
+<h4>1、局部变量区</h4>
+
+<p>局部变量区是以字长为单位的数组，在这里，byte、short、char类型会被转换成int类型存储，除了long和 double类型占两个字长以外，其余类型都只占用一个字长。特别地，boolean类型在编译时会被转换成int或byte类型，boolean数组会被当做byte类型数组来处理。局部变量区也会包含对象的引用，包括类引用、接口引用以及数组引用。
+局部变量区包含了 方法参数 和 局部变量，此外，实例方法隐含第一个局部变量this，它指向调用该方法的对象引用。对于对象，局部变量区中永远只有指向堆的引用。</p>
+
+<h4>2、操作数栈</h4>
+
+<p>操作数栈也是以字长为单位的数组，但是正如其名，它只能进行入栈出栈的基本操作。在进行计算时，操作数被弹出栈，计算完毕后再入栈。</p>
+
+<h4>3、帧数据区</h4>
+
+<p>帧数据区的任务主要有：
+记录指向类的常量池的指针，以便于解析。
+帮助方法的正常返回，包括恢复调用该方法的栈帧，设置PC寄存器指向调用方法对应的下一条指令，把返回值压入调用栈帧的操作数栈中。
+记录异常表，发生异常时将控制权交由对应异常的catch子句，如果没有找到对应的catch子句，会恢复调用方法的栈帧并重新抛出异常。</p>
+
+<p>局部变量区和操作数栈的大小依照具体方法在编译时就已经确定。调用方法时会从方法区中找到对应类的类型信息，从中得到具体方法的局部变量区和操作数栈的大小，依此分配栈帧内存，压入Java栈。</p>
+
+<h2>3. 本地方法栈（Native Method Stack）</h2>
+
+<p>本地方法栈类似于Java栈，主要存储了本地方法调用的状态。
+在Sun JDK中，本地方法栈和Java栈是同一个。</p>
+
+<p>线程私有：
+- 同上</p>
+
+<p>OOM：
+- 同上</p>
+
+<h2>4. 方法区（Method Area）</h2>
+
+<p>存储 <strong>类型信息</strong> 和 <strong>类的静态变量</strong>。
+在Sun JDK中，方法区对应了永久代（Permanent Generation），默认最小值为16MB，最大值为64MB。</p>
+
+<p>方法区中对于每个类存储了以下数据：
+- 类及其父类的全限定名（java.lang.Object没有父类）
+- 类的类型（Class or Interface）
+- 访问修饰符（public, abstract, final）
+- 实现的接口的全限定名的列表
+- 常量池
+- 字段信息
+- 方法信息
+- 静态变量
+- ClassLoader引用
+- Class引用</p>
+
+<p>可见类的所有信息都存储在方法区中。</p>
+
+<p>线程共享：
+- 由于方法区是所有线程共享的，所以必须保证线程安全，举例来说，如果两个类同时要加载一个尚未被加载的类，那么一个类会请求它的ClassLoader去加载需要的类，另一个类只能等待而不会重复加载。</p>
+
+<p>OOM：
+- 当方法区无法满足内存分配需求时，将抛出OutOfMemoryError。
+——OSGi这种频繁自定义ClassLoader的场景，需要虚拟机剧本类卸载功能，以保证永久代不会溢出。
+- 通过限制永久代大小-XX:PermSize, -XX:MaxPermSize；同时大量添加常量池；或借助CGLib生成大量动态类，可以模拟OutOfMemoryError。
+——注：运行时添加常量池可用list.add(String.valueOf(i++).intern()) //Jdk7以下</p>
+
+<h2>5. 堆（Heap）</h2>
+
+<p>堆用于存储 <strong>对象实例</strong> 以及 <strong>数组</strong>。
+堆中有指向类数据的指针，该指针指向了方法区中对应的类型信息。堆中还可能存放了指向方法表的指针。</p>
+
+<p>线程共享：
+- 堆是所有线程共享的，所以在进行实例化对象等操作时，需要解决同步问题。
+- 此外，堆中的实例数据中还包含了对象锁，并且针对不同的垃圾收集策略，可能存放了引用计数或清扫标记等数据。</p>
+
+<p>OOM：
+- Java堆是垃圾收集器管理的主要区域。
+- 如果堆中没有内存完成实例分配，并且堆也无法再扩展时，则抛出OutOfMemoryError。
+- 可以通过减少-Xms, -Xmx；同时创建无数对象来模拟OutOfMemoryError。
+- 同时-XX:+HeapDumpOnOutOfMemoryError，可以dump出当前的内存堆转储快照，以便分析。</p>
+
+<p>在堆的管理上，Sun JDK从1.2版本开始引入了分代管理的方式。主要分为新生代、旧生代。分代方式大大改善了垃圾收集的效率。</p>
+
+<h4>1、新生代（New Generation）</h4>
+
+<p>大多数情况下新对象都被分配在新生代中，新生代由Eden Space和两块相同大小的Survivor Space组成，后两者主要用于Minor GC时的对象复制（Minor GC的过程在此不详细讨论）。
+JVM在Eden Space中会开辟一小块独立的TLAB（Thread Local Allocation Buffer）区域用于更高效的内存分配，我们知道在堆上分配内存需要锁定整个堆，而在TLAB上则不需要，JVM在分配对象时会尽量在TLAB上分配，以提高效率。</p>
+
+<h4>2、旧生代（Old Generation/Tenuring Generation）</h4>
+
+<p>在新生代中存活时间较久的对象将会被转入旧生代，旧生代进行垃圾收集的频率没有新生代高。</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alpha Wang</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2018-06-03T14:00:40+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2018</span></span> <span class='time'>2:00 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/java/'>java</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  	<!-- JiaThis Button BEGIN -->
+<!--
+<script type="text/javascript" >
+var jiathis_config={
+	data_track_clickback:true,
+	summary:"",
+	ralateuid:{
+		"tsina":"王中兴V"
+	},
+	showClose:true,
+	shortUrl:false,
+	hideMore:false
+}
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jiathis_r.js?uid=1965224&btn=r2.gif&move=0" charset="utf-8"></script>
+-->
+<!-- JiaThis Button END -->
+
+<!--Baidu Share-->
+<div class="bdsharebuttonbox">
+<a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+<a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+<a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+<a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+<a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+<a href="#" class="bds_more" data-cmd="more"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"",
+"bdStyle":"2", //1
+"bdSize":"24"},
+"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+<!--Nav-->
+<p class="meta">
+  
+    <a class="basic-alignment left" href="/blog/google-guava-collections/" title="Previous Post: Google Guava: 2. Collections">&laquo; Google Guava: 2. Collections</a>
+  
+  
+    <a class="basic-alignment right" href="/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/" title="Next Post: Dapper, a Large-Scale Distributed Systems Tracing Infrastructure">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure &raquo;</a>
+  
+</p>
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 728*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:728px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="2039334876"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+	
+	<!-- 789*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+</p>
+
+<!-- UY BEGIN -->
+<div id="uyan_frame"></div>
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/google-guava-collections/" title="Previous Post: Google Guava: 2. Collections">&laquo; Google Guava: 2. Collections</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/" title="Next Post: Dapper, a Large-Scale Distributed Systems Tracing Infrastructure">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+ <h1>Categories</h1>
+ <ul id="categories">
+	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (6)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
+<li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
+
+ </ul>
+</section>
+<section>
+<h1>Tags</h1>
+<ul class="tag-cloud">
+	<a style="font-size: 90%" href="/blog/tags/css/">CSS</a>
+<a style="font-size: 119%" href="/blog/tags/collection/">Collection</a>
+<a style="font-size: 171%" href="/blog/tags/design-pattern/">Design Pattern</a>
+<a style="font-size: 119%" href="/blog/tags/guava/">Guava</a>
+<a style="font-size: 171%" href="/blog/tags/jdk/">JDK</a>
+<a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
+<a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
+<a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
+<a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
+<a style="font-size: 119%" href="/blog/tags/site/">Site</a>
+<a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
+<a style="font-size: 164%" href="/blog/tags/source-code/">Source Code</a>
+<a style="font-size: 90%" href="/blog/tags/spring-mvc/">Spring MVC</a>
+<a style="font-size: 119%" href="/blog/tags/spring-solr/">Spring Solr</a>
+<a style="font-size: 136%" href="/blog/tags/string/">String</a>
+<a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
+<a style="font-size: 119%" href="/blog/tags/web/">Web</a>
+<a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+<a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
+<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+
+</ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/google-guava-dealing-with-null/">Google Guava: 1. Dealing With Null</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/key-solr-concepts/">Key Solr Concepts</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>GitHub Repos</h1>
+  <ul id="gh_repos">
+    <li class="loading">Status updating...</li>
+  </ul>
+  
+  <a href="https://github.com/AlphaWang">@AlphaWang</a> on GitHub
+  
+  <script type="text/javascript">
+    $(document).ready(function(){
+        if (!window.jXHR){
+            var jxhr = document.createElement('script');
+            jxhr.type = 'text/javascript';
+            jxhr.src = '/javascripts/libs/jXHR.js';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(jxhr, s);
+        }
+
+        github.showRepos({
+            user: 'AlphaWang',
+            count: 0,
+            skip_forks: true,
+            target: '#gh_repos'
+        });
+    });
+  </script>
+  <script src="/javascripts/github.js" type="text/javascript"> </script>
+</section>
+
+
+
+<section class="googleplus googleplus-hidden">
+  <h1>
+    <a href="https://plus.google.com/1919wang@gmail.com?rel=author">
+      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
+      Google+
+    </a>
+  </h1>
+</section>
+
+
+<section>
+  <h1>Visitors Map</h1>
+  <div class="earth">
+  <script type="text/javascript" src="//rk.revolvermaps.com/0/0/1.js?i=awaok66hddi&amp;s=250&amp;m=0&amp;v=false&amp;r=false&amp;b=01070a&amp;n=false&amp;c=ff8500" async="async"></script>
+  </div>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2019 - Alpha Wang -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

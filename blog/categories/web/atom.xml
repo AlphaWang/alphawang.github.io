@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Web | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/web/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-04-11T00:19:15+08:00</updated>
+  <updated>2019-04-11T13:46:58+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Zapfino: A Cool Font]]></title>
-    <link href="http://alphawang.github.io/blog/2014/09/zapfino-a-cool-font/"/>
+    <link href="http://alphawang.github.io/blog/zapfino-a-cool-font/"/>
     <updated>2014-09-16T17:28:52+08:00</updated>
-    <id>http://alphawang.github.io/blog/2014/09/zapfino-a-cool-font</id>
+    <id>http://alphawang.github.io/blog/zapfino-a-cool-font</id>
     <content type="html"><![CDATA[<p>I&rsquo;m tring to look for some fonts for my blog these days, and find a cool font <a href="http://en.wikipedia.org/wiki/Zapfino"><code>Zapfino</code></a> inadvertently.</p>
 
 <p>Here is how it looks:</p>

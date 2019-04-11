@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Design Patterns | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/design-patterns/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-04-11T00:19:15+08:00</updated>
+  <updated>2019-04-11T13:46:58+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[[六大设计原则] 6. Open Closed Principle]]></title>
-    <link href="http://alphawang.github.io/blog/2012/12/6_open-closed-principle/"/>
+    <link href="http://alphawang.github.io/blog/6_open-closed-principle/"/>
     <updated>2012-12-31T16:47:20+08:00</updated>
-    <id>http://alphawang.github.io/blog/2012/12/6_open-closed-principle</id>
+    <id>http://alphawang.github.io/blog/6_open-closed-principle</id>
     <content type="html"><![CDATA[<h2>定义</h2>
 
 <p>Open Closed Principle:</p>
@@ -106,9 +106,9 @@
   
   <entry>
     <title type="html"><![CDATA[[六大设计原则] 5. Least Knowledge Principle]]></title>
-    <link href="http://alphawang.github.io/blog/2012/12/5_least-knowledge-principle/"/>
+    <link href="http://alphawang.github.io/blog/5_least-knowledge-principle/"/>
     <updated>2012-12-31T16:31:41+08:00</updated>
-    <id>http://alphawang.github.io/blog/2012/12/5_least-knowledge-principle</id>
+    <id>http://alphawang.github.io/blog/5_least-knowledge-principle</id>
     <content type="html"><![CDATA[<h2>定义</h2>
 
 <p>最少知识原则（Least Knowledge Principle），又称迪米特法则（LoD，Law of Demeter），是指一个对象应该对其他对象有最少的了解。
@@ -201,9 +201,9 @@ public float getTemp(){
   
   <entry>
     <title type="html"><![CDATA[[六大设计原则] 4. Interface Segrefation Principle]]></title>
-    <link href="http://alphawang.github.io/blog/2012/12/4_interface-segrefation-principle/"/>
+    <link href="http://alphawang.github.io/blog/4_interface-segrefation-principle/"/>
     <updated>2012-12-31T16:11:26+08:00</updated>
-    <id>http://alphawang.github.io/blog/2012/12/4_interface-segrefation-principle</id>
+    <id>http://alphawang.github.io/blog/4_interface-segrefation-principle</id>
     <content type="html"><![CDATA[<h2>定义</h2>
 
 <p>Interface Segregation Principle:</p>
@@ -285,9 +285,9 @@ public float getTemp(){
   
   <entry>
     <title type="html"><![CDATA[[六大设计原则] 3. Dependence Inversion Principle]]></title>
-    <link href="http://alphawang.github.io/blog/2012/12/3_dependence-inversion-principle/"/>
+    <link href="http://alphawang.github.io/blog/3_dependence-inversion-principle/"/>
     <updated>2012-12-30T19:41:26+08:00</updated>
-    <id>http://alphawang.github.io/blog/2012/12/3_dependence-inversion-principle</id>
+    <id>http://alphawang.github.io/blog/3_dependence-inversion-principle</id>
     <content type="html"><![CDATA[<h2>定义</h2>
 
 <p>DIP，Dependence Inversion Principle:</p>
@@ -447,9 +447,9 @@ DIP的本质是通过抽象（接口、抽象类）使各个类或模块的实�
   
   <entry>
     <title type="html"><![CDATA[[六大设计原则] 2. Liskov Substitution Principle]]></title>
-    <link href="http://alphawang.github.io/blog/2012/12/2_liskov-substitution-principle/"/>
+    <link href="http://alphawang.github.io/blog/2_liskov-substitution-principle/"/>
     <updated>2012-12-29T18:07:50+08:00</updated>
-    <id>http://alphawang.github.io/blog/2012/12/2_liskov-substitution-principle</id>
+    <id>http://alphawang.github.io/blog/2_liskov-substitution-principle</id>
     <content type="html"><![CDATA[<h2>定义</h2>
 
 <p>LSP，Liskov Substitution Principle：</p>
