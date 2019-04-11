@@ -25,12 +25,28 @@ single: true
     </p>
   </footer>
 </article>
-{% if site.disqus_short_name and page.comments == true %}
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite">{% include post/disqus_thread.html %}</div>
-  </section>
-{% endif %}
+
+  <!-- Gitalk 评论 start  -->
+
+  <!-- Link Gitalk 的支持文件  -->
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script>
+  <div id="gitalk-container"></div>     <script type="text/javascript">
+    var gitalk = new Gitalk({
+
+        // gitalk的主要参数
+        clientID: 'd4cba670eb5bd4b63a2e',
+        clientSecret: '5a3498bf127676c9aaacf738a8b26d976154fad3',
+        repo: 'alphawang.github.io',
+        owner: 'AlphaWang',
+        admin: ['AlphaWang'],
+        id: location.pathname,
+
+    });
+    gitalk.render('gitalk-container');
+</script>
+  <!-- Gitalk end -->
+
 </div>
 {% unless page.sidebar == false %}
 <aside class="sidebar">
