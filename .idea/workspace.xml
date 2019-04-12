@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1b9bbd01-a28a-464e-bf11-e0f8de9fb1d9" name="Default" comment="[blog] dapper ch2.5">
-      <change afterPath="$PROJECT_DIR$/source/_posts/2019-03-24-google-dapper-translation2.markdown" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/_posts/2019-03-24-google-dapper-translation.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/source/_posts/2019-03-24-dapper-a-large-scale-distributed-systems-tracing-infrastructure.markdown" afterDir="false" />
-    </list>
+    <list default="true" id="1b9bbd01-a28a-464e-bf11-e0f8de9fb1d9" name="Default" comment="[blog] dapper ch2.5" />
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -55,8 +52,8 @@
         <entry file="file://$PROJECT_DIR$/source/_posts/2019-03-24-dapper-a-large-scale-distributed-systems-tracing-infrastructure.markdown">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="240">
-                <caret line="16" column="62" lean-forward="true" selection-start-line="16" selection-start-column="62" selection-end-line="16" selection-end-column="62" />
+              <first_editor relative-caret-position="167">
+                <caret line="23" column="10" lean-forward="true" selection-start-line="23" selection-start-column="10" selection-end-line="23" selection-end-column="10" />
               </first_editor>
               <second_editor>
                 <js_state />
@@ -70,7 +67,7 @@
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="SPLIT">
               <first_editor relative-caret-position="17">
-                <caret line="10" column="8" lean-forward="true" selection-start-line="10" selection-start-column="8" selection-end-line="10" selection-end-column="8" />
+                <caret line="10" selection-start-line="10" selection-end-line="10" />
               </first_editor>
               <second_editor>
                 <js_state />
@@ -515,11 +512,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="47861000" />
+    <option name="totallyTimeSpent" value="48625000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="28" y="23" width="1412" height="877" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info anchor="right" id="PlantUML" order="6" />
       <window_info anchor="right" id="Palette" order="6" />
@@ -530,10 +526,10 @@
       <window_info anchor="right" id="Maven Projects" order="6" />
       <window_info anchor="bottom" id="Database Changes" order="10" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Version Control" order="10" visible="true" weight="0.4319683" />
+      <window_info active="true" anchor="bottom" id="Version Control" order="10" visible="true" weight="0.4319683" />
       <window_info anchor="bottom" id="Terminal" order="10" weight="0.47159842" />
       <window_info id="Designer" order="5" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22773723" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.22773723" />
       <window_info anchor="bottom" id="Reviews" order="10" />
       <window_info anchor="bottom" id="SonarLint" order="10" />
       <window_info anchor="right" id="Database" order="6" />
@@ -830,8 +826,8 @@
     <entry file="file://$PROJECT_DIR$/source/_posts/2019-03-24-dapper-a-large-scale-distributed-systems-tracing-infrastructure.markdown">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="240">
-            <caret line="16" column="62" lean-forward="true" selection-start-line="16" selection-start-column="62" selection-end-line="16" selection-end-column="62" />
+          <first_editor relative-caret-position="167">
+            <caret line="23" column="10" lean-forward="true" selection-start-line="23" selection-start-column="10" selection-end-line="23" selection-end-column="10" />
           </first_editor>
           <second_editor>
             <js_state />
