@@ -5,11 +5,11 @@ date: 2019-03-24 12:04:46 +0800
 comments: true
 categories: [distributed system]
 tags: [distributed system, tracing, dapper]
-keywords: distributed system, tracing, dapper, 链路跟踪
-description: Google Dapper论文的翻译
+keywords: distributed system, tracing, dapper, 链路跟踪, pinpoint, xtrace, magpie
+description: Google Dapper论文中文翻译
 ---
 
-> 最近在研究分布式链路跟踪系统，Google Dapper 当然是必读的论文了，目前网上能搜到一些中文翻译版，然而读下来个人感觉翻译比较生硬；这里试着在前人的肩膀上重新翻译一遍这个论文，权当是个人的学习笔记，如果同时能给其他人带来好处那就更好了。
+> 最近在研究分布式链路跟踪系统，Google Dapper 当然是必读的论文了，目前网上能搜到一些中文翻译版，然而读下来个人感觉略生硬；这里试着在前人的肩膀上重新翻译一遍这个论文，权当是个人的学习笔记，如果同时能给其他人带来好处那就更好了。
 >
 > 同时把译文放到了 github，如您发现翻译错误或者不通顺之处，恳请提交 github PR: <https://github.com/AlphaWang/alpha-dapper-translation>
 
