@@ -12,16 +12,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="2019-03-24-google-dapper-translation.markdown" pinned="false" current-in-tab="true">
+      <file leaf-file-name="2019-03-24-google-dapper-translation.markdown" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/_posts/2019-03-24-google-dapper-translation.markdown">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="264">
-                <caret line="18" column="59" lean-forward="true" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="59" />
+              <first_editor relative-caret-position="234">
+                <caret line="16" selection-start-line="16" selection-end-line="16" />
               </first_editor>
               <second_editor>
                 <js_state />
               </second_editor>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/_deploy/blog/google-dapper-translation/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1957">
+              <caret line="20" column="87" selection-start-line="20" selection-start-column="30" selection-end-line="20" selection-end-column="87" />
             </state>
           </provider>
         </entry>
@@ -235,6 +244,24 @@
             <path>
               <item name="alphawang.github.io" type="b2602c69:ProjectViewProjectNode" />
               <item name="alphawang.github.io" type="462c0819:PsiDirectoryNode" />
+              <item name="_deploy" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="alphawang.github.io" type="b2602c69:ProjectViewProjectNode" />
+              <item name="alphawang.github.io" type="462c0819:PsiDirectoryNode" />
+              <item name="_deploy" type="462c0819:PsiDirectoryNode" />
+              <item name="blog" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="alphawang.github.io" type="b2602c69:ProjectViewProjectNode" />
+              <item name="alphawang.github.io" type="462c0819:PsiDirectoryNode" />
+              <item name="_deploy" type="462c0819:PsiDirectoryNode" />
+              <item name="blog" type="462c0819:PsiDirectoryNode" />
+              <item name="google-dapper-translation" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="alphawang.github.io" type="b2602c69:ProjectViewProjectNode" />
+              <item name="alphawang.github.io" type="462c0819:PsiDirectoryNode" />
               <item name="source" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -432,11 +459,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="44283000" />
+    <option name="totallyTimeSpent" value="44527000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="28" y="23" width="1375" height="877" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info anchor="right" id="PlantUML" order="6" />
       <window_info anchor="right" id="Palette" order="6" />
@@ -525,18 +551,6 @@
     <option name="LAST_COMMIT_MESSAGE" value="[blog] dapper re-format" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/MANUAL.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="240">
-            <caret line="16" column="3" selection-start-line="16" selection-start-column="3" selection-end-line="16" selection-end-column="3" />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Gemfile">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="195">
@@ -740,12 +754,19 @@
     <entry file="file://$PROJECT_DIR$/source/_posts/2019-03-24-google-dapper-translation.markdown">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="264">
-            <caret line="18" column="59" lean-forward="true" selection-start-line="18" selection-start-column="8" selection-end-line="18" selection-end-column="59" />
+          <first_editor relative-caret-position="234">
+            <caret line="16" selection-start-line="16" selection-end-line="16" />
           </first_editor>
           <second_editor>
             <js_state />
           </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_deploy/blog/google-dapper-translation/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1957">
+          <caret line="20" column="87" selection-start-line="20" selection-start-column="30" selection-end-line="20" selection-end-column="87" />
         </state>
       </provider>
     </entry>
