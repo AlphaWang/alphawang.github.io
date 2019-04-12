@@ -4,7 +4,7 @@
   <title><![CDATA[Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-04-11T22:37:47+08:00</updated>
+  <updated>2019-04-12T22:18:43+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -15,16 +15,16 @@
   
   <entry>
     <title type="html"><![CDATA[Dapper, a Large-Scale Distributed Systems Tracing Infrastructure]]></title>
-    <link href="http://alphawang.github.io/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/"/>
+    <link href="http://alphawang.github.io/blog/google-dapper-translation/"/>
     <updated>2019-03-24T12:04:46+08:00</updated>
-    <id>http://alphawang.github.io/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure</id>
+    <id>http://alphawang.github.io/blog/google-dapper-translation</id>
     <content type="html"><![CDATA[<blockquote><p>最近在研究分布式链路跟踪系统，Google Dapper 当然是必读的论文了，目前网上能搜到一些中文翻译版，然而读下来个人感觉翻译比较生硬；这里试着在前人的肩膀上重新翻译一遍这个论文，权当是个人的学习笔记，如果同时能给其他人带来好处那就更好了。</p>
 
 <p>同时把译文放到了 github，如您发现翻译错误或者不通顺之处，恳请提交 github PR: <a href="https://github.com/AlphaWang/alpha-dapper-translation">https://github.com/AlphaWang/alpha-dapper-translation</a></p>
 
 <ul>
 <li>原文：<a href="https://ai.google/research/pubs/pub36356">https://ai.google/research/pubs/pub36356</a></li>
-<li>译文：<a href="http://alphawang.com/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">http://alphawang.com/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/</a></li>
+<li>译文：<a href="http://alphawang.com/blog/google-dapper-translation">http://alphawang.com/blog/google-dapper-translation</a></li>
 </ul>
 </blockquote>
 
@@ -56,7 +56,7 @@
 
 <p>另外一个设计目标是生成跟踪数据后要很快可用于分析：最好是在一分钟内。尽管一个能处理几小时前数据的跟踪分析系统已经很有用了，但是能分析最新数据的话会让我们能对生产环境的异常情况作出快速反应。</p>
 
-<p>我们通过把 Dapper 跟踪植入的核心代码限制在线程调用、控制流以及RPC 等库代码中，实现了真正的应用透明这个最具挑战性的目标。使用自适应的采样（见4.4节），我们做到了可扩展性、降低性能损耗。最终的系统还包括收集跟踪数据的代码、可视化数据的工具、用于分析大规模跟踪数据的库和 API。尽管开发人员有时通过 Dapper 就足以找出性能问题的根源，但 Dapper 并不会替代所有其他的工具。我们发现 Dapper 的数据往往侧重于性能排查，所以其他工具也有自己的用处。</p>
+<p>我们通过把 Dapper 跟踪植入的核心代码限制在线程调用、控制流以及 RPC 等库代码中，实现了真正的应用透明这个最具挑战性的目标。使用自适应的采样（见4.4节），我们做到了可扩展性、降低性能损耗。最终的系统还包括收集跟踪数据的代码、可视化数据的工具、用于分析大规模跟踪数据的库和 API。尽管开发人员有时通过 Dapper 就足以找出性能问题的根源，但 Dapper 并不会替代所有其他的工具。我们发现 Dapper 的数据往往侧重于性能排查，所以其他工具也有自己的用处。</p>
 
 <h3>1.1 贡献总结</h3>
 
@@ -2677,14 +2677,6 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 <span class='line-number'>24</span>
 <span class='line-number'>25</span>
 <span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
 </pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">EnumSet</span><span class="o">&lt;</span><span class="n">E</span> <span class="kd">extends</span> <span class="n">Enum</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;&gt;</span> <span class="kd">extends</span> <span class="n">AbstractSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span>
 </span><span class='line'>    <span class="kd">implements</span> <span class="n">Cloneable</span><span class="o">,</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span>
 </span><span class='line'><span class="o">{</span>
@@ -2711,34 +2703,14 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 </span><span class='line'>
 </span><span class='line'><span class="kd">class</span> <span class="nc">JumboEnumSet</span><span class="o">&lt;</span><span class="n">E</span> <span class="kd">extends</span> <span class="n">Enum</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;&gt;</span> <span class="kd">extends</span> <span class="n">EnumSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="o">{</span>
 </span><span class='line'><span class="o">}</span>
-</span><span class='line'> <span class="err">```</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="n">Collections</span><span class="o">.</span><span class="na">unmodifiableMap</span><span class="o">(</span><span class="n">Map</span><span class="o">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">Java集合框架中有32个集合接口的便利实现</span><span class="err">，</span><span class="n">提供不可修改的集合</span><span class="err">、</span><span class="n">同步集合等等</span><span class="err">。</span><span class="n">几乎所有的实现都通过一个不可实例化类</span><span class="err">（`</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Collections</span><span class="err">`）</span><span class="n">中的静态工厂方法导出</span><span class="err">，</span><span class="n">返回对象的类都是非public的</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&gt;</span> <span class="o">**</span><span class="n">优点</span><span class="err">：</span><span class="n">静态工厂方法能返回任意子类型的对象</span><span class="err">。</span><span class="n">可以返回一个对象而无需使相应的类public</span><span class="err">。</span><span class="n">用这种方式隐藏实现类能够产生一个非常紧凑的API</span><span class="o">**</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>public class Collections {
-    /<em>*
-     * Returns an unmodifiable view of the specified map.  This method
-     * allows modules to provide users with &ldquo;read-only&rdquo; access to internal
-     * maps.  Query operations on the returned map &ldquo;read through&rdquo;
-     * to the specified map, and attempts to modify the returned
-     * map, whether direct or via its collection views, result in an
-     * <tt>UnsupportedOperationException</tt>.<p>
-     *
-     </em>/
-    public static &lt;K,V> Map&lt;K,V> unmodifiableMap(Map&lt;? extends K, ? extends V> m) {
-        return new UnmodifiableMap&lt;K,V>(m);
-    }</p>
+<h3>Collections.unmodifiableMap(Map)</h3>
 
-<pre><code>private static class UnmodifiableMap&lt;K,V&gt; implements Map&lt;K,V&gt;, Serializable {
-  }
-</code></pre>
+<p>Java集合框架中有32个集合接口的便利实现，提供不可修改的集合、同步集合等等。几乎所有的实现都通过一个不可实例化类（<code>java.util.Collections</code>）中的静态工厂方法导出，返回对象的类都是非public的。</p>
+
+<blockquote><p><strong>优点：静态工厂方法能返回任意子类型的对象。可以返回一个对象而无需使相应的类public。用这种方式隐藏实现类能够产生一个非常紧凑的API</strong></p></blockquote>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -2746,20 +2718,52 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">##</span> <span class="mi">2</span><span class="o">.</span> <span class="n">私有化构造函数</span><span class="err">，</span><span class="n">实现Singleton</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Collections</span> <span class="o">{</span>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * Returns an unmodifiable view of the specified map.  This method</span>
+</span><span class='line'><span class="cm">     * allows modules to provide users with &quot;read-only&quot; access to internal</span>
+</span><span class='line'><span class="cm">     * maps.  Query operations on the returned map &quot;read through&quot;</span>
+</span><span class='line'><span class="cm">     * to the specified map, and attempts to modify the returned</span>
+</span><span class='line'><span class="cm">     * map, whether direct or via its collection views, result in an</span>
+</span><span class='line'><span class="cm">     * &lt;tt&gt;UnsupportedOperationException&lt;/tt&gt;.&lt;p&gt;</span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="nf">unmodifiableMap</span><span class="o">(</span><span class="n">Map</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">K</span><span class="o">,</span> <span class="o">?</span> <span class="kd">extends</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">m</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">UnmodifiableMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;(</span><span class="n">m</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="n">Arrays</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">这种工具类设计出来并不是为了实例化它</span><span class="err">。</span><span class="n">然而</span><span class="err">，</span><span class="n">如果不显式地编写构造函数</span><span class="err">，</span><span class="n">编译器则会提供一个公共的无参数的默认构造方法</span><span class="err">。</span>
-</span><span class='line'><span class="n">所以将构造函数私有化</span><span class="err">：</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">UnmodifiableMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;,</span> <span class="n">Serializable</span> <span class="o">{</span>
+</span><span class='line'>      <span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>public class Arrays {
-    // Suppresses default constructor, ensuring non-instantiability.
-    private Arrays() {
-    }
- ```</p>
+<h2>2. 私有化构造函数，实现Singleton</h2>
+
+<h3>Arrays</h3>
+
+<p>这种工具类设计出来并不是为了实例化它。然而，如果不显式地编写构造函数，编译器则会提供一个公共的无参数的默认构造方法。
+所以将构造函数私有化：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Arrays</span> <span class="o">{</span>
+</span><span class='line'>    <span class="c1">// Suppresses default constructor, ensuring non-instantiability.</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="nf">Arrays</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>当然，还可以在这个私有构造器内部加上 <code>throw new AssertionError()</code>，可以确保该方法不会再类内部被意外调用。</p>
 
@@ -2862,19 +2866,6 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
 </pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">AbstractMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="cm">/**</span>
@@ -2882,7 +2873,7 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 </span><span class='line'><span class="cm">     * appropriate view the first time this view is requested.  The views are</span>
 </span><span class='line'><span class="cm">     * stateless, so there&#39;s no reason to create more than one of each.</span>
 </span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>   <span class="kd">transient</span> <span class="kd">volatile</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span>        <span class="n">keySet</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>   <span class="kd">transient</span> <span class="kd">volatile</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span> <span class="n">keySet</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
 </span><span class='line'>   <span class="kd">public</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span> <span class="nf">keySet</span><span class="o">()</span> <span class="o">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">keySet</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
 </span><span class='line'>        <span class="n">keySet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AbstractSet</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;()</span> <span class="o">{</span>
@@ -2892,243 +2883,18 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 </span><span class='line'>    <span class="k">return</span> <span class="n">keySet</span><span class="o">;</span>
 </span><span class='line'>    <span class="o">}</span>
 </span><span class='line'><span class="o">}</span>
-</span><span class='line'> <span class="err">```</span>
-</span><span class='line'><span class="n">注意在构造keySet之前</span> <span class="n">对齐进行了null检查</span><span class="err">；</span><span class="n">只有当它是null时才会初始化</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="mi">4</span><span class="o">.</span> <span class="n">消除无用的对象引用</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="n">LinkedHashMap</span><span class="o">.</span><span class="na">removeEldestEntry</span><span class="o">()</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="n">缓存实体的生命周期不容易确定</span><span class="err">，</span><span class="n">随着时间推移</span><span class="err">，</span><span class="n">实体的价值越来越低</span><span class="err">。</span><span class="n">在这种情况下</span><span class="err">，</span><span class="n">缓存应该不定期地清理无用的实体</span><span class="err">。</span><span class="n">可以通过一个后台线程来清理</span><span class="err">（</span><span class="n">可能是</span><span class="err">`</span><span class="n">Timer</span><span class="err">`</span><span class="n">或</span><span class="err">`</span><span class="n">ScheduledThreadPoolExecutor</span><span class="err">`），</span><span class="n">也可以在给缓存添加新实体时进行清理</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">LikedHashMap可利用其removeEldestEntry</span><span class="err">，</span><span class="n">删除较老的实体</span><span class="err">：</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>public class LinkedHashMap&lt;K,V>
-    extends HashMap&lt;K,V>
-    implements Map&lt;K,V>
-{
-   /<strong>
-     * It causes newly allocated entry to get inserted at the end of the linked list and
-     * removes the eldest entry if appropriate.
-     */
-    void addEntry(int hash, K key, V value, int bucketIndex) {
-        createEntry(hash, key, value, bucketIndex);
-        // Remove eldest entry if instructed, else grow capacity if appropriate
-        Entry&lt;K,V> eldest = header.after;
-        if (removeEldestEntry(eldest)) {
-            removeEntryForKey(eldest.key);
-        } else {
-            if (size >= threshold)
-                resize(2 * table.length);
-        }
-    }
-    /</strong>
-     * Returns <tt>true</tt> if this map should remove its eldest entry.
-     * This method is invoked by <tt>put</tt> and <tt>putAll</tt> after
-     * inserting a new entry into the map.<br/>
-     *
-     * Sample use:
-     * <pre>
-     *     private static final int MAX_ENTRIES = 100;
-     *
-     *     protected boolean removeEldestEntry(Map.Entry eldest) {
-     *        return size() > MAX_ENTRIES;
-     *     }
-     * </pre>
-     *
-     */
-    protected boolean removeEldestEntry(Map.Entry&lt;K,V> eldest) {
-        return false;
-    }</p>
+<p>注意在构造keySet之前 对齐进行了null检查；只有当它是null时才会初始化。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">——</span><span class="n">可以继承LinkedHashMap</span><span class="err">，</span><span class="n">覆盖其removeEldestEntry方法</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="o">&gt;</span> <span class="n">注</span><span class="err">：</span><span class="n">如果想要缓存中的对象只要不被引用</span><span class="err">，</span><span class="n">就自动清理</span><span class="err">；</span><span class="n">则可以用WeakHashMap</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="mi">5</span><span class="o">.</span> <span class="n">如果指定了toString返回值的格式</span><span class="err">，</span><span class="n">则应该提供一个对应的静态工厂方法或构造函数</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="n">BigInteger</span><span class="o">.</span><span class="na">toString</span><span class="o">()</span>
-</span></code></pre></td></tr></table></div></figure>
+<h2>4. 消除无用的对象引用</h2>
 
+<h3>LinkedHashMap.removeEldestEntry()</h3>
 
-<p> <br/>
-    /<em>*
-     * Returns the String representation of this BigInteger in the
-     * given radix.<br/>
-     *
-     </em>/
-    public String toString(int radix) {</p>
+<p>缓存实体的生命周期不容易确定，随着时间推移，实体的价值越来越低。在这种情况下，缓存应该不定期地清理无用的实体。可以通过一个后台线程来清理（可能是<code>Timer</code>或<code>ScheduledThreadPoolExecutor</code>），也可以在给缓存添加新实体时进行清理。</p>
 
-<pre><code>/**
- * Returns the decimal String representation of this BigInteger.
- */
-public String toString() {
-    return toString(10);
-}
-</code></pre>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>
-</span><span class='line'><span class="n">对应的构造函数如下</span><span class="err">。</span><span class="n">这样程序员能容易地在对象及其字符串表示之间来回转换</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<pre><code>/**
- * Translates the decimal String representation of a BigInteger into a
- * BigInteger.  
- */
-public BigInteger(String val) {
-    this(val, 10);
-}
-/**
- * Translates the String representation of a BigInteger in the specified
- * radix into a BigInteger.  
- */
-public BigInteger(String val, int radix) { 
-</code></pre>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">##</span> <span class="mi">6</span><span class="o">.</span> <span class="n">不可变对象</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="nl">共享不可变对象内部信息:</span>  <span class="n">BigInteger</span><span class="o">.</span><span class="na">negate</span><span class="o">()</span><span class="err">：</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="o">&gt;</span> <span class="n">我们可以自由地共享不可变对象</span><span class="err">，</span><span class="n">还可以共享他们的内部信息</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">【</span><span class="n">例</span><span class="err">】</span><span class="n">BigInteger类内部使用了一个符号数值表示法</span><span class="err">（</span><span class="n">sign</span><span class="o">-</span><span class="n">magnitude</span> <span class="n">representation</span><span class="err">），</span><span class="n">符号用一个int表示</span><span class="err">，</span><span class="n">数值则用一个int数组表示</span><span class="err">。`</span><span class="n">negate</span><span class="o">()</span><span class="err">`</span><span class="n">方法会创建一个数值相同但符号相反的新</span><span class="err">`</span><span class="n">BigInteger</span><span class="err">`，</span><span class="n">该方法不需要拷贝数组</span><span class="err">，</span><span class="n">新创建的BigInteger只需要指向源对象中的数组即可</span><span class="err">。</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<pre><code>/**
- * Returns a BigInteger whose value is {@code (-this)}.
- *
- * @return {@code -this}
- */
-public BigInteger negate() {
-      return new BigInteger(this.mag, -this.signum);
-}
-</code></pre>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="nl">鼓励重用现有不可变实例:</span> <span class="n">BigInteger</span><span class="o">.</span><span class="na">ZERO</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">**</span><span class="n">不可变对象生来就是线程安全的</span><span class="err">，</span><span class="n">他们不需要同步</span><span class="o">**</span><span class="err">。</span><span class="n">当多个线程并发访问不可变对象时</span><span class="err">，</span><span class="n">他们不会遭到破坏</span><span class="err">。</span><span class="n">这无疑是实现线程安全的最容易的方法</span><span class="err">。</span><span class="n">实际上</span><span class="err">，</span><span class="n">不会有线程能观察到其他线程对不可变对象的影响</span><span class="err">。</span><span class="n">所以不可变对象可以被自由地共享</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">不可变类应当利用这种优势</span><span class="err">，</span><span class="n">鼓励客户端尽可能重用现有实例</span><span class="err">。</span><span class="n">一个简单的方法是为常用的值提供public</span> <span class="kd">static</span> <span class="n">final的常量</span><span class="err">。</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<pre><code>public static final BigInteger ZERO = new BigInteger(new int[0], 0);
-public static final BigInteger ONE = valueOf(1);
-public static final BigInteger TEN = valueOf(10);
-</code></pre>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">###</span> <span class="n">为不可变类提供companion</span> <span class="nl">class:</span>  <span class="n">String</span> <span class="n">vs</span><span class="o">.</span> <span class="n">StringBuilder</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">不可变类的一个缺点是</span><span class="err">，</span><span class="n">对于每个不同的值都需要一个单独的对象</span><span class="err">。</span><span class="n">那么在执行复杂的多步操作时</span><span class="err">，</span><span class="n">每一步都会创建一个新的对象</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">通过提供</span><span class="err">`</span><span class="n">companion</span> <span class="n">class</span><span class="err">`</span><span class="n">可以解决这个问题</span><span class="err">。</span><span class="n">例如当需要对</span><span class="err">`</span><span class="n">String</span><span class="err">`</span><span class="n">执行复杂操作时</span><span class="err">，</span><span class="n">建议使用</span><span class="err">`</span><span class="n">StringBuilder</span><span class="err">`。</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="n">不可变类中可以有nonfinal域</span><span class="err">，</span><span class="nl">用于存储缓存:</span> <span class="n">String</span><span class="o">.</span><span class="na">hashCode</span><span class="o">()</span><span class="err">：</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">不可变类所有域必须是final的</span><span class="err">。</span><span class="n">实际上这些规则比较强硬</span><span class="err">，</span><span class="n">为了提供性能可以有所放松</span><span class="err">。</span><span class="n">实际上应该是没有方法能够对类的状态产生外部可见的改变</span><span class="err">（</span><span class="n">no</span> <span class="n">method</span> <span class="n">may</span> <span class="n">produce</span> <span class="n">an</span> <span class="n">externally</span> <span class="n">visible</span> <span class="n">change</span> <span class="n">in</span> <span class="n">the</span> <span class="n">object</span><span class="err">’</span><span class="n">s</span> <span class="n">state</span><span class="err">）。</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">然而</span><span class="err">，</span><span class="n">一些不可变类拥有一个或多个nonfinal域</span><span class="err">，</span><span class="n">用于缓存昂贵计算的结果</span><span class="err">。</span><span class="n">这个技巧可以很好地工作</span><span class="err">，</span><span class="n">因为对象是不可变的</span><span class="err">，</span><span class="n">保证了相同的计算总是返回同样的结果</span><span class="err">。</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<pre><code>/** Cache the hash code for the string */
-private int hash; // Default to 0
-
-public int hashCode() {
-  int h = hash;
-  int len = count;
-  if (h == 0 &amp;&amp; len &gt; 0) {
-    int off = offset;
-    char val[] = value;
-        for (int i = 0; i &lt; len; i++) {
-            h = 31*h + val[off++];
-        }
-        hash = h;
-  }
-  return h;
-}
-</code></pre>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">#</span> <span class="n">设计模式</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="mi">1</span><span class="o">.</span> <span class="n">Template</span> <span class="n">Method</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">sort</span><span class="o">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>// Arrays<br/>
-   public static void sort(Object[] a) {<br/>
-        &hellip;<br/>
-        ComparableTimSort.sort(a);<br/>
-    }</p>
-
-<p>// ComparableTimSort<br/>
-   static void sort(Object[] a, int lo, int hi) {<br/>
-        &hellip;<br/>
-        binarySort(a, lo, hi, lo + initRunLen);</p>
-
-<p>   }</p>
+<p>LikedHashMap可利用其removeEldestEntry，删除较老的实体：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -3152,32 +2918,295 @@ public int hashCode() {
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">```</span>
-</span><span class='line'>    <span class="c1">//算法框架  </span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">binarySort</span><span class="o">(</span><span class="n">Object</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">,</span> <span class="kt">int</span> <span class="n">start</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">assert</span> <span class="n">lo</span> <span class="o">&lt;=</span> <span class="n">start</span> <span class="o">&amp;&amp;</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">hi</span><span class="o">;</span>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">start</span> <span class="o">==</span> <span class="n">lo</span><span class="o">)</span>
-</span><span class='line'>            <span class="n">start</span><span class="o">++;</span>
-</span><span class='line'>        <span class="k">for</span> <span class="o">(</span> <span class="o">;</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">hi</span><span class="o">;</span> <span class="n">start</span><span class="o">++)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&quot;unchecked&quot;</span><span class="o">)</span>
-</span><span class='line'>            <span class="n">Comparable</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">pivot</span> <span class="o">=</span> <span class="o">(</span><span class="n">Comparable</span><span class="o">)</span> <span class="n">a</span><span class="o">[</span><span class="n">start</span><span class="o">];</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="c1">// Set left (and right) to the index where a[start] (pivot) belongs  </span>
-</span><span class='line'>            <span class="o">....</span>
-</span><span class='line'>            <span class="k">while</span> <span class="o">(</span><span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="o">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">right</span><span class="o">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span><span class="o">;</span>
-</span><span class='line'>                <span class="k">if</span> <span class="o">(</span><span class="n">pivot</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">a</span><span class="o">[</span><span class="n">mid</span><span class="o">])</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="c1">//compareTo这个算法步骤，是由各个Comparable的子类定义的  </span>
-</span><span class='line'>                    <span class="n">right</span> <span class="o">=</span> <span class="n">mid</span><span class="o">;</span>
-</span><span class='line'>                <span class="k">else</span>
-</span><span class='line'>                    <span class="n">left</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>            <span class="o">....</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LinkedHashMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="kd">extends</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="kd">implements</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'>   <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * It causes newly allocated entry to get inserted at the end of the linked list and</span>
+</span><span class='line'><span class="cm">     * removes the eldest entry if appropriate.</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kt">void</span> <span class="nf">addEntry</span><span class="o">(</span><span class="kt">int</span> <span class="n">hash</span><span class="o">,</span> <span class="n">K</span> <span class="n">key</span><span class="o">,</span> <span class="n">V</span> <span class="n">value</span><span class="o">,</span> <span class="kt">int</span> <span class="n">bucketIndex</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">createEntry</span><span class="o">(</span><span class="n">hash</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">,</span> <span class="n">bucketIndex</span><span class="o">);</span>
+</span><span class='line'>        <span class="c1">// Remove eldest entry if instructed, else grow capacity if appropriate</span>
+</span><span class='line'>        <span class="n">Entry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">eldest</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="na">after</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">removeEldestEntry</span><span class="o">(</span><span class="n">eldest</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">removeEntryForKey</span><span class="o">(</span><span class="n">eldest</span><span class="o">.</span><span class="na">key</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">size</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="o">)</span>
+</span><span class='line'>                <span class="n">resize</span><span class="o">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">table</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
 </span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * Returns &lt;tt&gt;true&lt;/tt&gt; if this map should remove its eldest entry.</span>
+</span><span class='line'><span class="cm">     * This method is invoked by &lt;tt&gt;put&lt;/tt&gt; and &lt;tt&gt;putAll&lt;/tt&gt; after</span>
+</span><span class='line'><span class="cm">     * inserting a new entry into the map.  </span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     * Sample use: </span>
+</span><span class='line'><span class="cm">     * &lt;pre&gt;</span>
+</span><span class='line'><span class="cm">     *     private static final int MAX_ENTRIES = 100;</span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     *     protected boolean removeEldestEntry(Map.Entry eldest) {</span>
+</span><span class='line'><span class="cm">     *        return size() &gt; MAX_ENTRIES;</span>
+</span><span class='line'><span class="cm">     *     }</span>
+</span><span class='line'><span class="cm">     * &lt;/pre&gt;</span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">removeEldestEntry</span><span class="o">(</span><span class="n">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">eldest</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
 </span><span class='line'>    <span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p></p>
+<p>——可以继承LinkedHashMap，覆盖其removeEldestEntry方法。</p>
+
+<blockquote><p>注：如果想要缓存中的对象只要不被引用，就自动清理；则可以用WeakHashMap</p></blockquote>
+
+<h2>5. 如果指定了toString返回值的格式，则应该提供一个对应的静态工厂方法或构造函数</h2>
+
+<h3>BigInteger.toString()</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Returns the String representation of this BigInteger in the</span>
+</span><span class='line'><span class="cm"> * given radix.  </span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">(</span><span class="kt">int</span> <span class="n">radix</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Returns the decimal String representation of this BigInteger.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nf">toString</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对应的构造函数如下。这样程序员能容易地在对象及其字符串表示之间来回转换</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Translates the decimal String representation of a BigInteger into a</span>
+</span><span class='line'><span class="cm"> * BigInteger.  </span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="nf">BigInteger</span><span class="o">(</span><span class="n">String</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">(</span><span class="n">val</span><span class="o">,</span> <span class="mi">10</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Translates the String representation of a BigInteger in the specified</span>
+</span><span class='line'><span class="cm"> * radix into a BigInteger.  </span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="nf">BigInteger</span><span class="o">(</span><span class="n">String</span> <span class="n">val</span><span class="o">,</span> <span class="kt">int</span> <span class="n">radix</span><span class="o">)</span> <span class="o">{</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>6. 不可变对象</h2>
+
+<h3>共享不可变对象内部信息:  BigInteger.negate()：</h3>
+
+<blockquote><p>我们可以自由地共享不可变对象，还可以共享他们的内部信息。</p></blockquote>
+
+<p>【例】BigInteger类内部使用了一个符号数值表示法（sign-magnitude representation），符号用一个int表示，数值则用一个int数组表示。<code>negate()</code>方法会创建一个数值相同但符号相反的新<code>BigInteger</code>，该方法不需要拷贝数组，新创建的BigInteger只需要指向源对象中的数组即可。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Returns a BigInteger whose value is {@code (-this)}.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @return {@code -this}</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="n">BigInteger</span> <span class="nf">negate</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="k">new</span> <span class="nf">BigInteger</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">mag</span><span class="o">,</span> <span class="o">-</span><span class="k">this</span><span class="o">.</span><span class="na">signum</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>鼓励重用现有不可变实例: BigInteger.ZERO</h3>
+
+<p><strong>不可变对象生来就是线程安全的，他们不需要同步</strong>。当多个线程并发访问不可变对象时，他们不会遭到破坏。这无疑是实现线程安全的最容易的方法。实际上，不会有线程能观察到其他线程对不可变对象的影响。所以不可变对象可以被自由地共享。</p>
+
+<p>不可变类应当利用这种优势，鼓励客户端尽可能重用现有实例。一个简单的方法是为常用的值提供public static final的常量。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">BigInteger</span> <span class="n">ZERO</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">BigInteger</span><span class="o">(</span><span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">0</span><span class="o">],</span> <span class="mi">0</span><span class="o">);</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">BigInteger</span> <span class="n">ONE</span> <span class="o">=</span> <span class="n">valueOf</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">BigInteger</span> <span class="n">TEN</span> <span class="o">=</span> <span class="n">valueOf</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>为不可变类提供companion class:  String vs. StringBuilder</h3>
+
+<p>不可变类的一个缺点是，对于每个不同的值都需要一个单独的对象。那么在执行复杂的多步操作时，每一步都会创建一个新的对象。</p>
+
+<p>通过提供<code>companion class</code>可以解决这个问题。例如当需要对<code>String</code>执行复杂操作时，建议使用<code>StringBuilder</code>。</p>
+
+<h3>不可变类中可以有nonfinal域，用于存储缓存: String.hashCode()：</h3>
+
+<p>不可变类所有域必须是final的。实际上这些规则比较强硬，为了提供性能可以有所放松。实际上应该是没有方法能够对类的状态产生外部可见的改变（no method may produce an externally visible change in the object’s state）。</p>
+
+<p>然而，一些不可变类拥有一个或多个nonfinal域，用于缓存昂贵计算的结果。这个技巧可以很好地工作，因为对象是不可变的，保证了相同的计算总是返回同样的结果。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/** Cache the hash code for the string */</span>
+</span><span class='line'><span class="kd">private</span> <span class="kt">int</span> <span class="n">hash</span><span class="o">;</span> <span class="c1">// Default to 0</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="n">hash</span><span class="o">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">count</span><span class="o">;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">h</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">off</span> <span class="o">=</span> <span class="n">offset</span><span class="o">;</span>
+</span><span class='line'>    <span class="kt">char</span> <span class="n">val</span><span class="o">[]</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">len</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">h</span> <span class="o">=</span> <span class="mi">31</span><span class="o">*</span><span class="n">h</span> <span class="o">+</span> <span class="n">val</span><span class="o">[</span><span class="n">off</span><span class="o">++];</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="n">hash</span> <span class="o">=</span> <span class="n">h</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">h</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>设计模式</h1>
+
+<h2>1. Template Method</h2>
+
+<h3>Arrays.sort()</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// Arrays  </span>
+</span><span class='line'>   <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Object</span><span class="o">[]</span> <span class="n">a</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="o">...</span>
+</span><span class='line'>        <span class="n">ComparableTimSort</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">a</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ComparableTimSort  </span>
+</span><span class='line'>   <span class="kd">static</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Object</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="o">...</span>
+</span><span class='line'>        <span class="n">binarySort</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">lo</span><span class="o">,</span> <span class="n">hi</span><span class="o">,</span> <span class="n">lo</span> <span class="o">+</span> <span class="n">initRunLen</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">//算法框架  </span>
+</span><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">binarySort</span><span class="o">(</span><span class="n">Object</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">,</span> <span class="kt">int</span> <span class="n">start</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">assert</span> <span class="n">lo</span> <span class="o">&lt;=</span> <span class="n">start</span> <span class="o">&amp;&amp;</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">hi</span><span class="o">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">start</span> <span class="o">==</span> <span class="n">lo</span><span class="o">)</span>
+</span><span class='line'>        <span class="n">start</span><span class="o">++;</span>
+</span><span class='line'>    <span class="k">for</span> <span class="o">(</span> <span class="o">;</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">hi</span><span class="o">;</span> <span class="n">start</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&quot;unchecked&quot;</span><span class="o">)</span>
+</span><span class='line'>        <span class="n">Comparable</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">pivot</span> <span class="o">=</span> <span class="o">(</span><span class="n">Comparable</span><span class="o">)</span> <span class="n">a</span><span class="o">[</span><span class="n">start</span><span class="o">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Set left (and right) to the index where a[start] (pivot) belongs  </span>
+</span><span class='line'>        <span class="o">....</span>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="o">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">right</span><span class="o">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">pivot</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">a</span><span class="o">[</span><span class="n">mid</span><span class="o">])</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="c1">//compareTo这个算法步骤，是由各个Comparable的子类定义的  </span>
+</span><span class='line'>                <span class="n">right</span> <span class="o">=</span> <span class="n">mid</span><span class="o">;</span>
+</span><span class='line'>            <span class="k">else</span>
+</span><span class='line'>                <span class="n">left</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="o">....</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>Q：这个算法框架并不是设计在父类中，而是在一个工具类中</p>
 
@@ -3263,8 +3292,6 @@ public int hashCode() {
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p></p>
-
 <h3>Applet.init()/start()/stop()/destroy()/paint()</h3>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -3323,8 +3350,6 @@ public int hashCode() {
 </span><span class='line'>    <span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p></p>
 
 <p>Applet中的init()/start()/stop()/destroy()/paint()这些方法，都是hook。</p>
 
@@ -3460,8 +3485,6 @@ public int hashCode() {
 </pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Map</span> <span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span> <span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;();</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p></p>
 
 <p>而假设HashMap提供了如下静态工厂：</p>
 
@@ -3785,16 +3808,6 @@ public int hashCode() {
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
 </pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Dimension</span> <span class="kd">extends</span> <span class="n">Dimension2D</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span> <span class="o">{</span>
 </span><span class='line'>    <span class="cm">/**</span>
 </span><span class='line'><span class="cm">     * The width dimension; negative values can be used.</span>
@@ -3804,52 +3817,106 @@ public int hashCode() {
 </span><span class='line'><span class="cm">     * The height dimension; negative values can be used.</span>
 </span><span class='line'><span class="cm">     */</span>
 </span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="n">height</span><span class="o">;</span>
-</span><span class='line'> <span class="err">```</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">#</span> <span class="mi">8</span><span class="o">.</span> <span class="n">不可变类的设计</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="nl">不可变类无需提供拷贝构造函数:</span> <span class="n">String</span><span class="o">(</span><span class="n">String</span>  <span class="n">original</span><span class="o">)</span><span class="err">：</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">不可变对象可以自由共享</span><span class="err">，</span><span class="n">所以无需进行保护性拷贝</span><span class="err">。</span><span class="n">实际上你根本无需做任何拷贝</span><span class="err">，</span><span class="o">**</span><span class="n">因为这些拷贝始终与源对象相等</span><span class="o">**</span><span class="err">。</span><span class="n">因此</span><span class="err">，</span><span class="o">**</span><span class="n">你不需要</span><span class="err">，</span><span class="n">也不应该为不可变类提供clone方法或者拷贝构造函数</span><span class="o">**</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">【</span><span class="n">反例</span><span class="err">】</span><span class="n">这一点在Java平台早期并没有被很好地理解</span><span class="err">，</span><span class="n">导致String类具有拷贝构造函数</span><span class="err">，</span><span class="n">应该尽量不去用这个函数</span><span class="err">。</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<pre><code>/**
- * Initializes a newly created {@code String} object so that it represents
- * the same sequence of characters as the argument; in other words, the
- * newly created string is a copy of the argument string. Unless an
- * explicit copy of {@code original} is needed, use of this constructor is
- * unnecessary since Strings are immutable.
- *
- * @param  original
- *         A {@code String}
- */
-public String(String original) {
-    this.value = original.value;
-    this.hash = original.hash;
-}
-</code></pre>
+<h1>8. 不可变类的设计</h1>
+
+<h2>不可变类无需提供拷贝构造函数: String(String  original)：</h2>
+
+<p>不可变对象可以自由共享，所以无需进行保护性拷贝。实际上你根本无需做任何拷贝，<strong>因为这些拷贝始终与源对象相等</strong>。因此，<strong>你不需要，也不应该为不可变类提供clone方法或者拷贝构造函数</strong>。</p>
+
+<p>【反例】这一点在Java平台早期并没有被很好地理解，导致String类具有拷贝构造函数，应该尽量不去用这个函数。</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">##</span> <span class="nl">不可变类应该不能继承:</span> <span class="n">BigInteger</span> <span class="o">/</span> <span class="n">BigDecimal</span><span class="err">：</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">当BigInteger和BigDecimal编写出来时</span><span class="err">，</span><span class="n">对于</span><span class="err">“</span><span class="o">**</span><span class="n">不可变类实际上必须final</span><span class="o">**</span><span class="err">”</span><span class="n">并没有得到广泛的理解</span><span class="err">，</span><span class="n">所以这两个类的方法都可以被重写</span><span class="err">。</span><span class="n">不幸的是</span><span class="err">，</span><span class="n">为了保持向后兼容</span><span class="err">，</span><span class="n">这个问题一直没有得到修正</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">如果你编写的类的安全性依赖于</span><span class="err">（</span><span class="n">来自不可信客户端的</span><span class="err">）</span><span class="n">BigInteger或BigDecimal的不可变性</span><span class="err">，</span><span class="n">那么就必须检查参数是真正的BigInteger</span><span class="o">/</span><span class="n">BigDecimal</span><span class="err">，</span><span class="n">还是不可信任的子类实例</span><span class="err">。</span><span class="n">如果是后者</span><span class="err">，</span><span class="n">你必须把它当成是可变的</span><span class="err">，</span><span class="n">并进行保护性拷贝</span><span class="err">：</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Initializes a newly created {@code String} object so that it represents</span>
+</span><span class='line'><span class="cm"> * the same sequence of characters as the argument; in other words, the</span>
+</span><span class='line'><span class="cm"> * newly created string is a copy of the argument string. Unless an</span>
+</span><span class='line'><span class="cm"> * explicit copy of {@code original} is needed, use of this constructor is</span>
+</span><span class='line'><span class="cm"> * unnecessary since Strings are immutable.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @param  original</span>
+</span><span class='line'><span class="cm"> *         A {@code String}</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="nf">String</span><span class="o">(</span><span class="n">String</span> <span class="n">original</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">original</span><span class="o">.</span><span class="na">value</span><span class="o">;</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">hash</span> <span class="o">=</span> <span class="n">original</span><span class="o">.</span><span class="na">hash</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>public static BigInteger safeInstance(BigInteger val) {
-   if (val.getClass() != BigInteger.class )
-          return new BigInteger(val.toByteArray());
-   return val;</p>
+<h2>不可变类应该不能继承: BigInteger / BigDecimal：</h2>
+
+<p>当BigInteger和BigDecimal编写出来时，对于“<strong>不可变类实际上必须final</strong>”并没有得到广泛的理解，所以这两个类的方法都可以被重写。不幸的是，为了保持向后兼容，这个问题一直没有得到修正。</p>
+
+<p>如果你编写的类的安全性依赖于（来自不可信客户端的）BigInteger或BigDecimal的不可变性，那么就必须检查参数是真正的BigInteger/BigDecimal，还是不可信任的子类实例。如果是后者，你必须把它当成是可变的，并进行保护性拷贝：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="n">BigInteger</span> <span class="nf">safeInstance</span><span class="o">(</span><span class="n">BigInteger</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">val</span><span class="o">.</span><span class="na">getClass</span><span class="o">()</span> <span class="o">!=</span> <span class="n">BigInteger</span><span class="o">.</span><span class="na">class</span> <span class="o">)</span>
+</span><span class='line'>          <span class="k">return</span> <span class="k">new</span> <span class="nf">BigInteger</span><span class="o">(</span><span class="n">val</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">());</span>
+</span><span class='line'>   <span class="k">return</span> <span class="n">val</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Date,  Point：理应设计成不可变类</h2>
+
+<p>应该永远让小的值对象不可变，例如PhoneNumber、Complex。
+Java平台库中有许多这种类，例如<code>java.util.Date</code>、<code>java.awt.Point</code>，它们理论上应当是不可变的，但实际上却是可变的。</p>
+
+<h2>EnumSet理应不可变</h2>
+
+<h1>9. 异常设计</h1>
+
+<h2>finally中应该禁止return</h2>
+
+<p>It is especially difficult to understand the behavior of a program that executes a break, continue, or return statement in a Try block only to have the statement&rsquo;s behavior vetoed by a finally block.</p>
+
+<p><strong>Never exit a finally block with a return, break, continue, or throw, and never allow a checked exception to propagate out of a finally block.</strong></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">decision</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">try</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个程序返回false。无论try块是否正常执行完，finnaly都会被执行。</p>
+
+<h2>finally中应该禁止抛出异常</h2>
+
+<p>另外，finally中应该禁止抛出异常。否则finally中剩下的语句就不会执行，破坏逻辑。</p>
+
+<h2>继承方法抛出的异常</h2>
+
+<p>The set of checked exceptions that a method can throw is the <strong>intersection</strong> of the sets of checked exceptions that it is declared to throw in all applicable types, <strong>not the union</strong>.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -3870,280 +3937,222 @@ public String(String original) {
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
 <span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">##</span> <span class="n">Date</span><span class="o">,</span>  <span class="n">Point</span><span class="err">：</span><span class="n">理应设计成不可变类</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">interface</span> <span class="nc">Type1</span> <span class="o">{</span>
+</span><span class='line'>     <span class="kt">void</span> <span class="nf">f</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">应该永远让小的值对象不可变</span><span class="err">，</span><span class="n">例如PhoneNumber</span><span class="err">、</span><span class="n">Complex</span><span class="err">。</span>
-</span><span class='line'><span class="n">Java平台库中有许多这种类</span><span class="err">，</span><span class="n">例如</span><span class="err">`</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Date</span><span class="err">`、`</span><span class="n">java</span><span class="o">.</span><span class="na">awt</span><span class="o">.</span><span class="na">Point</span><span class="err">`，</span><span class="n">它们理论上应当是不可变的</span><span class="err">，</span><span class="n">但实际上却是可变的</span><span class="err">。</span>
+</span><span class='line'><span class="kd">interface</span> <span class="nc">Type2</span> <span class="o">{</span>
+</span><span class='line'>     <span class="kt">void</span> <span class="nf">f</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">EnumSet理应不可变</span>
+</span><span class='line'><span class="kd">interface</span> <span class="nc">Type3</span> <span class="kd">extends</span> <span class="n">Type1</span><span class="o">,</span> <span class="n">Type2</span> <span class="o">{</span>
+</span><span class='line'><span class="o">}</span>
 </span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Arcane3</span> <span class="kd">implements</span> <span class="n">Type3</span> <span class="o">{</span>
 </span><span class='line'>
+</span><span class='line'>     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">f</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span> <span class="s">&quot;Hello world&quot;</span> <span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
 </span><span class='line'>
+</span><span class='line'>     <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">Type3</span> <span class="n">t3</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Arcane3</span><span class="o">();</span>
+</span><span class='line'>         <span class="n">t3</span><span class="o">.</span><span class="na">f</span><span class="o">();</span>   <span class="c1">// 不抛异常！！！</span>
+</span><span class='line'>    <span class="o">}</span>
 </span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">#</span> <span class="mi">9</span><span class="o">.</span> <span class="n">异常设计</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">finally中应该禁止return</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">It</span> <span class="n">is</span> <span class="n">especially</span> <span class="n">difficult</span> <span class="n">to</span> <span class="n">understand</span> <span class="n">the</span> <span class="n">behavior</span> <span class="n">of</span> <span class="n">a</span> <span class="n">program</span> <span class="n">that</span> <span class="n">executes</span> <span class="n">a</span> <span class="k">break</span><span class="o">,</span> <span class="k">continue</span><span class="o">,</span> <span class="n">or</span> <span class="k">return</span> <span class="n">statement</span> <span class="n">in</span> <span class="n">a</span> <span class="n">Try</span> <span class="n">block</span> <span class="n">only</span> <span class="n">to</span> <span class="n">have</span> <span class="n">the</span> <span class="n">statement</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">behavior</span> <span class="n">vetoed</span> <span class="n">by</span> <span class="n">a</span> <span class="k">finally</span> <span class="n">block</span><span class="o">.</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">**</span><span class="n">Never</span> <span class="n">exit</span> <span class="n">a</span> <span class="k">finally</span> <span class="n">block</span> <span class="n">with</span> <span class="n">a</span> <span class="k">return</span><span class="o">,</span> <span class="k">break</span><span class="o">,</span> <span class="k">continue</span><span class="o">,</span> <span class="n">or</span> <span class="k">throw</span><span class="o">,</span> <span class="n">and</span> <span class="n">never</span> <span class="n">allow</span> <span class="n">a</span> <span class="n">checked</span> <span class="n">exception</span> <span class="n">to</span> <span class="n">propagate</span> <span class="n">out</span> <span class="n">of</span> <span class="n">a</span> <span class="k">finally</span> <span class="n">block</span><span class="o">.**</span>
+</span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<pre><code>static boolean decision() { 
-    try { 
-        return true; 
-    } finally { 
-        return false; 
-    } 
-}
-</code></pre>
+<h1>10. 类型转换</h1>
+
+<h2>int相乘可能溢出</h2>
+
+<p>两个int相乘，得到的还是int，这就可能溢出！</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">long</span> <span class="n">MICROS_PER_DAY</span> <span class="o">=</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">*</span> <span class="mi">1000</span><span class="o">;</span> <span class="c1">//不精确</span>
+</span><span class='line'><span class="kt">long</span> <span class="n">MICROS_PER_DAY</span> <span class="o">=</span> <span class="mi">24</span> <span class="n">L</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">*</span> <span class="mi">1000</span><span class="o">;</span> <span class="c1">//精确</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>应该自动切换到更大的类型，以避免溢出；
+或者直接抛出Exception，都比溢出要好。</p>
+
+<h2>mixed-type computations</h2>
+
+<p>如果遇到跨类型计算，jdk会把低类型自动提升为高类型，然后再计算。但这种转换有时会导致问题。例如：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Long</span><span class="o">.</span><span class="na">toHexString</span><span class="o">(</span><span class="mh">0x100000000</span><span class="n">L</span> <span class="o">+</span> <span class="mh">0xcafebabe</span><span class="o">);</span> <span class="c1">//cafebabe</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>因为是long + int，所以后面的int会自动提升为long，再计算。即被提升为0xffffffffcafebabeL。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'>  <span class="mh">0xffffffffcafebabe</span><span class="n">L</span>
+</span><span class='line'><span class="o">+</span> <span class="mh">0x0000000100000000</span><span class="n">L</span>
+</span><span class='line'><span class="o">=</span> <span class="mh">0x00000000cafebabe</span><span class="n">L</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>所以得到cafebase，而不是想象中的1cafebabe。
+我们得出教训：<strong>跨类型计算可能带来混淆，所以要坚决避免！</strong>上例可以改为如下：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Long</span><span class="o">.</span><span class="na">toHexString</span><span class="o">(</span><span class="mh">0x100000000</span><span class="n">L</span> <span class="o">+</span> <span class="mh">0xcafebabe</span><span class="n">L</span><span class="o">);</span> <span class="c1">//1cafebabe</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>Negative hex literals appear positive。十六进制的字面值，其最高位代表正负。</p></blockquote>
+
+<h2>三元运算符的操作数类型</h2>
+
+<p>要注意三元运算符，它没有要求第二和第三个操作数类型一致。</p>
+
+<ol>
+<li>如果类型都为T；则结果为T。</li>
+<li>如果其中一个类型T为byte/shor/char，另一个是int常量；则结果为T。</li>
+<li>如果为其他情况，则结果为提升类型。</li>
+</ol>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">char</span> <span class="n">x</span> <span class="o">=</span> <span class="sc">&#39;X&#39;</span><span class="o">;</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="kc">false</span> <span class="o">?</span> <span class="n">i</span> <span class="o">:</span> <span class="n">x</span><span class="o">);</span> <span class="c1">//输出88，结果为int类型</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>理应强制要求他们类型一致。</p>
+
+<h2>+=和-=的自动类型转换：损失精度</h2>
+
+<p><code>+=</code>、<code>-=</code>等运算符会自动类型转换，即将计算结果自动转换为左侧操作数的类型。这有时会导致意想不到的问题。
+例如：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">这个程序返回false</span><span class="err">。</span><span class="n">无论try块是否正常执行完</span><span class="err">，</span><span class="n">finnaly都会被执行</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">finally中应该禁止抛出异常</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">另外</span><span class="err">，</span><span class="n">finally中应该禁止抛出异常</span><span class="err">。</span><span class="n">否则finally中剩下的语句就不会执行</span><span class="err">，</span><span class="n">破坏逻辑</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">继承方法抛出的异常</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">The</span> <span class="n">set</span> <span class="n">of</span> <span class="n">checked</span> <span class="n">exceptions</span> <span class="n">that</span> <span class="n">a</span> <span class="n">method</span> <span class="n">can</span> <span class="k">throw</span> <span class="n">is</span> <span class="n">the</span> <span class="o">**</span><span class="n">intersection</span><span class="o">**</span> <span class="n">of</span> <span class="n">the</span> <span class="n">sets</span> <span class="n">of</span> <span class="n">checked</span> <span class="n">exceptions</span> <span class="n">that</span> <span class="n">it</span> <span class="n">is</span> <span class="n">declared</span> <span class="n">to</span> <span class="k">throw</span> <span class="n">in</span> <span class="n">all</span> <span class="n">applicable</span> <span class="n">types</span><span class="o">,</span> <span class="o">**</span><span class="n">not</span> <span class="n">the</span> <span class="n">union</span><span class="o">**.</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">short</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">123456</span><span class="o">;</span>
+</span><span class='line'><span class="n">x</span> <span class="o">+=</span> <span class="n">i</span><span class="o">;</span> <span class="c1">//自动转换为short，损失精度，但不报错</span>
+</span><span class='line'><span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">i</span><span class="o">;</span> <span class="c1">// Won&#39;t compile - &quot;possible loss of precision&quot;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>interface Type1 {
-     void f() throws CloneNotSupportedException;
-}</p>
+<p>应该不要做自动类型转换，以编译报错提醒用户。（与第二句普通赋值语句保持一致）</p>
 
-<p>interface Type2 {
-     void f() throws InterruptedException;
-}</p>
+<ul>
+<li>——另外一个问题，<code>+=</code>左侧不能为Object，例如：</li>
+</ul>
 
-<p>interface Type3 extends Type1, Type2 {
-}</p>
-
-<p>public class Arcane3 implements Type3 {</p>
-
-<pre><code> public void f() { 
-    System.out.println( "Hello world" ); 
-}
-
- public static void main(String[] args) { 
-    Type3 t3 = new Arcane3(); 
-     t3.f();   // 不抛异常！！！
-}
-</code></pre>
-
-<p>}</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>
-</span><span class='line'><span class="err">#</span> <span class="mi">10</span><span class="o">.</span> <span class="n">类型转换</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">int相乘可能溢出</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">两个int相乘</span><span class="err">，</span><span class="n">得到的还是int</span><span class="err">，</span><span class="n">这就可能溢出</span><span class="err">！</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Object</span> <span class="n">x</span> <span class="o">=</span> <span class="s">&quot;Buy &quot;</span><span class="o">;</span>
+</span><span class='line'><span class="n">String</span> <span class="n">i</span> <span class="o">=</span> <span class="s">&quot;Effective Java!&quot;</span><span class="o">;</span>
+</span><span class='line'><span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">i</span><span class="o">;</span>  <span class="c1">//合法</span>
+</span><span class='line'><span class="n">x</span> <span class="o">+=</span> <span class="n">i</span><span class="o">;</span>     <span class="c1">//非法</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>long MICROS_PER_DAY = 24 * 60 * 60 * 1000 * 1000; //不精确
-long MICROS_PER_DAY = 24 L * 60 * 60 * 1000 * 1000; //精确</p>
+<ul>
+<li>——Narrowing Primitive Conversion
+An unfortunate fact about the compound assignment operators is that they can silently perform narrowing primitive conversions , which are conversions from one numeric type to a less expressive numeric type.</li>
+</ul>
+
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">应该自动切换到更大的类型</span><span class="err">，</span><span class="n">以避免溢出</span><span class="err">；</span>
-</span><span class='line'><span class="n">或者直接抛出Exception</span><span class="err">，</span><span class="n">都比溢出要好</span><span class="err">。</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">short</span> <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
 </span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">mixed</span><span class="o">-</span><span class="n">type</span> <span class="n">computations</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">如果遇到跨类型计算</span><span class="err">，</span><span class="n">jdk会把低类型自动提升为高类型</span><span class="err">，</span><span class="n">然后再计算</span><span class="err">。</span><span class="n">但这种转换有时会导致问题</span><span class="err">。</span><span class="n">例如</span><span class="err">：</span>
+</span><span class='line'><span class="k">while</span> <span class="o">(</span><span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span>
+</span><span class='line'>    <span class="n">i</span> <span class="o">&gt;&gt;&gt;=</span> <span class="mi">1</span><span class="o">;</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Long.toHexString(0x100000000L + 0xcafebabe); //cafebabe</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">因为是long</span> <span class="o">+</span> <span class="kt">int</span><span class="err">，</span><span class="n">所以后面的int会自动提升为long</span><span class="err">，</span><span class="n">再计算</span><span class="err">。</span><span class="n">即被提升为0xffffffffcafebabeL</span><span class="err">。</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>  0xffffffffcafebabeL
-+ 0x0000000100000000L
-= 0x00000000cafebabeL</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">所以得到cafebase</span><span class="err">，</span><span class="n">而不是想象中的1cafebabe</span><span class="err">。</span>
-</span><span class='line'><span class="n">我们得出教训</span><span class="err">：</span><span class="o">**</span><span class="n">跨类型计算可能带来混淆</span><span class="err">，</span><span class="n">所以要坚决避免</span><span class="err">！</span><span class="o">**</span><span class="n">上例可以改为如下</span><span class="err">：</span>
-</span></code></pre></td></tr></table></div></figure>
+<ol>
+<li>初始值为0xffff；</li>
+<li>执行>>>=时，先将其提升为int，变为0xffffffff；</li>
+<li>接着移位，变为0x7fffffff；</li>
+<li>接着赋值回i，这时会执行从int到short的转换，变为0xffff</li>
+</ol>
 
 
-<p>Long.toHexString(0x100000000L + 0xcafebabeL); //1cafebabe</p>
+<p>所以上例是一个无限循环。</p>
+
+<h1>11. 语言设计</h1>
+
+<h2>long字面值可以用小写L</h2>
+
+<p>用小写L容易与数字1混淆！
+应该强制用大写L，小写L非法。</p>
+
+<h2>重写toString()</h2>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">&gt;</span> <span class="n">Negative</span> <span class="n">hex</span> <span class="n">literals</span> <span class="n">appear</span> <span class="n">positive</span><span class="err">。</span><span class="n">十六进制的字面值</span><span class="err">，</span><span class="n">其最高位代表正负</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">三元运算符的操作数类型</span>
-</span><span class='line'><span class="n">要注意三元运算符</span><span class="err">，</span><span class="n">它没有要求第二和第三个操作数类型一致</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="mi">1</span><span class="o">.</span> <span class="n">如果类型都为T</span><span class="err">；</span><span class="n">则结果为T</span><span class="err">。</span>
-</span><span class='line'><span class="mi">2</span><span class="o">.</span> <span class="n">如果其中一个类型T为byte</span><span class="o">/</span><span class="n">shor</span><span class="o">/</span><span class="kt">char</span><span class="err">，</span><span class="n">另一个是int常量</span><span class="err">；</span><span class="n">则结果为T</span><span class="err">。</span>
-</span><span class='line'><span class="mi">3</span><span class="o">.</span> <span class="n">如果为其他情况</span><span class="err">，</span><span class="n">则结果为提升类型</span><span class="err">。</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Object</span> <span class="n">numbers</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">char</span><span class="o">[]</span> <span class="o">{</span> <span class="sc">&#39;1&#39;</span><span class="o">,</span> <span class="sc">&#39;2&#39;</span><span class="o">,</span> <span class="sc">&#39;3&#39;</span> <span class="o">};</span>
+</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">numbers</span><span class="o">);</span> <span class="c1">// [C@16f0472</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>char x = &lsquo;X&rsquo;;
-int i = 0;
-System.out.print(false ? i : x); //输出88，结果为int类型</p>
+<p>貌似Array应该默认重写toString方法。</p>
+
+<h2>不能静态导入Arrays.toString()</h2>
+
+<p>为了解决上一个问题，你可能想静态导入Arrays.toString()，然后调用：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">理应强制要求他们类型一致</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span><span class="o">+=</span><span class="n">和</span><span class="o">-=</span><span class="n">的自动类型转换</span><span class="err">：</span><span class="n">损失精度</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">`</span><span class="o">+=</span><span class="err">`、`</span><span class="o">-=</span><span class="err">`</span><span class="n">等运算符会自动类型转换</span><span class="err">，</span><span class="n">即将计算结果自动转换为左侧操作数的类型</span><span class="err">。</span><span class="n">这有时会导致意想不到的问题</span><span class="err">。</span>
-</span><span class='line'><span class="n">例如</span><span class="err">：</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">toString</span><span class="o">(</span><span class="n">numbers</span><span class="o">);</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>short x = 0;
-int i = 123456;
-x += i; //自动转换为short，损失精度，但不报错
-x = x + i; // Won&rsquo;t compile - &ldquo;possible loss of precision&rdquo;</p>
+<p>但是会编译报错，编译器去查找当前类的toString()方法，发现参数不匹配。。</p>
+
+<h2>String(byte[])依赖于默认字符集</h2>
+
+<p>String(byte[])的文档说明，它依赖于默认字符集：</p>
+
+<blockquote><p>Constructs a new String by decoding the specified byte array <strong>using the platform&rsquo;s default charset</strong>. The length of the new String is a function of the charset, and hence may not be equal to the length of the byte array. The behavior of this constructor when the given bytes are not valid in the default charset is unspecified。</p></blockquote>
+
+<p>但是JRE的默认字符集依赖于操作系统和locale。所以，it was not such a good idea to provide a String(byte[]) constructor that depends on the default charset:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">应该不要做自动类型转换</span><span class="err">，</span><span class="n">以编译报错提醒用户</span><span class="err">。（</span><span class="n">与第二句普通赋值语句保持一致</span><span class="err">）</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">-</span> <span class="err">——</span><span class="n">另外一个问题</span><span class="err">，`</span><span class="o">+=</span><span class="err">`</span><span class="n">左侧不能为Object</span><span class="err">，</span><span class="n">例如</span><span class="err">：</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">String</span> <span class="n">str</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="n">bytes</span><span class="o">,</span> <span class="s">&quot;ISO-8859-1&quot;</span><span class="o">);</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Object x = &ldquo;Buy &rdquo;;
-String i = &ldquo;Effective Java!&rdquo;;
-x = x + i;  //合法
-x += i;     //非法</p>
+<h2>final字段与final方法的含义完全不同</h2>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>
-</span><span class='line'><span class="o">-</span> <span class="err">——</span><span class="n">Narrowing</span> <span class="n">Primitive</span> <span class="n">Conversion</span>
-</span><span class='line'><span class="n">An</span> <span class="n">unfortunate</span> <span class="n">fact</span> <span class="n">about</span> <span class="n">the</span> <span class="n">compound</span> <span class="n">assignment</span> <span class="n">operators</span> <span class="n">is</span> <span class="n">that</span> <span class="n">they</span> <span class="n">can</span> <span class="n">silently</span> <span class="n">perform</span> <span class="n">narrowing</span> <span class="n">primitive</span> <span class="n">conversions</span> <span class="o">,</span> <span class="n">which</span> <span class="n">are</span> <span class="n">conversions</span> <span class="n">from</span> <span class="n">one</span> <span class="n">numeric</span> <span class="n">type</span> <span class="n">to</span> <span class="n">a</span> <span class="n">less</span> <span class="n">expressive</span> <span class="n">numeric</span> <span class="n">type</span><span class="o">.</span>
-</span></code></pre></td></tr></table></div></figure>
+<h2>Thread.run()不应该公开</h2>
+
+<ul>
+<li>Thread.run()是一个public方法，很可能导致被误调用——想调start()，结果却调了run() 。</li>
+<li>If <code>Thread</code> didn&rsquo;t have a public <code>run</code> method, it would be impossible for programmers to invoke it accidentally.</li>
+<li>The <code>Thread</code> class has a public <code>run</code> method because it implements <code>Runnable</code>, but it didn&rsquo;t have to be that way.</li>
+<li>An alternative design would be for each <code>Thread</code> instance to encapsulate a <code>Runnable</code>, giving rise to composition in place of interface inheritance.</li>
+</ul>
 
 
-<p>short i = -1;</p>
+<h2>方法名不合理</h2>
 
-<p>while (i != 0)
-    i >>>= 1;</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="mi">1</span><span class="o">.</span> <span class="n">初始值为0xffff</span><span class="err">；</span>
-</span><span class='line'><span class="mi">2</span><span class="o">.</span> <span class="n">执行</span><span class="o">&gt;&gt;&gt;=</span><span class="n">时</span><span class="err">，</span><span class="n">先将其提升为int</span><span class="err">，</span><span class="n">变为0xffffffff</span><span class="err">；</span>
-</span><span class='line'><span class="mi">3</span><span class="o">.</span> <span class="n">接着移位</span><span class="err">，</span><span class="n">变为0x7fffffff</span><span class="err">；</span>
-</span><span class='line'><span class="mi">4</span><span class="o">.</span> <span class="n">接着赋值回i</span><span class="err">，</span><span class="n">这时会执行从int到short的转换</span><span class="err">，</span><span class="n">变为0xffff</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">所以上例是一个无限循环</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">#</span> <span class="mi">11</span><span class="o">.</span> <span class="n">语言设计</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">long字面值可以用小写L</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">用小写L容易与数字1混淆</span><span class="err">！</span>
-</span><span class='line'><span class="n">应该强制用大写L</span><span class="err">，</span><span class="n">小写L非法</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">重写toString</span><span class="o">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Object numbers = new char[] { &lsquo;1&rsquo;, &lsquo;2&rsquo;, &lsquo;3&rsquo; };
-System.out.println(numbers); // [C@16f0472</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">貌似Array应该默认重写toString方法</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">不能静态导入Arrays</span><span class="o">.</span><span class="na">toString</span><span class="o">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">为了解决上一个问题</span><span class="err">，</span><span class="n">你可能想静态导入Arrays</span><span class="o">.</span><span class="na">toString</span><span class="o">()</span><span class="err">，</span><span class="n">然后调用</span><span class="err">：</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>toString(numbers);</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">但是会编译报错</span><span class="err">，</span><span class="n">编译器去查找当前类的toString</span><span class="o">()</span><span class="n">方法</span><span class="err">，</span><span class="n">发现参数不匹配</span><span class="err">。。</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">String</span><span class="o">(</span><span class="kt">byte</span><span class="o">[])</span><span class="n">依赖于默认字符集</span>
-</span><span class='line'>
-</span><span class='line'><span class="nf">String</span><span class="o">(</span><span class="kt">byte</span><span class="o">[])</span><span class="n">的文档说明</span><span class="err">，</span><span class="n">它依赖于默认字符集</span><span class="err">：</span>
-</span><span class='line'><span class="o">&gt;</span> <span class="n">Constructs</span> <span class="n">a</span> <span class="k">new</span> <span class="n">String</span> <span class="n">by</span> <span class="n">decoding</span> <span class="n">the</span> <span class="n">specified</span> <span class="kt">byte</span> <span class="n">array</span> <span class="o">**</span><span class="n">using</span> <span class="n">the</span> <span class="n">platform</span><span class="err">&#39;</span><span class="n">s</span> <span class="k">default</span> <span class="n">charset</span><span class="o">**.</span> <span class="n">The</span> <span class="n">length</span> <span class="n">of</span> <span class="n">the</span> <span class="k">new</span> <span class="n">String</span> <span class="n">is</span> <span class="n">a</span> <span class="n">function</span> <span class="n">of</span> <span class="n">the</span> <span class="n">charset</span><span class="o">,</span> <span class="n">and</span> <span class="n">hence</span> <span class="n">may</span> <span class="n">not</span> <span class="n">be</span> <span class="n">equal</span> <span class="n">to</span> <span class="n">the</span> <span class="n">length</span> <span class="n">of</span> <span class="n">the</span> <span class="kt">byte</span> <span class="n">array</span><span class="o">.</span> <span class="n">The</span> <span class="n">behavior</span> <span class="n">of</span> <span class="k">this</span> <span class="n">constructor</span> <span class="n">when</span> <span class="n">the</span> <span class="n">given</span> <span class="n">bytes</span> <span class="n">are</span> <span class="n">not</span> <span class="n">valid</span> <span class="n">in</span> <span class="n">the</span> <span class="k">default</span> <span class="n">charset</span> <span class="n">is</span> <span class="n">unspecified</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">但是JRE的默认字符集依赖于操作系统和locale</span><span class="err">。</span><span class="n">所以</span><span class="err">，</span><span class="n">it</span> <span class="n">was</span> <span class="n">not</span> <span class="n">such</span> <span class="n">a</span> <span class="n">good</span> <span class="n">idea</span> <span class="n">to</span> <span class="n">provide</span> <span class="n">a</span> <span class="nf">String</span><span class="o">(</span><span class="kt">byte</span><span class="o">[])</span> <span class="n">constructor</span> <span class="n">that</span> <span class="n">depends</span> <span class="n">on</span> <span class="n">the</span> <span class="k">default</span> <span class="nl">charset:</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>String str = new String(bytes, &ldquo;ISO-8859-1&rdquo;);</p>
+<p>methods should have names that describe their primary functions. Given the behavior of <code>Thread.interrupted</code>, it should have been named <code>clearInterruptStatus</code>.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -4160,40 +4169,23 @@ System.out.println(numbers); // [C@16f0472</p>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">final字段与final方法的含义完全不同</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm">* Tests if some Thread has been interrupted. The interrupted state</span>
+</span><span class='line'><span class="cm">* is reset or not based on the value of ClearInterrupted that is</span>
+</span><span class='line'><span class="cm">* passed.</span>
+</span><span class='line'><span class="cm">*/</span>
 </span><span class='line'>
+</span><span class='line'><span class="kd">private</span> <span class="kd">native</span> <span class="kt">boolean</span> <span class="nf">isInterrupted</span><span class="o">(</span> <span class="kt">boolean</span> <span class="n">ClearInterrupted</span> <span class="o">);</span>
 </span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">Thread</span><span class="o">.</span><span class="na">run</span><span class="o">()</span><span class="n">不应该公开</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">interrupted</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nf">currentThread</span><span class="o">().</span><span class="na">isInterrupted</span><span class="o">(</span> <span class="kc">true</span> <span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="o">-</span> <span class="n">Thread</span><span class="o">.</span><span class="na">run</span><span class="o">()</span><span class="n">是一个public方法</span><span class="err">，</span><span class="n">很可能导致被误调用</span><span class="err">——</span><span class="n">想调start</span><span class="o">()</span><span class="err">，</span><span class="n">结果却调了run</span><span class="o">()</span> <span class="err">。</span>
-</span><span class='line'><span class="o">-</span> <span class="n">If</span> <span class="err">`</span><span class="n">Thread</span><span class="err">`</span> <span class="n">didn</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">have</span> <span class="n">a</span> <span class="kd">public</span> <span class="err">`</span><span class="n">run</span><span class="err">`</span> <span class="n">method</span><span class="o">,</span> <span class="n">it</span> <span class="n">would</span> <span class="n">be</span> <span class="n">impossible</span> <span class="k">for</span> <span class="n">programmers</span> <span class="n">to</span> <span class="n">invoke</span> <span class="n">it</span> <span class="n">accidentally</span><span class="o">.</span>
-</span><span class='line'><span class="o">-</span> <span class="n">The</span> <span class="err">`</span><span class="n">Thread</span><span class="err">`</span> <span class="kd">class</span> <span class="nc">has</span> <span class="n">a</span> <span class="kd">public</span> <span class="err">`</span><span class="n">run</span><span class="err">`</span> <span class="n">method</span> <span class="n">because</span> <span class="n">it</span> <span class="kd">implements</span> <span class="err">`</span><span class="n">Runnable</span><span class="err">`</span><span class="o">,</span> <span class="n">but</span> <span class="n">it</span> <span class="n">didn</span><span class="err">&#39;</span><span class="n">t</span> <span class="n">have</span> <span class="n">to</span> <span class="n">be</span> <span class="n">that</span> <span class="n">way</span><span class="o">.</span>
-</span><span class='line'><span class="o">-</span> <span class="n">An</span> <span class="n">alternative</span> <span class="n">design</span> <span class="n">would</span> <span class="n">be</span> <span class="k">for</span> <span class="n">each</span> <span class="err">`</span><span class="n">Thread</span><span class="err">`</span> <span class="n">instance</span> <span class="n">to</span> <span class="n">encapsulate</span> <span class="n">a</span> <span class="err">`</span><span class="n">Runnable</span><span class="err">`</span><span class="o">,</span> <span class="n">giving</span> <span class="n">rise</span> <span class="n">to</span> <span class="n">composition</span> <span class="n">in</span> <span class="n">place</span> <span class="n">of</span> <span class="kd">interface</span> <span class="nc">inheritance</span><span class="o">.</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="n">方法名不合理</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">methods</span> <span class="n">should</span> <span class="n">have</span> <span class="n">names</span> <span class="n">that</span> <span class="n">describe</span> <span class="n">their</span> <span class="n">primary</span> <span class="n">functions</span><span class="o">.</span> <span class="n">Given</span> <span class="n">the</span> <span class="n">behavior</span> <span class="n">of</span> <span class="err">`</span><span class="n">Thread</span><span class="o">.</span><span class="na">interrupted</span><span class="err">`</span><span class="o">,</span> <span class="n">it</span> <span class="n">should</span> <span class="n">have</span> <span class="n">been</span> <span class="n">named</span> <span class="err">`</span><span class="n">clearInterruptStatus</span><span class="err">`</span><span class="o">.</span>
+</span><span class='line'><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isInterrupted</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="nf">isInterrupted</span><span class="o">(</span> <span class="kc">false</span> <span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p>/<em>*
-* Tests if some Thread has been interrupted. The interrupted state
-* is reset or not based on the value of ClearInterrupted that is
-* passed.
-</em>/</p>
-
-<p>private native boolean isInterrupted( boolean ClearInterrupted );</p>
-
-<p>public static boolean interrupted() {
-  return currentThread().isInterrupted( true );
-}</p>
-
-<p>public boolean isInterrupted() {
-  return isInterrupted( false );
-}
-```</p>
 
 <h2>shadow local variables</h2>
 
