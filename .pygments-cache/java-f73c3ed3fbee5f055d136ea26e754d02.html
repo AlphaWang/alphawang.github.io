@@ -1,0 +1,18 @@
+<div class="highlight"><pre><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">AbstractMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
+ 
+    <span class="cm">/**</span>
+<span class="cm">     * Each of these fields are initialized to contain an instance of the</span>
+<span class="cm">     * appropriate view the first time this view is requested.  The views are</span>
+<span class="cm">     * stateless, so there&#39;s no reason to create more than one of each.</span>
+<span class="cm">     */</span>
+   <span class="kd">transient</span> <span class="kd">volatile</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span> <span class="n">keySet</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+   <span class="kd">public</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span> <span class="nf">keySet</span><span class="o">()</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">keySet</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">keySet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AbstractSet</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;()</span> <span class="o">{</span>
+        <span class="o">.....</span>
+        <span class="o">};</span>
+    <span class="o">}</span>
+    <span class="k">return</span> <span class="n">keySet</span><span class="o">;</span>
+    <span class="o">}</span>    
+<span class="o">}</span>   
+</pre></div>

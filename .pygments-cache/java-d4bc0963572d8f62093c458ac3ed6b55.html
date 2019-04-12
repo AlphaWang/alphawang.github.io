@@ -1,0 +1,12 @@
+<div class="highlight"><pre><span class="c1">//Java 6</span>
+<span class="n">String</span><span class="o">(</span><span class="kt">int</span> <span class="n">offset</span><span class="o">,</span> <span class="kt">int</span> <span class="n">count</span><span class="o">,</span> <span class="kt">char</span> <span class="n">value</span><span class="o">[])</span> <span class="o">{</span>
+     <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+     <span class="k">this</span><span class="o">.</span><span class="na">offset</span> <span class="o">=</span> <span class="n">offset</span><span class="o">;</span>
+     <span class="k">this</span><span class="o">.</span><span class="na">count</span> <span class="o">=</span> <span class="n">count</span><span class="o">;</span>
+<span class="o">}</span>
+ 
+<span class="kd">public</span> <span class="n">String</span> <span class="nf">substring</span><span class="o">(</span><span class="kt">int</span> <span class="n">beginIndex</span><span class="o">,</span> <span class="kt">int</span> <span class="n">endIndex</span><span class="o">)</span> <span class="o">{</span>
+     <span class="c1">//check boundary</span>
+     <span class="k">return</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="n">offset</span> <span class="o">+</span> <span class="n">beginIndex</span><span class="o">,</span> <span class="n">endIndex</span> <span class="o">-</span> <span class="n">beginIndex</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>

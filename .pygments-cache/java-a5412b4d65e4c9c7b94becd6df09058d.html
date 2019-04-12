@@ -1,0 +1,8 @@
+<div class="highlight"><pre><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/test/findproduct&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
+<span class="nd">@ResponseBody</span>
+<span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span> <span class="nf">findProduct</span><span class="o">(</span>
+  <span class="nd">@RequestParam</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&quot;objectValues&quot;</span><span class="o">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">false</span><span class="o">)</span> <span class="n">String</span><span class="o">[]</span> <span class="n">objectValues</span><span class="o">)</span> <span class="o">{</span>
+ <span class="c1">//注意value=&quot;objectValues&quot;</span>
+
+<span class="o">}</span>
+</pre></div>

@@ -1,0 +1,16 @@
+<div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm">* Tests if some Thread has been interrupted. The interrupted state</span>
+<span class="cm">* is reset or not based on the value of ClearInterrupted that is</span>
+<span class="cm">* passed.</span>
+<span class="cm">*/</span>
+
+<span class="kd">private</span> <span class="kd">native</span> <span class="kt">boolean</span> <span class="nf">isInterrupted</span><span class="o">(</span> <span class="kt">boolean</span> <span class="n">ClearInterrupted</span> <span class="o">);</span>
+
+<span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">interrupted</span><span class="o">()</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="nf">currentThread</span><span class="o">().</span><span class="na">isInterrupted</span><span class="o">(</span> <span class="kc">true</span> <span class="o">);</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isInterrupted</span><span class="o">()</span> <span class="o">{</span>
+  <span class="k">return</span> <span class="nf">isInterrupted</span><span class="o">(</span> <span class="kc">false</span> <span class="o">);</span>
+<span class="o">}</span>
+</pre></div>

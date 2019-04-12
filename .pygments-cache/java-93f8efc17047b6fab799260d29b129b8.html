@@ -1,0 +1,25 @@
+<div class="highlight"><pre>   <span class="cm">/**</span>
+<span class="cm">     * Rehashes the contents of this map into a new array with a</span>
+<span class="cm">     * larger capacity.  </span>
+<span class="cm">     * This method is called automatically when the</span>
+<span class="cm">     * number of keys in this map reaches its threshold.</span>
+<span class="cm">     *</span>
+<span class="cm">     *</span>
+<span class="cm">     * @param newCapacity the new capacity, MUST be a power of two;</span>
+<span class="cm">     *        must be greater than current capacity unless current</span>
+<span class="cm">     *        capacity is MAXIMUM_CAPACITY (in which case value</span>
+<span class="cm">     *        is irrelevant).</span>
+<span class="cm">     */</span>
+    <span class="kt">void</span> <span class="nf">resize</span><span class="o">(</span><span class="kt">int</span> <span class="n">newCapacity</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Entry</span><span class="o">[]</span> <span class="n">oldTable</span> <span class="o">=</span> <span class="n">table</span><span class="o">;</span>
+        <span class="kt">int</span> <span class="n">oldCapacity</span> <span class="o">=</span> <span class="n">oldTable</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">oldCapacity</span> <span class="o">==</span> <span class="n">MAXIMUM_CAPACITY</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">threshold</span> <span class="o">=</span> <span class="n">Integer</span><span class="o">.</span><span class="na">MAX_VALUE</span><span class="o">;</span>
+            <span class="k">return</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="n">Entry</span><span class="o">[]</span> <span class="n">newTable</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Entry</span><span class="o">[</span><span class="n">newCapacity</span><span class="o">];</span>
+        <span class="n">transfer</span><span class="o">(</span><span class="n">newTable</span><span class="o">);</span>
+        <span class="n">table</span> <span class="o">=</span> <span class="n">newTable</span><span class="o">;</span>
+        <span class="n">threshold</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)(</span><span class="n">newCapacity</span> <span class="o">*</span> <span class="n">loadFactor</span><span class="o">);</span> <span class="c1">//设置阈值</span>
+    <span class="o">}</span>
+</pre></div>

@@ -1,0 +1,39 @@
+<div class="highlight"><pre><span class="kd">public</span> <span class="kt">int</span> <span class="nf">compareTo</span><span class="o">(</span><span class="n">BigDecimal</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
+   <span class="c1">// Quick path for equal scale and non-inflated case.</span>
+   <span class="k">if</span> <span class="o">(</span><span class="n">scale</span> <span class="o">==</span> <span class="n">val</span><span class="o">.</span><span class="na">scale</span><span class="o">)</span> <span class="o">{</span>
+       <span class="kt">long</span> <span class="n">xs</span> <span class="o">=</span> <span class="n">intCompact</span><span class="o">;</span>
+       <span class="kt">long</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="na">intCompact</span><span class="o">;</span>
+       <span class="k">if</span> <span class="o">(</span><span class="n">xs</span> <span class="o">!=</span> <span class="n">INFLATED</span> <span class="o">&amp;&amp;</span> <span class="n">ys</span> <span class="o">!=</span> <span class="n">INFLATED</span><span class="o">)</span>
+           <span class="k">return</span> <span class="n">xs</span> <span class="o">!=</span> <span class="n">ys</span> <span class="o">?</span> <span class="o">((</span><span class="n">xs</span> <span class="o">&gt;</span> <span class="n">ys</span><span class="o">)</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">:</span> <span class="mi">0</span><span class="o">;</span>
+   <span class="o">}</span>
+   <span class="kt">int</span> <span class="n">xsign</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">signum</span><span class="o">();</span>
+   <span class="kt">int</span> <span class="n">ysign</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="na">signum</span><span class="o">();</span>
+   <span class="k">if</span> <span class="o">(</span><span class="n">xsign</span> <span class="o">!=</span> <span class="n">ysign</span><span class="o">)</span>
+       <span class="k">return</span> <span class="o">(</span><span class="n">xsign</span> <span class="o">&gt;</span> <span class="n">ysign</span><span class="o">)</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+   <span class="k">if</span> <span class="o">(</span><span class="n">xsign</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span>
+       <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+   <span class="kt">int</span> <span class="n">cmp</span> <span class="o">=</span> <span class="n">compareMagnitude</span><span class="o">(</span><span class="n">val</span><span class="o">);</span>
+   <span class="k">return</span> <span class="o">(</span><span class="n">xsign</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">?</span> <span class="n">cmp</span> <span class="o">:</span> <span class="o">-</span><span class="n">cmp</span><span class="o">;</span>
+<span class="o">}</span>
+
+
+<span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">Object</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
+   <span class="k">if</span> <span class="o">(!(</span><span class="n">x</span> <span class="k">instanceof</span> <span class="n">BigDecimal</span><span class="o">))</span>
+       <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+   <span class="n">BigDecimal</span> <span class="n">xDec</span> <span class="o">=</span> <span class="o">(</span><span class="n">BigDecimal</span><span class="o">)</span> <span class="n">x</span><span class="o">;</span>
+   <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="k">this</span><span class="o">)</span>
+       <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+   <span class="k">if</span> <span class="o">(</span><span class="n">scale</span> <span class="o">!=</span> <span class="n">xDec</span><span class="o">.</span><span class="na">scale</span><span class="o">)</span>
+       <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+   <span class="kt">long</span> <span class="n">s</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">intCompact</span><span class="o">;</span>
+   <span class="kt">long</span> <span class="n">xs</span> <span class="o">=</span> <span class="n">xDec</span><span class="o">.</span><span class="na">intCompact</span><span class="o">;</span>
+   <span class="k">if</span> <span class="o">(</span><span class="n">s</span> <span class="o">!=</span> <span class="n">INFLATED</span><span class="o">)</span> <span class="o">{</span>
+       <span class="k">if</span> <span class="o">(</span><span class="n">xs</span> <span class="o">==</span> <span class="n">INFLATED</span><span class="o">)</span>
+           <span class="n">xs</span> <span class="o">=</span> <span class="n">compactValFor</span><span class="o">(</span><span class="n">xDec</span><span class="o">.</span><span class="na">intVal</span><span class="o">);</span>
+       <span class="k">return</span> <span class="n">xs</span> <span class="o">==</span> <span class="n">s</span><span class="o">;</span>
+   <span class="o">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">xs</span> <span class="o">!=</span> <span class="n">INFLATED</span><span class="o">)</span>
+       <span class="k">return</span> <span class="n">xs</span> <span class="o">==</span> <span class="n">compactValFor</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">intVal</span><span class="o">);</span>
+
+   <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">inflate</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">xDec</span><span class="o">.</span><span class="na">inflate</span><span class="o">());</span>
+<span class="o">}</span>
+</pre></div>

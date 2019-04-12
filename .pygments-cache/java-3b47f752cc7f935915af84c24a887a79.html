@@ -1,0 +1,8 @@
+<div class="highlight"><pre><span class="kd">public</span> <span class="n">City</span> <span class="nf">save</span><span class="o">(</span><span class="n">City</span> <span class="n">city</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">Preconditions</span><span class="o">.</span><span class="na">checkArgument</span><span class="o">(</span><span class="n">city</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">,</span> <span class="s">&quot;IllegalArgumentException: city is null&quot;</span><span class="o">);</span>
+    <span class="c1">// or</span>
+    <span class="n">city</span> <span class="o">=</span> <span class="n">Preconditions</span><span class="o">.</span><span class="na">checkNotNull</span><span class="o">(</span><span class="n">city</span><span class="o">,</span> <span class="s">&quot;NullPointerException: city is null&quot;</span><span class="o">);</span>
+
+    <span class="k">return</span> <span class="n">cityRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">city</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>

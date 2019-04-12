@@ -1,0 +1,28 @@
+<div class="highlight"><pre><span class="c1">// Applet  </span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="o">{</span> <span class="c1">//什么也不做的hook  </span>
+    <span class="o">}</span>  
+
+<span class="c1">// Beans  </span>
+   <span class="kd">public</span> <span class="kd">static</span> <span class="n">Object</span> <span class="nf">instantiate</span><span class="o">(</span><span class="n">ClassLoader</span> <span class="n">cls</span><span class="o">,</span> <span class="n">String</span> <span class="n">beanName</span><span class="o">,</span>   
+                    <span class="n">BeanContext</span> <span class="n">beanContext</span><span class="o">,</span> <span class="n">AppletInitializer</span> <span class="n">initializer</span><span class="o">)</span>  
+                        <span class="kd">throws</span> <span class="n">IOException</span><span class="o">,</span> <span class="n">ClassNotFoundException</span> <span class="o">{</span>  
+  
+          
+  
+                <span class="c1">// If it was deserialized then it was already init-ed.  </span>
+                <span class="c1">// Otherwise we need to initialize it.  </span>
+  
+                <span class="k">if</span> <span class="o">(!</span><span class="n">serialized</span><span class="o">)</span> <span class="o">{</span>  
+                    <span class="c1">// We need to set a reasonable initial size, as many  </span>
+                    <span class="c1">// applets are unhappy if they are started without  </span>
+                    <span class="c1">// having been explicitly sized.  </span>
+                    <span class="n">applet</span><span class="o">.</span><span class="na">setSize</span><span class="o">(</span><span class="mi">100</span><span class="o">,</span><span class="mi">100</span><span class="o">);</span>  
+                    <span class="n">applet</span><span class="o">.</span><span class="na">init</span><span class="o">();</span> <span class="c1">//调用hook  </span>
+                <span class="o">}</span>  
+  
+                  
+        <span class="o">}</span>  
+  
+        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>  
+    <span class="o">}</span>  
+</pre></div>

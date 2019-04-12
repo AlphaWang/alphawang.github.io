@@ -1,0 +1,25 @@
+<div class="highlight"><pre><span class="cm">/** </span>
+<span class="cm"> * Returns a canonical representation for the string object. </span>
+<span class="cm"> * &lt;p&gt; </span>
+<span class="cm"> * A pool of strings, initially empty, is maintained privately by the </span>
+<span class="cm"> * class &lt;code&gt;String&lt;/code&gt;. </span>
+<span class="cm"> * &lt;p&gt; </span>
+<span class="cm"> * When the intern method is invoked, if the pool already contains a </span>
+<span class="cm"> * string equal to this &lt;code&gt;String&lt;/code&gt; object as determined by </span>
+<span class="cm"> * the {@link #equals(Object)} method, then the string from the pool is </span>
+<span class="cm"> * returned. Otherwise, this &lt;code&gt;String&lt;/code&gt; object is added to the </span>
+<span class="cm"> * pool and a reference to this &lt;code&gt;String&lt;/code&gt; object is returned. </span>
+<span class="cm"> * &lt;p&gt; </span>
+<span class="cm"> * It follows that for any two strings &lt;code&gt;s&lt;/code&gt; and &lt;code&gt;t&lt;/code&gt;, </span>
+<span class="cm"> * &lt;code&gt;s.intern()&amp;nbsp;==&amp;nbsp;t.intern()&lt;/code&gt; is &lt;code&gt;true&lt;/code&gt; </span>
+<span class="cm"> * if and only if &lt;code&gt;s.equals(t)&lt;/code&gt; is &lt;code&gt;true&lt;/code&gt;. </span>
+<span class="cm"> * &lt;p&gt; </span>
+<span class="cm"> * All literal strings and string-valued constant expressions are </span>
+<span class="cm"> * interned. String literals are defined in section 3.10.5 of the </span>
+<span class="cm"> * &lt;cite&gt;The Java&amp;trade; Language Specification&lt;/cite&gt;. </span>
+<span class="cm"> * </span>
+<span class="cm"> * @return  a string that has the same contents as this string, but is </span>
+<span class="cm"> *          guaranteed to be from a pool of unique strings. </span>
+<span class="cm"> */</span>  
+<span class="kd">public</span> <span class="kd">native</span> <span class="n">String</span> <span class="nf">intern</span><span class="o">();</span>
+</pre></div>

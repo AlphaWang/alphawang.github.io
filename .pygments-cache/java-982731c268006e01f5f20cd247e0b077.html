@@ -1,0 +1,25 @@
+<div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm"> * FluentIterable.transform</span>
+<span class="cm"> */</span>
+<span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">transformFluent</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">cityNameLength</span> <span class="o">=</span> <span class="n">FluentIterable</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">cities</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">cityNameFunction</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">stringLengthFunction</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">toList</span><span class="o">();</span>
+
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">cityNameLength</span><span class="o">);</span>
+    <span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">cityNameLength</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">4</span><span class="o">);</span>
+<span class="o">}</span>
+
+<span class="cm">/**</span>
+<span class="cm"> * Functions.compose</span>
+<span class="cm"> */</span>
+<span class="nd">@Test</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">functions</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">cityNameLength</span> <span class="o">=</span> <span class="n">Lists</span><span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">cities</span><span class="o">,</span> <span class="n">Functions</span><span class="o">.</span><span class="na">compose</span><span class="o">(</span><span class="n">stringLengthFunction</span><span class="o">,</span> <span class="n">cityNameFunction</span><span class="o">));</span>
+
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">cityNameLength</span><span class="o">);</span>
+    <span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">cityNameLength</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">4</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>

@@ -1,0 +1,9 @@
+<div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm"> * Returns a BigInteger whose value is {@code (-this)}.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @return {@code -this}</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="n">BigInteger</span> <span class="nf">negate</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="k">new</span> <span class="nf">BigInteger</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">mag</span><span class="o">,</span> <span class="o">-</span><span class="k">this</span><span class="o">.</span><span class="na">signum</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>

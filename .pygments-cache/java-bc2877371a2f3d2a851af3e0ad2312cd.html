@@ -1,0 +1,10 @@
+<div class="highlight"><pre>   <span class="kd">public</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">Future</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">submit</span><span class="o">(</span><span class="n">Runnable</span> <span class="n">task</span><span class="o">,</span> <span class="n">T</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">task</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">throw</span> <span class="k">new</span> <span class="nf">NullPointerException</span><span class="o">();</span>
+        <span class="n">RunnableFuture</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">ftask</span> <span class="o">=</span> <span class="n">newTaskFor</span><span class="o">(</span><span class="n">task</span><span class="o">,</span> <span class="n">result</span><span class="o">);</span>
+        <span class="n">execute</span><span class="o">(</span><span class="n">ftask</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">ftask</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">protected</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">RunnableFuture</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">newTaskFor</span><span class="o">(</span><span class="n">Runnable</span> <span class="n">runnable</span><span class="o">,</span> <span class="n">T</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">FutureTask</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">runnable</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+    <span class="o">}</span>
+</pre></div>

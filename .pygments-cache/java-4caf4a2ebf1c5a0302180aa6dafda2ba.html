@@ -1,0 +1,5 @@
+<div class="highlight"><pre><span class="kd">public</span> <span class="kd">static</span> <span class="n">BigInteger</span> <span class="nf">safeInstance</span><span class="o">(</span><span class="n">BigInteger</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
+   <span class="k">if</span> <span class="o">(</span><span class="n">val</span><span class="o">.</span><span class="na">getClass</span><span class="o">()</span> <span class="o">!=</span> <span class="n">BigInteger</span><span class="o">.</span><span class="na">class</span> <span class="o">)</span>
+          <span class="k">return</span> <span class="k">new</span> <span class="nf">BigInteger</span><span class="o">(</span><span class="n">val</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">());</span>
+   <span class="k">return</span> <span class="n">val</span><span class="o">;</span>
+</pre></div>

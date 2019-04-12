@@ -1,0 +1,15 @@
+<div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm"> * Initializes a newly created {@code String} object so that it represents</span>
+<span class="cm"> * the same sequence of characters as the argument; in other words, the</span>
+<span class="cm"> * newly created string is a copy of the argument string. Unless an</span>
+<span class="cm"> * explicit copy of {@code original} is needed, use of this constructor is</span>
+<span class="cm"> * unnecessary since Strings are immutable.</span>
+<span class="cm"> *</span>
+<span class="cm"> * @param  original</span>
+<span class="cm"> *         A {@code String}</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="nf">String</span><span class="o">(</span><span class="n">String</span> <span class="n">original</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">original</span><span class="o">.</span><span class="na">value</span><span class="o">;</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">hash</span> <span class="o">=</span> <span class="n">original</span><span class="o">.</span><span class="na">hash</span><span class="o">;</span>
+<span class="o">}</span>
+</pre></div>

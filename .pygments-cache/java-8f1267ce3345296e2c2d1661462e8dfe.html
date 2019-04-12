@@ -1,0 +1,20 @@
+<div class="highlight"><pre><span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">Callable</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">callable</span><span class="o">(</span><span class="n">Runnable</span> <span class="n">task</span><span class="o">,</span> <span class="n">T</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">RunnableAdapter</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;(</span><span class="n">task</span><span class="o">,</span> <span class="n">result</span><span class="o">);</span>
+<span class="o">}</span>
+ 
+<span class="cm">/** --Adapter!--</span>
+<span class="cm"> * A callable that runs given task and returns given result</span>
+<span class="cm"> */</span>
+<span class="kd">static</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">RunnableAdapter</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="n">Callable</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">{</span>  <span class="c1">//Target</span>
+    <span class="kd">final</span> <span class="n">Runnable</span> <span class="n">task</span><span class="o">;</span> <span class="c1">//Adaptee</span>
+    <span class="kd">final</span> <span class="n">T</span> <span class="n">result</span><span class="o">;</span>
+    <span class="n">RunnableAdapter</span><span class="o">(</span><span class="n">Runnable</span>  <span class="n">task</span><span class="o">,</span> <span class="n">T</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">task</span> <span class="o">=</span> <span class="n">task</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">result</span> <span class="o">=</span> <span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="n">T</span> <span class="nf">call</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">task</span><span class="o">.</span><span class="na">run</span><span class="o">();</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</pre></div>

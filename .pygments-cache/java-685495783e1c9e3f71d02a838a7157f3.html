@@ -1,0 +1,5 @@
+<div class="highlight"><pre><span class="kt">short</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> 
+<span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">123456</span><span class="o">;</span>
+<span class="n">x</span> <span class="o">+=</span> <span class="n">i</span><span class="o">;</span> <span class="c1">//自动转换为short，损失精度，但不报错</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">i</span><span class="o">;</span> <span class="c1">// Won&#39;t compile - &quot;possible loss of precision&quot;</span>
+</pre></div>

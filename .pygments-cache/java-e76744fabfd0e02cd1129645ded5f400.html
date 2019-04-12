@@ -1,0 +1,10 @@
+<div class="highlight"><pre><span class="c1">// Java 7</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">substring</span><span class="o">(</span><span class="kt">int</span> <span class="n">beginIndex</span><span class="o">,</span> <span class="kt">int</span> <span class="n">endIndex</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="o">((</span><span class="n">beginIndex</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">endIndex</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="na">length</span><span class="o">))</span> <span class="o">?</span> <span class="k">this</span>
+                <span class="o">:</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="n">beginIndex</span><span class="o">,</span> <span class="n">subLen</span><span class="o">);</span>
+    <span class="o">}</span>
+    
+    <span class="kd">public</span> <span class="nf">String</span><span class="o">(</span><span class="kt">char</span> <span class="n">value</span><span class="o">[],</span> <span class="kt">int</span> <span class="n">offset</span><span class="o">,</span> <span class="kt">int</span> <span class="n">count</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">copyOfRange</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="n">offset</span><span class="o">,</span> <span class="n">offset</span><span class="o">+</span><span class="n">count</span><span class="o">);</span>
+    <span class="o">}</span>    
+</pre></div>

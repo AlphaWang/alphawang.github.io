@@ -1,0 +1,14 @@
+<div class="highlight"><pre><span class="cm">/**</span>
+<span class="cm"> * Creates a &lt;tt&gt;FutureTask&lt;/tt&gt; that will upon running, execute the given &lt;tt&gt;Callable&lt;/tt&gt;.</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="nf">FutureTask</span><span class="o">(</span><span class="n">Callable</span><span class="o">&lt;</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">callable</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">sync</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Sync</span><span class="o">(</span><span class="n">callable</span><span class="o">);</span>
+<span class="o">}</span>
+ 
+<span class="cm">/**</span>
+<span class="cm"> * Creates a &lt;tt&gt;FutureTask&lt;/tt&gt; that will upon running, execute the given &lt;tt&gt;Runnable&lt;/tt&gt;</span>
+<span class="cm"> */</span>
+<span class="kd">public</span> <span class="nf">FutureTask</span><span class="o">(</span><span class="n">Runnable</span> <span class="n">runnable</span><span class="o">,</span> <span class="n">V</span> <span class="n">result</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">sync</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Sync</span><span class="o">(</span><span class="n">Executors</span><span class="o">.</span><span class="na">callable</span><span class="o">(</span><span class="n">runnable</span><span class="o">,</span> <span class="n">result</span><span class="o">));</span>
+<span class="o">}</span>
+</pre></div>

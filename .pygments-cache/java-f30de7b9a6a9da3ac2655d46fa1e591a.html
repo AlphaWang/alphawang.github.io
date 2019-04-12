@@ -1,0 +1,38 @@
+<div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LinkedHashMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span>
+    <span class="kd">extends</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span>
+    <span class="kd">implements</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span>
+<span class="o">{</span>
+   <span class="cm">/**</span>
+<span class="cm">     * It causes newly allocated entry to get inserted at the end of the linked list and</span>
+<span class="cm">     * removes the eldest entry if appropriate.</span>
+<span class="cm">     */</span>
+    <span class="kt">void</span> <span class="nf">addEntry</span><span class="o">(</span><span class="kt">int</span> <span class="n">hash</span><span class="o">,</span> <span class="n">K</span> <span class="n">key</span><span class="o">,</span> <span class="n">V</span> <span class="n">value</span><span class="o">,</span> <span class="kt">int</span> <span class="n">bucketIndex</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">createEntry</span><span class="o">(</span><span class="n">hash</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">,</span> <span class="n">bucketIndex</span><span class="o">);</span>
+        <span class="c1">// Remove eldest entry if instructed, else grow capacity if appropriate</span>
+        <span class="n">Entry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">eldest</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="na">after</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">removeEldestEntry</span><span class="o">(</span><span class="n">eldest</span><span class="o">))</span> <span class="o">{</span>
+            <span class="n">removeEntryForKey</span><span class="o">(</span><span class="n">eldest</span><span class="o">.</span><span class="na">key</span><span class="o">);</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">size</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="o">)</span>
+                <span class="n">resize</span><span class="o">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">table</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="cm">/**</span>
+<span class="cm">     * Returns &lt;tt&gt;true&lt;/tt&gt; if this map should remove its eldest entry.</span>
+<span class="cm">     * This method is invoked by &lt;tt&gt;put&lt;/tt&gt; and &lt;tt&gt;putAll&lt;/tt&gt; after</span>
+<span class="cm">     * inserting a new entry into the map.  </span>
+<span class="cm">     *</span>
+<span class="cm">     * Sample use: </span>
+<span class="cm">     * &lt;pre&gt;</span>
+<span class="cm">     *     private static final int MAX_ENTRIES = 100;</span>
+<span class="cm">     *</span>
+<span class="cm">     *     protected boolean removeEldestEntry(Map.Entry eldest) {</span>
+<span class="cm">     *        return size() &gt; MAX_ENTRIES;</span>
+<span class="cm">     *     }</span>
+<span class="cm">     * &lt;/pre&gt;</span>
+<span class="cm">     *</span>
+<span class="cm">     */</span>
+    <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">removeEldestEntry</span><span class="o">(</span><span class="n">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">eldest</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+</pre></div>

@@ -1,0 +1,14 @@
+<div class="highlight"><pre><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">IDriver</span> <span class="o">{</span>  
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">drive</span><span class="o">();</span>  
+<span class="o">}</span>  
+  
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Driver</span> <span class="kd">implements</span> <span class="n">IDriver</span> <span class="o">{</span>  
+    <span class="kd">private</span> <span class="n">ICar</span> <span class="n">car</span><span class="o">;</span>    
+    <span class="kd">public</span> <span class="nf">Driver</span><span class="o">(**</span><span class="n">ICar</span><span class="o">**</span> <span class="n">_car</span><span class="o">)</span> <span class="o">{</span>  
+        <span class="k">this</span><span class="o">.</span><span class="na">car</span> <span class="o">=</span> <span class="n">_car</span><span class="o">;</span>  
+    <span class="o">}</span>   
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">drive</span><span class="o">()</span> <span class="o">{</span>  
+        <span class="k">this</span><span class="o">.</span><span class="na">car</span><span class="o">.</span><span class="na">run</span><span class="o">();</span>  
+    <span class="o">}</span>  
+<span class="o">}</span>
+</pre></div>

@@ -1,0 +1,12 @@
+<div class="highlight"><pre><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">);</span>
+    <span class="n">String</span> <span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="o">;</span>
+    <span class="n">s</span><span class="o">.</span><span class="na">intern</span><span class="o">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span> <span class="o">==</span> <span class="n">s2</span><span class="o">);</span>
+
+    <span class="n">String</span> <span class="n">s3</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">)</span> <span class="o">+</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">);</span>
+    <span class="n">String</span> <span class="n">s4</span> <span class="o">=</span> <span class="s">&quot;11&quot;</span><span class="o">;</span>
+    <span class="n">s3</span><span class="o">.</span><span class="na">intern</span><span class="o">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s3</span> <span class="o">==</span> <span class="n">s4</span><span class="o">);</span>
+<span class="o">}</span>
+</pre></div>

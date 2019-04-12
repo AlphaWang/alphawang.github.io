@@ -1,0 +1,16 @@
+<div class="highlight"><pre><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BigInteger</span> <span class="kd">extends</span> <span class="n">Number</span> <span class="kd">implements</span> <span class="n">Comparable</span><span class="o">&lt;</span><span class="n">BigInteger</span><span class="o">&gt;</span> <span class="o">{</span> 
+   <span class="cm">/**</span>
+<span class="cm">     * Returns a positive BigInteger that is probably prime, with the</span>
+<span class="cm">     * specified bitLength. The probability that a BigInteger returned</span>
+<span class="cm">     * by this method is composite does not exceed 2&lt;sup&gt;-100&lt;/sup&gt;.</span>
+<span class="cm">     *</span>
+<span class="cm">     */</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="n">BigInteger</span> <span class="nf">probablePrime</span><span class="o">(</span><span class="kt">int</span> <span class="n">bitLength</span><span class="o">,</span> <span class="n">Random</span> <span class="n">rnd</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">bitLength</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="o">)</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArithmeticException</span><span class="o">(</span><span class="s">&quot;bitLength &lt; 2&quot;</span><span class="o">);</span>
+        <span class="c1">// The cutoff of 95 was chosen empirically for best performance</span>
+        <span class="k">return</span> <span class="o">(</span><span class="n">bitLength</span> <span class="o">&lt;</span> <span class="n">SMALL_PRIME_THRESHOLD</span> <span class="o">?</span>
+                <span class="n">smallPrime</span><span class="o">(</span><span class="n">bitLength</span><span class="o">,</span> <span class="n">DEFAULT_PRIME_CERTAINTY</span><span class="o">,</span> <span class="n">rnd</span><span class="o">)</span> <span class="o">:</span>
+                <span class="n">largePrime</span><span class="o">(</span><span class="n">bitLength</span><span class="o">,</span> <span class="n">DEFAULT_PRIME_CERTAINTY</span><span class="o">,</span> <span class="n">rnd</span><span class="o">));</span>
+    <span class="o">}</span>
+</pre></div>

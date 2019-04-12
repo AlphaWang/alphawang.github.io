@@ -1,0 +1,6 @@
+<div class="highlight"><pre>    <span class="c1">// Before</span>
+    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">map1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;();</span>
+
+    <span class="c1">// After</span>
+    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">map2</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="na">newHashMapWithExpectedSize</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>  <span class="c1">// Maps.newHashMap();</span>
+</pre></div>
