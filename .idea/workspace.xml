@@ -12,31 +12,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="2019-03-24-google-dapper-translation.markdown" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/source/_posts/2019-03-24-google-dapper-translation.markdown">
-          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="106">
-                <caret line="8" column="34" lean-forward="true" selection-start-line="8" selection-start-column="34" selection-end-line="8" selection-end-column="34" />
-              </first_editor>
-              <second_editor>
-                <js_state />
-              </second_editor>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/_deploy/blog/google-dapper-translation/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="140" column="32" lean-forward="true" selection-start-line="140" selection-start-column="32" selection-end-line="140" selection-end-column="32" />
-              <folding>
-                <element signature="e#18301#18309#0" expanded="true" />
-                <element signature="e#18498#18506#0" expanded="true" />
-                <element signature="e#37985#37992#0" expanded="true" />
-                <element signature="e#43101#43107#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="301">
+              <caret line="151" column="70" lean-forward="true" selection-start-line="151" selection-start-column="70" selection-end-line="151" selection-end-column="71" />
             </state>
           </provider>
         </entry>
@@ -257,24 +237,6 @@
               <item name="_deploy" type="462c0819:PsiDirectoryNode" />
               <item name="blog" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="alphawang.github.io" type="b2602c69:ProjectViewProjectNode" />
-              <item name="alphawang.github.io" type="462c0819:PsiDirectoryNode" />
-              <item name="_deploy" type="462c0819:PsiDirectoryNode" />
-              <item name="blog" type="462c0819:PsiDirectoryNode" />
-              <item name="google-dapper-translation" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="alphawang.github.io" type="b2602c69:ProjectViewProjectNode" />
-              <item name="alphawang.github.io" type="462c0819:PsiDirectoryNode" />
-              <item name="source" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="alphawang.github.io" type="b2602c69:ProjectViewProjectNode" />
-              <item name="alphawang.github.io" type="462c0819:PsiDirectoryNode" />
-              <item name="source" type="462c0819:PsiDirectoryNode" />
-              <item name="_posts" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -465,7 +427,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="46215000" />
+    <option name="totallyTimeSpent" value="46492000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1920" height="1057" extended-state="6" />
@@ -759,29 +721,12 @@
     <entry file="file://$PROJECT_DIR$/source/about/index.markdown" />
     <entry file="file://$PROJECT_DIR$/_deploy/blog/google-dapper-translation/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="140" column="32" lean-forward="true" selection-start-line="140" selection-start-column="32" selection-end-line="140" selection-end-column="32" />
-          <folding>
-            <element signature="e#18301#18309#0" expanded="true" />
-            <element signature="e#18498#18506#0" expanded="true" />
-            <element signature="e#37985#37992#0" expanded="true" />
-            <element signature="e#43101#43107#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="301">
+          <caret line="151" column="70" lean-forward="true" selection-start-line="151" selection-start-column="70" selection-end-line="151" selection-end-column="71" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/_posts/2019-03-24-google-dapper-translation.markdown">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="106">
-            <caret line="8" column="34" lean-forward="true" selection-start-line="8" selection-start-column="34" selection-end-line="8" selection-end-column="34" />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/source/_posts/2019-03-24-google-dapper-translation.markdown" />
   </component>
   <component name="masterDetails">
     <states>
