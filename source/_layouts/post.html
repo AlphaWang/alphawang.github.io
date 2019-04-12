@@ -23,29 +23,31 @@ single: true
         <a class="basic-alignment right" href="{{page.next.url}}" title="Next Post: {{page.next.title}}">{{page.next.title}} &raquo;</a>
       {% endif %}
     </p>
+
+    <!-- Gitalk 评论 start  -->
+
+    <!-- Link Gitalk 的支持文件  -->
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script>
+    <div id="gitalk-container"></div>     <script type="text/javascript">
+      var gitalk = new Gitalk({
+
+          // gitalk的主要参数
+          clientID: 'd4cba670eb5bd4b63a2e',
+          clientSecret: '5a3498bf127676c9aaacf738a8b26d976154fad3',
+          repo: 'alphawang.github.io',
+          owner: 'AlphaWang',
+          admin: ['AlphaWang'],
+          id: location.pathname,
+
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <!-- Gitalk end -->
   </footer>
 </article>
 
-  <!-- Gitalk 评论 start  -->
-
-  <!-- Link Gitalk 的支持文件  -->
-  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-  <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script>
-  <div id="gitalk-container"></div>     <script type="text/javascript">
-    var gitalk = new Gitalk({
-
-        // gitalk的主要参数
-        clientID: 'd4cba670eb5bd4b63a2e',
-        clientSecret: '5a3498bf127676c9aaacf738a8b26d976154fad3',
-        repo: 'alphawang.github.io',
-        owner: 'AlphaWang',
-        admin: ['AlphaWang'],
-        id: location.pathname,
-
-    });
-    gitalk.render('gitalk-container');
-</script>
-  <!-- Gitalk end -->
+  
 
 </div>
 {% unless page.sidebar == false %}
