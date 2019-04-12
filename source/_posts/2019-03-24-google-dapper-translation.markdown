@@ -16,7 +16,7 @@ description: Google Dapper论文的翻译
 
 
 > - 原文：https://ai.google/research/pubs/pub36356
-> - 译文：<http://alphawang.com/blog/google-dapper-translation>
+> - 译文：http://alphawang.com/blog/google-dapper-translation
 
 
 ## 摘要

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="1b9bbd01-a28a-464e-bf11-e0f8de9fb1d9" name="Default" comment="[blog] dapper ch2.5" />
+    <list default="true" id="1b9bbd01-a28a-464e-bf11-e0f8de9fb1d9" name="Default" comment="[blog] dapper ch2.5">
+      <change beforePath="$PROJECT_DIR$/source/_posts/2019-03-24-google-dapper-translation.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/source/_posts/2019-03-24-google-dapper-translation.markdown" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -12,12 +14,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="2019-03-24-google-dapper-translation.markdown" pinned="false" current-in-tab="false">
+      <file leaf-file-name="2019-03-24-google-dapper-translation.markdown" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/source/_posts/2019-03-24-google-dapper-translation.markdown">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="234">
-                <caret line="16" selection-start-line="16" selection-end-line="16" />
+              <first_editor relative-caret-position="376">
+                <caret line="26" column="46" lean-forward="true" selection-start-line="26" selection-start-column="46" selection-end-line="26" selection-end-column="46" />
               </first_editor>
               <second_editor>
                 <js_state />
@@ -26,11 +28,17 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/_deploy/blog/google-dapper-translation/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1957">
-              <caret line="20" column="87" selection-start-line="20" selection-start-column="30" selection-end-line="20" selection-end-column="87" />
+            <state relative-caret-position="293">
+              <caret line="170" column="18" selection-start-line="170" selection-start-column="18" selection-end-line="170" selection-end-column="18" />
+              <folding>
+                <element signature="e#18301#18309#0" expanded="true" />
+                <element signature="e#18498#18506#0" expanded="true" />
+                <element signature="e#37985#37992#0" expanded="true" />
+                <element signature="e#43101#43107#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -164,10 +172,10 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="28" />
-    <option name="y" value="23" />
+    <option name="x" value="99" />
+    <option name="y" value="38" />
     <option name="width" value="1375" />
-    <option name="height" value="877" />
+    <option name="height" value="990" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -459,10 +467,11 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="44527000" />
+    <option name="totallyTimeSpent" value="45158000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="28" y="23" width="1375" height="877" extended-state="0" />
+    <frame x="99" y="38" width="1375" height="990" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info anchor="right" id="PlantUML" order="6" />
       <window_info anchor="right" id="Palette" order="6" />
@@ -473,7 +482,7 @@
       <window_info anchor="bottom" id="Database Changes" order="10" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Version Control" order="10" weight="0.28533685" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.41083223" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.35747126" />
       <window_info id="Designer" order="5" />
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19354838" />
       <window_info anchor="bottom" id="Reviews" order="10" />
@@ -751,22 +760,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/source/_includes/custom/footer.html" />
     <entry file="file://$PROJECT_DIR$/source/about/index.markdown" />
+    <entry file="file://$PROJECT_DIR$/_deploy/blog/google-dapper-translation/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="293">
+          <caret line="170" column="18" selection-start-line="170" selection-start-column="18" selection-end-line="170" selection-end-column="18" />
+          <folding>
+            <element signature="e#18301#18309#0" expanded="true" />
+            <element signature="e#18498#18506#0" expanded="true" />
+            <element signature="e#37985#37992#0" expanded="true" />
+            <element signature="e#43101#43107#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/source/_posts/2019-03-24-google-dapper-translation.markdown">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="234">
-            <caret line="16" selection-start-line="16" selection-end-line="16" />
+          <first_editor relative-caret-position="376">
+            <caret line="26" column="46" lean-forward="true" selection-start-line="26" selection-start-column="46" selection-end-line="26" selection-end-column="46" />
           </first_editor>
           <second_editor>
             <js_state />
           </second_editor>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/_deploy/blog/google-dapper-translation/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1957">
-          <caret line="20" column="87" selection-start-line="20" selection-start-column="30" selection-end-line="20" selection-end-column="87" />
         </state>
       </provider>
     </entry>
