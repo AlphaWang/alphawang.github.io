@@ -270,14 +270,6 @@ $(document).ready(
 <span class='line-number'>24</span>
 <span class='line-number'>25</span>
 <span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
 </pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">EnumSet</span><span class="o">&lt;</span><span class="n">E</span> <span class="kd">extends</span> <span class="n">Enum</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;&gt;</span> <span class="kd">extends</span> <span class="n">AbstractSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span>
 </span><span class='line'>    <span class="kd">implements</span> <span class="n">Cloneable</span><span class="o">,</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span>
 </span><span class='line'><span class="o">{</span>
@@ -304,34 +296,14 @@ $(document).ready(
 </span><span class='line'>
 </span><span class='line'><span class="kd">class</span> <span class="nc">JumboEnumSet</span><span class="o">&lt;</span><span class="n">E</span> <span class="kd">extends</span> <span class="n">Enum</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;&gt;</span> <span class="kd">extends</span> <span class="n">EnumSet</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="o">{</span>
 </span><span class='line'><span class="o">}</span>
-</span><span class='line'> <span class="err">```</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="n">Collections</span><span class="o">.</span><span class="na">unmodifiableMap</span><span class="o">(</span><span class="n">Map</span><span class="o">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">Java集合框架中有32个集合接口的便利实现</span><span class="err">，</span><span class="n">提供不可修改的集合</span><span class="err">、</span><span class="n">同步集合等等</span><span class="err">。</span><span class="n">几乎所有的实现都通过一个不可实例化类</span><span class="err">（`</span><span class="n">java</span><span class="o">.</span><span class="na">util</span><span class="o">.</span><span class="na">Collections</span><span class="err">`）</span><span class="n">中的静态工厂方法导出</span><span class="err">，</span><span class="n">返回对象的类都是非public的</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&gt;</span> <span class="o">**</span><span class="n">优点</span><span class="err">：</span><span class="n">静态工厂方法能返回任意子类型的对象</span><span class="err">。</span><span class="n">可以返回一个对象而无需使相应的类public</span><span class="err">。</span><span class="n">用这种方式隐藏实现类能够产生一个非常紧凑的API</span><span class="o">**</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>public class Collections {
-    /<em>*
-     * Returns an unmodifiable view of the specified map.  This method
-     * allows modules to provide users with &ldquo;read-only&rdquo; access to internal
-     * maps.  Query operations on the returned map &ldquo;read through&rdquo;
-     * to the specified map, and attempts to modify the returned
-     * map, whether direct or via its collection views, result in an
-     * <tt>UnsupportedOperationException</tt>.<p>
-     *
-     </em>/
-    public static &lt;K,V> Map&lt;K,V> unmodifiableMap(Map&lt;? extends K, ? extends V> m) {
-        return new UnmodifiableMap&lt;K,V>(m);
-    }</p>
+<h3>Collections.unmodifiableMap(Map)</h3>
 
-<pre><code>private static class UnmodifiableMap&lt;K,V&gt; implements Map&lt;K,V&gt;, Serializable {
-  }
-</code></pre>
+<p>Java集合框架中有32个集合接口的便利实现，提供不可修改的集合、同步集合等等。几乎所有的实现都通过一个不可实例化类（<code>java.util.Collections</code>）中的静态工厂方法导出，返回对象的类都是非public的。</p>
+
+<blockquote><p><strong>优点：静态工厂方法能返回任意子类型的对象。可以返回一个对象而无需使相应的类public。用这种方式隐藏实现类能够产生一个非常紧凑的API</strong></p></blockquote>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -339,20 +311,52 @@ $(document).ready(
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">##</span> <span class="mi">2</span><span class="o">.</span> <span class="n">私有化构造函数</span><span class="err">，</span><span class="n">实现Singleton</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Collections</span> <span class="o">{</span>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * Returns an unmodifiable view of the specified map.  This method</span>
+</span><span class='line'><span class="cm">     * allows modules to provide users with &quot;read-only&quot; access to internal</span>
+</span><span class='line'><span class="cm">     * maps.  Query operations on the returned map &quot;read through&quot;</span>
+</span><span class='line'><span class="cm">     * to the specified map, and attempts to modify the returned</span>
+</span><span class='line'><span class="cm">     * map, whether direct or via its collection views, result in an</span>
+</span><span class='line'><span class="cm">     * &lt;tt&gt;UnsupportedOperationException&lt;/tt&gt;.&lt;p&gt;</span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="nf">unmodifiableMap</span><span class="o">(</span><span class="n">Map</span><span class="o">&lt;?</span> <span class="kd">extends</span> <span class="n">K</span><span class="o">,</span> <span class="o">?</span> <span class="kd">extends</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">m</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="n">UnmodifiableMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;(</span><span class="n">m</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
 </span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="n">Arrays</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">这种工具类设计出来并不是为了实例化它</span><span class="err">。</span><span class="n">然而</span><span class="err">，</span><span class="n">如果不显式地编写构造函数</span><span class="err">，</span><span class="n">编译器则会提供一个公共的无参数的默认构造方法</span><span class="err">。</span>
-</span><span class='line'><span class="n">所以将构造函数私有化</span><span class="err">：</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">class</span> <span class="nc">UnmodifiableMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;,</span> <span class="n">Serializable</span> <span class="o">{</span>
+</span><span class='line'>      <span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>public class Arrays {
-    // Suppresses default constructor, ensuring non-instantiability.
-    private Arrays() {
-    }
- ```</p>
+<h2>2. 私有化构造函数，实现Singleton</h2>
+
+<h3>Arrays</h3>
+
+<p>这种工具类设计出来并不是为了实例化它。然而，如果不显式地编写构造函数，编译器则会提供一个公共的无参数的默认构造方法。
+所以将构造函数私有化：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Arrays</span> <span class="o">{</span>
+</span><span class='line'>    <span class="c1">// Suppresses default constructor, ensuring non-instantiability.</span>
+</span><span class='line'>    <span class="kd">private</span> <span class="nf">Arrays</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>当然，还可以在这个私有构造器内部加上 <code>throw new AssertionError()</code>，可以确保该方法不会再类内部被意外调用。</p>
 
@@ -455,19 +459,6 @@ $(document).ready(
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
 </pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">AbstractMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="kd">implements</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="o">{</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="cm">/**</span>
@@ -475,7 +466,7 @@ $(document).ready(
 </span><span class='line'><span class="cm">     * appropriate view the first time this view is requested.  The views are</span>
 </span><span class='line'><span class="cm">     * stateless, so there&#39;s no reason to create more than one of each.</span>
 </span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>   <span class="kd">transient</span> <span class="kd">volatile</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span>        <span class="n">keySet</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'>   <span class="kd">transient</span> <span class="kd">volatile</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span> <span class="n">keySet</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
 </span><span class='line'>   <span class="kd">public</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;</span> <span class="nf">keySet</span><span class="o">()</span> <span class="o">{</span>
 </span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">keySet</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
 </span><span class='line'>        <span class="n">keySet</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AbstractSet</span><span class="o">&lt;</span><span class="n">K</span><span class="o">&gt;()</span> <span class="o">{</span>
@@ -485,243 +476,18 @@ $(document).ready(
 </span><span class='line'>    <span class="k">return</span> <span class="n">keySet</span><span class="o">;</span>
 </span><span class='line'>    <span class="o">}</span>
 </span><span class='line'><span class="o">}</span>
-</span><span class='line'> <span class="err">```</span>
-</span><span class='line'><span class="n">注意在构造keySet之前</span> <span class="n">对齐进行了null检查</span><span class="err">；</span><span class="n">只有当它是null时才会初始化</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="mi">4</span><span class="o">.</span> <span class="n">消除无用的对象引用</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="n">LinkedHashMap</span><span class="o">.</span><span class="na">removeEldestEntry</span><span class="o">()</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="n">缓存实体的生命周期不容易确定</span><span class="err">，</span><span class="n">随着时间推移</span><span class="err">，</span><span class="n">实体的价值越来越低</span><span class="err">。</span><span class="n">在这种情况下</span><span class="err">，</span><span class="n">缓存应该不定期地清理无用的实体</span><span class="err">。</span><span class="n">可以通过一个后台线程来清理</span><span class="err">（</span><span class="n">可能是</span><span class="err">`</span><span class="n">Timer</span><span class="err">`</span><span class="n">或</span><span class="err">`</span><span class="n">ScheduledThreadPoolExecutor</span><span class="err">`），</span><span class="n">也可以在给缓存添加新实体时进行清理</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">LikedHashMap可利用其removeEldestEntry</span><span class="err">，</span><span class="n">删除较老的实体</span><span class="err">：</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>public class LinkedHashMap&lt;K,V>
-    extends HashMap&lt;K,V>
-    implements Map&lt;K,V>
-{
-   /<strong>
-     * It causes newly allocated entry to get inserted at the end of the linked list and
-     * removes the eldest entry if appropriate.
-     */
-    void addEntry(int hash, K key, V value, int bucketIndex) {
-        createEntry(hash, key, value, bucketIndex);
-        // Remove eldest entry if instructed, else grow capacity if appropriate
-        Entry&lt;K,V> eldest = header.after;
-        if (removeEldestEntry(eldest)) {
-            removeEntryForKey(eldest.key);
-        } else {
-            if (size >= threshold)
-                resize(2 * table.length);
-        }
-    }
-    /</strong>
-     * Returns <tt>true</tt> if this map should remove its eldest entry.
-     * This method is invoked by <tt>put</tt> and <tt>putAll</tt> after
-     * inserting a new entry into the map.<br/>
-     *
-     * Sample use:
-     * <pre>
-     *     private static final int MAX_ENTRIES = 100;
-     *
-     *     protected boolean removeEldestEntry(Map.Entry eldest) {
-     *        return size() > MAX_ENTRIES;
-     *     }
-     * </pre>
-     *
-     */
-    protected boolean removeEldestEntry(Map.Entry&lt;K,V> eldest) {
-        return false;
-    }</p>
+<p>注意在构造keySet之前 对齐进行了null检查；只有当它是null时才会初始化。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">——</span><span class="n">可以继承LinkedHashMap</span><span class="err">，</span><span class="n">覆盖其removeEldestEntry方法</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="o">&gt;</span> <span class="n">注</span><span class="err">：</span><span class="n">如果想要缓存中的对象只要不被引用</span><span class="err">，</span><span class="n">就自动清理</span><span class="err">；</span><span class="n">则可以用WeakHashMap</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="mi">5</span><span class="o">.</span> <span class="n">如果指定了toString返回值的格式</span><span class="err">，</span><span class="n">则应该提供一个对应的静态工厂方法或构造函数</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="n">BigInteger</span><span class="o">.</span><span class="na">toString</span><span class="o">()</span>
-</span></code></pre></td></tr></table></div></figure>
+<h2>4. 消除无用的对象引用</h2>
 
+<h3>LinkedHashMap.removeEldestEntry()</h3>
 
-<p> <br/>
-    /<em>*
-     * Returns the String representation of this BigInteger in the
-     * given radix.<br/>
-     *
-     </em>/
-    public String toString(int radix) {</p>
+<p>缓存实体的生命周期不容易确定，随着时间推移，实体的价值越来越低。在这种情况下，缓存应该不定期地清理无用的实体。可以通过一个后台线程来清理（可能是<code>Timer</code>或<code>ScheduledThreadPoolExecutor</code>），也可以在给缓存添加新实体时进行清理。</p>
 
-<pre><code>/**
- * Returns the decimal String representation of this BigInteger.
- */
-public String toString() {
-    return toString(10);
-}
-</code></pre>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>
-</span><span class='line'><span class="n">对应的构造函数如下</span><span class="err">。</span><span class="n">这样程序员能容易地在对象及其字符串表示之间来回转换</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<pre><code>/**
- * Translates the decimal String representation of a BigInteger into a
- * BigInteger.  
- */
-public BigInteger(String val) {
-    this(val, 10);
-}
-/**
- * Translates the String representation of a BigInteger in the specified
- * radix into a BigInteger.  
- */
-public BigInteger(String val, int radix) { 
-</code></pre>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">##</span> <span class="mi">6</span><span class="o">.</span> <span class="n">不可变对象</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="nl">共享不可变对象内部信息:</span>  <span class="n">BigInteger</span><span class="o">.</span><span class="na">negate</span><span class="o">()</span><span class="err">：</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="o">&gt;</span> <span class="n">我们可以自由地共享不可变对象</span><span class="err">，</span><span class="n">还可以共享他们的内部信息</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">【</span><span class="n">例</span><span class="err">】</span><span class="n">BigInteger类内部使用了一个符号数值表示法</span><span class="err">（</span><span class="n">sign</span><span class="o">-</span><span class="n">magnitude</span> <span class="n">representation</span><span class="err">），</span><span class="n">符号用一个int表示</span><span class="err">，</span><span class="n">数值则用一个int数组表示</span><span class="err">。`</span><span class="n">negate</span><span class="o">()</span><span class="err">`</span><span class="n">方法会创建一个数值相同但符号相反的新</span><span class="err">`</span><span class="n">BigInteger</span><span class="err">`，</span><span class="n">该方法不需要拷贝数组</span><span class="err">，</span><span class="n">新创建的BigInteger只需要指向源对象中的数组即可</span><span class="err">。</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<pre><code>/**
- * Returns a BigInteger whose value is {@code (-this)}.
- *
- * @return {@code -this}
- */
-public BigInteger negate() {
-      return new BigInteger(this.mag, -this.signum);
-}
-</code></pre>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="nl">鼓励重用现有不可变实例:</span> <span class="n">BigInteger</span><span class="o">.</span><span class="na">ZERO</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">**</span><span class="n">不可变对象生来就是线程安全的</span><span class="err">，</span><span class="n">他们不需要同步</span><span class="o">**</span><span class="err">。</span><span class="n">当多个线程并发访问不可变对象时</span><span class="err">，</span><span class="n">他们不会遭到破坏</span><span class="err">。</span><span class="n">这无疑是实现线程安全的最容易的方法</span><span class="err">。</span><span class="n">实际上</span><span class="err">，</span><span class="n">不会有线程能观察到其他线程对不可变对象的影响</span><span class="err">。</span><span class="n">所以不可变对象可以被自由地共享</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">不可变类应当利用这种优势</span><span class="err">，</span><span class="n">鼓励客户端尽可能重用现有实例</span><span class="err">。</span><span class="n">一个简单的方法是为常用的值提供public</span> <span class="kd">static</span> <span class="n">final的常量</span><span class="err">。</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<pre><code>public static final BigInteger ZERO = new BigInteger(new int[0], 0);
-public static final BigInteger ONE = valueOf(1);
-public static final BigInteger TEN = valueOf(10);
-</code></pre>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">###</span> <span class="n">为不可变类提供companion</span> <span class="nl">class:</span>  <span class="n">String</span> <span class="n">vs</span><span class="o">.</span> <span class="n">StringBuilder</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">不可变类的一个缺点是</span><span class="err">，</span><span class="n">对于每个不同的值都需要一个单独的对象</span><span class="err">。</span><span class="n">那么在执行复杂的多步操作时</span><span class="err">，</span><span class="n">每一步都会创建一个新的对象</span><span class="err">。</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">通过提供</span><span class="err">`</span><span class="n">companion</span> <span class="n">class</span><span class="err">`</span><span class="n">可以解决这个问题</span><span class="err">。</span><span class="n">例如当需要对</span><span class="err">`</span><span class="n">String</span><span class="err">`</span><span class="n">执行复杂操作时</span><span class="err">，</span><span class="n">建议使用</span><span class="err">`</span><span class="n">StringBuilder</span><span class="err">`。</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="n">不可变类中可以有nonfinal域</span><span class="err">，</span><span class="nl">用于存储缓存:</span> <span class="n">String</span><span class="o">.</span><span class="na">hashCode</span><span class="o">()</span><span class="err">：</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">不可变类所有域必须是final的</span><span class="err">。</span><span class="n">实际上这些规则比较强硬</span><span class="err">，</span><span class="n">为了提供性能可以有所放松</span><span class="err">。</span><span class="n">实际上应该是没有方法能够对类的状态产生外部可见的改变</span><span class="err">（</span><span class="n">no</span> <span class="n">method</span> <span class="n">may</span> <span class="n">produce</span> <span class="n">an</span> <span class="n">externally</span> <span class="n">visible</span> <span class="n">change</span> <span class="n">in</span> <span class="n">the</span> <span class="n">object</span><span class="err">’</span><span class="n">s</span> <span class="n">state</span><span class="err">）。</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">然而</span><span class="err">，</span><span class="n">一些不可变类拥有一个或多个nonfinal域</span><span class="err">，</span><span class="n">用于缓存昂贵计算的结果</span><span class="err">。</span><span class="n">这个技巧可以很好地工作</span><span class="err">，</span><span class="n">因为对象是不可变的</span><span class="err">，</span><span class="n">保证了相同的计算总是返回同样的结果</span><span class="err">。</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<pre><code>/** Cache the hash code for the string */
-private int hash; // Default to 0
-
-public int hashCode() {
-  int h = hash;
-  int len = count;
-  if (h == 0 &amp;&amp; len &gt; 0) {
-    int off = offset;
-    char val[] = value;
-        for (int i = 0; i &lt; len; i++) {
-            h = 31*h + val[off++];
-        }
-        hash = h;
-  }
-  return h;
-}
-</code></pre>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">#</span> <span class="n">设计模式</span>
-</span><span class='line'>
-</span><span class='line'><span class="err">##</span> <span class="mi">1</span><span class="o">.</span> <span class="n">Template</span> <span class="n">Method</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="err">###</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">sort</span><span class="o">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>// Arrays<br/>
-   public static void sort(Object[] a) {<br/>
-        &hellip;<br/>
-        ComparableTimSort.sort(a);<br/>
-    }</p>
-
-<p>// ComparableTimSort<br/>
-   static void sort(Object[] a, int lo, int hi) {<br/>
-        &hellip;<br/>
-        binarySort(a, lo, hi, lo + initRunLen);</p>
-
-<p>   }</p>
+<p>LikedHashMap可利用其removeEldestEntry，删除较老的实体：</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -745,32 +511,295 @@ public int hashCode() {
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="err">```</span>
-</span><span class='line'>    <span class="c1">//算法框架  </span>
-</span><span class='line'>    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">binarySort</span><span class="o">(</span><span class="n">Object</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">,</span> <span class="kt">int</span> <span class="n">start</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">assert</span> <span class="n">lo</span> <span class="o">&lt;=</span> <span class="n">start</span> <span class="o">&amp;&amp;</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">hi</span><span class="o">;</span>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">start</span> <span class="o">==</span> <span class="n">lo</span><span class="o">)</span>
-</span><span class='line'>            <span class="n">start</span><span class="o">++;</span>
-</span><span class='line'>        <span class="k">for</span> <span class="o">(</span> <span class="o">;</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">hi</span><span class="o">;</span> <span class="n">start</span><span class="o">++)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&quot;unchecked&quot;</span><span class="o">)</span>
-</span><span class='line'>            <span class="n">Comparable</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">pivot</span> <span class="o">=</span> <span class="o">(</span><span class="n">Comparable</span><span class="o">)</span> <span class="n">a</span><span class="o">[</span><span class="n">start</span><span class="o">];</span>
-</span><span class='line'>
-</span><span class='line'>            <span class="c1">// Set left (and right) to the index where a[start] (pivot) belongs  </span>
-</span><span class='line'>            <span class="o">....</span>
-</span><span class='line'>            <span class="k">while</span> <span class="o">(</span><span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="o">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">right</span><span class="o">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span><span class="o">;</span>
-</span><span class='line'>                <span class="k">if</span> <span class="o">(</span><span class="n">pivot</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">a</span><span class="o">[</span><span class="n">mid</span><span class="o">])</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="c1">//compareTo这个算法步骤，是由各个Comparable的子类定义的  </span>
-</span><span class='line'>                    <span class="n">right</span> <span class="o">=</span> <span class="n">mid</span><span class="o">;</span>
-</span><span class='line'>                <span class="k">else</span>
-</span><span class='line'>                    <span class="n">left</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>            <span class="o">....</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LinkedHashMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="kd">extends</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="kd">implements</span> <span class="n">Map</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'>   <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * It causes newly allocated entry to get inserted at the end of the linked list and</span>
+</span><span class='line'><span class="cm">     * removes the eldest entry if appropriate.</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kt">void</span> <span class="nf">addEntry</span><span class="o">(</span><span class="kt">int</span> <span class="n">hash</span><span class="o">,</span> <span class="n">K</span> <span class="n">key</span><span class="o">,</span> <span class="n">V</span> <span class="n">value</span><span class="o">,</span> <span class="kt">int</span> <span class="n">bucketIndex</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="n">createEntry</span><span class="o">(</span><span class="n">hash</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">,</span> <span class="n">bucketIndex</span><span class="o">);</span>
+</span><span class='line'>        <span class="c1">// Remove eldest entry if instructed, else grow capacity if appropriate</span>
+</span><span class='line'>        <span class="n">Entry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">eldest</span> <span class="o">=</span> <span class="n">header</span><span class="o">.</span><span class="na">after</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="n">removeEldestEntry</span><span class="o">(</span><span class="n">eldest</span><span class="o">))</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">removeEntryForKey</span><span class="o">(</span><span class="n">eldest</span><span class="o">.</span><span class="na">key</span><span class="o">);</span>
+</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">size</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="o">)</span>
+</span><span class='line'>                <span class="n">resize</span><span class="o">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">table</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
 </span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="cm">/**</span>
+</span><span class='line'><span class="cm">     * Returns &lt;tt&gt;true&lt;/tt&gt; if this map should remove its eldest entry.</span>
+</span><span class='line'><span class="cm">     * This method is invoked by &lt;tt&gt;put&lt;/tt&gt; and &lt;tt&gt;putAll&lt;/tt&gt; after</span>
+</span><span class='line'><span class="cm">     * inserting a new entry into the map.  </span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     * Sample use: </span>
+</span><span class='line'><span class="cm">     * &lt;pre&gt;</span>
+</span><span class='line'><span class="cm">     *     private static final int MAX_ENTRIES = 100;</span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     *     protected boolean removeEldestEntry(Map.Entry eldest) {</span>
+</span><span class='line'><span class="cm">     *        return size() &gt; MAX_ENTRIES;</span>
+</span><span class='line'><span class="cm">     *     }</span>
+</span><span class='line'><span class="cm">     * &lt;/pre&gt;</span>
+</span><span class='line'><span class="cm">     *</span>
+</span><span class='line'><span class="cm">     */</span>
+</span><span class='line'>    <span class="kd">protected</span> <span class="kt">boolean</span> <span class="nf">removeEldestEntry</span><span class="o">(</span><span class="n">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span><span class="n">V</span><span class="o">&gt;</span> <span class="n">eldest</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
 </span><span class='line'>    <span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p></p>
+<p>——可以继承LinkedHashMap，覆盖其removeEldestEntry方法。</p>
+
+<blockquote><p>注：如果想要缓存中的对象只要不被引用，就自动清理；则可以用WeakHashMap</p></blockquote>
+
+<h2>5. 如果指定了toString返回值的格式，则应该提供一个对应的静态工厂方法或构造函数</h2>
+
+<h3>BigInteger.toString()</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Returns the String representation of this BigInteger in the</span>
+</span><span class='line'><span class="cm"> * given radix.  </span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">(</span><span class="kt">int</span> <span class="n">radix</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Returns the decimal String representation of this BigInteger.</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nf">toString</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>对应的构造函数如下。这样程序员能容易地在对象及其字符串表示之间来回转换</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Translates the decimal String representation of a BigInteger into a</span>
+</span><span class='line'><span class="cm"> * BigInteger.  </span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="nf">BigInteger</span><span class="o">(</span><span class="n">String</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">(</span><span class="n">val</span><span class="o">,</span> <span class="mi">10</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Translates the String representation of a BigInteger in the specified</span>
+</span><span class='line'><span class="cm"> * radix into a BigInteger.  </span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="nf">BigInteger</span><span class="o">(</span><span class="n">String</span> <span class="n">val</span><span class="o">,</span> <span class="kt">int</span> <span class="n">radix</span><span class="o">)</span> <span class="o">{</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>6. 不可变对象</h2>
+
+<h3>共享不可变对象内部信息:  BigInteger.negate()：</h3>
+
+<blockquote><p>我们可以自由地共享不可变对象，还可以共享他们的内部信息。</p></blockquote>
+
+<p>【例】BigInteger类内部使用了一个符号数值表示法（sign-magnitude representation），符号用一个int表示，数值则用一个int数组表示。<code>negate()</code>方法会创建一个数值相同但符号相反的新<code>BigInteger</code>，该方法不需要拷贝数组，新创建的BigInteger只需要指向源对象中的数组即可。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Returns a BigInteger whose value is {@code (-this)}.</span>
+</span><span class='line'><span class="cm"> *</span>
+</span><span class='line'><span class="cm"> * @return {@code -this}</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'><span class="kd">public</span> <span class="n">BigInteger</span> <span class="nf">negate</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="k">new</span> <span class="nf">BigInteger</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">mag</span><span class="o">,</span> <span class="o">-</span><span class="k">this</span><span class="o">.</span><span class="na">signum</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>鼓励重用现有不可变实例: BigInteger.ZERO</h3>
+
+<p><strong>不可变对象生来就是线程安全的，他们不需要同步</strong>。当多个线程并发访问不可变对象时，他们不会遭到破坏。这无疑是实现线程安全的最容易的方法。实际上，不会有线程能观察到其他线程对不可变对象的影响。所以不可变对象可以被自由地共享。</p>
+
+<p>不可变类应当利用这种优势，鼓励客户端尽可能重用现有实例。一个简单的方法是为常用的值提供public static final的常量。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">BigInteger</span> <span class="n">ZERO</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">BigInteger</span><span class="o">(</span><span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="mi">0</span><span class="o">],</span> <span class="mi">0</span><span class="o">);</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">BigInteger</span> <span class="n">ONE</span> <span class="o">=</span> <span class="n">valueOf</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">BigInteger</span> <span class="n">TEN</span> <span class="o">=</span> <span class="n">valueOf</span><span class="o">(</span><span class="mi">10</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>为不可变类提供companion class:  String vs. StringBuilder</h3>
+
+<p>不可变类的一个缺点是，对于每个不同的值都需要一个单独的对象。那么在执行复杂的多步操作时，每一步都会创建一个新的对象。</p>
+
+<p>通过提供<code>companion class</code>可以解决这个问题。例如当需要对<code>String</code>执行复杂操作时，建议使用<code>StringBuilder</code>。</p>
+
+<h3>不可变类中可以有nonfinal域，用于存储缓存: String.hashCode()：</h3>
+
+<p>不可变类所有域必须是final的。实际上这些规则比较强硬，为了提供性能可以有所放松。实际上应该是没有方法能够对类的状态产生外部可见的改变（no method may produce an externally visible change in the object’s state）。</p>
+
+<p>然而，一些不可变类拥有一个或多个nonfinal域，用于缓存昂贵计算的结果。这个技巧可以很好地工作，因为对象是不可变的，保证了相同的计算总是返回同样的结果。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/** Cache the hash code for the string */</span>
+</span><span class='line'><span class="kd">private</span> <span class="kt">int</span> <span class="n">hash</span><span class="o">;</span> <span class="c1">// Default to 0</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="n">hash</span><span class="o">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">len</span> <span class="o">=</span> <span class="n">count</span><span class="o">;</span>
+</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">h</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">off</span> <span class="o">=</span> <span class="n">offset</span><span class="o">;</span>
+</span><span class='line'>    <span class="kt">char</span> <span class="n">val</span><span class="o">[]</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span><span class='line'>        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">len</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="n">h</span> <span class="o">=</span> <span class="mi">31</span><span class="o">*</span><span class="n">h</span> <span class="o">+</span> <span class="n">val</span><span class="o">[</span><span class="n">off</span><span class="o">++];</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="n">hash</span> <span class="o">=</span> <span class="n">h</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">h</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h1>设计模式</h1>
+
+<h2>1. Template Method</h2>
+
+<h3>Arrays.sort()</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// Arrays  </span>
+</span><span class='line'>   <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Object</span><span class="o">[]</span> <span class="n">a</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="o">...</span>
+</span><span class='line'>        <span class="n">ComparableTimSort</span><span class="o">.</span><span class="na">sort</span><span class="o">(</span><span class="n">a</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// ComparableTimSort  </span>
+</span><span class='line'>   <span class="kd">static</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Object</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="o">...</span>
+</span><span class='line'>        <span class="n">binarySort</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">lo</span><span class="o">,</span> <span class="n">hi</span><span class="o">,</span> <span class="n">lo</span> <span class="o">+</span> <span class="n">initRunLen</span><span class="o">);</span>
+</span><span class='line'>
+</span><span class='line'>   <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">//算法框架  </span>
+</span><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">binarySort</span><span class="o">(</span><span class="n">Object</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">,</span> <span class="kt">int</span> <span class="n">start</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">assert</span> <span class="n">lo</span> <span class="o">&lt;=</span> <span class="n">start</span> <span class="o">&amp;&amp;</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">hi</span><span class="o">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">start</span> <span class="o">==</span> <span class="n">lo</span><span class="o">)</span>
+</span><span class='line'>        <span class="n">start</span><span class="o">++;</span>
+</span><span class='line'>    <span class="k">for</span> <span class="o">(</span> <span class="o">;</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">hi</span><span class="o">;</span> <span class="n">start</span><span class="o">++)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="nd">@SuppressWarnings</span><span class="o">(</span><span class="s">&quot;unchecked&quot;</span><span class="o">)</span>
+</span><span class='line'>        <span class="n">Comparable</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">pivot</span> <span class="o">=</span> <span class="o">(</span><span class="n">Comparable</span><span class="o">)</span> <span class="n">a</span><span class="o">[</span><span class="n">start</span><span class="o">];</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Set left (and right) to the index where a[start] (pivot) belongs  </span>
+</span><span class='line'>        <span class="o">....</span>
+</span><span class='line'>        <span class="k">while</span> <span class="o">(</span><span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>            <span class="kt">int</span> <span class="n">mid</span> <span class="o">=</span> <span class="o">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">right</span><span class="o">)</span> <span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>            <span class="k">if</span> <span class="o">(</span><span class="n">pivot</span><span class="o">.</span><span class="na">compareTo</span><span class="o">(</span><span class="n">a</span><span class="o">[</span><span class="n">mid</span><span class="o">])</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="c1">//compareTo这个算法步骤，是由各个Comparable的子类定义的  </span>
+</span><span class='line'>                <span class="n">right</span> <span class="o">=</span> <span class="n">mid</span><span class="o">;</span>
+</span><span class='line'>            <span class="k">else</span>
+</span><span class='line'>                <span class="n">left</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>        <span class="o">}</span>
+</span><span class='line'>        <span class="o">....</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
 
 <p>Q：这个算法框架并不是设计在父类中，而是在一个工具类中</p>
 
@@ -856,8 +885,6 @@ public int hashCode() {
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p></p>
-
 <h3>Applet.init()/start()/stop()/destroy()/paint()</h3>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -916,8 +943,6 @@ public int hashCode() {
 </span><span class='line'>    <span class="o">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
-
-<p></p>
 
 <p>Applet中的init()/start()/stop()/destroy()/paint()这些方法，都是hook。</p>
 
@@ -1199,7 +1224,7 @@ public int hashCode() {
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
+        <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
       </li>
     
       <li class="post">
@@ -1265,7 +1290,7 @@ public int hashCode() {
 <section>
   <h1>Visitors Map</h1>
   <div class="earth">
-  <script type="text/javascript" src="//rk.revolvermaps.com/0/0/1.js?i=awaok66hddi&amp;s=250&amp;m=0&amp;v=false&amp;r=false&amp;b=01070a&amp;n=false&amp;c=ff8500" async="async"></script>
+    <script type="text/javascript" src="//ri.revolvermaps.com/0/0/8.js?i=awaok66hddi&amp;m=0&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=49" async="async"></script>
   </div>
 </section>
   

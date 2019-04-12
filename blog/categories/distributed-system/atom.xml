@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Distributed System | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/distributed-system/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-04-11T22:37:47+08:00</updated>
+  <updated>2019-04-12T22:18:43+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -15,16 +15,16 @@
   
   <entry>
     <title type="html"><![CDATA[Dapper, a Large-Scale Distributed Systems Tracing Infrastructure]]></title>
-    <link href="http://alphawang.github.io/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/"/>
+    <link href="http://alphawang.github.io/blog/google-dapper-translation/"/>
     <updated>2019-03-24T12:04:46+08:00</updated>
-    <id>http://alphawang.github.io/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure</id>
+    <id>http://alphawang.github.io/blog/google-dapper-translation</id>
     <content type="html"><![CDATA[<blockquote><p>最近在研究分布式链路跟踪系统，Google Dapper 当然是必读的论文了，目前网上能搜到一些中文翻译版，然而读下来个人感觉翻译比较生硬；这里试着在前人的肩膀上重新翻译一遍这个论文，权当是个人的学习笔记，如果同时能给其他人带来好处那就更好了。</p>
 
 <p>同时把译文放到了 github，如您发现翻译错误或者不通顺之处，恳请提交 github PR: <a href="https://github.com/AlphaWang/alpha-dapper-translation">https://github.com/AlphaWang/alpha-dapper-translation</a></p>
 
 <ul>
 <li>原文：<a href="https://ai.google/research/pubs/pub36356">https://ai.google/research/pubs/pub36356</a></li>
-<li>译文：<a href="http://alphawang.com/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">http://alphawang.com/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/</a></li>
+<li>译文：<a href="http://alphawang.com/blog/google-dapper-translation">http://alphawang.com/blog/google-dapper-translation</a></li>
 </ul>
 </blockquote>
 
@@ -56,7 +56,7 @@
 
 <p>另外一个设计目标是生成跟踪数据后要很快可用于分析：最好是在一分钟内。尽管一个能处理几小时前数据的跟踪分析系统已经很有用了，但是能分析最新数据的话会让我们能对生产环境的异常情况作出快速反应。</p>
 
-<p>我们通过把 Dapper 跟踪植入的核心代码限制在线程调用、控制流以及RPC 等库代码中，实现了真正的应用透明这个最具挑战性的目标。使用自适应的采样（见4.4节），我们做到了可扩展性、降低性能损耗。最终的系统还包括收集跟踪数据的代码、可视化数据的工具、用于分析大规模跟踪数据的库和 API。尽管开发人员有时通过 Dapper 就足以找出性能问题的根源，但 Dapper 并不会替代所有其他的工具。我们发现 Dapper 的数据往往侧重于性能排查，所以其他工具也有自己的用处。</p>
+<p>我们通过把 Dapper 跟踪植入的核心代码限制在线程调用、控制流以及 RPC 等库代码中，实现了真正的应用透明这个最具挑战性的目标。使用自适应的采样（见4.4节），我们做到了可扩展性、降低性能损耗。最终的系统还包括收集跟踪数据的代码、可视化数据的工具、用于分析大规模跟踪数据的库和 API。尽管开发人员有时通过 Dapper 就足以找出性能问题的根源，但 Dapper 并不会替代所有其他的工具。我们发现 Dapper 的数据往往侧重于性能排查，所以其他工具也有自己的用处。</p>
 
 <h3>1.1 贡献总结</h3>
 

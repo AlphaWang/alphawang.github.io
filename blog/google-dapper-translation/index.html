@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://alphawang.github.io/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure">
+  <link rel="canonical" href="http://alphawang.github.io/blog/google-dapper-translation">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <link href="/atom.xml" rel="alternate" title="Alpha's Programming Notes" type="application/atom+xml">
@@ -155,7 +155,7 @@ $(document).ready(
 
 <ul>
 <li>原文：<a href="https://ai.google/research/pubs/pub36356">https://ai.google/research/pubs/pub36356</a></li>
-<li>译文：<a href="http://alphawang.com/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">http://alphawang.com/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/</a></li>
+<li>译文：<a href="http://alphawang.com/blog/google-dapper-translation">http://alphawang.com/blog/google-dapper-translation</a></li>
 </ul>
 </blockquote>
 
@@ -187,7 +187,7 @@ $(document).ready(
 
 <p>另外一个设计目标是生成跟踪数据后要很快可用于分析：最好是在一分钟内。尽管一个能处理几小时前数据的跟踪分析系统已经很有用了，但是能分析最新数据的话会让我们能对生产环境的异常情况作出快速反应。</p>
 
-<p>我们通过把 Dapper 跟踪植入的核心代码限制在线程调用、控制流以及RPC 等库代码中，实现了真正的应用透明这个最具挑战性的目标。使用自适应的采样（见4.4节），我们做到了可扩展性、降低性能损耗。最终的系统还包括收集跟踪数据的代码、可视化数据的工具、用于分析大规模跟踪数据的库和 API。尽管开发人员有时通过 Dapper 就足以找出性能问题的根源，但 Dapper 并不会替代所有其他的工具。我们发现 Dapper 的数据往往侧重于性能排查，所以其他工具也有自己的用处。</p>
+<p>我们通过把 Dapper 跟踪植入的核心代码限制在线程调用、控制流以及 RPC 等库代码中，实现了真正的应用透明这个最具挑战性的目标。使用自适应的采样（见4.4节），我们做到了可扩展性、降低性能损耗。最终的系统还包括收集跟踪数据的代码、可视化数据的工具、用于分析大规模跟踪数据的库和 API。尽管开发人员有时通过 Dapper 就足以找出性能问题的根源，但 Dapper 并不会替代所有其他的工具。我们发现 Dapper 的数据往往侧重于性能排查，所以其他工具也有自己的用处。</p>
 
 <h3>1.1 贡献总结</h3>
 
@@ -773,7 +773,7 @@ $(document).ready(
   <ul id="recent_posts">
     
       <li class="post">
-        <a href="/blog/dapper-a-large-scale-distributed-systems-tracing-infrastructure/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
+        <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
       </li>
     
       <li class="post">
@@ -839,7 +839,7 @@ $(document).ready(
 <section>
   <h1>Visitors Map</h1>
   <div class="earth">
-  <script type="text/javascript" src="//rk.revolvermaps.com/0/0/1.js?i=awaok66hddi&amp;s=250&amp;m=0&amp;v=false&amp;r=false&amp;b=01070a&amp;n=false&amp;c=ff8500" async="async"></script>
+    <script type="text/javascript" src="//ri.revolvermaps.com/0/0/8.js?i=awaok66hddi&amp;m=0&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=49" async="async"></script>
   </div>
 </section>
   
