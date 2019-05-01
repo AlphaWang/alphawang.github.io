@@ -9,9 +9,7 @@
   <meta name="author" content="Alpha Wang">
 
   
-  <meta name="description" content="定义 最少知识原则（Least Knowledge Principle），又称迪米特法则（LoD，Law of Demeter），是指一个对象应该对其他对象有最少的了解。
-一个类对自己依赖的类知道的越少越好。
-也就是说，对于被依赖的类来说，无论逻辑多么复杂，都尽量地的将逻辑封装在类的内部， &hellip;">
+  <meta name="description" content="定义 Open Closed Principle: Software entities like classes, modules and functions should be open for extension but closed for modifications. 对扩展开放， &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -129,6 +127,64 @@ $(document).ready(
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/6_open-closed-principle/">[六大设计原则] 6. Open Closed Principle</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2012-12-31T16:47:20+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2012</span></span> <span class='time'>4:47 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>定义</h2>
+
+<p>Open Closed Principle:</p>
+
+<ul>
+<li>Software entities like classes, modules and functions should be open for extension but closed for modifications.
+
+<blockquote><p><strong>对扩展开放，对修改关闭。</strong>  <br/>
+一个软件实体应该通过扩展来实现变化，而不是通过修改已有的代码来实现变化。<em>——but，并不意味着不做任何修改；底层模块的扩展，必然要有高层模块进行耦合</em>。</p></blockquote></li>
+</ul>
+
+
+<p>“变化”可分为三种类型：</p>
+
+<ul>
+<li>逻辑变化——不涉及其他模块，可修改原有类中的方法；</li>
+<li>子模块变化——会对其他模块产生影响，通过扩展来完成变化；</li>
+<li>可见视图变化——界面变化，有时需要通过扩展来完成变化。</li>
+</ul>
+
+
+<h2>问题由来</h2>
+
+<p>在软件的生命周期内，因为变化、升级和维护等原因需要对软件原有代码进行修改时，可能会给旧代码中引入错误，也可能会使我们不得不对整个功能进行重构，并且需要原有代码经过重新测试。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/6_open-closed-principle/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -408,6 +464,7 @@ $(document).ready(
 <li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
@@ -437,8 +494,12 @@ $(document).ready(
 <a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
 <a style="font-size: 119%" href="/blog/tags/web/">Web</a>
 <a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+<a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
 <a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
+<a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
+<a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
 
 </ul>
@@ -446,6 +507,10 @@ $(document).ready(
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/redis-mind-map/">Redis Mind Map</a>
+      </li>
     
       <li class="post">
         <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
@@ -461,10 +526,6 @@ $(document).ready(
     
       <li class="post">
         <a href="/blog/google-guava-dealing-with-null/">Google Guava: 1. Dealing With Null</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/key-solr-concepts/">Key Solr Concepts</a>
       </li>
     
   </ul>
