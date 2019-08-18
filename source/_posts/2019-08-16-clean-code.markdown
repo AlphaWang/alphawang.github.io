@@ -3,7 +3,9 @@ layout: post
 title: "Clean Code Summary"
 date: 2019-08-16 17:46:12 +0800
 comments: true
-categories: 
+categories: [design patterns]
+tags: [clean code, 代码整洁之道, 学习总结]
+keywords: clean code, 代码整洁之道, 学习总结, comments, environment, functions, general, java, names, tests
 ---
 
 > 2019年在大团队内部组织了一个 Study Group，主要目的是一起学习、一起分享、一起成长；上个季度我们的一项重点是完成了《Clean Code》这本书的拆解和分享，本文是对其中最后一章的一个总结。其实最后一章是对全书的总结，随意本文也可以近似看成是对全书的总结吧。
