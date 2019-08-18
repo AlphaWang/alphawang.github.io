@@ -15,3 +15,5 @@ rake deploy
 git remote add octopress https://github.com/imathis/octopress.git
 git pull octopress master
 ```
+
+·
