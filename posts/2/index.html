@@ -9,7 +9,7 @@
   <meta name="author" content="Alpha Wang">
 
   
-  <meta name="description" content="本文记录了一些Java源码中的良好编程习惯、运用的设计模式。 ">
+  <meta name="description" content="Java语言中有8种基本类型和一种比较特殊的类型String。为了使这些类型在运行过程中速度更快，更节省内存，都提供了一种常量池的概念。常量池就类似一个Java系统级别提供的缓存。 其中8种基本类型的常量池都是系统协调的，而String类型的常量池比较特殊。它的主要使用方法有两种： &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -127,6 +127,49 @@ $(document).ready(
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/what-is-string-intern/">What's String.intern()</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-12-15T15:23:45+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:23 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Java语言中有8种基本类型和一种比较特殊的类型<code>String</code>。为了使这些类型在运行过程中速度更快，更节省内存，都提供了一种常量池的概念。常量池就类似一个Java系统级别提供的缓存。</p>
+
+<p>其中8种基本类型的常量池都是系统协调的，而<code>String</code>类型的常量池比较特殊。它的主要使用方法有两种：</p>
+
+<ul>
+<li>直接使用双引号声明出来的<code>String</code>对象会直接存储在常量池中。</li>
+<li>如果不是用双引号声明的<code>String</code>对象，可以使用<code>String.intern()</code>方法。<strong>intern方法会从字符串常量池中查询当前字符串是否存在，若不存在就会将当前字符串放入常量池中</strong></li>
+</ul>
+
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/what-is-string-intern/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -520,48 +563,6 @@ Fortunately, we can do this just by writing a configuration file, then the termi
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/mac-calendar-tool/">Calendar Tools on Mac</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-09-10T17:15:35+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>10</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:15 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Mac菜单栏原生的日期时间显示比较简单，例如不能直接查看月历，比较不爽。<br/>
-找到了几个比较优秀的Mac日期工具，可以替代原生功能：</p>
-
-<h2>Day-O</h2>
-
-<p>Day-O的界面风格与原生系统一样：</p>
-
-<p><img src="/images/post/2014/09/mac-day-o.png" alt=" dayo post title bug " /></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/mac-calendar-tool/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -577,7 +578,7 @@ Fortunately, we can do this just by writing a configuration file, then the termi
     <section>
  <h1>Categories</h1>
  <ul id="categories">
-	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (6)</a></li>
+	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
 <li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
@@ -611,6 +612,7 @@ Fortunately, we can do this just by writing a configuration file, then the termi
 <a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
 <a style="font-size: 119%" href="/blog/tags/web/">Web</a>
 <a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+<a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
 <a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
@@ -618,12 +620,18 @@ Fortunately, we can do this just by writing a configuration file, then the termi
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
+<a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
 </ul>
 </section>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/clean-code/">Clean Code Summary</a>
+      </li>
     
       <li class="post">
         <a href="/blog/redis-mind-map/">Redis Mind Map</a>
@@ -639,10 +647,6 @@ Fortunately, we can do this just by writing a configuration file, then the termi
     
       <li class="post">
         <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/google-guava-dealing-with-null/">Google Guava: 1. Dealing With Null</a>
       </li>
     
   </ul>

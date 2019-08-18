@@ -4,7 +4,7 @@
   <title><![CDATA[Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-05-01T23:09:40+08:00</updated>
+  <updated>2019-08-18T13:03:15+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -12,6 +12,958 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Clean Code Summary]]></title>
+    <link href="http://alphawang.github.io/blog/clean-code/"/>
+    <updated>2019-08-16T17:46:12+08:00</updated>
+    <id>http://alphawang.github.io/blog/clean-code</id>
+    <content type="html"><![CDATA[<blockquote><p>2019年在大团队内部组织了一个 Study Group，主要目的是一起学习、一起分享、一起成长；上个季度我们的一项重点是完成了《Clean Code》这本书的拆解和分享，本文是对其中最后一章的一个总结。其实最后一章是对全书的总结，随意本文也可以近似看成是对全书的总结吧。</p>
+
+<p>原始总结请参考 <a href="https://github.com/AlphaWang/alpha-book-clean-code/tree/master/17_smells_heuristics">https://github.com/AlphaWang/alpha-book-clean-code/tree/master/17_smells_heuristics</a></p></blockquote>
+
+<!--more-->
+
+
+<h2>17.1 注释（Comments）</h2>
+
+<h3>C1: 不恰当的信息（Inappropriate Information）</h3>
+
+<p>注释只应该描述有关代码和设计的技术性信息。</p>
+
+<p>反例：修改历史记录</p>
+
+<h3>C2: 废弃的注释（Obsolete Comment）</h3>
+
+<p>过时、无关、不正确的注释就是废弃的注释。</p>
+
+<p>问题：造成误导</p>
+
+<h3>C3: 冗余注释（Redundant Comment）</h3>
+
+<p>注释应该谈及代码自身 <del>没有</del>（不能）提到的东西。
+Comments should say things that the code cannot say for itself.</p>
+
+<p>反例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">i</span><span class="o">++;</span> <span class="c1">// increment i</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm">* @param sellRequest</span>
+</span><span class='line'><span class="cm">* @return</span>
+</span><span class='line'><span class="cm">* @throws ManagedComponentException</span>
+</span><span class='line'><span class="cm">*/</span>
+</span><span class='line'><span class="kd">public</span> <span class="n">SellResponse</span> <span class="nf">beginSellItem</span><span class="o">(</span><span class="n">SellRequest</span> <span class="n">sellRequest</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ManagedComponentException</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>C4: 糟糕的注释（Poorly Written Comment）</h3>
+
+<p>如果注释值得写，那就值得好好写。</p>
+
+<ul>
+<li>注意语法、拼写；</li>
+<li>不画蛇添足、保持简洁。</li>
+</ul>
+
+
+<h3>C5: 注释掉的代码（Commented-Out Code）</h3>
+
+<p>看到注释掉的代码，就删掉它！</p>
+
+<h2>17.2 环境（Environment）</h2>
+
+<h3>E1: 需要多步才能实现的构建（Build Requires More Than One Step）</h3>
+
+<p>You should be able to check out the system with one simple command and then issue one other simple command to build it.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">svn</span> <span class="n">get</span> <span class="n">mySystem</span>
+</span><span class='line'><span class="n">cd</span> <span class="n">mySystem</span>
+</span><span class='line'><span class="n">ant</span> <span class="n">all</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>E2: 需要多步才能做到的测试（Tests Require More Than One Step）</h3>
+
+<p>You should be able to run all the unit tests with just one command.</p>
+
+<h2>17.3 函数（Functions）</h2>
+
+<p>see <a href="03_functions/03_functions.md">Chapter3 Functions</a></p>
+
+<h3>F1: 过多的参数（Too Many Arguments）</h3>
+
+<p>函数参数越少越好。</p>
+
+<h3>F2: 输出参数（Output Arguments）</h3>
+
+<p>Readers expect arguments to be inputs, not outputs.</p>
+
+<h3>F3: 标识参数（Flag Arguments）</h3>
+
+<p>有布尔值参数，说明函数做了不止一件事。</p>
+
+<h3>F4: 死函数（Dead Function）</h3>
+
+<p>永不被调用的方法应该丢弃。</p>
+
+<h2>17.4 一般性问题（General）</h2>
+
+<h3>G1: 一个源文件中存在多种语言（Multiple Languages in One Source File）</h3>
+
+<h3>G2: 明显的行为未被实现（Obvious Behavior Is Unimplemented）</h3>
+
+<p>Following <code>The Principle of Least Surprise</code>, any function or class should implement the behaviors that another programmer could reasonably expect.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Day</span> <span class="n">day</span> <span class="o">=</span> <span class="n">DayDate</span><span class="o">.</span><span class="na">StringToDay</span><span class="o">(</span><span class="n">String</span> <span class="n">dayName</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Reasonable expectations:</p>
+
+<ul>
+<li>&ldquo;Monday&rdquo; &ndash;> Day.MONDAY</li>
+<li>&ldquo;monday&rdquo; &ndash;> Day.MONDAY</li>
+<li>&ldquo;Mon&rdquo; &ndash; Day.MONDAY</li>
+</ul>
+
+
+<h3>G3: 不正确的边界行为（Incorrect Behavior at the Boundaries）</h3>
+
+<p>Don’t rely on your intuition.
+Look for every boundary condition and write a test for it.</p>
+
+<h3>G4: 忽视安全（Overridden Safeties）</h3>
+
+<p>Turning off certain compiler warnings may help you get the build to succeed, but at the risk of endless debugging sessions.</p>
+
+<h3>G5: 重复（Duplication）</h3>
+
+<p>DRY: Don&rsquo;t Repeat Yourself. 这是本书最重要的规则之一</p>
+
+<ul>
+<li>重复代码代表遗漏了抽象。</li>
+</ul>
+
+
+<h3>G6: 在错误的抽象层级上的代码（Code at Wrong Level of Abstraction）</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Stack</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Object</span> <span class="nf">pop</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">EmptyException</span><span class="o">;</span>
+</span><span class='line'>  <span class="kt">void</span> <span class="nf">push</span><span class="o">(</span><span class="n">Object</span> <span class="n">o</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">FullException</span><span class="o">;</span>
+</span><span class='line'>  <span class="kt">double</span> <span class="nf">percentFull</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>percentFull()方法应该放到子接口<code>BoundedStack</code>上。</li>
+</ul>
+
+
+<h3>G7: 基类依赖于派生类（Base Classes Depending on Their Derivatives）</h3>
+
+<p>In general, base classes should know nothing about their derivatives.</p>
+
+<h3>G8: 信息过多（TMI, Too Much Information）</h3>
+
+<ul>
+<li>类或模块中暴露的接口越少越好；</li>
+<li>类中的方法越少越好；</li>
+<li>函数知道的变量越少越好；</li>
+<li>类拥有的实体变量越少越好；</li>
+</ul>
+
+
+<h3>G9: 死代码（Dead Code）</h3>
+
+<ul>
+<li>不被调用的方法；</li>
+<li>不会进入的if/switch条件；</li>
+<li>从不抛出异常的try-catch；</li>
+</ul>
+
+
+<p>Tips: find dead code by IntelliJ</p>
+
+<p><code>Analyze</code> —> <code>Run Inspection by Name…</code> —> <code>Unused declaration</code></p>
+
+<h3>G10: 垂直分隔（Vertical Separation）</h3>
+
+<p>垂直距离要短，</p>
+
+<ul>
+<li>变量和函数应该在靠近被使用的地方定义。</li>
+<li>本地变量应该在首次被使用的位置上面声明。</li>
+<li>私有函数应该刚好在其首次被调用的位置下面定义。</li>
+</ul>
+
+
+<h3>G11: 前后不一致（Inconsistency）</h3>
+
+<p>If you do something a certain way, do all similar things in the same way.</p>
+
+<ul>
+<li><code>HttpServletResponse response;</code> vs. <code>HttpServletResponse httpResponse;</code></li>
+<li><code>loadInterstellarVendorItem()</code> vs. <code>getInterstellarVendorItem()</code></li>
+</ul>
+
+
+<h3>G12: 混淆视听（Clutter）</h3>
+
+<ul>
+<li><p>没有用到的变量；</p></li>
+<li><p>从不调用的函数；</p></li>
+<li><p>没有信息量的注释；</p>
+
+<p>All these things are clutter and should be removed.</p></li>
+</ul>
+
+
+<h3>G13: 人为耦合（Artificial Coupling）</h3>
+
+<p>不互相依赖的东西就不该耦合。</p>
+
+<p>反例：把普通的enum声明在特殊类中。</p>
+
+<h3>G14: 特性依恋 （Feature Envy）</h3>
+
+<p>see Martin Fowler’s Refactoring.</p>
+
+<p>The methods of a class should be interested in the variables and functions of the class they belong to, and not the variables and functions of other classes.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HourlyPayCalculator</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="n">Money</span> <span class="nf">calculateWeeklyPay</span><span class="o">(</span><span class="n">HourlyEmployee</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">tenthRate</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getTenthRate</span><span class="o">().</span><span class="na">getPennies</span><span class="o">();</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">tenthsWorked</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getTenthsWorked</span><span class="o">();</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">straightTime</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="mi">400</span><span class="o">,</span> <span class="n">tenthsWorked</span><span class="o">);</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">overTime</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">tenthsWorked</span> <span class="o">-</span> <span class="n">straightTime</span><span class="o">);</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">straightPay</span> <span class="o">=</span> <span class="n">straightTime</span> <span class="o">*</span> <span class="n">tenthRate</span><span class="o">;</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">overtimePay</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span><span class="n">Math</span><span class="o">.</span><span class="na">round</span><span class="o">(</span><span class="n">overTime</span><span class="o">*</span><span class="n">tenthRate</span><span class="o">*</span><span class="mf">1.5</span><span class="o">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="nf">Money</span><span class="o">(</span><span class="n">straightPay</span> <span class="o">+</span> <span class="n">overtimePay</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>The calculateWeeklyPay method envies the scope of HourlyEmployee. It “wishes” that it could be inside HourlyEmployee.</p></blockquote>
+
+<p>但事无绝对，下面这个reportHours方法如果移到HourlyEmployee类中，就会违反SRP原则。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HourlyEmployeeReport</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="n">HourlyEmployee</span> <span class="n">employee</span> <span class="o">;</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="nf">HourlyEmployeeReport</span><span class="o">(</span><span class="n">HourlyEmployee</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">employee</span> <span class="o">=</span> <span class="n">e</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">String</span> <span class="nf">reportHours</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;Name: %s\tHours:%d.%1d\n&quot;</span><span class="o">,</span>
+</span><span class='line'>      <span class="n">employee</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span>
+</span><span class='line'>      <span class="n">employee</span><span class="o">.</span><span class="na">getTenthsWorked</span><span class="o">()/</span><span class="mi">10</span><span class="o">,</span>
+</span><span class='line'>      <span class="n">employee</span><span class="o">.</span><span class="na">getTenthsWorked</span><span class="o">()%</span><span class="mi">10</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G15: 选择算子参数（Selector Arguments）</h3>
+
+<p>什么是selector arguments：用于选择函数行为的参数。</p>
+
+<ul>
+<li>boolean</li>
+<li>enum</li>
+<li>&hellip;</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculateWeeklyPay</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">overtime</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//Selector Argument</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">tenthRate</span> <span class="o">=</span> <span class="n">getTenthRate</span><span class="o">();</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">tenthsWorked</span> <span class="o">=</span> <span class="n">getTenthsWorked</span><span class="o">();</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">straightTime</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="mi">400</span><span class="o">,</span> <span class="n">tenthsWorked</span><span class="o">);</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">overTime</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">tenthsWorked</span> <span class="o">-</span> <span class="n">straightTime</span><span class="o">);</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">straightPay</span> <span class="o">=</span> <span class="n">straightTime</span> <span class="o">*</span> <span class="n">tenthRate</span><span class="o">;</span>
+</span><span class='line'>  <span class="kt">double</span> <span class="n">overtimeRate</span> <span class="o">=</span> <span class="n">overtime</span> <span class="o">?</span> <span class="mf">1.5</span> <span class="o">:</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">tenthRate</span><span class="o">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">overtimePay</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span><span class="n">Math</span><span class="o">.</span><span class="na">round</span><span class="o">(</span><span class="n">overTime</span><span class="o">*</span><span class="n">overtimeRate</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">straightPay</span> <span class="o">+</span> <span class="n">overtimePay</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G16: 晦涩的意图（Obscured Intent）</h3>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">m_otCalc</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">iThsWkd</span> <span class="o">*</span> <span class="n">iThsRte</span> <span class="o">+</span>
+</span><span class='line'>       <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">Math</span><span class="o">.</span><span class="na">round</span><span class="o">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">iThsRte</span> <span class="o">*</span>
+</span><span class='line'>          <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">iThsWkd</span> <span class="o">-</span> <span class="mi">400</span><span class="o">)</span>
+</span><span class='line'>       <span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个函数看起来短小紧凑，但究竟是在做什么事情呢？</p>
+
+<h3>G17: 位置错误的权责（Misplaced Responsibility）</h3>
+
+<p>Question: PI常量应该放在Math类、Trigonometry类、还是Circle类？</p>
+
+<ul>
+<li>Following <code>The Principle of Least Surprise</code>. Code should be placed where a reader would naturally expect it to be.</li>
+</ul>
+
+
+<h3>G18: 不恰当的静态方法（Inappropriate Static）</h3>
+
+<p>恰当的静态方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="kt">double</span> <span class="n">a</span><span class="o">,</span> <span class="kt">double</span> <span class="n">b</span><span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// to avoid:</span>
+</span><span class='line'><span class="k">new</span> <span class="nf">Math</span><span class="o">().</span><span class="na">max</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">);</span>
+</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">b</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不恰当的静态方法：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">HourlyPayCalculator</span><span class="o">.</span><span class="na">calculatePay</span><span class="o">(</span><span class="n">employee</span><span class="o">,</span> <span class="n">overtimeRate</span><span class="o">).</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>原因：有理由希望这个函数是多态的。（OvertimeHourlyPayCalculator, StraightTimeHourlyPayCalculator）</p>
+
+<blockquote><p>可以作为Employee方法的非静态函数。</p></blockquote>
+
+<h3>G19: 使用解释性变量（Use Explanatory Variables）</h3>
+
+<p>让程序可读的有力方法之一就是将计算过程打散，用有意义的变量名存储中间值。</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Matcher</span> <span class="n">match</span> <span class="o">=</span> <span class="n">headerPattern</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
+</span><span class='line'><span class="k">if</span><span class="o">(</span><span class="n">match</span><span class="o">.</span><span class="na">find</span><span class="o">())</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">String</span> <span class="n">key</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span> <span class="c1">//中间值</span>
+</span><span class='line'>  <span class="n">String</span> <span class="n">value</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span> <span class="c1">//中间值 </span>
+</span><span class='line'>  <span class="n">headers</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">(),</span> <span class="n">value</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G20: 函数名称应该表达其行为（Function Names Should Say What They Do）</h3>
+
+<p>反例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Date</span> <span class="n">newDate</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Date</span> <span class="n">newDate</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="na">addDaysTo</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+</span><span class='line'><span class="n">Date</span> <span class="n">newDate</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="na">increaseByDays</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G21: 理解算法（Understand the Algorithm）</h3>
+
+<p>Before you consider yourself to be done with a function, make sure you understand how it works.
+It is not good enough that it passes all the tests.
+You must know that the solution is correct.</p>
+
+<h3>G22: 把逻辑依赖改为物理依赖（Make Logical Dependencies Physical）</h3>
+
+<p>Logical Dependency:</p>
+
+<ul>
+<li>The dependent module should not make <strong>assumptions</strong> about the module it depends upon.</li>
+</ul>
+
+
+<p>Physical Dependency:</p>
+
+<ul>
+<li>it should explicitly ask that module for all the information it depends upon.</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HourlyReporter</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="n">HourlyReportFormatter</span> <span class="n">formatter</span><span class="o">;</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">LineItem</span><span class="o">&gt;</span> <span class="n">page</span><span class="o">;</span>
+</span><span class='line'>  <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">PAGE_SIZE</span> <span class="o">=</span> <span class="mi">55</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">generateReport</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">HourlyEmployee</span><span class="o">&gt;</span> <span class="n">employees</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="k">for</span> <span class="o">(</span><span class="n">HourlyEmployee</span> <span class="n">e</span> <span class="o">:</span> <span class="n">employees</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>      <span class="n">addLineItemToPage</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
+</span><span class='line'>      <span class="k">if</span> <span class="o">(</span><span class="n">page</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="n">PAGE_SIZE</span><span class="o">)</span>
+</span><span class='line'>        <span class="n">printAndClearItemList</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">page</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span>
+</span><span class='line'>      <span class="n">printAndClearItemList</span><span class="o">();</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">printAndClearItemList</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">formatter</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">page</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">page</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">addLineItemToPage</span><span class="o">(</span><span class="n">HourlyEmployee</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">LineItem</span> <span class="n">item</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">LineItem</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">item</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">item</span><span class="o">.</span><span class="na">hours</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getTenthsWorked</span><span class="o">()</span> <span class="o">/</span> <span class="mi">10</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">item</span><span class="o">.</span><span class="na">tenths</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getTenthsWorked</span><span class="o">()</span> <span class="o">%</span> <span class="mi">10</span><span class="o">;</span>
+</span><span class='line'>    <span class="n">page</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">item</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>PAGE_SIZE应该是HourlyReportFormatter的职责； 此处HourlyReporter被假定知道PAGE_SIZE，所以是逻辑依赖。</p>
+
+<ul>
+<li>We can physicalize this dependency by creating a new method in <code>HourlyReportFormatter</code> named <code>getMaxPageSize()</code>.</li>
+<li><code>HourlyReporter</code> will then call that function rather than using the <code>PAGE_SIZE</code> constant.</li>
+</ul>
+
+
+<h3>G23: 用多态替代 if-else 或 switch-case（Prefer Polymorphism to If/Else or Switch/Case）</h3>
+
+<p>反例：
+CartSectionHeaderAssembler</p>
+
+<h3>G24: 遵循标准约定（Follow Standard Conventions）</h3>
+
+<p>建议参考阿里巴巴Java开发手册：<a href="https://github.com/alibaba/p3c">https://github.com/alibaba/p3c</a></p>
+
+<h3>G25: 用命名常量替代魔术数（Replace Magic Numbers with Named Constants）</h3>
+
+<p>反例：</p>
+
+<ul>
+<li>86400</li>
+</ul>
+
+
+<p>正例：</p>
+
+<ul>
+<li>int SECONDS_PER_DAY = 86400;</li>
+</ul>
+
+
+<p>问题：是不是所有数字都需要替换成常量？</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// 计算圆周长</span>
+</span><span class='line'><span class="c1">// 数字 2 是否需要定义一个常量？ --&gt; NO</span>
+</span><span class='line'><span class="kt">double</span> <span class="n">circumference</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="na">PI</span> <span class="o">*</span> <span class="mi">2</span><span class="o">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G26: 准确（Be Precise）</h3>
+
+<ul>
+<li>不要用<code>float</code>表示货币；</li>
+<li>如果所调用的方法可能返回null，就必须要做null检查；</li>
+</ul>
+
+
+<h3>G27: 结构优于约定（Structure over Convention）</h3>
+
+<p>switch/cases with nicely named enumerations are inferior to base classes with abstract methods.</p>
+
+<h3>G28: 封装条件（Encapsulate Conditionals）</h3>
+
+<p>如果 if 或者 while 语句没有上下文，那就很难理解其判断逻辑了。</p>
+
+<p>反例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">timer</span><span class="o">.</span><span class="na">hasExpired</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">timer</span><span class="o">.</span><span class="na">isRecurrent</span><span class="o">())</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">shouldBeDeleted</span><span class="o">(</span><span class="n">timer</span><span class="o">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G29: 避免否定性条件（Avoid Negative Conditionals）</h3>
+
+<p>Negatives are just a bit harder to understand than positives.</p>
+
+<p>反例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">if</span> <span class="o">(!</span><span class="n">buffer</span><span class="o">.</span><span class="na">shouldNotCompact</span><span class="o">())</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">buffer</span><span class="o">.</span><span class="na">shouldCompact</span><span class="o">())</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G30: 函数只该做一件事（Functions Should Do One Thing）</h3>
+
+<p>SRP原则。</p>
+
+<h3>G31: 掩蔽时序耦合（Hidden Temporal Couplings）</h3>
+
+<p>有时函数的执行次序很重要，这时就需要用某种机制（例如 bucket brigade）来确保其他程序员不能随意调整执行次序。</p>
+
+<p>反例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MoogDiver</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Gradient</span> <span class="n">gradient</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">List</span><span class="o">&lt;</span><span class="n">Spline</span><span class="o">&gt;</span> <span class="n">splines</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">dive</span><span class="o">(</span><span class="n">String</span> <span class="n">reason</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">saturateGradient</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">reticulateSplines</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">diveForMoog</span><span class="o">(</span><span class="n">reason</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="o">...</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MoogDiver</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Gradient</span> <span class="n">gradient</span><span class="o">;</span>
+</span><span class='line'>  <span class="n">List</span><span class="o">&lt;</span><span class="n">Spline</span><span class="o">&gt;</span> <span class="n">splines</span><span class="o">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">dive</span><span class="o">(</span><span class="n">String</span> <span class="n">reason</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">Gradient</span> <span class="n">gradient</span> <span class="o">=</span> <span class="n">saturateGradient</span><span class="o">();</span>
+</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">Spline</span><span class="o">&gt;</span> <span class="n">splines</span> <span class="o">=</span> <span class="n">reticulateSplines</span><span class="o">(</span><span class="n">gradient</span><span class="o">);</span>
+</span><span class='line'>    <span class="n">diveForMoog</span><span class="o">(</span><span class="n">splines</span><span class="o">,</span> <span class="n">reason</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>  <span class="o">...</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G32: 别随意（Don’t Be Arbitrary）</h3>
+
+<p>反例：</p>
+
+<p>滥用内部类。本应是一个顶级类，却随意定义在另一个类内部作为内部类。</p>
+
+<h3>G33: 封装边界条件（Encapsulate Boundary Conditions）</h3>
+
+<p>要把处理边界条件的代码集中到一处，而不是散落在代码中。</p>
+
+<p>反例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">if</span><span class="o">(</span><span class="n">level</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">tags</span><span class="o">.</span><span class="na">length</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">parts</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Parse</span><span class="o">(</span><span class="n">body</span><span class="o">,</span> <span class="n">tags</span><span class="o">,</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">endTag</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">body</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">int</span> <span class="n">nextLevel</span> <span class="o">=</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'><span class="k">if</span><span class="o">(</span><span class="n">nextLevel</span> <span class="o">&lt;</span> <span class="n">tags</span><span class="o">.</span><span class="na">length</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">parts</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Parse</span><span class="o">(</span><span class="n">body</span><span class="o">,</span> <span class="n">tags</span><span class="o">,</span> <span class="n">nextLevel</span><span class="o">,</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">endTag</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">body</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G34: 函数应该只在一个抽象层级上（Functions Should Descend Only One Level of Abstraction）</h3>
+
+<p>反例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">render</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">StringBuffer</span> <span class="n">html</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">StringBuffer</span><span class="o">(</span><span class="s">&quot;&lt;hr&quot;</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">if</span><span class="o">(</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span>
+</span><span class='line'>    <span class="n">html</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot; size=\&quot;&quot;</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">size</span> <span class="o">+</span> <span class="mi">1</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\&quot;&quot;</span><span class="o">);</span>
+</span><span class='line'>  <span class="n">html</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;&gt;&quot;</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">html</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个方法混杂了至少两个抽象层级：</p>
+
+<ol>
+<li>The first is the notion that a horizontal rule has a size.</li>
+<li>The second is the syntax of the HR tag itself.</li>
+</ol>
+
+
+<p>正例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">render</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">HtmlTag</span> <span class="n">hr</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">HtmlTag</span><span class="o">(</span><span class="s">&quot;hr&quot;</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">extraDashes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span>
+</span><span class='line'>    <span class="n">hr</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;size&quot;</span><span class="o">,</span> <span class="n">hrSize</span><span class="o">(</span><span class="n">extraDashes</span><span class="o">));</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">hr</span><span class="o">.</span><span class="na">html</span><span class="o">();</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">private</span> <span class="n">String</span> <span class="nf">hrSize</span><span class="o">(</span><span class="kt">int</span> <span class="n">height</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">hrSize</span> <span class="o">=</span> <span class="n">height</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;%d&quot;</span><span class="o">,</span> <span class="n">hrSize</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G35: 在较高层级放置可配置数据（Keep Configurable Data at High Levels）</h3>
+
+<p>如果你有一个常量值表示默认值或者配置值，不要把它埋在底层的函数中。</p>
+
+<p>正例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span><span class='line'>  <span class="n">Arguments</span> <span class="n">arguments</span> <span class="o">=</span> <span class="n">parseCommandLine</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
+</span><span class='line'>  <span class="o">...</span>
+</span><span class='line'><span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Arguments</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">DEFAULT_PATH</span> <span class="o">=</span> <span class="s">&quot;.&quot;</span><span class="o">;</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">DEFAULT_ROOT</span> <span class="o">=</span> <span class="s">&quot;FitNesseRoot&quot;</span><span class="o">;</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">DEFAULT_PORT</span> <span class="o">=</span> <span class="mi">80</span><span class="o">;</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">DEFAULT_VERSION_DAYS</span> <span class="o">=</span> <span class="mi">14</span><span class="o">;</span>
+</span><span class='line'>  <span class="o">...</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G36: 避免传递浏览（Avoid Transitive Navigation）</h3>
+
+<p>Law of Demeter.不要让模块了解太多其写作者的信息。</p>
+
+<p>反例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">a</span><span class="o">.</span><span class="na">getB</span><span class="o">().</span><span class="na">getC</span><span class="o">().</span><span class="na">doSomething</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例：</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">myCollaborator</span><span class="o">.</span><span class="na">doSomething</span><span class="o">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>17.5 Java</h2>
+
+<h3>J1: 通过使用通配符避免过长的导入清单（Avoid Long Import Lists by Using Wildcards）</h3>
+
+<p>如果使用了来自同一包的两个或多个类，用通配符导入：<code>import package.*</code>。</p>
+
+<blockquote><p>仅仅是为了减少代码行？</p></blockquote>
+
+<h3>J2: 不要继承常量（Don’t Inherit Constants）</h3>
+
+<p>不要在子类中访问父类的常量。因为不方便找到常量究竟定义在哪个类里。</p>
+
+<blockquote><p>通过IDEA可以方便地找到呀。。。</p></blockquote>
+
+<h3>J3: 常量 vs. 枚举（Constants versus Enums）</h3>
+
+<p>推荐用枚举。</p>
+
+<h2>17.6 名称（Names）</h2>
+
+<h3>N1: 采用描述性名称（Choose Descriptive Names）</h3>
+
+<h3>N2: 名称应与抽象层级相符（Choose Names at the Appropriate Level of Abstraction）</h3>
+
+<p>Don’t pick names that communicate implementation; choose names the reflect the level of abstraction of the class or function you are working in.</p>
+
+<p>命名不要暴露实现细节，只用描述功能抽象。</p>
+
+<h3>N3: 尽可能使用标准命名法（Use Standard Nomenclature Where Possible）</h3>
+
+<p>如果用装饰者模式，就以Decorator结尾。</p>
+
+<h3>N4: 无歧义的命名（Unambiguous Names）</h3>
+
+<p>反例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="n">String</span> <span class="nf">doRename</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">if</span><span class="o">(</span><span class="n">refactorReferences</span><span class="o">)</span>
+</span><span class='line'>    <span class="n">renameReferences</span><span class="o">();</span>
+</span><span class='line'>  <span class="n">renamePage</span><span class="o">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">pathToRename</span><span class="o">.</span><span class="na">removeNameFromEnd</span><span class="o">();</span>
+</span><span class='line'>  <span class="n">pathToRename</span><span class="o">.</span><span class="na">addNameToEnd</span><span class="o">(</span><span class="n">newName</span><span class="o">);</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">PathParser</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">pathToRename</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="n">String</span> <span class="nf">renamePageAndOptionallyAllReferences</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+</span><span class='line'>  <span class="o">...</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>N5: 为较大作用范围选用较长名称（Use Long Names for Long Scopes）</h3>
+
+<p>如果变量作用范围很小，例如5行之内，那么取名为<code>i</code> <code>j</code> 是没问题的；但是如果作为范围较大，则应该使用较长的名称。</p>
+
+<h3>N6: 避免编码（Avoid Encodings）</h3>
+
+<p>不要在名称中包含类型或作用域信息。</p>
+
+<h3>N7: 名称应该说明副作用（Names Should Describe Side-Effects）</h3>
+
+<p>反例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">ObjectOutputStream</span> <span class="nf">getOos</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">m_oos</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>    <span class="n">m_oos</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ObjectOutputStream</span><span class="o">(</span><span class="n">m_socket</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">());</span>
+</span><span class='line'>  <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="n">m_oos</span><span class="o">;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">ObjectOutputStream</span> <span class="nf">createOrReturnOos</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
+</span><span class='line'> <span class="o">...</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>17.7 测试（Tests）</h2>
+
+<h3>T1: 测试不足（Insufficient Tests）</h3>
+
+<p>一套测试应该测到所有可能失败的东西。</p>
+
+<p>只要还有没被测试探测过的条件，或是还有没被验证过的计算，那么测试就是不足的。</p>
+
+<h3>T2: 使用覆盖率工具（Use a Coverage Tool!）</h3>
+
+<p>IDE支持。</p>
+
+<h3>T3: 别略过小测试（Don’t Skip Trivial Tests）</h3>
+
+<p>小测试易于编写，其文档上的价值高于编写成本。</p>
+
+<h3>T4: 被忽略的测试就是对不确定事物的疑问（An Ignored Test Is a Question about an Ambiguity）</h3>
+
+<p>有时因为需求不明，我们可以把测试表为<code>@Ignore</code>。</p>
+
+<h3>T5: 测试边界条件（Test Boundary Conditions）</h3>
+
+<p>边界判断错误的情形很常见。</p>
+
+<h3>T6: 全面测试相近的缺陷（Exhaustively Test Near Bugs）</h3>
+
+<p>80% 的软件缺陷常常生存在软件 20% 的空间里。</p>
+
+<h3>T7: 测试失败的模式有启发性（Patterns of Failure Are Revealing）</h3>
+
+<p>有时可以通过测试用例失败的模式来诊断问题所在。</p>
+
+<h3>T8: 测试覆盖率的模式有启发性（Test Coverage Patterns Can Be Revealing）</h3>
+
+<p>Looking at the code that is or is not executed by the passing tests gives clues to why the failing tests fail.</p>
+
+<h3>T9: 测试应该快速（Tests Should Be Fast）</h3>
+
+<p>A slow test is a test that won’t get run. When things get tight, it’s the slow tests that will be dropped from the suite. So <em>do what you must</em> to keep your tests fast.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Redis Mind Map]]></title>
@@ -5866,63 +6818,6 @@ If you are not satisfied with that color, you can change the value of LSCOLORS.<
 
 <blockquote><p>I&rsquo;m tring to write my blog in English, please leave a message to me if you find any mistake, I&rsquo;ll appreciate it :)<br/>
 我会尽量用英文来写博客，如果你发现任何语法错误或表达错误，不要犹豫，请帮忙斧正，感激不尽！</p></blockquote>
-
-<!--Google Adsense-->
-
-
-<p class="meta" style="text-align:center">
-    <!-- 789*90 -->
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <ins class="adsbygoogle"
-         style="display:inline-block;width:789px;height:90px"
-         data-ad-client="ca-pub-6393503301700908"
-         data-ad-slot="7806666870"></ins>
-    <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Calendar Tools on Mac]]></title>
-    <link href="http://alphawang.github.io/blog/mac-calendar-tool/"/>
-    <updated>2014-09-10T17:15:35+08:00</updated>
-    <id>http://alphawang.github.io/blog/mac-calendar-tool</id>
-    <content type="html"><![CDATA[<p>Mac菜单栏原生的日期时间显示比较简单，例如不能直接查看月历，比较不爽。<br/>
-找到了几个比较优秀的Mac日期工具，可以替代原生功能：</p>
-
-<h2>Day-O</h2>
-
-<p>Day-O的界面风格与原生系统一样：</p>
-
-<p><img src="http://alphawang.github.io/images/post/2014/09/mac-day-o.png" alt=" dayo post title bug " /></p>
-
-<!--more-->  
-
-
-<p>它还可以设置不同的时间格式，与系统一致。</p>
-
-<p>但是正如它的About信息所说，它不能做太多事情。比如对中国用户来说，日历怎么能不显示农历呢：</p>
-
-<blockquote><p>Day-O is a menu bar clock replacement with a simple icon and a simple calendar.<br/>
-I created Day-O because my previous clock replacement started behaving erratically in Lion. Day-O doesn&rsquo;t.<br/>
-Day-O doesn&rsquo;t do much of anything.</p></blockquote>
-
-<p>点<a href="http://shauninman.com/archive/2011/10/20/day_o_mac_menu_bar_clock">这里</a>下载。</p>
-
-<h2>中国农历 for Mac</h2>
-
-<p>这款工具解决了Day-O的问题，它提供显示农历功能，并且还标注了节日、节气等信息，菜单栏还可以显示时间和星期。 <br/>
-<img src="http://alphawang.github.io/images/post/2014/09/mac-calendar-cn.png" alt=" lunar post title bug " /><br/>
-点<a href="http://www.appinn.com/calendar-cn-for-os-x/">这里</a>下载。 <br/>
-但是这个工具的缺点也比较明显，界面比较粗糙，和原生界面反差比较大，比如图标并不是传统的黑色，界面背景与 Mac 传统也不太一样。强迫症患者表示很难受。</p>
-
-<p><br/>  <br/>
-我想说：</p>
-
-<blockquote><p>有谁知道更美观的农历工具的话，请告诉我吧……</p></blockquote>
 
 <!--Google Adsense-->
 

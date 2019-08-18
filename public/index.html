@@ -9,7 +9,7 @@
   <meta name="author" content="Alpha Wang">
 
   
-  <meta name="description" content="最近在研究分布式链路跟踪系统，Google Dapper 当然是必读的论文了，目前网上能搜到一些中文翻译版，然而读下来个人感觉略生硬；这里试着在前人的肩膀上重新翻译一遍这个论文，权当是个人的学习笔记，如果同时能给其他人带来好处那就更好了。 同时把译文放到了 github， &hellip;">
+  <meta name="description" content="2019年在大团队内部组织了一个 Study Group，主要目的是一起学习、一起分享、一起成长；上个季度我们的一项重点是完成了《Clean Code》这本书的拆解和分享，本文是对其中最后一章的一个总结。其实最后一章是对全书的总结，随意本文也可以近似看成是对全书的总结吧。 原始总结请参考 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -127,6 +127,78 @@ $(document).ready(
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/clean-code/">Clean Code Summary</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-08-16T17:46:12+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2019</span></span> <span class='time'>5:46 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>2019年在大团队内部组织了一个 Study Group，主要目的是一起学习、一起分享、一起成长；上个季度我们的一项重点是完成了《Clean Code》这本书的拆解和分享，本文是对其中最后一章的一个总结。其实最后一章是对全书的总结，随意本文也可以近似看成是对全书的总结吧。</p>
+
+<p>原始总结请参考 <a href="https://github.com/AlphaWang/alpha-book-clean-code/tree/master/17_smells_heuristics">https://github.com/AlphaWang/alpha-book-clean-code/tree/master/17_smells_heuristics</a></p></blockquote>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/clean-code/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/redis-mind-map/">Redis Mind Map</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-05-01T22:57:45+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2019</span></span> <span class='time'>10:57 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近梳理了下 Redis 知识图谱，画了个脑图，涵盖了 Redis 数据类型、持久化机制、主从、哨兵、集群、应用及运维；具体见下图：</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/redis-mind-map/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -467,84 +539,6 @@ $(document).ready(
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/what-is-string-intern/">What's String.intern()</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-12-15T15:23:45+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:23 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Java语言中有8种基本类型和一种比较特殊的类型<code>String</code>。为了使这些类型在运行过程中速度更快，更节省内存，都提供了一种常量池的概念。常量池就类似一个Java系统级别提供的缓存。</p>
-
-<p>其中8种基本类型的常量池都是系统协调的，而<code>String</code>类型的常量池比较特殊。它的主要使用方法有两种：</p>
-
-<ul>
-<li>直接使用双引号声明出来的<code>String</code>对象会直接存储在常量池中。</li>
-<li>如果不是用双引号声明的<code>String</code>对象，可以使用<code>String.intern()</code>方法。<strong>intern方法会从字符串常量池中查询当前字符串是否存在，若不存在就会将当前字符串放入常量池中</strong></li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/what-is-string-intern/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/learning-jdk-positive-examples/">Learning JDK Source Code: Positive Examples</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-12-02T16:21:09+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>2</span><span class='date-suffix'>nd</span>, <span class='date-year'>2014</span></span> <span class='time'>4:21 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>本文记录了一些Java源码中的良好编程习惯、运用的设计模式。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/learning-jdk-positive-examples/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -558,10 +552,11 @@ $(document).ready(
     <section>
  <h1>Categories</h1>
  <ul id="categories">
-	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (6)</a></li>
+	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
 <li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
@@ -591,15 +586,30 @@ $(document).ready(
 <a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
 <a style="font-size: 119%" href="/blog/tags/web/">Web</a>
 <a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+<a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
+<a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
 <a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
+<a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
+<a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
+<a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
 </ul>
 </section>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/clean-code/">Clean Code Summary</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/redis-mind-map/">Redis Mind Map</a>
+      </li>
     
       <li class="post">
         <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
@@ -613,59 +623,16 @@ $(document).ready(
         <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
       </li>
     
-      <li class="post">
-        <a href="/blog/google-guava-dealing-with-null/">Google Guava: 1. Dealing With Null</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/key-solr-concepts/">Key Solr Concepts</a>
-      </li>
-    
   </ul>
 </section>
 
 <section>
-  <h1>GitHub Repos</h1>
-  <ul id="gh_repos">
-    <li class="loading">Status updating...</li>
+  <h1>Links</h1>
+  <ul id="recent_posts">
+    <li class="post"><a href="https://alpha.blog.csdn.net/">Alpha's CSDN Blog</a></li>
+    <li class="post"><a href="https://github.com/AlphaWang/">Alpha's Github</a></li>
   </ul>
-  
-  <a href="https://github.com/AlphaWang">@AlphaWang</a> on GitHub
-  
-  <script type="text/javascript">
-    $(document).ready(function(){
-        if (!window.jXHR){
-            var jxhr = document.createElement('script');
-            jxhr.type = 'text/javascript';
-            jxhr.src = '/javascripts/libs/jXHR.js';
-            var s = document.getElementsByTagName('script')[0];
-            s.parentNode.insertBefore(jxhr, s);
-        }
-
-        github.showRepos({
-            user: 'AlphaWang',
-            count: 0,
-            skip_forks: true,
-            target: '#gh_repos'
-        });
-    });
-  </script>
-  <script src="/javascripts/github.js" type="text/javascript"> </script>
-</section>
-
-
-
-<section class="googleplus googleplus-hidden">
-  <h1>
-    <a href="https://plus.google.com/1919wang@gmail.com?rel=author">
-      <img src="http://www.google.com/images/icons/ui/gprofile_button-32.png" width="32" height="32">
-      Google+
-    </a>
-  </h1>
-</section>
-
-
-<section>
+</section><section>
   <h1>Visitors Map</h1>
   <div class="earth">
     <script type="text/javascript" src="//ri.revolvermaps.com/0/0/8.js?i=awaok66hddi&amp;m=0&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=49" async="async"></script>

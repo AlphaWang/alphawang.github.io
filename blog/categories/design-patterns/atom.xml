@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Design Patterns | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/design-patterns/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-05-01T23:09:40+08:00</updated>
+  <updated>2019-08-18T13:03:15+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -12,6 +12,733 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Clean Code Summary]]></title>
+    <link href="http://alphawang.github.io/blog/clean-code/"/>
+    <updated>2019-08-16T17:46:12+08:00</updated>
+    <id>http://alphawang.github.io/blog/clean-code</id>
+    <content type="html"><![CDATA[<blockquote><p>2019年在大团队内部组织了一个 Study Group，主要目的是一起学习、一起分享、一起成长；上个季度我们的一项重点是完成了《Clean Code》这本书的拆解和分享，本文是对其中最后一章的一个总结。其实最后一章是对全书的总结，随意本文也可以近似看成是对全书的总结吧。</p>
+
+<p>原始总结请参考 <a href="https://github.com/AlphaWang/alpha-book-clean-code/tree/master/17_smells_heuristics">https://github.com/AlphaWang/alpha-book-clean-code/tree/master/17_smells_heuristics</a></p></blockquote>
+
+<!--more-->
+
+
+<h2>17.1 注释（Comments）</h2>
+
+<h3>C1: 不恰当的信息（Inappropriate Information）</h3>
+
+<p>注释只应该描述有关代码和设计的技术性信息。</p>
+
+<p>反例：修改历史记录</p>
+
+<h3>C2: 废弃的注释（Obsolete Comment）</h3>
+
+<p>过时、无关、不正确的注释就是废弃的注释。</p>
+
+<p>问题：造成误导</p>
+
+<h3>C3: 冗余注释（Redundant Comment）</h3>
+
+<p>注释应该谈及代码自身 <del>没有</del>（不能）提到的东西。
+Comments should say things that the code cannot say for itself.</p>
+
+<p>反例：</p>
+
+<pre><code class="java">i++; // increment i
+</code></pre>
+
+<pre><code class="java">/**
+* @param sellRequest
+* @return
+* @throws ManagedComponentException
+*/
+public SellResponse beginSellItem(SellRequest sellRequest) throws ManagedComponentException
+</code></pre>
+
+<h3>C4: 糟糕的注释（Poorly Written Comment）</h3>
+
+<p>如果注释值得写，那就值得好好写。</p>
+
+<ul>
+<li>注意语法、拼写；</li>
+<li>不画蛇添足、保持简洁。</li>
+</ul>
+
+
+<h3>C5: 注释掉的代码（Commented-Out Code）</h3>
+
+<p>看到注释掉的代码，就删掉它！</p>
+
+<h2>17.2 环境（Environment）</h2>
+
+<h3>E1: 需要多步才能实现的构建（Build Requires More Than One Step）</h3>
+
+<p>You should be able to check out the system with one simple command and then issue one other simple command to build it.</p>
+
+<pre><code>svn get mySystem 
+cd mySystem
+ant all
+</code></pre>
+
+<h3>E2: 需要多步才能做到的测试（Tests Require More Than One Step）</h3>
+
+<p>You should be able to run all the unit tests with just one command.</p>
+
+<h2>17.3 函数（Functions）</h2>
+
+<p>see <a href="03_functions/03_functions.md">Chapter3 Functions</a></p>
+
+<h3>F1: 过多的参数（Too Many Arguments）</h3>
+
+<p>函数参数越少越好。</p>
+
+<h3>F2: 输出参数（Output Arguments）</h3>
+
+<p>Readers expect arguments to be inputs, not outputs.</p>
+
+<h3>F3: 标识参数（Flag Arguments）</h3>
+
+<p>有布尔值参数，说明函数做了不止一件事。</p>
+
+<h3>F4: 死函数（Dead Function）</h3>
+
+<p>永不被调用的方法应该丢弃。</p>
+
+<h2>17.4 一般性问题（General）</h2>
+
+<h3>G1: 一个源文件中存在多种语言（Multiple Languages in One Source File）</h3>
+
+<h3>G2: 明显的行为未被实现（Obvious Behavior Is Unimplemented）</h3>
+
+<p>Following <code>The Principle of Least Surprise</code>, any function or class should implement the behaviors that another programmer could reasonably expect.</p>
+
+<pre><code class="java ">Day day = DayDate.StringToDay(String dayName);
+</code></pre>
+
+<p>Reasonable expectations:</p>
+
+<ul>
+<li>&ldquo;Monday&rdquo; &ndash;> Day.MONDAY</li>
+<li>&ldquo;monday&rdquo; &ndash;> Day.MONDAY</li>
+<li>&ldquo;Mon&rdquo; &ndash; Day.MONDAY</li>
+</ul>
+
+
+<h3>G3: 不正确的边界行为（Incorrect Behavior at the Boundaries）</h3>
+
+<p>Don’t rely on your intuition.
+Look for every boundary condition and write a test for it.</p>
+
+<h3>G4: 忽视安全（Overridden Safeties）</h3>
+
+<p>Turning off certain compiler warnings may help you get the build to succeed, but at the risk of endless debugging sessions.</p>
+
+<h3>G5: 重复（Duplication）</h3>
+
+<p>DRY: Don&rsquo;t Repeat Yourself. 这是本书最重要的规则之一</p>
+
+<ul>
+<li>重复代码代表遗漏了抽象。</li>
+</ul>
+
+
+<h3>G6: 在错误的抽象层级上的代码（Code at Wrong Level of Abstraction）</h3>
+
+<pre><code class="java">public interface Stack {
+  Object pop() throws EmptyException;
+  void push(Object o) throws FullException; 
+  double percentFull();
+}  
+</code></pre>
+
+<ul>
+<li>percentFull()方法应该放到子接口<code>BoundedStack</code>上。</li>
+</ul>
+
+
+<h3>G7: 基类依赖于派生类（Base Classes Depending on Their Derivatives）</h3>
+
+<p>In general, base classes should know nothing about their derivatives.</p>
+
+<h3>G8: 信息过多（TMI, Too Much Information）</h3>
+
+<ul>
+<li>类或模块中暴露的接口越少越好；</li>
+<li>类中的方法越少越好；</li>
+<li>函数知道的变量越少越好；</li>
+<li>类拥有的实体变量越少越好；</li>
+</ul>
+
+
+<h3>G9: 死代码（Dead Code）</h3>
+
+<ul>
+<li>不被调用的方法；</li>
+<li>不会进入的if/switch条件；</li>
+<li>从不抛出异常的try-catch；</li>
+</ul>
+
+
+<p>Tips: find dead code by IntelliJ</p>
+
+<p><code>Analyze</code> —> <code>Run Inspection by Name…</code> —> <code>Unused declaration</code></p>
+
+<h3>G10: 垂直分隔（Vertical Separation）</h3>
+
+<p>垂直距离要短，</p>
+
+<ul>
+<li>变量和函数应该在靠近被使用的地方定义。</li>
+<li>本地变量应该在首次被使用的位置上面声明。</li>
+<li>私有函数应该刚好在其首次被调用的位置下面定义。</li>
+</ul>
+
+
+<h3>G11: 前后不一致（Inconsistency）</h3>
+
+<p>If you do something a certain way, do all similar things in the same way.</p>
+
+<ul>
+<li><code>HttpServletResponse response;</code> vs. <code>HttpServletResponse httpResponse;</code></li>
+<li><code>loadInterstellarVendorItem()</code> vs. <code>getInterstellarVendorItem()</code></li>
+</ul>
+
+
+<h3>G12: 混淆视听（Clutter）</h3>
+
+<ul>
+<li><p>没有用到的变量；</p></li>
+<li><p>从不调用的函数；</p></li>
+<li><p>没有信息量的注释；</p>
+
+<p>All these things are clutter and should be removed.</p></li>
+</ul>
+
+
+<h3>G13: 人为耦合（Artificial Coupling）</h3>
+
+<p>不互相依赖的东西就不该耦合。</p>
+
+<p>反例：把普通的enum声明在特殊类中。</p>
+
+<h3>G14: 特性依恋 （Feature Envy）</h3>
+
+<p>see Martin Fowler’s Refactoring.</p>
+
+<p>The methods of a class should be interested in the variables and functions of the class they belong to, and not the variables and functions of other classes.</p>
+
+<pre><code class="java">public class HourlyPayCalculator {
+  public Money calculateWeeklyPay(HourlyEmployee e) {
+    int tenthRate = e.getTenthRate().getPennies();
+    int tenthsWorked = e.getTenthsWorked();
+    int straightTime = Math.min(400, tenthsWorked);
+    int overTime = Math.max(0, tenthsWorked - straightTime); 
+    int straightPay = straightTime * tenthRate;
+    int overtimePay = (int)Math.round(overTime*tenthRate*1.5);
+    return new Money(straightPay + overtimePay); 
+  }
+}
+</code></pre>
+
+<blockquote><p>The calculateWeeklyPay method envies the scope of HourlyEmployee. It “wishes” that it could be inside HourlyEmployee.</p></blockquote>
+
+<p>但事无绝对，下面这个reportHours方法如果移到HourlyEmployee类中，就会违反SRP原则。</p>
+
+<pre><code class="java">public class HourlyEmployeeReport { 
+  private HourlyEmployee employee ;
+  public HourlyEmployeeReport(HourlyEmployee e) { 
+    this.employee = e;
+  }
+
+  String reportHours() { 
+    return String.format("Name: %s\tHours:%d.%1d\n", 
+      employee.getName(), 
+      employee.getTenthsWorked()/10, 
+      employee.getTenthsWorked()%10);
+  } 
+}
+</code></pre>
+
+<h3>G15: 选择算子参数（Selector Arguments）</h3>
+
+<p>什么是selector arguments：用于选择函数行为的参数。</p>
+
+<ul>
+<li>boolean</li>
+<li>enum</li>
+<li>&hellip;</li>
+</ul>
+
+
+<pre><code class="java">public int calculateWeeklyPay(boolean overtime) { //Selector Argument
+  int tenthRate = getTenthRate();
+  int tenthsWorked = getTenthsWorked();
+  int straightTime = Math.min(400, tenthsWorked);
+  int overTime = Math.max(0, tenthsWorked - straightTime); 
+  int straightPay = straightTime * tenthRate;
+  double overtimeRate = overtime ? 1.5 : 1.0 * tenthRate; 
+  int overtimePay = (int)Math.round(overTime*overtimeRate); 
+  return straightPay + overtimePay;
+}
+</code></pre>
+
+<h3>G16: 晦涩的意图（Obscured Intent）</h3>
+
+<pre><code class="java">public int m_otCalc() { 
+  return iThsWkd * iThsRte +
+       (int) Math.round(0.5 * iThsRte * 
+          Math.max(0, iThsWkd - 400)
+       ); 
+}
+</code></pre>
+
+<p>这个函数看起来短小紧凑，但究竟是在做什么事情呢？</p>
+
+<h3>G17: 位置错误的权责（Misplaced Responsibility）</h3>
+
+<p>Question: PI常量应该放在Math类、Trigonometry类、还是Circle类？</p>
+
+<ul>
+<li>Following <code>The Principle of Least Surprise</code>. Code should be placed where a reader would naturally expect it to be.</li>
+</ul>
+
+
+<h3>G18: 不恰当的静态方法（Inappropriate Static）</h3>
+
+<p>恰当的静态方法：</p>
+
+<pre><code class="java">Math.max(double a, double b)
+
+// to avoid:
+new Math().max(a, b);
+a.max(b);
+</code></pre>
+
+<p>不恰当的静态方法：</p>
+
+<pre><code class="java">HourlyPayCalculator.calculatePay(employee, overtimeRate).
+</code></pre>
+
+<p>原因：有理由希望这个函数是多态的。（OvertimeHourlyPayCalculator, StraightTimeHourlyPayCalculator）</p>
+
+<blockquote><p>可以作为Employee方法的非静态函数。</p></blockquote>
+
+<h3>G19: 使用解释性变量（Use Explanatory Variables）</h3>
+
+<p>让程序可读的有力方法之一就是将计算过程打散，用有意义的变量名存储中间值。</p>
+
+<pre><code class="java">Matcher match = headerPattern.matcher(line); 
+if(match.find()) {
+  String key = match.group(1); //中间值
+  String value = match.group(2); //中间值 
+  headers.put(key.toLowerCase(), value);
+}
+</code></pre>
+
+<h3>G20: 函数名称应该表达其行为（Function Names Should Say What They Do）</h3>
+
+<p>反例：</p>
+
+<pre><code class="java">Date newDate = date.add(5);
+</code></pre>
+
+<p>正例：</p>
+
+<pre><code class="java">Date newDate = date.addDaysTo(5);
+Date newDate = date.increaseByDays(5);
+</code></pre>
+
+<h3>G21: 理解算法（Understand the Algorithm）</h3>
+
+<p>Before you consider yourself to be done with a function, make sure you understand how it works.
+It is not good enough that it passes all the tests.
+You must know that the solution is correct.</p>
+
+<h3>G22: 把逻辑依赖改为物理依赖（Make Logical Dependencies Physical）</h3>
+
+<p>Logical Dependency:</p>
+
+<ul>
+<li>The dependent module should not make <strong>assumptions</strong> about the module it depends upon.</li>
+</ul>
+
+
+<p>Physical Dependency:</p>
+
+<ul>
+<li>it should explicitly ask that module for all the information it depends upon.</li>
+</ul>
+
+
+<pre><code class="java">public class HourlyReporter {
+  private HourlyReportFormatter formatter; 
+  private List&lt;LineItem&gt; page;
+  private final int PAGE_SIZE = 55;
+
+  public void generateReport(List&lt;HourlyEmployee&gt; employees) { 
+    for (HourlyEmployee e : employees) {
+      addLineItemToPage(e);
+      if (page.size() == PAGE_SIZE)
+        printAndClearItemList(); 
+    }
+    if (page.size() &gt; 0) 
+      printAndClearItemList();
+  }
+
+  private void printAndClearItemList() { 
+    formatter.format(page); 
+    page.clear();
+  }
+
+  private void addLineItemToPage(HourlyEmployee e) { 
+    LineItem item = new LineItem();
+    item.name = e.getName();
+    item.hours = e.getTenthsWorked() / 10;
+    item.tenths = e.getTenthsWorked() % 10;
+    page.add(item); 
+  }
+</code></pre>
+
+<p>PAGE_SIZE应该是HourlyReportFormatter的职责； 此处HourlyReporter被假定知道PAGE_SIZE，所以是逻辑依赖。</p>
+
+<ul>
+<li>We can physicalize this dependency by creating a new method in <code>HourlyReportFormatter</code> named <code>getMaxPageSize()</code>.</li>
+<li><code>HourlyReporter</code> will then call that function rather than using the <code>PAGE_SIZE</code> constant.</li>
+</ul>
+
+
+<h3>G23: 用多态替代 if-else 或 switch-case（Prefer Polymorphism to If/Else or Switch/Case）</h3>
+
+<p>反例：
+CartSectionHeaderAssembler</p>
+
+<h3>G24: 遵循标准约定（Follow Standard Conventions）</h3>
+
+<p>建议参考阿里巴巴Java开发手册：<a href="https://github.com/alibaba/p3c">https://github.com/alibaba/p3c</a></p>
+
+<h3>G25: 用命名常量替代魔术数（Replace Magic Numbers with Named Constants）</h3>
+
+<p>反例：</p>
+
+<ul>
+<li>86400</li>
+</ul>
+
+
+<p>正例：</p>
+
+<ul>
+<li>int SECONDS_PER_DAY = 86400;</li>
+</ul>
+
+
+<p>问题：是不是所有数字都需要替换成常量？</p>
+
+<pre><code class="java">// 计算圆周长
+// 数字 2 是否需要定义一个常量？ --&gt; NO
+double circumference = radius * Math.PI * 2;
+</code></pre>
+
+<h3>G26: 准确（Be Precise）</h3>
+
+<ul>
+<li>不要用<code>float</code>表示货币；</li>
+<li>如果所调用的方法可能返回null，就必须要做null检查；</li>
+</ul>
+
+
+<h3>G27: 结构优于约定（Structure over Convention）</h3>
+
+<p>switch/cases with nicely named enumerations are inferior to base classes with abstract methods.</p>
+
+<h3>G28: 封装条件（Encapsulate Conditionals）</h3>
+
+<p>如果 if 或者 while 语句没有上下文，那就很难理解其判断逻辑了。</p>
+
+<p>反例</p>
+
+<pre><code class="java">if (timer.hasExpired() &amp;&amp; !timer.isRecurrent())
+</code></pre>
+
+<p>正例</p>
+
+<pre><code class="java">if (shouldBeDeleted(timer))
+</code></pre>
+
+<h3>G29: 避免否定性条件（Avoid Negative Conditionals）</h3>
+
+<p>Negatives are just a bit harder to understand than positives.</p>
+
+<p>反例</p>
+
+<pre><code class="java">if (!buffer.shouldNotCompact())
+</code></pre>
+
+<p>正例</p>
+
+<pre><code class="java">if (buffer.shouldCompact())
+</code></pre>
+
+<h3>G30: 函数只该做一件事（Functions Should Do One Thing）</h3>
+
+<p>SRP原则。</p>
+
+<h3>G31: 掩蔽时序耦合（Hidden Temporal Couplings）</h3>
+
+<p>有时函数的执行次序很重要，这时就需要用某种机制（例如 bucket brigade）来确保其他程序员不能随意调整执行次序。</p>
+
+<p>反例</p>
+
+<pre><code class="java">public class MoogDiver { 
+  Gradient gradient; 
+  List&lt;Spline&gt; splines;
+
+  public void dive(String reason) { 
+    saturateGradient(); 
+    reticulateSplines(); 
+    diveForMoog(reason);
+  }
+  ... 
+}
+</code></pre>
+
+<p>正例</p>
+
+<pre><code class="java">public class MoogDiver { 
+  Gradient gradient; 
+  List&lt;Spline&gt; splines;
+
+  public void dive(String reason) {
+    Gradient gradient = saturateGradient(); 
+    List&lt;Spline&gt; splines = reticulateSplines(gradient); 
+    diveForMoog(splines, reason);
+  }
+  ... 
+}
+</code></pre>
+
+<h3>G32: 别随意（Don’t Be Arbitrary）</h3>
+
+<p>反例：</p>
+
+<p>滥用内部类。本应是一个顶级类，却随意定义在另一个类内部作为内部类。</p>
+
+<h3>G33: 封装边界条件（Encapsulate Boundary Conditions）</h3>
+
+<p>要把处理边界条件的代码集中到一处，而不是散落在代码中。</p>
+
+<p>反例：</p>
+
+<pre><code class="java">if(level + 1 &lt; tags.length) {
+  parts = new Parse(body, tags, level + 1, offset + endTag);
+  body = null; 
+}
+</code></pre>
+
+<p>正例：</p>
+
+<pre><code class="java">int nextLevel = level + 1; 
+if(nextLevel &lt; tags.length) {
+  parts = new Parse(body, tags, nextLevel, offset + endTag);
+  body = null; 
+}
+</code></pre>
+
+<h3>G34: 函数应该只在一个抽象层级上（Functions Should Descend Only One Level of Abstraction）</h3>
+
+<p>反例：</p>
+
+<pre><code class="java">public String render() throws Exception {
+  StringBuffer html = new StringBuffer("&lt;hr"); 
+  if(size &gt; 0)
+    html.append(" size=\"").append(size + 1).append("\""); 
+  html.append("&gt;");
+  return html.toString(); 
+}
+</code></pre>
+
+<p>这个方法混杂了至少两个抽象层级：</p>
+
+<ol>
+<li>The first is the notion that a horizontal rule has a size.</li>
+<li>The second is the syntax of the HR tag itself.</li>
+</ol>
+
+
+<p>正例：</p>
+
+<pre><code class="java">public String render() throws Exception {
+  HtmlTag hr = new HtmlTag("hr"); 
+  if (extraDashes &gt; 0)
+    hr.addAttribute("size", hrSize(extraDashes)); 
+  return hr.html();
+}
+
+private String hrSize(int height) {
+  int hrSize = height + 1;
+  return String.format("%d", hrSize); 
+}
+</code></pre>
+
+<h3>G35: 在较高层级放置可配置数据（Keep Configurable Data at High Levels）</h3>
+
+<p>如果你有一个常量值表示默认值或者配置值，不要把它埋在底层的函数中。</p>
+
+<p>正例：</p>
+
+<pre><code class="java">public static void main(String[] args) throws Exception {
+  Arguments arguments = parseCommandLine(args);
+  ... 
+}
+
+public class Arguments {
+  public static final String DEFAULT_PATH = ".";
+  public static final String DEFAULT_ROOT = "FitNesseRoot"; 
+  public static final int DEFAULT_PORT = 80;
+  public static final int DEFAULT_VERSION_DAYS = 14;
+  ...
+}
+</code></pre>
+
+<h3>G36: 避免传递浏览（Avoid Transitive Navigation）</h3>
+
+<p>Law of Demeter.不要让模块了解太多其写作者的信息。</p>
+
+<p>反例：</p>
+
+<pre><code class="java">a.getB().getC().doSomething();
+</code></pre>
+
+<p>正例：</p>
+
+<pre><code class="java">myCollaborator.doSomething();
+</code></pre>
+
+<h2>17.5 Java</h2>
+
+<h3>J1: 通过使用通配符避免过长的导入清单（Avoid Long Import Lists by Using Wildcards）</h3>
+
+<p>如果使用了来自同一包的两个或多个类，用通配符导入：<code>import package.*</code>。</p>
+
+<blockquote><p>仅仅是为了减少代码行？</p></blockquote>
+
+<h3>J2: 不要继承常量（Don’t Inherit Constants）</h3>
+
+<p>不要在子类中访问父类的常量。因为不方便找到常量究竟定义在哪个类里。</p>
+
+<blockquote><p>通过IDEA可以方便地找到呀。。。</p></blockquote>
+
+<h3>J3: 常量 vs. 枚举（Constants versus Enums）</h3>
+
+<p>推荐用枚举。</p>
+
+<h2>17.6 名称（Names）</h2>
+
+<h3>N1: 采用描述性名称（Choose Descriptive Names）</h3>
+
+<h3>N2: 名称应与抽象层级相符（Choose Names at the Appropriate Level of Abstraction）</h3>
+
+<p>Don’t pick names that communicate implementation; choose names the reflect the level of abstraction of the class or function you are working in.</p>
+
+<p>命名不要暴露实现细节，只用描述功能抽象。</p>
+
+<h3>N3: 尽可能使用标准命名法（Use Standard Nomenclature Where Possible）</h3>
+
+<p>如果用装饰者模式，就以Decorator结尾。</p>
+
+<h3>N4: 无歧义的命名（Unambiguous Names）</h3>
+
+<p>反例</p>
+
+<pre><code class="java">private String doRename() throws Exception {
+  if(refactorReferences) 
+    renameReferences();
+  renamePage();
+
+  pathToRename.removeNameFromEnd(); 
+  pathToRename.addNameToEnd(newName); 
+  return PathParser.render(pathToRename);
+}
+</code></pre>
+
+<p>正例</p>
+
+<pre><code class="java">private String renamePageAndOptionallyAllReferences() throws Exception {
+  ...
+}
+</code></pre>
+
+<h3>N5: 为较大作用范围选用较长名称（Use Long Names for Long Scopes）</h3>
+
+<p>如果变量作用范围很小，例如5行之内，那么取名为<code>i</code> <code>j</code> 是没问题的；但是如果作为范围较大，则应该使用较长的名称。</p>
+
+<h3>N6: 避免编码（Avoid Encodings）</h3>
+
+<p>不要在名称中包含类型或作用域信息。</p>
+
+<h3>N7: 名称应该说明副作用（Names Should Describe Side-Effects）</h3>
+
+<p>反例</p>
+
+<pre><code class="java">public ObjectOutputStream getOos() throws IOException { 
+  if (m_oos == null) {
+    m_oos = new ObjectOutputStream(m_socket.getOutputStream()); 
+  }
+
+  return m_oos; 
+}
+</code></pre>
+
+<p>正例</p>
+
+<pre><code class="java">public ObjectOutputStream createOrReturnOos() throws IOException { 
+ ... 
+}
+</code></pre>
+
+<h2>17.7 测试（Tests）</h2>
+
+<h3>T1: 测试不足（Insufficient Tests）</h3>
+
+<p>一套测试应该测到所有可能失败的东西。</p>
+
+<p>只要还有没被测试探测过的条件，或是还有没被验证过的计算，那么测试就是不足的。</p>
+
+<h3>T2: 使用覆盖率工具（Use a Coverage Tool!）</h3>
+
+<p>IDE支持。</p>
+
+<h3>T3: 别略过小测试（Don’t Skip Trivial Tests）</h3>
+
+<p>小测试易于编写，其文档上的价值高于编写成本。</p>
+
+<h3>T4: 被忽略的测试就是对不确定事物的疑问（An Ignored Test Is a Question about an Ambiguity）</h3>
+
+<p>有时因为需求不明，我们可以把测试表为<code>@Ignore</code>。</p>
+
+<h3>T5: 测试边界条件（Test Boundary Conditions）</h3>
+
+<p>边界判断错误的情形很常见。</p>
+
+<h3>T6: 全面测试相近的缺陷（Exhaustively Test Near Bugs）</h3>
+
+<p>80% 的软件缺陷常常生存在软件 20% 的空间里。</p>
+
+<h3>T7: 测试失败的模式有启发性（Patterns of Failure Are Revealing）</h3>
+
+<p>有时可以通过测试用例失败的模式来诊断问题所在。</p>
+
+<h3>T8: 测试覆盖率的模式有启发性（Test Coverage Patterns Can Be Revealing）</h3>
+
+<p>Looking at the code that is or is not executed by the passing tests gives clues to why the failing tests fail.</p>
+
+<h3>T9: 测试应该快速（Tests Should Be Fast）</h3>
+
+<p>A slow test is a test that won’t get run. When things get tight, it’s the slow tests that will be dropped from the suite. So <em>do what you must</em> to keep your tests fast.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[[六大设计原则] 6. Open Closed Principle]]></title>
@@ -426,164 +1153,6 @@ DIP的本质是通过抽象（接口、抽象类）使各个类或模块的实�
 <li>结合里氏替代原则使用</li>
 </ul>
 
-
-<!--Google Adsense-->
-
-
-<p class="meta" style="text-align:center">
-    <!-- 789*90 -->
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <ins class="adsbygoogle"
-         style="display:inline-block;width:789px;height:90px"
-         data-ad-client="ca-pub-6393503301700908"
-         data-ad-slot="7806666870"></ins>
-    <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-</p>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[[六大设计原则] 2. Liskov Substitution Principle]]></title>
-    <link href="http://alphawang.github.io/blog/2_liskov-substitution-principle/"/>
-    <updated>2012-12-29T18:07:50+08:00</updated>
-    <id>http://alphawang.github.io/blog/2_liskov-substitution-principle</id>
-    <content type="html"><![CDATA[<h2>定义</h2>
-
-<p>LSP，Liskov Substitution Principle：</p>
-
-<ul>
-<li>If for each object <code>s</code> of type <code>S</code>, there is an object <code>t</code> of type <code>T</code> such that for all programs <code>P</code> defined in terms of <code>T</code>, the behavior of <code>P</code> is unchanged when <code>s</code> is substituted for <code>t</code> when <code>S</code> is a subtype of <code>T</code>.</li>
-<li>Functions that use pointers or references to base classes must be able to user objects of derived classes without knowing it.
-
-<blockquote><p>所有引用基类的地方，都能透明地替换成其子类对象。只要父类能出现的地方，子类就可以出现。</p></blockquote></li>
-</ul>
-
-
-<p>里氏替换原则通俗的来讲就是：子类可以扩展父类的功能，但不能改变父类原有的功能。</p>
-
-<h2>问题由来</h2>
-
-<p>引入里氏替换原则能充分发挥继承的优点、减少继承的弊端。</p>
-
-<!--more-->
-
-
-<p><strong>继承的优点：</strong></p>
-
-<ul>
-<li>代码共享，减少创建类的工作量；每个子类都有父类的方法和属性；</li>
-<li>提高代码重用性；</li>
-<li>子类可以形似父类，但又异于父类；</li>
-<li>提高代码可扩展性；</li>
-<li>提高产品开放性。</li>
-</ul>
-
-
-<p><strong>继承的缺点：</strong></p>
-
-<ul>
-<li>继承是侵入性的：<em>只要继承，就必须拥有父类的属性和方法；</em></li>
-<li>降低代码的灵活性：<em>子类必须拥有父类的属性和方法，让子类自由的世界多了些约束；</em></li>
-<li>增强了耦合性：<em>当父类的属性和方法被修改时，必须要考虑子类的修改。</em></li>
-</ul>
-
-
-<p><strong>示例（继承的缺点）：</strong></p>
-
-<p>原有类A，实现减法功能：<br/>
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">A</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">func1</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="o">;</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>    <span class="o">}</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'><span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Client</span> <span class="o">{&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span> <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>        <span class="n">A</span> <span class="n">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">A</span><span class="o">();</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="mi">100</span><span class="o">-</span><span class="mi">50</span><span class="o">=&amp;</span><span class="n">rdquo</span><span class="o">;</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="na">func1</span><span class="o">(</span><span class="mi">100</span><span class="o">,</span> <span class="mi">50</span><span class="o">));</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="mi">100</span><span class="o">-</span><span class="mi">80</span><span class="o">=&amp;</span><span class="n">rdquo</span><span class="o">;</span> <span class="o">+</span> <span class="n">a</span><span class="o">.</span><span class="na">func1</span><span class="o">(</span><span class="mi">100</span><span class="o">,</span> <span class="mi">80</span><span class="o">));</span>
-</span><span class='line'>    <span class="o">}</span> <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'><span class="o">}&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span></code></pre></td></tr></table></div></figure></p>
-
-<p>新增需求：新增两数相加、然后再与100求和的功能，由类B来负责<br/>
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">B</span> <span class="kd">extends</span> <span class="n">A</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">func1</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="o">;</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>    <span class="o">}</span>      <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">func2</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>        <span class="k">return</span> <span class="nf">func1</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">)</span> <span class="o">+</span> <span class="mi">100</span><span class="o">;</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>    <span class="o">}</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'><span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Client</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>        <span class="n">B</span> <span class="n">b</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">B</span><span class="o">();</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="mi">100</span><span class="o">-</span><span class="mi">50</span><span class="o">=&amp;</span><span class="n">rdquo</span><span class="o">;</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="na">func1</span><span class="o">(</span><span class="mi">100</span><span class="o">,</span> <span class="mi">50</span><span class="o">));</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="mi">100</span><span class="o">-</span><span class="mi">80</span><span class="o">=&amp;</span><span class="n">rdquo</span><span class="o">;</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="na">func1</span><span class="o">(</span><span class="mi">100</span><span class="o">,</span> <span class="mi">80</span><span class="o">));</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="mi">100</span><span class="o">+</span><span class="mi">20</span><span class="o">+</span><span class="mi">100</span><span class="o">=&amp;</span><span class="n">rdquo</span><span class="o">;</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="na">func2</span><span class="o">(</span><span class="mi">100</span><span class="o">,</span> <span class="mi">20</span><span class="o">));</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>    <span class="o">}</span>  <span class="o">&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></p>
-
-<p>OOPS! 原本运行正常的相减功能发生了错误。原因就是类B在给方法起名时无意中重写了父类的方法！</p>
-
-<blockquote><p>有一功能P1，由类A完成。现需要将功能P1进行扩展，扩展后的功能为P，其中P由原有功能P1与新功能P2组成。新功能P由类A的子类B来完成，则子类B在完成新功能P2的同时，有可能会导致原有功能P1发生故障。</p></blockquote>
-
-<h2>解决方案</h2>
-
-<p>LSP为继承定义了一个规范，包括四层含义：<br/>
-<strong>1. 子类必须完全实现父类的方法</strong><br/>
-如果子类不能完整地实现父类的方法，或者父类的某些方法在子类中已经发生畸变；则建议不要用继承，而采用依赖、聚集、组合等关系代替继承。<br/>
-例如：父类AbstractGun有shoot()方法，其子类ToyGun不能完整实现父类的方法（玩具枪不能射击，ToyGun.shoot()中没有任何处理逻辑），则应该断开继承关系，另外建一个AbstractToy父类。</p>
-
-<p><strong>2. 子类可以有自己的个性</strong><br/>
-即，在子类出现的地方，父类未必就能替代。</p>
-
-<p><strong>3. <code>重载</code>或实现父类方法时，输入参数可以被放大（入参可以更宽松）</strong> <br/>
-否则，用子类替换父类后，会变成执行子类重载后的方法，而该方法可能“歪曲”父类的意图，可能引起业务逻辑混乱。</p>
-
-<p><strong>4. <code>重写</code>或实现父类方法时，返回类型可以被缩小（返回类型更严格）</strong></p>
-
-<h2>建议</h2>
-
-<p>在实际编程中，我们常常会通过重写父类的方法来完成新的功能，这样写起来虽然简单，但是整个继承体系的可复用性会比较差，特别是运用多态比较频繁时，程序运行出错的几率非常大。<br/>
-父类中凡是已经实现好的方法（相对于抽象方法而言），实际上是在设定一系列的规范和契约，虽然它不强制要求所有的子类必须遵从这些契约，但是如果子类对这些非抽象方法任意修改，就会对整个继承体系造成破坏。而里氏替换原则就是表达了这一层含义。</p>
-
-<blockquote><p>里氏替换原则通俗的来讲就是：子类可以扩展父类的功能，但不能改变父类原有的功能。</p></blockquote>
 
 <!--Google Adsense-->
 
