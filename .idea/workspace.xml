@@ -63,19 +63,10 @@
         <entry key="$PROJECT_DIR$/../Hystrix" value="3026323170000" />
         <entry key="$PROJECT_DIR$/../mq_tutorial" value="2936409285000" />
         <entry key="$PROJECT_DIR$/../spring-framework" value="5881203565000" />
-        <entry key="$PROJECT_DIR$/../../legacy/coupang" value="12829207870000" />
         <entry key="$PROJECT_DIR$/../../product/product-china" value="8486861792000" />
         <entry key="$PROJECT_DIR$/../../product/product-redwood" value="8568181212000" />
         <entry key="$PROJECT_DIR$/../../product/product-release" value="8505934872000" />
         <entry key="$PROJECT_DIR$/../../recommend/recommendation" value="3032152368000" />
-        <entry key="$PROJECT_DIR$/../../redwood/coupang" value="2939200149000" />
-        <entry key="$PROJECT_DIR$/../../redwood/coupang-legacy-redwood" value="12863575147000" />
-        <entry key="$PROJECT_DIR$/../../redwood/coupang-mobile-api" value="2944756392000" />
-        <entry key="$PROJECT_DIR$/../../redwood/coupang-mobile-api-redwood" value="8648215973000" />
-        <entry key="$PROJECT_DIR$/../../redwood/coupang-mobile-web" value="2945167989000" />
-        <entry key="$PROJECT_DIR$/../../redwood/coupang-mobile-web-redwood" value="7214634026000" />
-        <entry key="$PROJECT_DIR$/../../redwood/coupang-web" value="2945241468000" />
-        <entry key="$PROJECT_DIR$/../../redwood/coupang-web-redwood" value="8642466560000" />
         <entry key="$PROJECT_DIR$/../../redwood/front-base" value="10299900982000" />
         <entry key="$PROJECT_DIR$/../../redwood/mapi" value="2984330563000" />
         <entry key="$PROJECT_DIR$/../../redwood/order-hawaii" value="11465684361000" />
@@ -89,18 +80,13 @@
         <entry key="$PROJECT_DIR$/../../release/api-gateway" value="6046995652000" />
         <entry key="$PROJECT_DIR$/../../release/benefit" value="2964440186000" />
         <entry key="$PROJECT_DIR$/../../release/cart" value="11722772915000" />
-        <entry key="$PROJECT_DIR$/../../release/coupang" value="2973237638000" />
-        <entry key="$PROJECT_DIR$/../../release/coupang-web" value="8845101841000" />
         <entry key="$PROJECT_DIR$/../../release/member" value="19119392180000" />
-        <entry key="$PROJECT_DIR$/../../release/mycoupang-web" value="8769943350000" />
         <entry key="$PROJECT_DIR$/../../release/product" value="8792370081000" />
         <entry key="$PROJECT_DIR$/../../release/product-review" value="10309484713000" />
         <entry key="$PROJECT_DIR$/../../release/recommendation" value="3031136913000" />
         <entry key="$PROJECT_DIR$/../../release/recommendation-web" value="2988600244000" />
         <entry key="$PROJECT_DIR$/../../release/search-api" value="7390815310000" />
         <entry key="$PROJECT_DIR$/../../release/vitamin" value="16184485152000" />
-        <entry key="$PROJECT_DIR$/../../vitamin/china/coupang-web-china" value="8575567866000" />
-        <entry key="$PROJECT_DIR$/../../vitamin/coupang-web" value="8511262594000" />
         <entry key="$PROJECT_DIR$/../../vitamin/pangaea-eval" value="8523169909000" />
         <entry key="$PROJECT_DIR$/../../vitamin/vitamin-project-skeleton/build/hello" value="8505967302000" />
       </map>
@@ -114,9 +100,6 @@
         <entry key="$PROJECT_DIR$/../../kodiak/cart-release" value="PREVIEW" />
         <entry key="$PROJECT_DIR$/../../kodiak/cart3" value="PREVIEW" />
         <entry key="$PROJECT_DIR$/../../kodiak/checkout" value="PREVIEW" />
-        <entry key="$PROJECT_DIR$/../../kodiak/coupang-mobile-api" value="PREVIEW" />
-        <entry key="$PROJECT_DIR$/../../kodiak/coupang-mobile-web" value="PREVIEW" />
-        <entry key="$PROJECT_DIR$/../../kodiak/coupang-web" value="PREVIEW" />
         <entry key="$PROJECT_DIR$/../../kodiak/identity" value="PREVIEW" />
         <entry key="$PROJECT_DIR$/../../kodiak/kodiak-cart" value="PREVIEW" />
         <entry key="$PROJECT_DIR$/../../kodiak/member" value="PREVIEW" />
