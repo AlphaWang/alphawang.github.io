@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="1b9bbd01-a28a-464e-bf11-e0f8de9fb1d9" name="Default" comment="[blog] dapper ch2.5">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Rakefile" beforeDir="false" afterPath="$PROJECT_DIR$/Rakefile" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
