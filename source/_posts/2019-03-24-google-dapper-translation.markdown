@@ -3,7 +3,7 @@ layout: post
 title: "Dapper, a Large-Scale Distributed Systems Tracing Infrastructure"
 date: 2019-03-24 12:04:46 +0800
 comments: true
-categories: [distributed system]
+categories: [distributed system, translation]
 tags: [distributed system, tracing, dapper]
 keywords: distributed system, tracing, dapper, 链路跟踪, pinpoint, xtrace, magpie
 description: Google Dapper论文中文翻译
