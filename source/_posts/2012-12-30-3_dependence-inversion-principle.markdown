@@ -37,7 +37,7 @@ DIP，Dependence Inversion Principle:
 **示例（类间的耦合性）：**
 
 例如有一个Driver，可以驾驶Benz：
-```java
+```
 public class Driver {  
     public void drive(Benz benz) {  
         benz.run();  
@@ -70,7 +70,7 @@ Driver和Benz是紧耦合的，导致可维护性大大降低、稳定性大大�
 ##依赖的三种写法 
 **1、构造函数传递依赖对象（构造函数注入）**
 
-```java
+```
 public interface IDriver {  
     public void drive();  
 }  
@@ -88,7 +88,7 @@ public class Driver implements IDriver {
 
 **2、setter方法传递依赖对象（setter依赖注入）**
 
-```java
+```
 public interface IDriver{  
     public void setCar(ICar car);  
     public void drive();  

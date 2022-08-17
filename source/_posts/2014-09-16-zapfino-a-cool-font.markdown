@@ -24,7 +24,7 @@ Unfortunately, Zapfino is not installed on Windows by default, so I use `Lucida 
 ![lucida icon](/images/post/2014/09/font-LucidaHandwriting.png)   
 
 The font-family defined in my css is shown below.  
-```css css
+```
 body > header h1 {   
   padding-left: 45px;   
   font-family: "Zapfino","Snell Roundhand","Lucida Handwriting","PT Serif","Georgia","Helvetica Neue",Arial,serif;

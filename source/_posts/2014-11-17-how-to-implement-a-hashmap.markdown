@@ -45,7 +45,7 @@ HashMap其实也是一个线性的数组实现的,所以可以理解为其存储
 
 首先HashMap里面实现一个静态内部类`Entry`，其重要的属性有 key, value, next，从属性key, value我们就能很明显的看出来Entry就是HashMap键值对实现的一个基础bean，我们上面说到HashMap的基础就是一个线性数组，这个数组就是`Entry[]`，Map里面的内容都保存在Entry[]里面。  
 
-```java  
+```  
     /**
      * The table, resized as necessary. Length MUST Always be a power of two.
      */

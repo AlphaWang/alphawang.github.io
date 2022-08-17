@@ -21,7 +21,7 @@ description: 本文记录了一些Java源码中设计不合理之处、违反设
 
 如果你调用参数化类的构造函数，那么你必须要指定类型参数，即便上下文中已明确了类型参数。这通常要求你连续两次提供类型参数：
 
-```java
+```
 Map <String, List <String>> m = new HashMap<String, List<String>>(); 
 
 ```
@@ -29,7 +29,7 @@ Map <String, List <String>> m = new HashMap<String, List<String>>();
 
 而假设HashMap提供了如下静态工厂：
 
-```java
+```
 public static  <K, V> HashMap <K, V> newInstance(){    
    return new HashMap<K, V>();    
 }
@@ -37,13 +37,13 @@ public static  <K, V> HashMap <K, V> newInstance(){
 
 那么你就可以讲上文冗长的声明替换为如下这种简洁的形式：
 
-```java
+```
 Map < String, List < String >> m = HashMap.newInstance();
 ```
 
 补充1：`com.google.common.collect.Lists`可以解决这个问题：
 
-```java
+```
 List < String > l = Lists.newArrayList();  
  
      public   static  ArrayList  newArrayList ()
@@ -54,7 +54,7 @@ List < String > l = Lists.newArrayList();
 
 补充2：Java7做了优化，可以这样声明：
 
-```java
+```
 Map <String, List <String>> m = new HashMap<>();
 ```
 
@@ -67,7 +67,7 @@ Map <String, List <String>> m = new HashMap<>();
 
 构造函数每次被调用时都会创建一个新对象，而静态工厂方法则从来不要求这样做，实际上也不会这么做。
 
-```java
+```
     public Boolean(String s) {
         this(toBoolean(s));
     }
@@ -98,7 +98,7 @@ Map <String, List <String>> m = new HashMap<>();
 
 JDK有四个类（`FileInputStream`、`FileOutputStream`、`Timer`、`Connection`）使用了finalizer作为安全网，以防显式终止方法未被调用。不幸的是，这些finalizer都没有打印警告。当API发布后，这种警告一般就不能添加到API了，因为可能破坏已有的客户端代码。
 
-```java
+```
     /**
      * Ensures that the <code>close</code> method of this file input stream is
      * called when there are no more references to it.
@@ -136,7 +136,7 @@ JDK有四个类（`FileInputStream`、`FileOutputStream`、`Timer`、`Connection
 
 `Timestamp`有一个免责声明，提醒程序员不要混用Date和Timestamp。虽然只要不混用他们就不会有麻烦，但是谁都不能阻止你混用他们，而结果导致的错误将会很难调试。
 
-```java
+```
     /**
      *
      * Note: This method is not symmetric with respect to the
@@ -167,7 +167,7 @@ BigDecimal类的compareTo方法与equals不一致：
 - 而如果使用`TreeSet`而非HashSet，则集合中会只包含一个元素，因为这两个实例通过compareTo检测是相等的。
 
 
-```java
+```
 public int compareTo(BigDecimal val) {
    // Quick path for equal scale and non-inflated case.
    if (scale == val.scale) {
@@ -228,7 +228,7 @@ Cloneable接口的目的是作为对象的一个mixin接口，表明对象允许
 如果一个类可以被包外访问，那么就要提供访问方法，以便可以灵活地改变类的内部表示。如果public类暴露了其数据域，那就不能在将来改变内部表示了。
 ## Point
 
-```java
+```
 public class Point extends Point2D implements java.io.Serializable {
     /**
      * The X coordinate of this <code>Point</code>.
@@ -244,7 +244,7 @@ public class Point extends Point2D implements java.io.Serializable {
 
 ## Dimension
 
-```java
+```
 public class Dimension extends Dimension2D implements java.io.Serializable {
     /**
      * The width dimension; negative values can be used.
@@ -265,7 +265,7 @@ public class Dimension extends Dimension2D implements java.io.Serializable {
 
 【反例】这一点在Java平台早期并没有被很好地理解，导致String类具有拷贝构造函数，应该尽量不去用这个函数。
 
-```java
+```
     /**
      * Initializes a newly created {@code String} object so that it represents
      * the same sequence of characters as the argument; in other words, the
@@ -287,7 +287,7 @@ public class Dimension extends Dimension2D implements java.io.Serializable {
 
 如果你编写的类的安全性依赖于（来自不可信客户端的）BigInteger或BigDecimal的不可变性，那么就必须检查参数是真正的BigInteger/BigDecimal，还是不可信任的子类实例。如果是后者，你必须把它当成是可变的，并进行保护性拷贝：
 
-```java
+```
 public static BigInteger safeInstance(BigInteger val) {
    if (val.getClass() != BigInteger.class )
           return new BigInteger(val.toByteArray());
@@ -314,7 +314,7 @@ It is especially difficult to understand the behavior of a program that executes
 
 **Never exit a finally block with a return, break, continue, or throw, and never allow a checked exception to propagate out of a finally block.**
 
-```java
+```
     static boolean decision() { 
         try { 
             return true; 
@@ -334,7 +334,7 @@ It is especially difficult to understand the behavior of a program that executes
 
 The set of checked exceptions that a method can throw is the **intersection** of the sets of checked exceptions that it is declared to throw in all applicable types, **not the union**.
 
-```java
+```
 interface Type1 { 
      void f() throws CloneNotSupportedException; 
 }
@@ -366,7 +366,7 @@ public class Arcane3 implements Type3 {
 
 两个int相乘，得到的还是int，这就可能溢出！
 
-```java
+```
 long MICROS_PER_DAY = 24 * 60 * 60 * 1000 * 1000; //不精确
 long MICROS_PER_DAY = 24 L * 60 * 60 * 1000 * 1000; //精确
 ```
@@ -378,13 +378,13 @@ long MICROS_PER_DAY = 24 L * 60 * 60 * 1000 * 1000; //精确
 
 如果遇到跨类型计算，jdk会把低类型自动提升为高类型，然后再计算。但这种转换有时会导致问题。例如：
 
-```java
+```
 Long.toHexString(0x100000000L + 0xcafebabe); //cafebabe
 ```
 
 因为是long + int，所以后面的int会自动提升为long，再计算。即被提升为0xffffffffcafebabeL。
 
-```java
+```
   0xffffffffcafebabeL
 + 0x0000000100000000L 
 = 0x00000000cafebabeL
@@ -393,7 +393,7 @@ Long.toHexString(0x100000000L + 0xcafebabe); //cafebabe
 所以得到cafebase，而不是想象中的1cafebabe。
 我们得出教训：**跨类型计算可能带来混淆，所以要坚决避免！**上例可以改为如下：
 
-```java
+```
 Long.toHexString(0x100000000L + 0xcafebabeL); //1cafebabe
 ```
 
@@ -406,7 +406,7 @@ Long.toHexString(0x100000000L + 0xcafebabeL); //1cafebabe
 2. 如果其中一个类型T为byte/shor/char，另一个是int常量；则结果为T。
 3. 如果为其他情况，则结果为提升类型。
 
-```java
+```
 char x = 'X';
 int i = 0;
 System.out.print(false ? i : x); //输出88，结果为int类型
@@ -419,7 +419,7 @@ System.out.print(false ? i : x); //输出88，结果为int类型
 `+=`、`-=`等运算符会自动类型转换，即将计算结果自动转换为左侧操作数的类型。这有时会导致意想不到的问题。
 例如：
 
-```java
+```
 short x = 0; 
 int i = 123456;
 x += i; //自动转换为short，损失精度，但不报错
@@ -429,7 +429,7 @@ x = x + i; // Won't compile - "possible loss of precision"
 
 - ——另外一个问题，`+=`左侧不能为Object，例如：
 
-```java
+```
 Object x = "Buy "; 
 String i = "Effective Java!";
 x = x + i;  //合法
@@ -439,7 +439,7 @@ x += i;     //非法
 - ——Narrowing Primitive Conversion
 An unfortunate fact about the compound assignment operators is that they can silently perform narrowing primitive conversions , which are conversions from one numeric type to a less expressive numeric type.
 
-```java
+```
 short i = -1;
 
 while (i != 0)
@@ -462,7 +462,7 @@ while (i != 0)
 
 ## 重写toString()
 
-```java
+```
 Object numbers = new char[] { '1', '2', '3' };
 System.out.println(numbers); // [C@16f0472
 ```
@@ -472,7 +472,7 @@ System.out.println(numbers); // [C@16f0472
 
 为了解决上一个问题，你可能想静态导入Arrays.toString()，然后调用：
 
-```java
+```
 toString(numbers);
 ```
 但是会编译报错，编译器去查找当前类的toString()方法，发现参数不匹配。。
@@ -484,7 +484,7 @@ String(byte[])的文档说明，它依赖于默认字符集：
 
 但是JRE的默认字符集依赖于操作系统和locale。所以，it was not such a good idea to provide a String(byte[]) constructor that depends on the default charset: 
 
-```java
+```
 String str = new String(bytes, "ISO-8859-1");
 ```
 
@@ -504,7 +504,7 @@ String str = new String(bytes, "ISO-8859-1");
 methods should have names that describe their primary functions. Given the behavior of `Thread.interrupted`, it should have been named `clearInterruptStatus`.
 
 
-```java
+```
 /**
 * Tests if some Thread has been interrupted. The interrupted state
 * is reset or not based on the value of ClearInterrupted that is

@@ -43,7 +43,7 @@ description: 如何在前端用ajax将基本数组传递给SpringMVC Controller?
 ## 传递基本数组
 首先看看如何传递基本类型数组，例如Long[]。  
 在后端接收该参数时很简单，只需要使用Long[]类型的@RequestParam即可，例如：  
-``` java
+```
 @RequestMapping(value = "/test/findproduct", method = RequestMethod.POST)
 @ResponseBody
 public List<Product> findProduct(
@@ -108,7 +108,7 @@ objectValues:1002
 可见这个params里不仅有attributes这个Map，还有其他参数。  
 
 如果要让params仅仅包含我们关心的attributes map改怎么处理呢？我们需要自己新建一个Wrapper类：  
-``` java
+```
 @Data
 public class AttributeMapWrapper {
     Map<String, String> attributes;
@@ -133,7 +133,7 @@ public class AttributeMapWrapper {
 
 ### HttpServletRequest + GSon
 可以利用HttpServletRequest获取传回的string，然后利用Gson转换为对象。  
-``` java 
+``` 
     public List<Item> matchItems(
   @RequestParam(required = false, value = "Locale") String locale
   HttpServletRequest request) {
@@ -145,7 +145,7 @@ public class AttributeMapWrapper {
 ```  
 
 这里为参数对象写了一个Wrapper类：
-``` java
+```
 @Data
 public class ParameterWrapper {
     Long transactionId;
@@ -163,14 +163,14 @@ public class ParameterWrapper {
 HttpServletRequest方法显得太过于底层，过于面向细节。上文说到因为和数组并列有个locale变量，导致无法使用@RequestBody，那是否可以通过修改API输入参数的设计来解决呢，把locale变量放到`ParameterWrapper`中是否就可以使用@RequestBody了呢？  
 当然可以，代码如下：  
 
-``` java
+```
     public List<Item> matchItems(@RequestBody ParameterWrapper[] params) {
 
     ...
 
 ```
 
-``` java
+```
 @Data
 public class ParameterWrapper {
     Long transactionId;

@@ -42,7 +42,7 @@ Only talk to your immediate friends. 两个对象之间的耦合就成为朋友�
 【例】：Teacher类可以命令TeamLeader对Students进行清点，则Teacher无需和Students耦合，只需和TeamLeader耦合即可。
 
 【反例】：  
-```java 反例
+``` 
 public float getTemp(){  
      Thermometer t = station.getThermometer(); //温度计对象 
      return t.getTemp();  
@@ -52,7 +52,7 @@ public float getTemp(){
  
 客户端不应该了解气象站类中的温度计对象；应在气象站类中直接加入获取温度的方法。  
 改为：
-```java 修改后
+``` 
 public float getTemp(){  
       return station.getTemp();  
 }

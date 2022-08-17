@@ -25,7 +25,7 @@ description: 本文记录了一些Java源码中的良好编程习惯、运用的
 > **优点：无需每次被调用时都创建一个新对象。同时使得类可以严格控制在哪个时刻有哪些实例存在 **
 
 
-```java
+```
     /**
      * Returns a <code>Boolean</code> with a value represented by the
      * specified string.  The <code>Boolean</code> returned represents a
@@ -49,7 +49,7 @@ description: 本文记录了一些Java源码中的良好编程习惯、运用的
 
 > **优点：方法名对客户端更友好**
 
-```java
+```
 public class BigInteger extends Number implements Comparable<BigInteger> { 
    /**
      * Returns a positive BigInteger that is probably prime, with the
@@ -76,7 +76,7 @@ JDK1.5引入的`java.util.EnumSet`类没有public构造函数，只有静态工�
 
 > **优点：静态工厂方法能返回任意子类型的对象。可以根据参数的不同，而返回不同的类型。**
 
-```java
+```
 public abstract class EnumSet<E extends Enum<E>> extends AbstractSet<E>
     implements Cloneable, java.io.Serializable
 {
@@ -112,7 +112,7 @@ Java集合框架中有32个集合接口的便利实现，提供不可修改的�
 
 > **优点：静态工厂方法能返回任意子类型的对象。可以返回一个对象而无需使相应的类public。用这种方式隐藏实现类能够产生一个非常紧凑的API**
 
-```java
+```
 public class Collections {
     /**
      * Returns an unmodifiable view of the specified map.  This method
@@ -138,7 +138,7 @@ public class Collections {
 这种工具类设计出来并不是为了实例化它。然而，如果不显式地编写构造函数，编译器则会提供一个公共的无参数的默认构造方法。
 所以将构造函数私有化：
 
-```java
+```
 public class Arrays {
     // Suppresses default constructor, ensuring non-instantiability.
     private Arrays() {
@@ -153,7 +153,7 @@ public class Arrays {
 
 `java.util.concurrent.TimeUnit`使用枚举来实现Singleton：
 
-```java
+```
 public enum TimeUnit {
     MILLISECONDS {
         public long toNanos(long d)   { return x(d, C2/C0, MAX/(C2/C0)); }
@@ -197,7 +197,7 @@ public enum TimeUnit {
 Map接口的keySet()方法返回Map对象的一个Set视图，包含该Map的所有key。
 看起来好像每次调用keySet()都需要创建一个新的Set实例。而实际上，虽然返回的Set通常是可变的，但返回的对象在功能上是等同的：**如果其中一个返回对象改变，其他对象也会改变，因为他们的底层都是同一个Map实例**。虽然创建多个KeySet视图对象并没有害处，但也没有必要。
 
-```java
+```
 public abstract class AbstractMap<K,V> implements Map<K,V> {
  
     /**
@@ -229,7 +229,7 @@ public abstract class AbstractMap<K,V> implements Map<K,V> {
 
 LikedHashMap可利用其removeEldestEntry，删除较老的实体：
 
-```java
+```
 public class LinkedHashMap<K,V>
     extends HashMap<K,V>
     implements Map<K,V>
@@ -281,7 +281,7 @@ public class LinkedHashMap<K,V>
 ### BigInteger.toString()
 
 
-```   java
+```
     /**
      * Returns the String representation of this BigInteger in the
      * given radix.  
@@ -300,7 +300,7 @@ public class LinkedHashMap<K,V>
 
 对应的构造函数如下。这样程序员能容易地在对象及其字符串表示之间来回转换
 
-```java
+```
     /**
      * Translates the decimal String representation of a BigInteger into a
      * BigInteger.  
@@ -324,7 +324,7 @@ public class LinkedHashMap<K,V>
 
 【例】BigInteger类内部使用了一个符号数值表示法（sign-magnitude representation），符号用一个int表示，数值则用一个int数组表示。`negate()`方法会创建一个数值相同但符号相反的新`BigInteger`，该方法不需要拷贝数组，新创建的BigInteger只需要指向源对象中的数组即可。
 
-```java
+```
     /**
      * Returns a BigInteger whose value is {@code (-this)}.
      *
@@ -342,7 +342,7 @@ public class LinkedHashMap<K,V>
 不可变类应当利用这种优势，鼓励客户端尽可能重用现有实例。一个简单的方法是为常用的值提供public static final的常量。
 
 
-```java
+```
     public static final BigInteger ZERO = new BigInteger(new int[0], 0);
     public static final BigInteger ONE = valueOf(1);
     public static final BigInteger TEN = valueOf(10);
@@ -361,7 +361,7 @@ public class LinkedHashMap<K,V>
 
 然而，一些不可变类拥有一个或多个nonfinal域，用于缓存昂贵计算的结果。这个技巧可以很好地工作，因为对象是不可变的，保证了相同的计算总是返回同样的结果。
 
-```java
+```
     /** Cache the hash code for the string */
     private int hash; // Default to 0
  
@@ -388,7 +388,7 @@ public class LinkedHashMap<K,V>
 
 ### Arrays.sort()
 
-```java
+```
 // Arrays  
    public static void sort(Object[] a) {  
         ...  
@@ -403,7 +403,7 @@ public class LinkedHashMap<K,V>
    } 
 ```
 
-``` java
+```
     //算法框架  
     private static void binarySort(Object[] a, int lo, int hi, int start) {  
         assert lo <= start && start <= hi;  
@@ -433,7 +433,7 @@ A：是的，与教科书上模板方法的定义有差异；因为sort要适用
 
 ### InputStream.read()
 
-```java
+```
  //算法框架  
  public int read(byte b[], int off, int len) throws IOException {  
         ...  
@@ -449,7 +449,7 @@ public abstract int read() throws IOException;
 
 ### JFrame.paint()
 
-``` java
+```
 // JFrame  
     public void update(Graphics g) {  
         paint(g);  
@@ -480,7 +480,7 @@ public class MyFrame extends JFrame {
 
 ### Applet.init()/start()/stop()/destroy()/paint()
 
-```java
+```
 // Applet  
     public void init() { //什么也不做的hook  
     }  
@@ -530,7 +530,7 @@ Applet中的init()/start()/stop()/destroy()/paint()这些方法，都是hook。
 我们知道`FutureTask`接受一个`Callable`参数，那如果我们现有的是`Runnable`该怎么办呢？
 `FutureTask`本身提供了适配：
 
-```java
+```
     /**
      * Creates a <tt>FutureTask</tt> that will upon running, execute the given <tt>Callable</tt>.
      */
@@ -548,7 +548,7 @@ Applet中的init()/start()/stop()/destroy()/paint()这些方法，都是hook。
 
  Executors.callable()返回Adapter对象：
 
-```java
+```
     public static <T> Callable<T> callable(Runnable task, T result) {
         return new RunnableAdapter<T>(task, result);
     }
@@ -572,7 +572,7 @@ Applet中的init()/start()/stop()/destroy()/paint()这些方法，都是hook。
 
 AbstractExecutorService.submit()也用到了这个Adapter：
 
-``` java
+```
    public <T> Future<T> submit(Runnable task, T result) {
         if (task == null) throw new NullPointerException();
         RunnableFuture<T> ftask = newTaskFor(task, result);

@@ -18,7 +18,7 @@ Fortunately, we can do this just by writing a configuration file, then the termi
 So how can we do this?   
 It's very simple, just create a file named `~/.bash_profile`, and fill it with the following content:  
 
-``` bash ~./bash_profile
+```
 #enables colorin the terminal bash shell export
 export CLICOLOR=1
 

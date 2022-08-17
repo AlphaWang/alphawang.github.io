@@ -32,7 +32,7 @@ SRP，Single Responsibility Principle：
 为什么会出现这种现象呢？因为有**职责扩散**。所谓职责扩散，就是因为某种原因，职责P被分化为粒度更细的职责P1和P2。此时，按照SRP 应该再新建一个类负责职责P2，但是这样会修改花销很大！除了改接口 还需要改客户端代码！所以一般就直接在原有类方法中增加判断 支持职责P2；或者在原有类中新增一个方法来处理职责P2（做到了方法级别的SRP），
 
 例如原有一个接口，模拟动物呼吸的场景：  
-``` java
+```
 class Animal {    
     public void breathe (String animal) {    
         System.out.println(animal+"呼吸空气");    
@@ -51,7 +51,7 @@ public class Client {
 程序上线后，发现问题了，并不是所有的动物都呼吸空气的，比如鱼就是呼吸水的。
 
 **修改一**：修改时如果遵循单一职责原则，需要将Animal类细分为陆生动物类Terrestrial，水生动物Aquatic，代码如下：  
-``` java
+```
 class Terrestrial {    
     public void breathe(String animal) {    
         System.out.println(animal+"呼吸空气");    
@@ -80,7 +80,7 @@ public class Client {
 BUT，这样修改花销是很大的，除了将原来的类分解之外，还需要修改客户端。
 
 **修改二**：直接修改类Animal；虽然违背了单一职责原则，但花销却小的多  
-``` java
+```
 class Animal {    
     public void breathe(String animal) {    
         if ("鱼".equals(animal)) {    
@@ -107,7 +107,7 @@ public class Client {
 这种修改方式直接在代码级别上违背了单一职责原则，虽然修改起来最简单，但隐患却是最大的。
 
 **修改三**：  
-``` java
+```
 class Animal {    
     public void breathe(String animal) {    
         System.out.println(animal+"呼吸空气");    

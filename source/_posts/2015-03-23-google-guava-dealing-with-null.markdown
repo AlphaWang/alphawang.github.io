@@ -16,7 +16,7 @@ description: Guava提供了处理null值的工具类，例如Optional，Enums，
 Many of Guava's utilities are designed to fail fast in the presence of null rather than allow nulls to be used. 
 > com.alphawang.guava.ch1.optional.Test1_FailFast
 
-```java
+```
   // Lists.newArrayList()
   public static <E> ArrayList<E> newArrayList(E... elements) {
     checkNotNull(elements); 

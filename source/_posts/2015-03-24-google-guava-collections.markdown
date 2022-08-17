@@ -20,7 +20,7 @@ The Guava library has its history rooted in working with collections, starting o
 
 ### Create List/Set
 
-```java
+```
         // Before
         List<String> list1 = new ArrayList<String>(2);
         list1.add("A");

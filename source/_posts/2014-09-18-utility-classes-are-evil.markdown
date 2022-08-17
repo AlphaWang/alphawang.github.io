@@ -83,7 +83,7 @@ And there are other aritcals about this topic:  [Are Helper Classes Evil?][1] by
 ###Example1
 Let's take `NumberUtils` for example:  
 
-```java Utility Class
+```
 // This is a terrible design, don't reuse
 public class NumberUtils {
   public static int max(int a, int b) {
@@ -94,7 +94,7 @@ public class NumberUtils {
 
 In an object-oriented paradigm, we should instantiate and compose objects, thus letting them manage data when and how they desire. Instead of calling supplementary static functions, we should create objects that are capable of exposing the behaviour we are seeking:  
 
-```java OO Class
+```
 public class Max implements Number {
   private final int a;
   private final int b;
@@ -110,18 +110,18 @@ public class Max implements Number {
 ```
 
 This procedural call:  
-```java
+```
 int max = NumberUtils.max(10, 5);  
 ```  
 Will become object-oriented:  
-```java
+```
 int max = new Max(10, 5).intValue();
 ```
 
 ###Example2  
 Say, for instance, you want to read a text file, split it into lines, trim every line and then save the results in another file. This is can be done with `FileUtils` from Apache Commons:
 
-```java Utility Class   
+```
 void transform(File in, File out) {
   Collection<String> src = FileUtils.readLines(in, "UTF-8");
   Collection<String> dest = new ArrayList<>(src.size());
@@ -134,7 +134,7 @@ void transform(File in, File out) {
 The above code may look clean; however, this is procedural programming, not object-oriented. We are manipulating data (bytes and bits) and explicitly instructing the computer from where to retrieve them and then where to put them on every single line of code. We’re defining a procedure of execution.  
 The OO alternative is:  
 
-```java OO classes
+```
 void transform(File in, File out) {
   Collection<String> src = new Trimmed(
     new FileLines(new UnicodeFile(in))

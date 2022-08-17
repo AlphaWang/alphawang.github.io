@@ -24,7 +24,7 @@ Java语言中有8种基本类型和一种比较特殊的类型`String`。为了�
 
 Jdk中源码如下：
 
-```java
+```
 /** 
  * Returns a canonical representation for the string object. 
  * <p> 

@@ -35,11 +35,11 @@ Comments should say things that the code cannot say for itself.
 
 反例：
 
-```java
+```
 i++; // increment i
 ```
 
-```java
+```
 /**
 * @param sellRequest
 * @return
@@ -111,7 +111,7 @@ Readers expect arguments to be inputs, not outputs.
 
 Following `The Principle of Least Surprise`, any function or class should implement the behaviors that another programmer could reasonably expect.
 
-```java 
+``` 
 Day day = DayDate.StringToDay(String dayName);
 ```
 
@@ -138,7 +138,7 @@ DRY: Don't Repeat Yourself. 这是本书最重要的规则之一
 
 ### G6: 在错误的抽象层级上的代码（Code at Wrong Level of Abstraction）
 
-```java
+```
 public interface Stack {
   Object pop() throws EmptyException;
   void push(Object o) throws FullException; 
@@ -208,7 +208,7 @@ see Martin Fowler’s Refactoring.
 
 The methods of a class should be interested in the variables and functions of the class they belong to, and not the variables and functions of other classes.
 
-```java
+```
 public class HourlyPayCalculator {
   public Money calculateWeeklyPay(HourlyEmployee e) {
     int tenthRate = e.getTenthRate().getPennies();
@@ -227,7 +227,7 @@ public class HourlyPayCalculator {
 
 但事无绝对，下面这个reportHours方法如果移到HourlyEmployee类中，就会违反SRP原则。
 
-```java
+```
 public class HourlyEmployeeReport { 
   private HourlyEmployee employee ;
   public HourlyEmployeeReport(HourlyEmployee e) { 
@@ -251,7 +251,7 @@ public class HourlyEmployeeReport {
 - enum
 - ...
 
-```java
+```
 public int calculateWeeklyPay(boolean overtime) { //Selector Argument
   int tenthRate = getTenthRate();
   int tenthsWorked = getTenthsWorked();
@@ -266,7 +266,7 @@ public int calculateWeeklyPay(boolean overtime) { //Selector Argument
 
 ### G16: 晦涩的意图（Obscured Intent）
 
-```java
+```
 public int m_otCalc() { 
   return iThsWkd * iThsRte +
        (int) Math.round(0.5 * iThsRte * 
@@ -287,7 +287,7 @@ Question: PI常量应该放在Math类、Trigonometry类、还是Circle类？
 
 恰当的静态方法：
 
-```java
+```
 Math.max(double a, double b)
 
 // to avoid:
@@ -297,7 +297,7 @@ a.max(b);
 
 不恰当的静态方法：
 
-```java
+```
 HourlyPayCalculator.calculatePay(employee, overtimeRate).
 ```
 
@@ -309,7 +309,7 @@ HourlyPayCalculator.calculatePay(employee, overtimeRate).
 
 让程序可读的有力方法之一就是将计算过程打散，用有意义的变量名存储中间值。
 
-```java
+```
 Matcher match = headerPattern.matcher(line); 
 if(match.find()) {
   String key = match.group(1); //中间值
@@ -322,13 +322,13 @@ if(match.find()) {
 
 反例：
 
-```java
+```
 Date newDate = date.add(5);
 ```
 
 正例：
 
-```java
+```
 Date newDate = date.addDaysTo(5);
 Date newDate = date.increaseByDays(5);
 ```
@@ -349,7 +349,7 @@ Physical Dependency:
 
 - it should explicitly ask that module for all the information it depends upon.
 
-```java
+```
 public class HourlyReporter {
   private HourlyReportFormatter formatter; 
   private List<LineItem> page;
@@ -407,7 +407,7 @@ CartSectionHeaderAssembler
 
 问题：是不是所有数字都需要替换成常量？
 
-```java
+```
 // 计算圆周长
 // 数字 2 是否需要定义一个常量？ --> NO
 double circumference = radius * Math.PI * 2;
@@ -432,13 +432,13 @@ switch/cases with nicely named enumerations are inferior to base classes with ab
 
 反例
 
-```java
+```
 if (timer.hasExpired() && !timer.isRecurrent())
 ```
 
 正例
 
-```java
+```
 if (shouldBeDeleted(timer))
 ```
 
@@ -450,13 +450,13 @@ Negatives are just a bit harder to understand than positives.
 
 反例
 
-```java
+```
 if (!buffer.shouldNotCompact())
 ```
 
 正例
 
-```java
+```
 if (buffer.shouldCompact())
 
 ```
@@ -473,7 +473,7 @@ SRP原则。
 
 反例
 
-```java
+```
 public class MoogDiver { 
   Gradient gradient; 
   List<Spline> splines;
@@ -490,7 +490,7 @@ public class MoogDiver {
 
 正例
 
-```java
+```
 public class MoogDiver { 
   Gradient gradient; 
   List<Spline> splines;
@@ -519,7 +519,7 @@ public class MoogDiver {
 
 反例：
 
-```java
+```
 if(level + 1 < tags.length) {
   parts = new Parse(body, tags, level + 1, offset + endTag);
   body = null; 
@@ -529,7 +529,7 @@ if(level + 1 < tags.length) {
 
 正例：
 
-```java
+```
 int nextLevel = level + 1; 
 if(nextLevel < tags.length) {
   parts = new Parse(body, tags, nextLevel, offset + endTag);
@@ -544,7 +544,7 @@ if(nextLevel < tags.length) {
 
 反例：
 
-```java
+```
 public String render() throws Exception {
   StringBuffer html = new StringBuffer("<hr"); 
   if(size > 0)
@@ -562,7 +562,7 @@ public String render() throws Exception {
 
 正例：
 
-```java
+```
 public String render() throws Exception {
   HtmlTag hr = new HtmlTag("hr"); 
   if (extraDashes > 0)
@@ -585,7 +585,7 @@ private String hrSize(int height) {
 
 正例：
 
-```java
+```
 public static void main(String[] args) throws Exception {
   Arguments arguments = parseCommandLine(args);
   ... 
@@ -609,14 +609,14 @@ Law of Demeter.不要让模块了解太多其写作者的信息。
 
 反例：
 
-```java
+```
 a.getB().getC().doSomething();
 
 ```
 
 正例：
 
-```java
+```
 myCollaborator.doSomething();
 
 ```
@@ -665,7 +665,7 @@ Don’t pick names that communicate implementation; choose names the reflect the
 
 反例
 
-```java
+```
 private String doRename() throws Exception {
   if(refactorReferences) 
     renameReferences();
@@ -679,7 +679,7 @@ private String doRename() throws Exception {
 
 正例
 
-```java
+```
 private String renamePageAndOptionallyAllReferences() throws Exception {
   ...
 }
@@ -699,7 +699,7 @@ private String renamePageAndOptionallyAllReferences() throws Exception {
 
 反例
 
-```java
+```
 public ObjectOutputStream getOos() throws IOException { 
   if (m_oos == null) {
     m_oos = new ObjectOutputStream(m_socket.getOutputStream()); 
@@ -713,7 +713,7 @@ public ObjectOutputStream getOos() throws IOException {
 
 正例
 
-```java
+```
 public ObjectOutputStream createOrReturnOos() throws IOException { 
  ... 
 }

@@ -37,7 +37,7 @@ Java中字符串是通过字符数组来支持实现的，在JDK6中，String类
 
 可以参考Java6中的源代码：
 
-```java      
+```      
 //Java 6
 String(int offset, int count, char value[]) {
      this.value = value;

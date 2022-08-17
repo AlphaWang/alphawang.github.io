@@ -18,7 +18,7 @@ description: Java7中所谓的支持switch字符串只是一个语法糖，底�
 
 switch String的语法示例如下：
 
-```java
+```
 /**
 * Created by Alpha on Jan/21/15.
 */

@@ -45,7 +45,7 @@ LSP，Liskov Substitution Principle：
 **示例（继承的缺点）：**  
 
 原有类A，实现减法功能：  
-```java
+```
 class A {    
     public int func1(int a, int b) {    
         return a - b;    
@@ -62,7 +62,7 @@ public class Client {
 ```    
 
 新增需求：新增两数相加、然后再与100求和的功能，由类B来负责  
-```java
+```
 class B extends A {    
     public int func1(int a, int b) {    
         return a + b;    
