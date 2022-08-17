@@ -10,6 +10,7 @@ source.old
 source/_stash
 source/stylesheets/screen.css
 .idea/
+.idea/workspace.xml
 vendor
 node_modules
 Gemfile.lock
