@@ -3,7 +3,10 @@ layout: post
 title: "How to Verify If Resilience4j Circuit Breaker Works"
 date: 2019-12-23 17:20:44 +0800
 comments: true
-categories: 
+categories: [distributed system]
+tags: [distributed system, Resilience]
+keywords: distributed system, Resilience4j, Circuit Breaker
+description: 如何验证 Resilience4j Circuit Breaker
 ---
 
 Resilience4j is a widely-used library which inspired by Hystrix, it helps with building fault tolerance distributed systems. We are using its circuit breakder module to prevent a cascade of failures when a remote service is down.

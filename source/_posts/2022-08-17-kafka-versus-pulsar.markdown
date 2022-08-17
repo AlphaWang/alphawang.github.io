@@ -5,18 +5,19 @@ date: 2022-08-17 21:35:10 +0800
 comments: true
 categories: [messaging, distributed system, translation]
 tags: [distributed system, translation, Kafka, Pulsar, messaging]
-keywords: Apache Pulsar, Apache Kafka, 对比分析
+description: Apache Pulsar 与 Apache Kafka 之对比分析，Apache Pulsar Versus Apache Kafka
 ---
 
-> 本文翻译自 https://learning.oreilly.com/library/view/apache-pulsar-versus/9781492076551/ch01.html#what_is_apache_pulsar ，原作者 Chris Bartholomew。
+> 本文可能是全网最好的对比 Kafka 与 Pulsar 的文章之一。
+> 
+> - 翻译自 https://learning.oreilly.com/library/view/apache-pulsar-versus/9781492076551/ch01.html#what_is_apache_pulsar ，原作者 Chris Bartholomew。
 >
-> 如有错漏，欢迎提 PR 至 https://github.com/AlphaWang/Translation-Apache-Pulsar-Versus-Apache-Kafka
+> - 如有错漏，欢迎提 PR 至 https://github.com/AlphaWang/Translation-Apache-Pulsar-Versus-Apache-Kafka
 >
-
-# Apache Pulsar 与 Apache Kafka 之对比分析
 
 Apache Kafka 是一种广泛使用的发布订阅（pub-sub）消息系统，起源于 LinkedIn，并于 2011 年成为 Apache 软件基金会（ASF）项目。而近年来，Apache Pulsar 逐渐成为 Kafka 的重要替代品，原本被 Kafka 占据的使用场景正越来越多地转向 Pulsar。在本报告中，我们将回顾 Kafka 与 Pulsar 之间的主要区别，并深入了解 Pulsar 为何势头如此强劲。
 
+<!--more-->
 
 
 # 什么是 Apache Pulsar？

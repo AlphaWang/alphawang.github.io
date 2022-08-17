@@ -3,8 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="1b9bbd01-a28a-464e-bf11-e0f8de9fb1d9" name="Default" comment="[blog] dapper ch2.5">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Gemfile" beforeDir="false" afterPath="$PROJECT_DIR$/Gemfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/source/_posts/2019-03-24-google-dapper-translation.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/source/_posts/2019-03-24-google-dapper-translation.markdown" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/_posts/2019-12-23-how-to-verify-if-resilience4j-circuit-breaker-works.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/source/_posts/2019-12-23-how-to-verify-if-resilience4j-circuit-breaker-works.markdown" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/source/_posts/2022-08-17-kafka-versus-pulsar.markdown" beforeDir="false" afterPath="$PROJECT_DIR$/source/_posts/2022-08-17-kafka-versus-pulsar.markdown" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
