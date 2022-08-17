@@ -171,7 +171,7 @@ $(document).ready(
 
 <p>可以参考Java6中的源代码：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -182,18 +182,17 @@ $(document).ready(
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">//Java 6</span>
-</span><span class='line'><span class="n">String</span><span class="o">(</span><span class="kt">int</span> <span class="n">offset</span><span class="o">,</span> <span class="kt">int</span> <span class="n">count</span><span class="o">,</span> <span class="kt">char</span> <span class="n">value</span><span class="o">[])</span> <span class="o">{</span>
-</span><span class='line'>     <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
-</span><span class='line'>     <span class="k">this</span><span class="o">.</span><span class="na">offset</span> <span class="o">=</span> <span class="n">offset</span><span class="o">;</span>
-</span><span class='line'>     <span class="k">this</span><span class="o">.</span><span class="na">count</span> <span class="o">=</span> <span class="n">count</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">substring</span><span class="o">(</span><span class="kt">int</span> <span class="n">beginIndex</span><span class="o">,</span> <span class="kt">int</span> <span class="n">endIndex</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>     <span class="c1">//check boundary</span>
-</span><span class='line'>     <span class="k">return</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="n">offset</span> <span class="o">+</span> <span class="n">beginIndex</span><span class="o">,</span> <span class="n">endIndex</span> <span class="o">-</span> <span class="n">beginIndex</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//Java 6
+</span><span class='line'>String(int offset, int count, char value[]) {
+</span><span class='line'>     this.value = value;
+</span><span class='line'>     this.offset = offset;
+</span><span class='line'>     this.count = count;
+</span><span class='line'>}
+</span><span class='line'> 
+</span><span class='line'>public String substring(int beginIndex, int endIndex) {
+</span><span class='line'>     //check boundary
+</span><span class='line'>     return new String(offset + beginIndex, endIndex - beginIndex, value);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>Java6中substring()可能导致的问题</h3>
@@ -202,16 +201,14 @@ $(document).ready(
 
 <p>我们可以用一个办法来规避这个问题：为<code>substring()</code>得到的子字符串重新创建一个对象。例如：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'> <span class="n">String</span> <span class="n">littleString</span> <span class="o">=</span> <span class="n">largeString</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span><span class="mi">2</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;&quot;</span><span class="o">;</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> String littleString = largeString.substring(0,2) + "";</span></code></pre></td></tr></table></div></figure>
 
 
 <p>或者：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">String</span> <span class="n">littleString</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="n">largeString</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span><span class="mi">2</span><span class="o">));</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>String littleString = new String(largeString.substring(0,2));</span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -224,7 +221,7 @@ $(document).ready(
 
 <p>我们看源码：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -233,15 +230,15 @@ $(document).ready(
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// Java 7</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">String</span> <span class="nf">substring</span><span class="o">(</span><span class="kt">int</span> <span class="n">beginIndex</span><span class="o">,</span> <span class="kt">int</span> <span class="n">endIndex</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="o">((</span><span class="n">beginIndex</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">endIndex</span> <span class="o">==</span> <span class="n">value</span><span class="o">.</span><span class="na">length</span><span class="o">))</span> <span class="o">?</span> <span class="k">this</span>
-</span><span class='line'>                <span class="o">:</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="n">beginIndex</span><span class="o">,</span> <span class="n">subLen</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="nf">String</span><span class="o">(</span><span class="kt">char</span> <span class="n">value</span><span class="o">[],</span> <span class="kt">int</span> <span class="n">offset</span><span class="o">,</span> <span class="kt">int</span> <span class="n">count</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">Arrays</span><span class="o">.</span><span class="na">copyOfRange</span><span class="o">(</span><span class="n">value</span><span class="o">,</span> <span class="n">offset</span><span class="o">,</span> <span class="n">offset</span><span class="o">+</span><span class="n">count</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// Java 7
+</span><span class='line'>    public String substring(int beginIndex, int endIndex) {
+</span><span class='line'>        return ((beginIndex == 0) && (endIndex == value.length)) ? this
+</span><span class='line'>                : new String(value, beginIndex, subLen);
+</span><span class='line'>    }
+</span><span class='line'>    
+</span><span class='line'>    public String(char value[], int offset, int count) {
+</span><span class='line'>        this.value = Arrays.copyOfRange(value, offset, offset+count);
+</span><span class='line'>    }    
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -263,7 +260,7 @@ $(document).ready(
 
 <p>Java中有一个和<code>String#substring</code>有着类似逻辑、功能、实现机制的方法：<code>List#sublist</code>。Java6 处理Large List的sublist时，也会出现内存问题；而奇怪的时Java7并未对这个实现进行修改：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -277,31 +274,30 @@ $(document).ready(
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">//AbstractList</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//AbstractList
 </span><span class='line'>
-</span><span class='line'>    <span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="nf">subList</span><span class="o">(</span><span class="kt">int</span> <span class="n">fromIndex</span><span class="o">,</span> <span class="kt">int</span> <span class="n">toIndex</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="o">(</span><span class="k">this</span> <span class="k">instanceof</span> <span class="n">RandomAccess</span> <span class="o">?</span>
-</span><span class='line'>                <span class="k">new</span> <span class="n">RandomAccessSubList</span><span class="o">&lt;&gt;(</span><span class="k">this</span><span class="o">,</span> <span class="n">fromIndex</span><span class="o">,</span> <span class="n">toIndex</span><span class="o">)</span> <span class="o">:</span>
-</span><span class='line'>                <span class="k">new</span> <span class="n">SubList</span><span class="o">&lt;&gt;(</span><span class="k">this</span><span class="o">,</span> <span class="n">fromIndex</span><span class="o">,</span> <span class="n">toIndex</span><span class="o">));</span>
-</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    public List&lt;E&gt; subList(int fromIndex, int toIndex) {
+</span><span class='line'>        return (this instanceof RandomAccess ?
+</span><span class='line'>                new RandomAccessSubList&lt;&gt;(this, fromIndex, toIndex) :
+</span><span class='line'>                new SubList&lt;&gt;(this, fromIndex, toIndex));
+</span><span class='line'>    }
 </span><span class='line'>
-</span><span class='line'>    <span class="n">SubList</span><span class="o">(</span><span class="n">AbstractList</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">list</span><span class="o">,</span> <span class="kt">int</span> <span class="n">fromIndex</span><span class="o">,</span> <span class="kt">int</span> <span class="n">toIndex</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">l</span> <span class="o">=</span> <span class="n">list</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">offset</span> <span class="o">=</span> <span class="n">fromIndex</span><span class="o">;</span>
-</span><span class='line'>        <span class="n">size</span> <span class="o">=</span> <span class="n">toIndex</span> <span class="o">-</span> <span class="n">fromIndex</span><span class="o">;</span>
-</span><span class='line'>        <span class="k">this</span><span class="o">.</span><span class="na">modCount</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="na">modCount</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    SubList(AbstractList&lt;E&gt; list, int fromIndex, int toIndex) {
+</span><span class='line'>        l = list;
+</span><span class='line'>        offset = fromIndex;
+</span><span class='line'>        size = toIndex - fromIndex;
+</span><span class='line'>        this.modCount = l.modCount;
+</span><span class='line'>    }</span></code></pre></td></tr></table></div></figure>
 
 
 <p>所以我们在处理Large List时还是需要用规避方法：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="nf">sublist</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">originalList</span><span class="o">,</span> <span class="kt">int</span> <span class="n">fromIndex</span><span class="o">,</span> <span class="kt">int</span> <span class="n">toIndex</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;(</span><span class="n">originalList</span><span class="o">.</span><span class="na">subList</span><span class="o">(</span><span class="n">fromIndex</span><span class="o">,</span> <span class="n">toIndex</span><span class="o">));</span>
-</span><span class='line'><span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public static &lt;E&gt; List&lt;E&gt; sublist(List&lt;E&gt; originalList, int fromIndex, int toIndex) {
+</span><span class='line'>  return new ArrayList&lt;E&gt;(originalList.subList(fromIndex, toIndex));
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -438,12 +434,14 @@ $(document).ready(
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (3)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (1)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -459,8 +457,11 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
 <a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
 <a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 90%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
 <a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
@@ -474,11 +475,13 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 136%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 90%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -487,6 +490,14 @@ $(document).ready(
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
+      </li>
     
       <li class="post">
         <a href="/blog/clean-code/">Clean Code Summary</a>
@@ -498,14 +509,6 @@ $(document).ready(
     
       <li class="post">
         <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
       </li>
     
   </ul>
@@ -530,7 +533,7 @@ $(document).ready(
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2019 - Alpha Wang -
+  Copyright &copy; 2022 - Alpha Wang -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
   <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
 </p>

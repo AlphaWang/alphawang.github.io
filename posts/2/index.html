@@ -9,7 +9,7 @@
   <meta name="author" content="Alpha Wang">
 
   
-  <meta name="description" content="Java语言中有8种基本类型和一种比较特殊的类型String。为了使这些类型在运行过程中速度更快，更节省内存，都提供了一种常量池的概念。常量池就类似一个Java系统级别提供的缓存。 其中8种基本类型的常量池都是系统协调的，而String类型的常量池比较特殊。它的主要使用方法有两种： &hellip;">
+  <meta name="description" content="String#substring()在Java6和Java7中的实现是不一样的。这是因为Java6的实现可能导致内存问题，所以Java7中为了改善这个问题修改了实现方式。那么Java7中的实现就真的合理吗？ 首先让我们来猜测一下，Java是如何实现substring功能的。 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -127,6 +127,80 @@ $(document).ready(
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/the-impovement-of-string-substring-in-java7-/">Is the Improvement of String.substring() in Java7 Really Reasonable?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-12-24T15:59:15+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:59 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><code>String#substring()</code>在Java6和Java7中的实现是不一样的。这是因为Java6的实现可能导致内存问题，所以Java7中为了改善这个问题修改了实现方式。那么Java7中的实现就真的合理吗？</p>
+
+<p>首先让我们来猜测一下，Java是如何实现substring功能的。由于String是不可变的，可能我们会猜测实现机制如下图：</p>
+
+<p><img src="/images/post/2014/12/substring-user.png" alt="user icon" /></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/the-impovement-of-string-substring-in-java7-/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/how-string-in-switch-works-in-java7/">How String in Switch Works in Java 7</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-12-20T10:02:33+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>10:02 am</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>支持switch字符串是Java7增加的一个新特性，那么它的底层是如何实现的呢？我们来看一个switch String的例子，然后分析编译器是如何处理的。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/how-string-in-switch-works-in-java7/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -486,83 +560,6 @@ $(document).ready(
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/zapfino-a-cool-font/">Zapfino: A Cool Font</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-09-16T17:28:52+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>5:28 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I&rsquo;m tring to look for some fonts for my blog these days, and find a cool font <a href="http://en.wikipedia.org/wiki/Zapfino"><code>Zapfino</code></a> inadvertently.</p>
-
-<p>Here is how it looks:</p>
-
-<p><img src="/images/post/2014/09/font-Zapfino.png" alt="zapfino icon" /></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/zapfino-a-cool-font/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/make-iterm-colorful/">Make Mac Terminal Console / iTerm Colorful</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-09-11T14:36:31+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>11</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:36 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Neither Terminal or iTerm on Mac is white/black color by default, which looks tedious. What if different entries shown in different colors?<br/>
-Fortunately, we can do this just by writing a configuration file, then the terminal console or iTerm can look like this:</p>
-
-<p><img src="/images/post/2014/09/iterm.png" alt="iterm icon" /></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/make-iterm-colorful/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -579,12 +576,14 @@ Fortunately, we can do this just by writing a configuration file, then the termi
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (3)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (1)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -600,8 +599,11 @@ Fortunately, we can do this just by writing a configuration file, then the termi
 <a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
 <a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
 <a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 90%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
 <a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
@@ -615,11 +617,13 @@ Fortunately, we can do this just by writing a configuration file, then the termi
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 136%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 90%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -628,6 +632,14 @@ Fortunately, we can do this just by writing a configuration file, then the termi
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
+      </li>
     
       <li class="post">
         <a href="/blog/clean-code/">Clean Code Summary</a>
@@ -639,14 +651,6 @@ Fortunately, we can do this just by writing a configuration file, then the termi
     
       <li class="post">
         <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
       </li>
     
   </ul>
@@ -670,7 +674,7 @@ Fortunately, we can do this just by writing a configuration file, then the termi
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2019 - Alpha Wang -
+  Copyright &copy; 2022 - Alpha Wang -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
   <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
 </p>

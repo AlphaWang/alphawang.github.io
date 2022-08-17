@@ -160,7 +160,7 @@ $(document).ready(
 
 <h3>Create List/Set</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -169,16 +169,15 @@ $(document).ready(
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="c1">// Before</span>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;(</span><span class="mi">2</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">list1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;A&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">list1</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;B&quot;</span><span class="o">);</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>    // Before
+</span><span class='line'>    List&lt;String&gt; list1 = new ArrayList&lt;String&gt;(2);
+</span><span class='line'>    list1.add("A");
+</span><span class='line'>    list1.add("B");
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// After</span>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list2</span> <span class="o">=</span> <span class="n">Lists</span><span class="o">.</span><span class="na">newArrayList</span><span class="o">();</span> <span class="c1">//Lists.newArrayListWithCapacity(2)</span>
-</span><span class='line'>    <span class="n">list2</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;A&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">list2</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;B&quot;</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    // After
+</span><span class='line'>    List&lt;String&gt; list2 = Lists.newArrayList(); //Lists.newArrayListWithCapacity(2)
+</span><span class='line'>    list2.add("A");
+</span><span class='line'>    list2.add("B");</span></code></pre></td></tr></table></div></figure>
 
 
 <ul>
@@ -195,17 +194,16 @@ $(document).ready(
 
 <h3>Create Map</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="c1">// Before</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">map1</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;();</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>    // Before
+</span><span class='line'>    Map&lt;String, String&gt; map1 = new HashMap&lt;String, String&gt;();
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// After</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">map2</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="na">newHashMapWithExpectedSize</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span>  <span class="c1">// Maps.newHashMap();</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    // After
+</span><span class='line'>    Map&lt;String, String&gt; map2 = Maps.newHashMapWithExpectedSize(2);  // Maps.newHashMap();</span></code></pre></td></tr></table></div></figure>
 
 
 <ul>
@@ -218,7 +216,7 @@ $(document).ready(
 
 <h3>Immutable Collections</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -226,20 +224,19 @@ $(document).ready(
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="c1">// Before</span>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
-</span><span class='line'>    <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;A&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">list</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="s">&quot;B&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list1</span> <span class="o">=</span> <span class="n">Collections</span><span class="o">.</span><span class="na">unmodifiableList</span><span class="o">(</span><span class="n">list</span><span class="o">);</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>    // Before
+</span><span class='line'>    List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+</span><span class='line'>    list.add("A");
+</span><span class='line'>    list.add("B");
+</span><span class='line'>    List&lt;String&gt; list1 = Collections.unmodifiableList(list);
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// After</span>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">list2</span> <span class="o">=</span> <span class="n">ImmutableList</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&quot;A&quot;</span><span class="o">,</span> <span class="s">&quot;B&quot;</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    // After
+</span><span class='line'>    List&lt;String&gt; list2 = ImmutableList.of("A", "B");</span></code></pre></td></tr></table></div></figure>
 
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -247,15 +244,14 @@ $(document).ready(
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="c1">// Before</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;();</span>
-</span><span class='line'>    <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;A&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">&quot;B&quot;</span><span class="o">,</span> <span class="s">&quot;2&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">map1</span> <span class="o">=</span> <span class="n">Collections</span><span class="o">.</span><span class="na">unmodifiableMap</span><span class="o">(</span><span class="n">map</span><span class="o">);</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>    // Before
+</span><span class='line'>    Map&lt;String, String&gt; map = new HashMap&lt;String, String&gt;();
+</span><span class='line'>    map.put("A", "1");
+</span><span class='line'>    map.put("B", "2");
+</span><span class='line'>    Map&lt;String, String&gt; map1 = Collections.unmodifiableMap(map);
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// After</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">map2</span> <span class="o">=</span> <span class="n">ImmutableMap</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">&quot;A&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">,</span> <span class="s">&quot;B&quot;</span><span class="o">,</span> <span class="s">&quot;2&quot;</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    // After
+</span><span class='line'>    Map&lt;String, String&gt; map2 = ImmutableMap.of("A", "1", "B", "2");</span></code></pre></td></tr></table></div></figure>
 
 
 <ul>
@@ -283,7 +279,7 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
 
 <p>Transform List:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -307,36 +303,35 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
 <span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * Lists.transform</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="nd">@Test</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">transformList</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="c1">// before:</span>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">cityNamesBefore</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;&gt;();</span>
-</span><span class='line'>    <span class="k">for</span> <span class="o">(</span><span class="n">City</span> <span class="n">city</span> <span class="o">:</span> <span class="n">cities</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;-- normal transform: &quot;</span> <span class="o">+</span> <span class="n">city</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">cityNamesBefore</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">city</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
-</span><span class='line'>    <span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/**
+</span><span class='line'> * Lists.transform
+</span><span class='line'> */
+</span><span class='line'>@Test
+</span><span class='line'>public void transformList() {
+</span><span class='line'>    // before:
+</span><span class='line'>    List&lt;String&gt; cityNamesBefore = new ArrayList&lt;&gt;();
+</span><span class='line'>    for (City city : cities) {
+</span><span class='line'>        System.out.println("-- normal transform: " + city);
+</span><span class='line'>        cityNamesBefore.add(city.getName());
+</span><span class='line'>    }
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// or Iterables.transform()</span>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">cityNames</span> <span class="o">=</span> <span class="n">Lists</span><span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">cities</span><span class="o">,</span> <span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">City</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="nd">@Override</span>
-</span><span class='line'>        <span class="kd">public</span> <span class="n">String</span> <span class="nf">apply</span><span class="o">(</span><span class="n">City</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;-- guava transform: &quot;</span> <span class="o">+</span> <span class="n">input</span><span class="o">);</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">input</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">});</span>
+</span><span class='line'>    // or Iterables.transform()
+</span><span class='line'>    List&lt;String&gt; cityNames = Lists.transform(cities, new Function&lt;City, String&gt;() {
+</span><span class='line'>        @Override
+</span><span class='line'>        public String apply(City input) {
+</span><span class='line'>            System.out.println("-- guava transform: " + input);
+</span><span class='line'>            return input.getName();
+</span><span class='line'>        }
+</span><span class='line'>    });
 </span><span class='line'>
-</span><span class='line'>    <span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">cityNames</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">4</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">cityNames</span><span class="o">);</span>   <span class="c1">// lazy</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    Assert.assertTrue(cityNames.size() == 4);
+</span><span class='line'>    System.out.println(cityNames);   // lazy
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -360,36 +355,35 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
 <span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * FluentIterable.transform</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="nd">@Test</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">transformFluent</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">cityNameLength</span> <span class="o">=</span> <span class="n">FluentIterable</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">cities</span><span class="o">)</span>
-</span><span class='line'>        <span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">cityNameFunction</span><span class="o">)</span>
-</span><span class='line'>        <span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">stringLengthFunction</span><span class="o">)</span>
-</span><span class='line'>        <span class="o">.</span><span class="na">toList</span><span class="o">();</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/**
+</span><span class='line'> * FluentIterable.transform
+</span><span class='line'> */
+</span><span class='line'>@Test
+</span><span class='line'>public void transformFluent() {
+</span><span class='line'>    List&lt;Integer&gt; cityNameLength = FluentIterable.from(cities)
+</span><span class='line'>        .transform(cityNameFunction)
+</span><span class='line'>        .transform(stringLengthFunction)
+</span><span class='line'>        .toList();
 </span><span class='line'>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">cityNameLength</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">cityNameLength</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">4</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
+</span><span class='line'>    System.out.println(cityNameLength);
+</span><span class='line'>    Assert.assertTrue(cityNameLength.size() == 4);
+</span><span class='line'>}
 </span><span class='line'>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * Functions.compose</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="nd">@Test</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">functions</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">cityNameLength</span> <span class="o">=</span> <span class="n">Lists</span><span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="n">cities</span><span class="o">,</span> <span class="n">Functions</span><span class="o">.</span><span class="na">compose</span><span class="o">(</span><span class="n">stringLengthFunction</span><span class="o">,</span> <span class="n">cityNameFunction</span><span class="o">));</span>
+</span><span class='line'>/**
+</span><span class='line'> * Functions.compose
+</span><span class='line'> */
+</span><span class='line'>@Test
+</span><span class='line'>public void functions() {
+</span><span class='line'>    List&lt;Integer&gt; cityNameLength = Lists.transform(cities, Functions.compose(stringLengthFunction, cityNameFunction));
 </span><span class='line'>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">cityNameLength</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">cityNameLength</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">4</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    System.out.println(cityNameLength);
+</span><span class='line'>    Assert.assertTrue(cityNameLength.size() == 4);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Transform Map:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -414,37 +408,37 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
 <span class='line-number'>23</span>
 <span class='line-number'>24</span>
 <span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Test</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">transformMapEntry</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">City</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="na">transformEntries</span><span class="o">(</span><span class="n">cityLocaleMap</span><span class="o">,</span> <span class="k">new</span> <span class="n">Maps</span><span class="o">.</span><span class="na">EntryTransformer</span><span class="o">&lt;</span><span class="n">City</span><span class="o">,</span> <span class="n">VitaminLocale</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="nd">@Override</span>
-</span><span class='line'>        <span class="kd">public</span> <span class="n">String</span> <span class="nf">transformEntry</span><span class="o">(</span><span class="n">City</span> <span class="n">key</span><span class="o">,</span> <span class="n">VitaminLocale</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">key</span><span class="o">.</span><span class="na">getPopulation</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot;|&quot;</span> <span class="o">+</span> <span class="n">value</span><span class="o">.</span><span class="na">getKoreaTitle</span><span class="o">();</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">});</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Test
+</span><span class='line'>public void transformMapEntry() {
+</span><span class='line'>    Map&lt;City, String&gt; map = Maps.transformEntries(cityLocaleMap, new Maps.EntryTransformer&lt;City, VitaminLocale, String&gt;() {
+</span><span class='line'>        @Override
+</span><span class='line'>        public String transformEntry(City key, VitaminLocale value) {
+</span><span class='line'>            return key.getPopulation() + "|" + value.getKoreaTitle();
+</span><span class='line'>        }
+</span><span class='line'>    });
 </span><span class='line'>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">map</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="n">cityLocaleMap</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
-</span><span class='line'><span class="o">}</span>
+</span><span class='line'>    System.out.print(map);
+</span><span class='line'>    Assert.assertTrue(map.size() == cityLocaleMap.size());
+</span><span class='line'>}
 </span><span class='line'>
-</span><span class='line'><span class="nd">@Test</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">transformMapValue</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">City</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="na">transformValues</span><span class="o">(</span><span class="n">cityLocaleMap</span><span class="o">,</span> <span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">VitaminLocale</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="nd">@Override</span>
-</span><span class='line'>        <span class="kd">public</span> <span class="n">String</span> <span class="nf">apply</span><span class="o">(</span><span class="n">VitaminLocale</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">input</span><span class="o">.</span><span class="na">getEnglishTitle</span><span class="o">();</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">});</span>
+</span><span class='line'>@Test
+</span><span class='line'>public void transformMapValue() {
+</span><span class='line'>    Map&lt;City, String&gt; map = Maps.transformValues(cityLocaleMap, new Function&lt;VitaminLocale, String&gt;() {
+</span><span class='line'>        @Override
+</span><span class='line'>        public String apply(VitaminLocale input) {
+</span><span class='line'>            return input.getEnglishTitle();
+</span><span class='line'>        }
+</span><span class='line'>    });
 </span><span class='line'>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">map</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="n">cityLocaleMap</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
-</span><span class='line'><span class="o">}</span>
+</span><span class='line'>    System.out.print(map);
+</span><span class='line'>    Assert.assertTrue(map.size() == cityLocaleMap.size());
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>Filter:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -507,70 +501,69 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
 <span class='line-number'>61</span>
 <span class='line-number'>62</span>
 <span class='line-number'>63</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> *  Iterables.filter()</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="nd">@Test</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">iterablesFilter</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Iterable</span><span class="o">&lt;</span><span class="n">City</span><span class="o">&gt;</span> <span class="n">largeCities</span> <span class="o">=</span> <span class="n">Iterables</span><span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">cities</span><span class="o">,</span> <span class="k">new</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">City</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="nd">@Override</span> <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">City</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">input</span><span class="o">.</span><span class="na">getPopulation</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">1000L</span><span class="o">;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">});</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/**
+</span><span class='line'> *  Iterables.filter()
+</span><span class='line'> */
+</span><span class='line'>@Test
+</span><span class='line'>public void iterablesFilter() {
+</span><span class='line'>    Iterable&lt;City&gt; largeCities = Iterables.filter(cities, new Predicate&lt;City&gt;() {
+</span><span class='line'>        @Override public boolean apply(City input) {
+</span><span class='line'>            return input.getPopulation() &gt; 1000L;
+</span><span class='line'>        }
+</span><span class='line'>    });
 </span><span class='line'>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">largeCities</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">Iterables</span><span class="o">.</span><span class="na">size</span><span class="o">(</span><span class="n">largeCities</span><span class="o">)</span> <span class="o">==</span> <span class="mi">2</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
+</span><span class='line'>    System.out.println(largeCities);
+</span><span class='line'>    Assert.assertTrue(Iterables.size(largeCities) == 2);
+</span><span class='line'>}
 </span><span class='line'>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * FluentIterable.filter()</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="nd">@Test</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">fluentIterableFilter</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>/**
+</span><span class='line'> * FluentIterable.filter()
+</span><span class='line'> */
+</span><span class='line'>@Test
+</span><span class='line'>public void fluentIterableFilter() {
 </span><span class='line'>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">City</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">FluentIterable</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">cities</span><span class="o">)</span>
-</span><span class='line'>        <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">populationPredicate</span><span class="o">)</span>
-</span><span class='line'>        <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">namePredicate</span><span class="o">)</span>
-</span><span class='line'>        <span class="o">.</span><span class="na">toList</span><span class="o">();</span>
+</span><span class='line'>    List&lt;City&gt; result = FluentIterable.from(cities)
+</span><span class='line'>        .filter(populationPredicate)
+</span><span class='line'>        .filter(namePredicate)
+</span><span class='line'>        .toList();
 </span><span class='line'>
-</span><span class='line'>    <span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">result</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
+</span><span class='line'>    Assert.assertTrue(result != null);
+</span><span class='line'>}
 </span><span class='line'>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * Predicates.and()</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="nd">@Test</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">predicates</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Iterable</span><span class="o">&lt;</span><span class="n">City</span><span class="o">&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">Iterables</span><span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="n">cities</span><span class="o">,</span> <span class="n">Predicates</span><span class="o">.</span><span class="na">and</span><span class="o">(</span><span class="n">populationPredicate</span><span class="o">,</span> <span class="n">namePredicate</span><span class="o">));</span>
+</span><span class='line'>/**
+</span><span class='line'> * Predicates.and()
+</span><span class='line'> */
+</span><span class='line'>@Test
+</span><span class='line'>public void predicates() {
+</span><span class='line'>    Iterable&lt;City&gt; result = Iterables.filter(cities, Predicates.and(populationPredicate, namePredicate));
 </span><span class='line'>
-</span><span class='line'>    <span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(!</span><span class="n">Iterables</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">(</span><span class="n">result</span><span class="o">));</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>
+</span><span class='line'>    Assert.assertTrue(!Iterables.isEmpty(result));
+</span><span class='line'>}
 </span><span class='line'>
 </span><span class='line'>
-</span><span class='line'><span class="nd">@Test</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">filterMap</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">City</span><span class="o">&gt;</span> <span class="n">nameCityMap</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="na">uniqueIndex</span><span class="o">(</span><span class="n">cities</span><span class="o">,</span> <span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">City</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="nd">@Override</span>
-</span><span class='line'>        <span class="kd">public</span> <span class="n">String</span> <span class="nf">apply</span><span class="o">(</span><span class="n">City</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">input</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">});</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">nameCityMap</span><span class="o">);</span>
 </span><span class='line'>
 </span><span class='line'>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">City</span><span class="o">&gt;</span> <span class="n">filteredMap</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="na">filterEntries</span><span class="o">(</span><span class="n">nameCityMap</span><span class="o">,</span> <span class="k">new</span> <span class="n">Predicate</span><span class="o">&lt;</span><span class="n">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">City</span><span class="o">&gt;&gt;()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="nd">@Override</span>
-</span><span class='line'>        <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">City</span><span class="o">&gt;</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">input</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">startsWith</span><span class="o">(</span><span class="s">&quot;S&quot;</span><span class="o">)</span>
-</span><span class='line'>                <span class="o">&amp;&amp;</span> <span class="n">input</span><span class="o">.</span><span class="na">getValue</span><span class="o">().</span><span class="na">getPopulation</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">1000L</span><span class="o">;</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">});</span>
+</span><span class='line'>@Test
+</span><span class='line'>public void filterMap() {
+</span><span class='line'>    Map&lt;String, City&gt; nameCityMap = Maps.uniqueIndex(cities, new Function&lt;City, String&gt;() {
+</span><span class='line'>        @Override
+</span><span class='line'>        public String apply(City input) {
+</span><span class='line'>            return input.getName();
+</span><span class='line'>        }
+</span><span class='line'>    });
+</span><span class='line'>    System.out.println(nameCityMap);
 </span><span class='line'>
-</span><span class='line'>    <span class="n">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">filteredMap</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="mi">1</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>
+</span><span class='line'>    Map&lt;String, City&gt; filteredMap = Maps.filterEntries(nameCityMap, new Predicate&lt;Map.Entry&lt;String, City&gt;&gt;() {
+</span><span class='line'>        @Override
+</span><span class='line'>        public boolean apply(Map.Entry&lt;String, City&gt; input) {
+</span><span class='line'>            return input.getKey().startsWith("S")
+</span><span class='line'>                && input.getValue().getPopulation() &gt; 1000L;
+</span><span class='line'>        }
+</span><span class='line'>    });
+</span><span class='line'>
+</span><span class='line'>    Assert.assertTrue(filteredMap.size() == 1);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>Convert between List and Map</h2>
@@ -586,7 +579,7 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
 </ol>
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -604,30 +597,29 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Function</span><span class="o">&lt;</span><span class="n">City</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="n">cityToIdFunction</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">City</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="nd">@Override</span>
-</span><span class='line'>        <span class="kd">public</span> <span class="n">Long</span> <span class="nf">apply</span><span class="o">(</span><span class="n">City</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">input</span><span class="o">.</span><span class="na">getId</span><span class="o">();</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">};</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Function&lt;City, Long&gt; cityToIdFunction = new Function&lt;City, Long&gt;() {
+</span><span class='line'>        @Override
+</span><span class='line'>        public Long apply(City input) {
+</span><span class='line'>            return input.getId();
+</span><span class='line'>        }
+</span><span class='line'>    };
 </span><span class='line'>
-</span><span class='line'><span class="nd">@Test</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">listToMapAsValue</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">Long</span><span class="o">,</span> <span class="n">City</span><span class="o">&gt;</span> <span class="n">idCityMap</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="na">uniqueIndex</span><span class="o">(</span><span class="n">cities</span><span class="o">,</span> <span class="n">cityToIdFunction</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
+</span><span class='line'>@Test
+</span><span class='line'>public void listToMapAsValue() {
+</span><span class='line'>    Map&lt;Long, City&gt; idCityMap = Maps.uniqueIndex(cities, cityToIdFunction);
+</span><span class='line'>}
 </span><span class='line'>
-</span><span class='line'><span class="nd">@Test</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">listToMapAsKey</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">City</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="n">cityIdMap</span> <span class="o">=</span> <span class="n">Maps</span><span class="o">.</span><span class="na">toMap</span><span class="o">(</span><span class="n">cities</span><span class="o">,</span> <span class="n">cityToIdFunction</span><span class="o">);</span>
-</span><span class='line'>    <span class="c1">// or</span>
-</span><span class='line'>    <span class="n">cityIdMap</span> <span class="o">=</span> <span class="n">FluentIterable</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">cities</span><span class="o">).</span><span class="na">toMap</span><span class="o">(</span><span class="n">cityToIdFunction</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>@Test
+</span><span class='line'>public void listToMapAsKey() {
+</span><span class='line'>    Map&lt;City, Long&gt; cityIdMap = Maps.toMap(cities, cityToIdFunction);
+</span><span class='line'>    // or
+</span><span class='line'>    cityIdMap = FluentIterable.from(cities).toMap(cityToIdFunction);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>Map to List</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -643,42 +635,40 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Test</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">void</span> <span class="nf">mapToList</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">City</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">cityCommentMap</span> <span class="o">=</span> <span class="n">ImmutableMap</span><span class="o">.</span><span class="na">of</span><span class="o">(</span>
-</span><span class='line'>        <span class="k">new</span> <span class="nf">City</span><span class="o">(</span><span class="mi">1L</span><span class="o">,</span> <span class="s">&quot;Shanghai&quot;</span><span class="o">,</span> <span class="mi">1360L</span><span class="o">),</span> <span class="s">&quot;big&quot;</span><span class="o">,</span>
-</span><span class='line'>        <span class="k">new</span> <span class="nf">City</span><span class="o">(</span><span class="mi">2L</span><span class="o">,</span> <span class="s">&quot;Beijing&quot;</span><span class="o">,</span> <span class="mi">1020L</span><span class="o">),</span> <span class="s">&quot;dirty&quot;</span>
-</span><span class='line'>    <span class="o">);</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Test
+</span><span class='line'>public void mapToList() {
+</span><span class='line'>    Map&lt;City, String&gt; cityCommentMap = ImmutableMap.of(
+</span><span class='line'>        new City(1L, "Shanghai", 1360L), "big",
+</span><span class='line'>        new City(2L, "Beijing", 1020L), "dirty"
+</span><span class='line'>    );
 </span><span class='line'>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">cityComments</span> <span class="o">=</span> <span class="n">FluentIterable</span><span class="o">.</span><span class="na">from</span><span class="o">(</span><span class="n">cityCommentMap</span><span class="o">.</span><span class="na">entrySet</span><span class="o">())</span>
-</span><span class='line'>        <span class="o">.</span><span class="na">transform</span><span class="o">(</span><span class="k">new</span> <span class="n">Function</span><span class="o">&lt;</span><span class="n">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="n">City</span><span class="o">,</span><span class="n">String</span><span class="o">&gt;,</span> <span class="n">String</span><span class="o">&gt;()</span> <span class="o">{</span>
-</span><span class='line'>            <span class="nd">@Override</span>
-</span><span class='line'>            <span class="kd">public</span> <span class="n">String</span> <span class="nf">apply</span><span class="o">(</span><span class="n">Map</span><span class="o">.</span><span class="na">Entry</span><span class="o">&lt;</span><span class="n">City</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>                <span class="k">return</span> <span class="n">input</span><span class="o">.</span><span class="na">getKey</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot; IS &quot;</span> <span class="o">+</span> <span class="n">input</span><span class="o">.</span><span class="na">getValue</span><span class="o">();</span>
-</span><span class='line'>            <span class="o">}</span>
-</span><span class='line'>        <span class="o">}).</span><span class="na">toList</span><span class="o">();</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;\nmapToList:\n&quot;</span> <span class="o">+</span> <span class="n">cityComments</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    List&lt;String&gt; cityComments = FluentIterable.from(cityCommentMap.entrySet())
+</span><span class='line'>        .transform(new Function&lt;Map.Entry&lt;City,String&gt;, String&gt;() {
+</span><span class='line'>            @Override
+</span><span class='line'>            public String apply(Map.Entry&lt;City, String&gt; input) {
+</span><span class='line'>                return input.getKey().getName() + " IS " + input.getValue();
+</span><span class='line'>            }
+</span><span class='line'>        }).toList();
+</span><span class='line'>    System.out.println("\nmapToList:\n" + cityComments);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>Utils</h2>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Iterables</span><span class="o">.</span><span class="na">getOnlyElement</span><span class="o">()</span>
-</span><span class='line'><span class="n">Iterables</span><span class="o">.</span><span class="na">concat</span><span class="o">()</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Iterables.getOnlyElement() 
+</span><span class='line'>Iterables.concat()
 </span><span class='line'>
-</span><span class='line'><span class="n">Sets</span><span class="o">.</span><span class="na">unin</span><span class="o">()</span>
-</span><span class='line'><span class="n">Sets</span><span class="o">.</span><span class="na">difference</span><span class="o">()</span>
-</span><span class='line'><span class="n">Sets</span><span class="o">.</span><span class="na">intersection</span><span class="o">()</span>
-</span><span class='line'><span class="n">Lists</span><span class="o">.</span><span class="na">partition</span><span class="o">()</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>Sets.unin()
+</span><span class='line'>Sets.difference()
+</span><span class='line'>Sets.intersection()
+</span><span class='line'>Lists.partition()</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>Reference</h2>
@@ -816,12 +806,14 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (3)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (1)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -837,8 +829,11 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
 <a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
 <a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
 <a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 90%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
 <a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
@@ -852,11 +847,13 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 136%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 90%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -865,6 +862,14 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
+      </li>
     
       <li class="post">
         <a href="/blog/clean-code/">Clean Code Summary</a>
@@ -876,14 +881,6 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
     
       <li class="post">
         <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
       </li>
     
   </ul>
@@ -908,7 +905,7 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2019 - Alpha Wang -
+  Copyright &copy; 2022 - Alpha Wang -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
   <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
 </p>

@@ -175,26 +175,24 @@ Comments should say things that the code cannot say for itself.</p>
 
 <p>反例：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">i</span><span class="o">++;</span> <span class="c1">// increment i</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>i++; // increment i</span></code></pre></td></tr></table></div></figure>
 
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm">* @param sellRequest</span>
-</span><span class='line'><span class="cm">* @return</span>
-</span><span class='line'><span class="cm">* @throws ManagedComponentException</span>
-</span><span class='line'><span class="cm">*/</span>
-</span><span class='line'><span class="kd">public</span> <span class="n">SellResponse</span> <span class="nf">beginSellItem</span><span class="o">(</span><span class="n">SellRequest</span> <span class="n">sellRequest</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ManagedComponentException</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/**
+</span><span class='line'>* @param sellRequest
+</span><span class='line'>* @return
+</span><span class='line'>* @throws ManagedComponentException
+</span><span class='line'>*/
+</span><span class='line'>public SellResponse beginSellItem(SellRequest sellRequest) throws ManagedComponentException</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>C4: 糟糕的注释（Poorly Written Comment）</h3>
@@ -217,13 +215,12 @@ Comments should say things that the code cannot say for itself.</p>
 
 <p>You should be able to check out the system with one simple command and then issue one other simple command to build it.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">svn</span> <span class="n">get</span> <span class="n">mySystem</span>
-</span><span class='line'><span class="n">cd</span> <span class="n">mySystem</span>
-</span><span class='line'><span class="n">ant</span> <span class="n">all</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>svn get mySystem 
+</span><span class='line'>cd mySystem
+</span><span class='line'>ant all</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>E2: 需要多步才能做到的测试（Tests Require More Than One Step）</h3>
@@ -258,9 +255,8 @@ Comments should say things that the code cannot say for itself.</p>
 
 <p>Following <code>The Principle of Least Surprise</code>, any function or class should implement the behaviors that another programmer could reasonably expect.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Day</span> <span class="n">day</span> <span class="o">=</span> <span class="n">DayDate</span><span class="o">.</span><span class="na">StringToDay</span><span class="o">(</span><span class="n">String</span> <span class="n">dayName</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Day day = DayDate.StringToDay(String dayName);</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Reasonable expectations:</p>
@@ -292,17 +288,16 @@ Look for every boundary condition and write a test for it.</p>
 
 <h3>G6: 在错误的抽象层级上的代码（Code at Wrong Level of Abstraction）</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">Stack</span> <span class="o">{</span>
-</span><span class='line'>  <span class="n">Object</span> <span class="nf">pop</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">EmptyException</span><span class="o">;</span>
-</span><span class='line'>  <span class="kt">void</span> <span class="nf">push</span><span class="o">(</span><span class="n">Object</span> <span class="n">o</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">FullException</span><span class="o">;</span>
-</span><span class='line'>  <span class="kt">double</span> <span class="nf">percentFull</span><span class="o">();</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public interface Stack {
+</span><span class='line'>  Object pop() throws EmptyException;
+</span><span class='line'>  void push(Object o) throws FullException; 
+</span><span class='line'>  double percentFull();
+</span><span class='line'>}  </span></code></pre></td></tr></table></div></figure>
 
 
 <ul>
@@ -381,7 +376,7 @@ Look for every boundary condition and write a test for it.</p>
 
 <p>The methods of a class should be interested in the variables and functions of the class they belong to, and not the variables and functions of other classes.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -392,17 +387,17 @@ Look for every boundary condition and write a test for it.</p>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HourlyPayCalculator</span> <span class="o">{</span>
-</span><span class='line'>  <span class="kd">public</span> <span class="n">Money</span> <span class="nf">calculateWeeklyPay</span><span class="o">(</span><span class="n">HourlyEmployee</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">tenthRate</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getTenthRate</span><span class="o">().</span><span class="na">getPennies</span><span class="o">();</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">tenthsWorked</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getTenthsWorked</span><span class="o">();</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">straightTime</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="mi">400</span><span class="o">,</span> <span class="n">tenthsWorked</span><span class="o">);</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">overTime</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">tenthsWorked</span> <span class="o">-</span> <span class="n">straightTime</span><span class="o">);</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">straightPay</span> <span class="o">=</span> <span class="n">straightTime</span> <span class="o">*</span> <span class="n">tenthRate</span><span class="o">;</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">overtimePay</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span><span class="n">Math</span><span class="o">.</span><span class="na">round</span><span class="o">(</span><span class="n">overTime</span><span class="o">*</span><span class="n">tenthRate</span><span class="o">*</span><span class="mf">1.5</span><span class="o">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="nf">Money</span><span class="o">(</span><span class="n">straightPay</span> <span class="o">+</span> <span class="n">overtimePay</span><span class="o">);</span>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class HourlyPayCalculator {
+</span><span class='line'>  public Money calculateWeeklyPay(HourlyEmployee e) {
+</span><span class='line'>    int tenthRate = e.getTenthRate().getPennies();
+</span><span class='line'>    int tenthsWorked = e.getTenthsWorked();
+</span><span class='line'>    int straightTime = Math.min(400, tenthsWorked);
+</span><span class='line'>    int overTime = Math.max(0, tenthsWorked - straightTime); 
+</span><span class='line'>    int straightPay = straightTime * tenthRate;
+</span><span class='line'>    int overtimePay = (int)Math.round(overTime*tenthRate*1.5);
+</span><span class='line'>    return new Money(straightPay + overtimePay); 
+</span><span class='line'>  }
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -410,7 +405,7 @@ Look for every boundary condition and write a test for it.</p>
 
 <p>但事无绝对，下面这个reportHours方法如果移到HourlyEmployee类中，就会违反SRP原则。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -423,20 +418,19 @@ Look for every boundary condition and write a test for it.</p>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HourlyEmployeeReport</span> <span class="o">{</span>
-</span><span class='line'>  <span class="kd">private</span> <span class="n">HourlyEmployee</span> <span class="n">employee</span> <span class="o">;</span>
-</span><span class='line'>  <span class="kd">public</span> <span class="nf">HourlyEmployeeReport</span><span class="o">(</span><span class="n">HourlyEmployee</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">employee</span> <span class="o">=</span> <span class="n">e</span><span class="o">;</span>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">String</span> <span class="nf">reportHours</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;Name: %s\tHours:%d.%1d\n&quot;</span><span class="o">,</span>
-</span><span class='line'>      <span class="n">employee</span><span class="o">.</span><span class="na">getName</span><span class="o">(),</span>
-</span><span class='line'>      <span class="n">employee</span><span class="o">.</span><span class="na">getTenthsWorked</span><span class="o">()/</span><span class="mi">10</span><span class="o">,</span>
-</span><span class='line'>      <span class="n">employee</span><span class="o">.</span><span class="na">getTenthsWorked</span><span class="o">()%</span><span class="mi">10</span><span class="o">);</span>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class HourlyEmployeeReport { 
+</span><span class='line'>  private HourlyEmployee employee ;
+</span><span class='line'>  public HourlyEmployeeReport(HourlyEmployee e) { 
+</span><span class='line'>    this.employee = e;
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  String reportHours() { 
+</span><span class='line'>    return String.format("Name: %s\tHours:%d.%1d\n", 
+</span><span class='line'>      employee.getName(), 
+</span><span class='line'>      employee.getTenthsWorked()/10, 
+</span><span class='line'>      employee.getTenthsWorked()%10);
+</span><span class='line'>  } 
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>G15: 选择算子参数（Selector Arguments）</h3>
@@ -450,7 +444,7 @@ Look for every boundary condition and write a test for it.</p>
 </ul>
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -460,34 +454,32 @@ Look for every boundary condition and write a test for it.</p>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">calculateWeeklyPay</span><span class="o">(</span><span class="kt">boolean</span> <span class="n">overtime</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//Selector Argument</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">tenthRate</span> <span class="o">=</span> <span class="n">getTenthRate</span><span class="o">();</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">tenthsWorked</span> <span class="o">=</span> <span class="n">getTenthsWorked</span><span class="o">();</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">straightTime</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">min</span><span class="o">(</span><span class="mi">400</span><span class="o">,</span> <span class="n">tenthsWorked</span><span class="o">);</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">overTime</span> <span class="o">=</span> <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">tenthsWorked</span> <span class="o">-</span> <span class="n">straightTime</span><span class="o">);</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">straightPay</span> <span class="o">=</span> <span class="n">straightTime</span> <span class="o">*</span> <span class="n">tenthRate</span><span class="o">;</span>
-</span><span class='line'>  <span class="kt">double</span> <span class="n">overtimeRate</span> <span class="o">=</span> <span class="n">overtime</span> <span class="o">?</span> <span class="mf">1.5</span> <span class="o">:</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="n">tenthRate</span><span class="o">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">overtimePay</span> <span class="o">=</span> <span class="o">(</span><span class="kt">int</span><span class="o">)</span><span class="n">Math</span><span class="o">.</span><span class="na">round</span><span class="o">(</span><span class="n">overTime</span><span class="o">*</span><span class="n">overtimeRate</span><span class="o">);</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">straightPay</span> <span class="o">+</span> <span class="n">overtimePay</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public int calculateWeeklyPay(boolean overtime) { //Selector Argument
+</span><span class='line'>  int tenthRate = getTenthRate();
+</span><span class='line'>  int tenthsWorked = getTenthsWorked();
+</span><span class='line'>  int straightTime = Math.min(400, tenthsWorked);
+</span><span class='line'>  int overTime = Math.max(0, tenthsWorked - straightTime); 
+</span><span class='line'>  int straightPay = straightTime * tenthRate;
+</span><span class='line'>  double overtimeRate = overtime ? 1.5 : 1.0 * tenthRate; 
+</span><span class='line'>  int overtimePay = (int)Math.round(overTime*overtimeRate); 
+</span><span class='line'>  return straightPay + overtimePay;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>G16: 晦涩的意图（Obscured Intent）</h3>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">m_otCalc</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">iThsWkd</span> <span class="o">*</span> <span class="n">iThsRte</span> <span class="o">+</span>
-</span><span class='line'>       <span class="o">(</span><span class="kt">int</span><span class="o">)</span> <span class="n">Math</span><span class="o">.</span><span class="na">round</span><span class="o">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">iThsRte</span> <span class="o">*</span>
-</span><span class='line'>          <span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">iThsWkd</span> <span class="o">-</span> <span class="mi">400</span><span class="o">)</span>
-</span><span class='line'>       <span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public int m_otCalc() { 
+</span><span class='line'>  return iThsWkd * iThsRte +
+</span><span class='line'>       (int) Math.round(0.5 * iThsRte * 
+</span><span class='line'>          Math.max(0, iThsWkd - 400)
+</span><span class='line'>       ); 
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>这个函数看起来短小紧凑，但究竟是在做什么事情呢？</p>
@@ -505,24 +497,22 @@ Look for every boundary condition and write a test for it.</p>
 
 <p>恰当的静态方法：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Math</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="kt">double</span> <span class="n">a</span><span class="o">,</span> <span class="kt">double</span> <span class="n">b</span><span class="o">)</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Math.max(double a, double b)
 </span><span class='line'>
-</span><span class='line'><span class="c1">// to avoid:</span>
-</span><span class='line'><span class="k">new</span> <span class="nf">Math</span><span class="o">().</span><span class="na">max</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">b</span><span class="o">);</span>
-</span><span class='line'><span class="n">a</span><span class="o">.</span><span class="na">max</span><span class="o">(</span><span class="n">b</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>// to avoid:
+</span><span class='line'>new Math().max(a, b);
+</span><span class='line'>a.max(b);</span></code></pre></td></tr></table></div></figure>
 
 
 <p>不恰当的静态方法：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">HourlyPayCalculator</span><span class="o">.</span><span class="na">calculatePay</span><span class="o">(</span><span class="n">employee</span><span class="o">,</span> <span class="n">overtimeRate</span><span class="o">).</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>HourlyPayCalculator.calculatePay(employee, overtimeRate).</span></code></pre></td></tr></table></div></figure>
 
 
 <p>原因：有理由希望这个函数是多态的。（OvertimeHourlyPayCalculator, StraightTimeHourlyPayCalculator）</p>
@@ -533,37 +523,34 @@ Look for every boundary condition and write a test for it.</p>
 
 <p>让程序可读的有力方法之一就是将计算过程打散，用有意义的变量名存储中间值。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Matcher</span> <span class="n">match</span> <span class="o">=</span> <span class="n">headerPattern</span><span class="o">.</span><span class="na">matcher</span><span class="o">(</span><span class="n">line</span><span class="o">);</span>
-</span><span class='line'><span class="k">if</span><span class="o">(</span><span class="n">match</span><span class="o">.</span><span class="na">find</span><span class="o">())</span> <span class="o">{</span>
-</span><span class='line'>  <span class="n">String</span> <span class="n">key</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span> <span class="c1">//中间值</span>
-</span><span class='line'>  <span class="n">String</span> <span class="n">value</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="na">group</span><span class="o">(</span><span class="mi">2</span><span class="o">);</span> <span class="c1">//中间值 </span>
-</span><span class='line'>  <span class="n">headers</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">.</span><span class="na">toLowerCase</span><span class="o">(),</span> <span class="n">value</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Matcher match = headerPattern.matcher(line); 
+</span><span class='line'>if(match.find()) {
+</span><span class='line'>  String key = match.group(1); //中间值
+</span><span class='line'>  String value = match.group(2); //中间值 
+</span><span class='line'>  headers.put(key.toLowerCase(), value);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>G20: 函数名称应该表达其行为（Function Names Should Say What They Do）</h3>
 
 <p>反例：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Date</span> <span class="n">newDate</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Date newDate = date.add(5);</span></code></pre></td></tr></table></div></figure>
 
 
 <p>正例：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Date</span> <span class="n">newDate</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="na">addDaysTo</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
-</span><span class='line'><span class="n">Date</span> <span class="n">newDate</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="na">increaseByDays</span><span class="o">(</span><span class="mi">5</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Date newDate = date.addDaysTo(5);
+</span><span class='line'>Date newDate = date.increaseByDays(5);</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>G21: 理解算法（Understand the Algorithm）</h3>
@@ -588,7 +575,7 @@ You must know that the solution is correct.</p>
 </ul>
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -615,34 +602,33 @@ You must know that the solution is correct.</p>
 <span class='line-number'>25</span>
 <span class='line-number'>26</span>
 <span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HourlyReporter</span> <span class="o">{</span>
-</span><span class='line'>  <span class="kd">private</span> <span class="n">HourlyReportFormatter</span> <span class="n">formatter</span><span class="o">;</span>
-</span><span class='line'>  <span class="kd">private</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">LineItem</span><span class="o">&gt;</span> <span class="n">page</span><span class="o">;</span>
-</span><span class='line'>  <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">PAGE_SIZE</span> <span class="o">=</span> <span class="mi">55</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">generateReport</span><span class="o">(</span><span class="n">List</span><span class="o">&lt;</span><span class="n">HourlyEmployee</span><span class="o">&gt;</span> <span class="n">employees</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">for</span> <span class="o">(</span><span class="n">HourlyEmployee</span> <span class="n">e</span> <span class="o">:</span> <span class="n">employees</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>      <span class="n">addLineItemToPage</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
-</span><span class='line'>      <span class="k">if</span> <span class="o">(</span><span class="n">page</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="n">PAGE_SIZE</span><span class="o">)</span>
-</span><span class='line'>        <span class="n">printAndClearItemList</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">page</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span>
-</span><span class='line'>      <span class="n">printAndClearItemList</span><span class="o">();</span>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">printAndClearItemList</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">formatter</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="n">page</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">page</span><span class="o">.</span><span class="na">clear</span><span class="o">();</span>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">private</span> <span class="kt">void</span> <span class="nf">addLineItemToPage</span><span class="o">(</span><span class="n">HourlyEmployee</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">LineItem</span> <span class="n">item</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">LineItem</span><span class="o">();</span>
-</span><span class='line'>    <span class="n">item</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getName</span><span class="o">();</span>
-</span><span class='line'>    <span class="n">item</span><span class="o">.</span><span class="na">hours</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getTenthsWorked</span><span class="o">()</span> <span class="o">/</span> <span class="mi">10</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">item</span><span class="o">.</span><span class="na">tenths</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">getTenthsWorked</span><span class="o">()</span> <span class="o">%</span> <span class="mi">10</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">page</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">item</span><span class="o">);</span>
-</span><span class='line'>  <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class HourlyReporter {
+</span><span class='line'>  private HourlyReportFormatter formatter; 
+</span><span class='line'>  private List&lt;LineItem&gt; page;
+</span><span class='line'>  private final int PAGE_SIZE = 55;
+</span><span class='line'>  
+</span><span class='line'>  public void generateReport(List&lt;HourlyEmployee&gt; employees) { 
+</span><span class='line'>    for (HourlyEmployee e : employees) {
+</span><span class='line'>      addLineItemToPage(e);
+</span><span class='line'>      if (page.size() == PAGE_SIZE)
+</span><span class='line'>        printAndClearItemList(); 
+</span><span class='line'>    }
+</span><span class='line'>    if (page.size() &gt; 0) 
+</span><span class='line'>      printAndClearItemList();
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  private void printAndClearItemList() { 
+</span><span class='line'>    formatter.format(page); 
+</span><span class='line'>    page.clear();
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  private void addLineItemToPage(HourlyEmployee e) { 
+</span><span class='line'>    LineItem item = new LineItem();
+</span><span class='line'>    item.name = e.getName();
+</span><span class='line'>    item.hours = e.getTenthsWorked() / 10;
+</span><span class='line'>    item.tenths = e.getTenthsWorked() % 10;
+</span><span class='line'>    page.add(item); 
+</span><span class='line'>  }</span></code></pre></td></tr></table></div></figure>
 
 
 <p>PAGE_SIZE应该是HourlyReportFormatter的职责； 此处HourlyReporter被假定知道PAGE_SIZE，所以是逻辑依赖。</p>
@@ -680,13 +666,12 @@ CartSectionHeaderAssembler</p>
 
 <p>问题：是不是所有数字都需要替换成常量？</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">// 计算圆周长</span>
-</span><span class='line'><span class="c1">// 数字 2 是否需要定义一个常量？ --&gt; NO</span>
-</span><span class='line'><span class="kt">double</span> <span class="n">circumference</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">Math</span><span class="o">.</span><span class="na">PI</span> <span class="o">*</span> <span class="mi">2</span><span class="o">;</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 计算圆周长
+</span><span class='line'>// 数字 2 是否需要定义一个常量？ --&gt; NO
+</span><span class='line'>double circumference = radius * Math.PI * 2;</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>G26: 准确（Be Precise）</h3>
@@ -707,16 +692,14 @@ CartSectionHeaderAssembler</p>
 
 <p>反例</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">timer</span><span class="o">.</span><span class="na">hasExpired</span><span class="o">()</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">timer</span><span class="o">.</span><span class="na">isRecurrent</span><span class="o">())</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if (timer.hasExpired() && !timer.isRecurrent())</span></code></pre></td></tr></table></div></figure>
 
 
 <p>正例</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">shouldBeDeleted</span><span class="o">(</span><span class="n">timer</span><span class="o">))</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if (shouldBeDeleted(timer))</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>G29: 避免否定性条件（Avoid Negative Conditionals）</h3>
@@ -725,15 +708,14 @@ CartSectionHeaderAssembler</p>
 
 <p>反例</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">if</span> <span class="o">(!</span><span class="n">buffer</span><span class="o">.</span><span class="na">shouldNotCompact</span><span class="o">())</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if (!buffer.shouldNotCompact())</span></code></pre></td></tr></table></div></figure>
 
 
 <p>正例</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">buffer</span><span class="o">.</span><span class="na">shouldCompact</span><span class="o">())</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if (buffer.shouldCompact())
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -747,7 +729,7 @@ CartSectionHeaderAssembler</p>
 
 <p>反例</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -758,23 +740,23 @@ CartSectionHeaderAssembler</p>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MoogDiver</span> <span class="o">{</span>
-</span><span class='line'>  <span class="n">Gradient</span> <span class="n">gradient</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">List</span><span class="o">&lt;</span><span class="n">Spline</span><span class="o">&gt;</span> <span class="n">splines</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">dive</span><span class="o">(</span><span class="n">String</span> <span class="n">reason</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">saturateGradient</span><span class="o">();</span>
-</span><span class='line'>    <span class="n">reticulateSplines</span><span class="o">();</span>
-</span><span class='line'>    <span class="n">diveForMoog</span><span class="o">(</span><span class="n">reason</span><span class="o">);</span>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'>  <span class="o">...</span>
-</span><span class='line'><span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class MoogDiver { 
+</span><span class='line'>  Gradient gradient; 
+</span><span class='line'>  List&lt;Spline&gt; splines;
+</span><span class='line'>  
+</span><span class='line'>  public void dive(String reason) { 
+</span><span class='line'>    saturateGradient(); 
+</span><span class='line'>    reticulateSplines(); 
+</span><span class='line'>    diveForMoog(reason);
+</span><span class='line'>  }
+</span><span class='line'>  ... 
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>正例</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -785,17 +767,17 @@ CartSectionHeaderAssembler</p>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MoogDiver</span> <span class="o">{</span>
-</span><span class='line'>  <span class="n">Gradient</span> <span class="n">gradient</span><span class="o">;</span>
-</span><span class='line'>  <span class="n">List</span><span class="o">&lt;</span><span class="n">Spline</span><span class="o">&gt;</span> <span class="n">splines</span><span class="o">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">dive</span><span class="o">(</span><span class="n">String</span> <span class="n">reason</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Gradient</span> <span class="n">gradient</span> <span class="o">=</span> <span class="n">saturateGradient</span><span class="o">();</span>
-</span><span class='line'>    <span class="n">List</span><span class="o">&lt;</span><span class="n">Spline</span><span class="o">&gt;</span> <span class="n">splines</span> <span class="o">=</span> <span class="n">reticulateSplines</span><span class="o">(</span><span class="n">gradient</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">diveForMoog</span><span class="o">(</span><span class="n">splines</span><span class="o">,</span> <span class="n">reason</span><span class="o">);</span>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'>  <span class="o">...</span>
-</span><span class='line'><span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class MoogDiver { 
+</span><span class='line'>  Gradient gradient; 
+</span><span class='line'>  List&lt;Spline&gt; splines;
+</span><span class='line'>  
+</span><span class='line'>  public void dive(String reason) {
+</span><span class='line'>    Gradient gradient = saturateGradient(); 
+</span><span class='line'>    List&lt;Spline&gt; splines = reticulateSplines(gradient); 
+</span><span class='line'>    diveForMoog(splines, reason);
+</span><span class='line'>  }
+</span><span class='line'>  ... 
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -811,29 +793,29 @@ CartSectionHeaderAssembler</p>
 
 <p>反例：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="k">if</span><span class="o">(</span><span class="n">level</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">tags</span><span class="o">.</span><span class="na">length</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>  <span class="n">parts</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Parse</span><span class="o">(</span><span class="n">body</span><span class="o">,</span> <span class="n">tags</span><span class="o">,</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">endTag</span><span class="o">);</span>
-</span><span class='line'>  <span class="n">body</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if(level + 1 &lt; tags.length) {
+</span><span class='line'>  parts = new Parse(body, tags, level + 1, offset + endTag);
+</span><span class='line'>  body = null; 
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>正例：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">int</span> <span class="n">nextLevel</span> <span class="o">=</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
-</span><span class='line'><span class="k">if</span><span class="o">(</span><span class="n">nextLevel</span> <span class="o">&lt;</span> <span class="n">tags</span><span class="o">.</span><span class="na">length</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>  <span class="n">parts</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Parse</span><span class="o">(</span><span class="n">body</span><span class="o">,</span> <span class="n">tags</span><span class="o">,</span> <span class="n">nextLevel</span><span class="o">,</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">endTag</span><span class="o">);</span>
-</span><span class='line'>  <span class="n">body</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>int nextLevel = level + 1; 
+</span><span class='line'>if(nextLevel &lt; tags.length) {
+</span><span class='line'>  parts = new Parse(body, tags, nextLevel, offset + endTag);
+</span><span class='line'>  body = null; 
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -841,20 +823,20 @@ CartSectionHeaderAssembler</p>
 
 <p>反例：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">render</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-</span><span class='line'>  <span class="n">StringBuffer</span> <span class="n">html</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">StringBuffer</span><span class="o">(</span><span class="s">&quot;&lt;hr&quot;</span><span class="o">);</span>
-</span><span class='line'>  <span class="k">if</span><span class="o">(</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span>
-</span><span class='line'>    <span class="n">html</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot; size=\&quot;&quot;</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">size</span> <span class="o">+</span> <span class="mi">1</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;\&quot;&quot;</span><span class="o">);</span>
-</span><span class='line'>  <span class="n">html</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">&quot;&gt;&quot;</span><span class="o">);</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">html</span><span class="o">.</span><span class="na">toString</span><span class="o">();</span>
-</span><span class='line'><span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public String render() throws Exception {
+</span><span class='line'>  StringBuffer html = new StringBuffer("&lt;hr"); 
+</span><span class='line'>  if(size &gt; 0)
+</span><span class='line'>    html.append(" size=\"").append(size + 1).append("\""); 
+</span><span class='line'>  html.append("&gt;");
+</span><span class='line'>  return html.toString(); 
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -868,7 +850,7 @@ CartSectionHeaderAssembler</p>
 
 <p>正例：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -879,17 +861,17 @@ CartSectionHeaderAssembler</p>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">String</span> <span class="nf">render</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-</span><span class='line'>  <span class="n">HtmlTag</span> <span class="n">hr</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">HtmlTag</span><span class="o">(</span><span class="s">&quot;hr&quot;</span><span class="o">);</span>
-</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">extraDashes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span>
-</span><span class='line'>    <span class="n">hr</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">&quot;size&quot;</span><span class="o">,</span> <span class="n">hrSize</span><span class="o">(</span><span class="n">extraDashes</span><span class="o">));</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">hr</span><span class="o">.</span><span class="na">html</span><span class="o">();</span>
-</span><span class='line'><span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public String render() throws Exception {
+</span><span class='line'>  HtmlTag hr = new HtmlTag("hr"); 
+</span><span class='line'>  if (extraDashes &gt; 0)
+</span><span class='line'>    hr.addAttribute("size", hrSize(extraDashes)); 
+</span><span class='line'>  return hr.html();
+</span><span class='line'>}
 </span><span class='line'>
-</span><span class='line'><span class="kd">private</span> <span class="n">String</span> <span class="nf">hrSize</span><span class="o">(</span><span class="kt">int</span> <span class="n">height</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">hrSize</span> <span class="o">=</span> <span class="n">height</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">String</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">&quot;%d&quot;</span><span class="o">,</span> <span class="n">hrSize</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
+</span><span class='line'>private String hrSize(int height) {
+</span><span class='line'>  int hrSize = height + 1;
+</span><span class='line'>  return String.format("%d", hrSize); 
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -899,7 +881,7 @@ CartSectionHeaderAssembler</p>
 
 <p>正例：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -911,18 +893,18 @@ CartSectionHeaderAssembler</p>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-</span><span class='line'>  <span class="n">Arguments</span> <span class="n">arguments</span> <span class="o">=</span> <span class="n">parseCommandLine</span><span class="o">(</span><span class="n">args</span><span class="o">);</span>
-</span><span class='line'>  <span class="o">...</span>
-</span><span class='line'><span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public static void main(String[] args) throws Exception {
+</span><span class='line'>  Arguments arguments = parseCommandLine(args);
+</span><span class='line'>  ... 
+</span><span class='line'>}
 </span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Arguments</span> <span class="o">{</span>
-</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">DEFAULT_PATH</span> <span class="o">=</span> <span class="s">&quot;.&quot;</span><span class="o">;</span>
-</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span> <span class="n">DEFAULT_ROOT</span> <span class="o">=</span> <span class="s">&quot;FitNesseRoot&quot;</span><span class="o">;</span>
-</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">DEFAULT_PORT</span> <span class="o">=</span> <span class="mi">80</span><span class="o">;</span>
-</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">DEFAULT_VERSION_DAYS</span> <span class="o">=</span> <span class="mi">14</span><span class="o">;</span>
-</span><span class='line'>  <span class="o">...</span>
-</span><span class='line'><span class="o">}</span>
+</span><span class='line'>public class Arguments {
+</span><span class='line'>  public static final String DEFAULT_PATH = ".";
+</span><span class='line'>  public static final String DEFAULT_ROOT = "FitNesseRoot"; 
+</span><span class='line'>  public static final int DEFAULT_PORT = 80;
+</span><span class='line'>  public static final int DEFAULT_VERSION_DAYS = 14;
+</span><span class='line'>  ...
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -932,15 +914,15 @@ CartSectionHeaderAssembler</p>
 
 <p>反例：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">a</span><span class="o">.</span><span class="na">getB</span><span class="o">().</span><span class="na">getC</span><span class="o">().</span><span class="na">doSomething</span><span class="o">();</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>a.getB().getC().doSomething();
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>正例：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">myCollaborator</span><span class="o">.</span><span class="na">doSomething</span><span class="o">();</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>myCollaborator.doSomething();
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -980,7 +962,7 @@ CartSectionHeaderAssembler</p>
 
 <p>反例</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -989,27 +971,25 @@ CartSectionHeaderAssembler</p>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="n">String</span> <span class="nf">doRename</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-</span><span class='line'>  <span class="k">if</span><span class="o">(</span><span class="n">refactorReferences</span><span class="o">)</span>
-</span><span class='line'>    <span class="n">renameReferences</span><span class="o">();</span>
-</span><span class='line'>  <span class="n">renamePage</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">pathToRename</span><span class="o">.</span><span class="na">removeNameFromEnd</span><span class="o">();</span>
-</span><span class='line'>  <span class="n">pathToRename</span><span class="o">.</span><span class="na">addNameToEnd</span><span class="o">(</span><span class="n">newName</span><span class="o">);</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">PathParser</span><span class="o">.</span><span class="na">render</span><span class="o">(</span><span class="n">pathToRename</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>private String doRename() throws Exception {
+</span><span class='line'>  if(refactorReferences) 
+</span><span class='line'>    renameReferences();
+</span><span class='line'>  renamePage();
+</span><span class='line'>  
+</span><span class='line'>  pathToRename.removeNameFromEnd(); 
+</span><span class='line'>  pathToRename.addNameToEnd(newName); 
+</span><span class='line'>  return PathParser.render(pathToRename);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>正例</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">private</span> <span class="n">String</span> <span class="nf">renamePageAndOptionallyAllReferences</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-</span><span class='line'>  <span class="o">...</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>private String renamePageAndOptionallyAllReferences() throws Exception {
+</span><span class='line'>  ...
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>N5: 为较大作用范围选用较长名称（Use Long Names for Long Scopes）</h3>
@@ -1024,32 +1004,30 @@ CartSectionHeaderAssembler</p>
 
 <p>反例</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">ObjectOutputStream</span> <span class="nf">getOos</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
-</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">m_oos</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">m_oos</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">ObjectOutputStream</span><span class="o">(</span><span class="n">m_socket</span><span class="o">.</span><span class="na">getOutputStream</span><span class="o">());</span>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="n">m_oos</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public ObjectOutputStream getOos() throws IOException { 
+</span><span class='line'>  if (m_oos == null) {
+</span><span class='line'>    m_oos = new ObjectOutputStream(m_socket.getOutputStream()); 
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  return m_oos; 
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>正例</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">ObjectOutputStream</span> <span class="nf">createOrReturnOos</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
-</span><span class='line'> <span class="o">...</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public ObjectOutputStream createOrReturnOos() throws IOException { 
+</span><span class='line'> ... 
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>17.7 测试（Tests）</h2>
@@ -1182,6 +1160,8 @@ CartSectionHeaderAssembler</p>
         <a class="basic-alignment left" href="/blog/redis-mind-map/" title="Previous Post: Redis Mind Map">&laquo; Redis Mind Map</a>
       
       
+        <a class="basic-alignment right" href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/" title="Next Post: How to Verify If Resilience4j Circuit Breaker Works">How to Verify If Resilience4j Circuit Breaker Works &raquo;</a>
+      
     </p>
 
     <!-- Gitalk 评论 start  -->
@@ -1217,12 +1197,14 @@ CartSectionHeaderAssembler</p>
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (3)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (1)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -1238,8 +1220,11 @@ CartSectionHeaderAssembler</p>
 <a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
 <a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
 <a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 90%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
 <a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
@@ -1253,11 +1238,13 @@ CartSectionHeaderAssembler</p>
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 136%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 90%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -1266,6 +1253,14 @@ CartSectionHeaderAssembler</p>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
+      </li>
     
       <li class="post">
         <a href="/blog/clean-code/">Clean Code Summary</a>
@@ -1277,14 +1272,6 @@ CartSectionHeaderAssembler</p>
     
       <li class="post">
         <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
       </li>
     
   </ul>
@@ -1309,7 +1296,7 @@ CartSectionHeaderAssembler</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2019 - Alpha Wang -
+  Copyright &copy; 2022 - Alpha Wang -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
   <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
 </p>

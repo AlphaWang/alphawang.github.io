@@ -156,7 +156,7 @@ $(document).ready(
 
 <p>switch String的语法示例如下：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -175,31 +175,30 @@ $(document).ready(
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
 <span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm">* Created by Alpha on Jan/21/15.</span>
-</span><span class='line'><span class="cm">*/</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/**
+</span><span class='line'>* Created by Alpha on Jan/21/15.
+</span><span class='line'>*/
 </span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">StringSwitch</span> <span class="o">{</span>
-</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>     <span class="n">String</span> <span class="n">mode</span> <span class="o">=</span> <span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
-</span><span class='line'>     <span class="k">switch</span> <span class="o">(</span><span class="n">mode</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">case</span> <span class="s">&quot;ACTIVE&quot;</span><span class="o">:</span>
-</span><span class='line'>           <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Application is running on Active mode&quot;</span><span class="o">);</span>
-</span><span class='line'>           <span class="k">break</span><span class="o">;</span>
-</span><span class='line'>        <span class="k">case</span> <span class="s">&quot;PASSIVE&quot;</span><span class="o">:</span>
-</span><span class='line'>           <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Application is running on Passive mode&quot;</span><span class="o">);</span>
-</span><span class='line'>           <span class="k">break</span><span class="o">;</span>
-</span><span class='line'>        <span class="k">case</span> <span class="s">&quot;SAFE&quot;</span><span class="o">:</span>
-</span><span class='line'>           <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Application is running on Safe mode&quot;</span><span class="o">);</span>
-</span><span class='line'>     <span class="o">}</span>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>public class StringSwitch {
+</span><span class='line'>  public static void main(String[] args) {
+</span><span class='line'>     String mode = args[0];
+</span><span class='line'>     switch (mode) {
+</span><span class='line'>        case "ACTIVE":
+</span><span class='line'>           System.out.println("Application is running on Active mode");
+</span><span class='line'>           break;
+</span><span class='line'>        case "PASSIVE":
+</span><span class='line'>           System.out.println("Application is running on Passive mode");
+</span><span class='line'>           break;
+</span><span class='line'>        case "SAFE":
+</span><span class='line'>           System.out.println("Application is running on Safe mode");
+</span><span class='line'>     }
+</span><span class='line'>  }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>那么在底层是如何实现的呢？我们可以通过反编译看看编译器是如何处理上述代码的：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -236,44 +235,45 @@ $(document).ready(
 <span class='line-number'>35</span>
 <span class='line-number'>36</span>
 <span class='line-number'>37</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">StringSwitch</span> <span class="o">{</span>
-</span><span class='line'>   <span class="kd">public</span> <span class="nf">StringSwitch</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>   <span class="o">}</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>public class StringSwitch {
+</span><span class='line'>   public StringSwitch() {
+</span><span class='line'>   }
 </span><span class='line'>
-</span><span class='line'>   <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>       <span class="n">String</span> <span class="n">mode</span> <span class="o">=</span> <span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">];</span>
-</span><span class='line'>       <span class="kt">byte</span> <span class="n">var3</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
-</span><span class='line'>       <span class="k">switch</span><span class="o">(</span><span class="n">mode</span><span class="o">.</span><span class="na">hashCode</span><span class="o">())</span> <span class="o">{</span>
-</span><span class='line'>       <span class="k">case</span> <span class="o">-</span><span class="mi">74056953</span><span class="o">:</span>
-</span><span class='line'>           <span class="k">if</span><span class="o">(</span><span class="n">mode</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;PASSIVE&quot;</span><span class="o">))</span> <span class="o">{</span>
-</span><span class='line'>               <span class="n">var3</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
-</span><span class='line'>           <span class="o">}</span>
-</span><span class='line'>           <span class="k">break</span><span class="o">;</span>
-</span><span class='line'>       <span class="k">case</span> <span class="mi">2537357</span><span class="o">:</span>
-</span><span class='line'>           <span class="k">if</span><span class="o">(</span><span class="n">mode</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;SAFE&quot;</span><span class="o">))</span> <span class="o">{</span>
-</span><span class='line'>               <span class="n">var3</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>
-</span><span class='line'>           <span class="o">}</span>
-</span><span class='line'>           <span class="k">break</span><span class="o">;</span>
-</span><span class='line'>       <span class="k">case</span> <span class="mi">1925346054</span><span class="o">:</span>
-</span><span class='line'>           <span class="k">if</span><span class="o">(</span><span class="n">mode</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="s">&quot;ACTIVE&quot;</span><span class="o">))</span> <span class="o">{</span>
-</span><span class='line'>               <span class="n">var3</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-</span><span class='line'>           <span class="o">}</span>
-</span><span class='line'>       <span class="o">}</span>
+</span><span class='line'>   public static void main(String[] args) {
+</span><span class='line'>       String mode = args[0];
+</span><span class='line'>       byte var3 = -1;
+</span><span class='line'>       switch(mode.hashCode()) {
+</span><span class='line'>       case -74056953:
+</span><span class='line'>           if(mode.equals("PASSIVE")) {
+</span><span class='line'>               var3 = 1;
+</span><span class='line'>           }
+</span><span class='line'>           break;
+</span><span class='line'>       case 2537357:
+</span><span class='line'>           if(mode.equals("SAFE")) {
+</span><span class='line'>               var3 = 2;
+</span><span class='line'>           }
+</span><span class='line'>           break;
+</span><span class='line'>       case 1925346054:
+</span><span class='line'>           if(mode.equals("ACTIVE")) {
+</span><span class='line'>               var3 = 0;
+</span><span class='line'>           }
+</span><span class='line'>       }
 </span><span class='line'>
-</span><span class='line'>       <span class="k">switch</span><span class="o">(</span><span class="n">var3</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>       <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>
-</span><span class='line'>           <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Application is running on Active mode&quot;</span><span class="o">);</span>
-</span><span class='line'>           <span class="k">break</span><span class="o">;</span>
-</span><span class='line'>       <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>
-</span><span class='line'>           <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Application is running on Passive mode&quot;</span><span class="o">);</span>
-</span><span class='line'>           <span class="k">break</span><span class="o">;</span>
-</span><span class='line'>       <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>
-</span><span class='line'>           <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&quot;Application is running on Safe mode&quot;</span><span class="o">);</span>
-</span><span class='line'>       <span class="o">}</span>
+</span><span class='line'>       switch(var3) {
+</span><span class='line'>       case 0:
+</span><span class='line'>           System.out.println("Application is running on Active mode");
+</span><span class='line'>           break;
+</span><span class='line'>       case 1:
+</span><span class='line'>           System.out.println("Application is running on Passive mode");
+</span><span class='line'>           break;
+</span><span class='line'>       case 2:
+</span><span class='line'>           System.out.println("Application is running on Safe mode");
+</span><span class='line'>       }
 </span><span class='line'>
-</span><span class='line'>   <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>   }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>可以看到处理流程是：</p>
@@ -431,12 +431,14 @@ $(document).ready(
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (3)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (1)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -452,8 +454,11 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
 <a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
 <a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 90%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
 <a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
@@ -467,11 +472,13 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 136%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 90%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -480,6 +487,14 @@ $(document).ready(
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
+      </li>
     
       <li class="post">
         <a href="/blog/clean-code/">Clean Code Summary</a>
@@ -491,14 +506,6 @@ $(document).ready(
     
       <li class="post">
         <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
       </li>
     
   </ul>
@@ -523,7 +530,7 @@ $(document).ready(
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2019 - Alpha Wang -
+  Copyright &copy; 2022 - Alpha Wang -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
   <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
 </p>

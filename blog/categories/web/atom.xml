@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Web | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/web/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-08-18T13:03:15+08:00</updated>
+  <updated>2022-08-17T22:34:41+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -33,7 +33,7 @@
 <img src="/images/post/2014/09/font-LucidaHandwriting.png" alt="lucida icon" /></p>
 
 <p>The font-family defined in my css is shown below.<br/>
-<code>css css
+<code>
 body &gt; header h1 {   
   padding-left: 45px;   
   font-family: "Zapfino","Snell Roundhand","Lucida Handwriting","PT Serif","Georgia","Helvetica Neue",Arial,serif;

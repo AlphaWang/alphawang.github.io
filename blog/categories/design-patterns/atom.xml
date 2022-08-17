@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Design Patterns | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/design-patterns/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-08-18T13:03:15+08:00</updated>
+  <updated>2022-08-17T22:34:41+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -46,10 +46,10 @@ Comments should say things that the code cannot say for itself.</p>
 
 <p>反例：</p>
 
-<pre><code class="java">i++; // increment i
+<pre><code>i++; // increment i
 </code></pre>
 
-<pre><code class="java">/**
+<pre><code>/**
 * @param sellRequest
 * @return
 * @throws ManagedComponentException
@@ -114,7 +114,7 @@ ant all
 
 <p>Following <code>The Principle of Least Surprise</code>, any function or class should implement the behaviors that another programmer could reasonably expect.</p>
 
-<pre><code class="java ">Day day = DayDate.StringToDay(String dayName);
+<pre><code class="">Day day = DayDate.StringToDay(String dayName);
 </code></pre>
 
 <p>Reasonable expectations:</p>
@@ -146,7 +146,7 @@ Look for every boundary condition and write a test for it.</p>
 
 <h3>G6: 在错误的抽象层级上的代码（Code at Wrong Level of Abstraction）</h3>
 
-<pre><code class="java">public interface Stack {
+<pre><code>public interface Stack {
   Object pop() throws EmptyException;
   void push(Object o) throws FullException; 
   double percentFull();
@@ -229,7 +229,7 @@ Look for every boundary condition and write a test for it.</p>
 
 <p>The methods of a class should be interested in the variables and functions of the class they belong to, and not the variables and functions of other classes.</p>
 
-<pre><code class="java">public class HourlyPayCalculator {
+<pre><code>public class HourlyPayCalculator {
   public Money calculateWeeklyPay(HourlyEmployee e) {
     int tenthRate = e.getTenthRate().getPennies();
     int tenthsWorked = e.getTenthsWorked();
@@ -246,7 +246,7 @@ Look for every boundary condition and write a test for it.</p>
 
 <p>但事无绝对，下面这个reportHours方法如果移到HourlyEmployee类中，就会违反SRP原则。</p>
 
-<pre><code class="java">public class HourlyEmployeeReport { 
+<pre><code>public class HourlyEmployeeReport { 
   private HourlyEmployee employee ;
   public HourlyEmployeeReport(HourlyEmployee e) { 
     this.employee = e;
@@ -272,7 +272,7 @@ Look for every boundary condition and write a test for it.</p>
 </ul>
 
 
-<pre><code class="java">public int calculateWeeklyPay(boolean overtime) { //Selector Argument
+<pre><code>public int calculateWeeklyPay(boolean overtime) { //Selector Argument
   int tenthRate = getTenthRate();
   int tenthsWorked = getTenthsWorked();
   int straightTime = Math.min(400, tenthsWorked);
@@ -286,7 +286,7 @@ Look for every boundary condition and write a test for it.</p>
 
 <h3>G16: 晦涩的意图（Obscured Intent）</h3>
 
-<pre><code class="java">public int m_otCalc() { 
+<pre><code>public int m_otCalc() { 
   return iThsWkd * iThsRte +
        (int) Math.round(0.5 * iThsRte * 
           Math.max(0, iThsWkd - 400)
@@ -309,7 +309,7 @@ Look for every boundary condition and write a test for it.</p>
 
 <p>恰当的静态方法：</p>
 
-<pre><code class="java">Math.max(double a, double b)
+<pre><code>Math.max(double a, double b)
 
 // to avoid:
 new Math().max(a, b);
@@ -318,7 +318,7 @@ a.max(b);
 
 <p>不恰当的静态方法：</p>
 
-<pre><code class="java">HourlyPayCalculator.calculatePay(employee, overtimeRate).
+<pre><code>HourlyPayCalculator.calculatePay(employee, overtimeRate).
 </code></pre>
 
 <p>原因：有理由希望这个函数是多态的。（OvertimeHourlyPayCalculator, StraightTimeHourlyPayCalculator）</p>
@@ -329,7 +329,7 @@ a.max(b);
 
 <p>让程序可读的有力方法之一就是将计算过程打散，用有意义的变量名存储中间值。</p>
 
-<pre><code class="java">Matcher match = headerPattern.matcher(line); 
+<pre><code>Matcher match = headerPattern.matcher(line); 
 if(match.find()) {
   String key = match.group(1); //中间值
   String value = match.group(2); //中间值 
@@ -341,12 +341,12 @@ if(match.find()) {
 
 <p>反例：</p>
 
-<pre><code class="java">Date newDate = date.add(5);
+<pre><code>Date newDate = date.add(5);
 </code></pre>
 
 <p>正例：</p>
 
-<pre><code class="java">Date newDate = date.addDaysTo(5);
+<pre><code>Date newDate = date.addDaysTo(5);
 Date newDate = date.increaseByDays(5);
 </code></pre>
 
@@ -372,7 +372,7 @@ You must know that the solution is correct.</p>
 </ul>
 
 
-<pre><code class="java">public class HourlyReporter {
+<pre><code>public class HourlyReporter {
   private HourlyReportFormatter formatter; 
   private List&lt;LineItem&gt; page;
   private final int PAGE_SIZE = 55;
@@ -436,7 +436,7 @@ CartSectionHeaderAssembler</p>
 
 <p>问题：是不是所有数字都需要替换成常量？</p>
 
-<pre><code class="java">// 计算圆周长
+<pre><code>// 计算圆周长
 // 数字 2 是否需要定义一个常量？ --&gt; NO
 double circumference = radius * Math.PI * 2;
 </code></pre>
@@ -459,12 +459,12 @@ double circumference = radius * Math.PI * 2;
 
 <p>反例</p>
 
-<pre><code class="java">if (timer.hasExpired() &amp;&amp; !timer.isRecurrent())
+<pre><code>if (timer.hasExpired() &amp;&amp; !timer.isRecurrent())
 </code></pre>
 
 <p>正例</p>
 
-<pre><code class="java">if (shouldBeDeleted(timer))
+<pre><code>if (shouldBeDeleted(timer))
 </code></pre>
 
 <h3>G29: 避免否定性条件（Avoid Negative Conditionals）</h3>
@@ -473,12 +473,12 @@ double circumference = radius * Math.PI * 2;
 
 <p>反例</p>
 
-<pre><code class="java">if (!buffer.shouldNotCompact())
+<pre><code>if (!buffer.shouldNotCompact())
 </code></pre>
 
 <p>正例</p>
 
-<pre><code class="java">if (buffer.shouldCompact())
+<pre><code>if (buffer.shouldCompact())
 </code></pre>
 
 <h3>G30: 函数只该做一件事（Functions Should Do One Thing）</h3>
@@ -491,7 +491,7 @@ double circumference = radius * Math.PI * 2;
 
 <p>反例</p>
 
-<pre><code class="java">public class MoogDiver { 
+<pre><code>public class MoogDiver { 
   Gradient gradient; 
   List&lt;Spline&gt; splines;
 
@@ -506,7 +506,7 @@ double circumference = radius * Math.PI * 2;
 
 <p>正例</p>
 
-<pre><code class="java">public class MoogDiver { 
+<pre><code>public class MoogDiver { 
   Gradient gradient; 
   List&lt;Spline&gt; splines;
 
@@ -531,7 +531,7 @@ double circumference = radius * Math.PI * 2;
 
 <p>反例：</p>
 
-<pre><code class="java">if(level + 1 &lt; tags.length) {
+<pre><code>if(level + 1 &lt; tags.length) {
   parts = new Parse(body, tags, level + 1, offset + endTag);
   body = null; 
 }
@@ -539,7 +539,7 @@ double circumference = radius * Math.PI * 2;
 
 <p>正例：</p>
 
-<pre><code class="java">int nextLevel = level + 1; 
+<pre><code>int nextLevel = level + 1; 
 if(nextLevel &lt; tags.length) {
   parts = new Parse(body, tags, nextLevel, offset + endTag);
   body = null; 
@@ -550,7 +550,7 @@ if(nextLevel &lt; tags.length) {
 
 <p>反例：</p>
 
-<pre><code class="java">public String render() throws Exception {
+<pre><code>public String render() throws Exception {
   StringBuffer html = new StringBuffer("&lt;hr"); 
   if(size &gt; 0)
     html.append(" size=\"").append(size + 1).append("\""); 
@@ -569,7 +569,7 @@ if(nextLevel &lt; tags.length) {
 
 <p>正例：</p>
 
-<pre><code class="java">public String render() throws Exception {
+<pre><code>public String render() throws Exception {
   HtmlTag hr = new HtmlTag("hr"); 
   if (extraDashes &gt; 0)
     hr.addAttribute("size", hrSize(extraDashes)); 
@@ -588,7 +588,7 @@ private String hrSize(int height) {
 
 <p>正例：</p>
 
-<pre><code class="java">public static void main(String[] args) throws Exception {
+<pre><code>public static void main(String[] args) throws Exception {
   Arguments arguments = parseCommandLine(args);
   ... 
 }
@@ -608,12 +608,12 @@ public class Arguments {
 
 <p>反例：</p>
 
-<pre><code class="java">a.getB().getC().doSomething();
+<pre><code>a.getB().getC().doSomething();
 </code></pre>
 
 <p>正例：</p>
 
-<pre><code class="java">myCollaborator.doSomething();
+<pre><code>myCollaborator.doSomething();
 </code></pre>
 
 <h2>17.5 Java</h2>
@@ -652,7 +652,7 @@ public class Arguments {
 
 <p>反例</p>
 
-<pre><code class="java">private String doRename() throws Exception {
+<pre><code>private String doRename() throws Exception {
   if(refactorReferences) 
     renameReferences();
   renamePage();
@@ -665,7 +665,7 @@ public class Arguments {
 
 <p>正例</p>
 
-<pre><code class="java">private String renamePageAndOptionallyAllReferences() throws Exception {
+<pre><code>private String renamePageAndOptionallyAllReferences() throws Exception {
   ...
 }
 </code></pre>
@@ -682,7 +682,7 @@ public class Arguments {
 
 <p>反例</p>
 
-<pre><code class="java">public ObjectOutputStream getOos() throws IOException { 
+<pre><code>public ObjectOutputStream getOos() throws IOException { 
   if (m_oos == null) {
     m_oos = new ObjectOutputStream(m_socket.getOutputStream()); 
   }
@@ -693,7 +693,7 @@ public class Arguments {
 
 <p>正例</p>
 
-<pre><code class="java">public ObjectOutputStream createOrReturnOos() throws IOException { 
+<pre><code>public ObjectOutputStream createOrReturnOos() throws IOException { 
  ... 
 }
 </code></pre>
@@ -872,7 +872,7 @@ public class Arguments {
 <p>【例】：Teacher类可以命令TeamLeader对Students进行清点，则Teacher无需和Students耦合，只需和TeamLeader耦合即可。</p>
 
 <p>【反例】：<br/>
-<code>java 反例
+<code>
 public float getTemp(){  
      Thermometer t = station.getThermometer(); //温度计对象
      return t.getTemp();  
@@ -881,7 +881,7 @@ public float getTemp(){
 
 <p>客户端不应该了解气象站类中的温度计对象；应在气象站类中直接加入获取温度的方法。<br/>
 改为：
-<code>java 修改后
+<code>
 public float getTemp(){  
       return station.getTemp();  
 }
@@ -1056,7 +1056,7 @@ public float getTemp(){
 <p><strong>示例（类间的耦合性）：</strong></p>
 
 <p>例如有一个Driver，可以驾驶Benz：
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1067,18 +1067,17 @@ public float getTemp(){
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Driver</span> <span class="o">{&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">drive</span><span class="o">(</span><span class="n">Benz</span> <span class="n">benz</span><span class="o">)</span> <span class="o">{&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>        <span class="n">benz</span><span class="o">.</span><span class="na">run</span><span class="o">();&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>    <span class="o">}&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'><span class="o">}&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class Driver {&lt;br/&gt;
+</span><span class='line'>    public void drive(Benz benz) {&lt;br/&gt;
+</span><span class='line'>        benz.run();&lt;br/&gt;
+</span><span class='line'>    }&lt;br/&gt;
+</span><span class='line'>}&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Benz</span> <span class="o">{&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(&amp;</span><span class="n">ldquo</span><span class="o">;</span><span class="n">Benz开动</span><span class="o">&amp;</span><span class="n">hellip</span><span class="o">;&amp;</span><span class="n">rdquo</span><span class="o">;);&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'>    <span class="o">}&lt;</span><span class="n">br</span><span class="o">/&gt;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure></p>
+</span><span class='line'>&lt;p&gt;public class Benz {&lt;br/&gt;
+</span><span class='line'>    public void run() {&lt;br/&gt;
+</span><span class='line'>        System.out.println(&ldquo;Benz开动&hellip;&rdquo;);&lt;br/&gt;
+</span><span class='line'>    }&lt;br/&gt;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure></p>
 
 <p>问题来了：现在有变更，Driver不仅要驾驶Benz，还需要驾驶BMW，怎么办？<br/>
 Driver和Benz是紧耦合的，导致可维护性大大降低、稳定性大大降低（增加一个车就需要修改Driver，Driver是不稳定的）。</p>
@@ -1099,7 +1098,7 @@ Driver和Benz是紧耦合的，导致可维护性大大降低、稳定性大大�
 
 <p><strong>1、构造函数传递依赖对象（构造函数注入）</strong></p>
 
-<pre><code class="java">public interface IDriver {  
+<pre><code>public interface IDriver {  
     public void drive();  
 }  
 
@@ -1116,7 +1115,7 @@ public class Driver implements IDriver {
 
 <p><strong>2、setter方法传递依赖对象（setter依赖注入）</strong></p>
 
-<pre><code class="java">public interface IDriver{  
+<pre><code>public interface IDriver{  
     public void setCar(ICar car);  
     public void drive();  
 }  

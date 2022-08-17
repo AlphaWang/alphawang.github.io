@@ -209,26 +209,26 @@ $(document).ready(
 <p>首先看看如何传递基本类型数组，例如Long[]。<br/>
 在后端接收该参数时很简单，只需要使用Long[]类型的@RequestParam即可，例如：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;/test/findproduct&quot;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
-</span><span class='line'><span class="nd">@ResponseBody</span>
-</span><span class='line'><span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span> <span class="nf">findProduct</span><span class="o">(</span>
-</span><span class='line'>  <span class="nd">@RequestParam</span><span class="o">(</span><span class="n">value</span><span class="o">=</span><span class="s">&quot;objectValues&quot;</span><span class="o">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">false</span><span class="o">)</span> <span class="n">String</span><span class="o">[]</span> <span class="n">objectValues</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'> <span class="c1">//注意value=&quot;objectValues&quot;</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@RequestMapping(value = "/test/findproduct", method = RequestMethod.POST)
+</span><span class='line'>@ResponseBody
+</span><span class='line'>public List&lt;Product&gt; findProduct(
+</span><span class='line'>  @RequestParam(value="objectValues", required=false) String[] objectValues) {
+</span><span class='line'> //注意value="objectValues"
 </span><span class='line'>
-</span><span class='line'><span class="o">}</span>
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>前端代码如下：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -239,18 +239,17 @@ $(document).ready(
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>            <span class="n">$</span><span class="o">.</span><span class="na">ajax</span><span class="o">({</span>
-</span><span class='line'>                <span class="nl">type:</span> <span class="s">&quot;POST&quot;</span><span class="o">,</span>
-</span><span class='line'>                <span class="nl">contentType:</span> <span class="err">&#39;</span><span class="n">application</span><span class="o">/</span><span class="n">x</span><span class="o">-</span><span class="n">www</span><span class="o">-</span><span class="n">form</span><span class="o">-</span><span class="n">urlencoded</span><span class="o">;</span> <span class="n">charset</span><span class="o">=</span><span class="n">utf</span><span class="o">-</span><span class="mi">8</span><span class="o">;</span><span class="err">&#39;</span><span class="o">,</span>
-</span><span class='line'>                <span class="nl">url:</span> <span class="err">&#39;</span><span class="o">/</span><span class="n">kcci</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">findproduct</span><span class="err">&#39;</span><span class="o">,</span>
-</span><span class='line'>                <span class="nl">data:</span> <span class="o">{</span>
-</span><span class='line'>                    <span class="nl">objectValues:</span> <span class="o">[</span><span class="mi">1000</span><span class="o">,</span> <span class="mi">1001</span><span class="o">,</span> <span class="mi">1002</span><span class="o">]</span>
-</span><span class='line'>                <span class="o">},</span>
-</span><span class='line'>                <span class="nl">traditional:</span> <span class="kc">true</span><span class="o">,</span>
-</span><span class='line'>                <span class="nl">success:</span> <span class="n">function</span><span class="o">(</span><span class="n">items</span><span class="o">){</span> <span class="o">},</span>
-</span><span class='line'>                <span class="nl">error:</span> <span class="n">function</span><span class="o">(</span><span class="n">ejqXHR</span><span class="o">,</span> <span class="n">textStatus</span><span class="o">,</span> <span class="n">errorThrown</span><span class="o">)</span> <span class="o">{</span> <span class="o">}</span>
-</span><span class='line'>            <span class="o">});</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>            $.ajax({
+</span><span class='line'>                type: "POST",
+</span><span class='line'>                contentType: 'application/x-www-form-urlencoded; charset=utf-8;',
+</span><span class='line'>                url: '/kcci/test/findproduct',
+</span><span class='line'>                data: {
+</span><span class='line'>                    objectValues: [1000, 1001, 1002]
+</span><span class='line'>                },
+</span><span class='line'>                traditional: true,
+</span><span class='line'>                success: function(items){ },
+</span><span class='line'>                error: function(ejqXHR, textStatus, errorThrown) { }
+</span><span class='line'>            });  </span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -260,24 +259,22 @@ $(document).ready(
 <p>注意ajax中有个参数<code>traditional: true</code>，<strong>网上很多文章说只有这样才能让Java后台识别数组参数，但貌似并非如此</strong>。
 traditional默认值为false，jquery会深度序列化参数对象，以适应如PHP和Ruby on Rails框架。序列化后的格式为：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">objectValues</span><span class="o">[]:</span><span class="mi">1000</span>
-</span><span class='line'><span class="n">objectValues</span><span class="o">[]:</span><span class="mi">1001</span>
-</span><span class='line'><span class="n">objectValues</span><span class="o">[]:</span><span class="mi">1002</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>objectValues[]:1000  
+</span><span class='line'>objectValues[]:1001  
+</span><span class='line'>objectValues[]:1002  </span></code></pre></td></tr></table></div></figure>
 
 
 <p>但servelt api无法处理，我们可以通过设置traditional: true阻止深度序列化，这样序列化结果如下：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nl">objectValues:</span><span class="mi">1000</span>
-</span><span class='line'><span class="nl">objectValues:</span><span class="mi">1001</span>
-</span><span class='line'><span class="nl">objectValues:</span><span class="mi">1002</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>objectValues:1000
+</span><span class='line'>objectValues:1001
+</span><span class='line'>objectValues:1002</span></code></pre></td></tr></table></div></figure>
 
 
 <p>区别仅仅是参数名不一样，那么是否将后台的<code>@RequestParam(value="objectValues"）</code>改成<code>@RequestParam(value="objectValues[]")</code>，就能接收traditional:false的参数了呢？测试下来貌似确实是可以的！</p>
@@ -286,21 +283,20 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
 
 <p>前文说到要传递的对象中有个Map属性，那么如果只仅仅传递Map参数应该怎么做呢？如果直接使用Map类型的RequestParam，例如<code>@RequestParam(required = false) Map&lt;String, String&gt; params</code>，那么这个params参数实际是所有传入参数的集合。如果我们发送的参数是：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">{</span>
-</span><span class='line'> <span class="nl">objectValues:</span> <span class="o">[</span><span class="mi">1000</span><span class="o">,</span> <span class="mi">1001</span><span class="o">,</span> <span class="mi">1002</span><span class="o">],</span>
-</span><span class='line'> <span class="nl">attributes:</span> <span class="o">{</span>
-</span><span class='line'>  <span class="nl">COLOR:</span> <span class="err">&#39;</span><span class="n">red</span><span class="err">&#39;</span><span class="o">,</span>
-</span><span class='line'>  <span class="nl">SIZE:</span> <span class="sc">&#39;M&#39;</span>
-</span><span class='line'> <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{
+</span><span class='line'> objectValues: [1000, 1001, 1002],
+</span><span class='line'> attributes: {
+</span><span class='line'>  COLOR: 'red',
+</span><span class='line'>  SIZE: 'M'
+</span><span class='line'> }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
@@ -311,23 +307,21 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
 
 <p>如果要让params仅仅包含我们关心的attributes map改怎么处理呢？我们需要自己新建一个Wrapper类：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Data</span>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AttributeMapWrapper</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">attributes</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Data
+</span><span class='line'>public class AttributeMapWrapper {
+</span><span class='line'>    Map&lt;String, String&gt; attributes;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>
 然后在Controller方法参数里这样写：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@ModelAttribute</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;attributes&quot;</span><span class="o">)</span> <span class="n">AttributeMapWrapper</span> <span class="n">attrWrapper</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@ModelAttribute(value = "attributes") AttributeMapWrapper attrWrapper</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>传递对象数组</h2>
@@ -347,20 +341,20 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
 
 <p>可以利用HttpServletRequest获取传回的string，然后利用Gson转换为对象。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span> <span class="nf">matchItems</span><span class="o">(</span>
-</span><span class='line'>  <span class="nd">@RequestParam</span><span class="o">(</span><span class="n">required</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">value</span> <span class="o">=</span> <span class="s">&quot;Locale&quot;</span><span class="o">)</span> <span class="n">String</span> <span class="n">locale</span>
-</span><span class='line'>  <span class="n">HttpServletRequest</span> <span class="n">request</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'><span class="n">Gson</span> <span class="n">gson</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Gson</span><span class="o">();</span>
-</span><span class='line'><span class="n">List</span><span class="o">&lt;</span><span class="n">ParameterWrapper</span><span class="o">&gt;</span> <span class="n">param</span> <span class="o">=</span> <span class="n">gson</span><span class="o">.</span><span class="na">fromJson</span><span class="o">(</span><span class="n">request</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&quot;paramList&quot;</span><span class="o">),</span>
-</span><span class='line'><span class="k">new</span> <span class="n">TypeToken</span><span class="o">&lt;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">ParameterWrapper</span><span class="o">&gt;&gt;(){}.</span><span class="na">getType</span><span class="o">());</span>
-</span><span class='line'><span class="o">...</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public List&lt;Item&gt; matchItems(
+</span><span class='line'>  @RequestParam(required = false, value = "Locale") String locale
+</span><span class='line'>  HttpServletRequest request) {
+</span><span class='line'>Gson gson = new Gson();
+</span><span class='line'>List&lt;ParameterWrapper&gt; param = gson.fromJson(request.getParameter("paramList"), 
+</span><span class='line'>new TypeToken&lt;List&lt;ParameterWrapper&gt;&gt;(){}.getType());
+</span><span class='line'>...
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -368,7 +362,7 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
 
 <p>这里为参数对象写了一个Wrapper类：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -378,17 +372,16 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Data</span>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ParameterWrapper</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Long</span> <span class="n">transactionId</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">Long</span> <span class="n">categoryId</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">String</span> <span class="n">barcode</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">String</span> <span class="n">productName</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">String</span> <span class="n">itemName</span><span class="o">;</span>
-</span><span class='line'><span class="c1">//    @SerializedName(&quot;attributes&quot;)</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">attributes</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Data
+</span><span class='line'>public class ParameterWrapper {
+</span><span class='line'>    Long transactionId;
+</span><span class='line'>    Long categoryId;
+</span><span class='line'>    String barcode;
+</span><span class='line'>    String productName;
+</span><span class='line'>    String itemName;
+</span><span class='line'>//    @SerializedName("attributes")
+</span><span class='line'>    Map&lt;String, String&gt; attributes;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>这样就能成功接收本文开头那种对象数组参数了。</p>
@@ -398,18 +391,18 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
 <p>HttpServletRequest方法显得太过于底层，过于面向细节。上文说到因为和数组并列有个locale变量，导致无法使用@RequestBody，那是否可以通过修改API输入参数的设计来解决呢，把locale变量放到<code>ParameterWrapper</code>中是否就可以使用@RequestBody了呢？<br/>
 当然可以，代码如下：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Item</span><span class="o">&gt;</span> <span class="nf">matchItems</span><span class="o">(</span><span class="nd">@RequestBody</span> <span class="n">ParameterWrapper</span><span class="o">[]</span> <span class="n">params</span><span class="o">)</span> <span class="o">{</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public List&lt;Item&gt; matchItems(@RequestBody ParameterWrapper[] params) {
 </span><span class='line'>
-</span><span class='line'><span class="o">...</span>
+</span><span class='line'>...
 </span></code></pre></td></tr></table></div></figure>
 
 
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -420,18 +413,17 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="nd">@Data</span>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ParameterWrapper</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Long</span> <span class="n">transactionId</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">Long</span> <span class="n">categoryId</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">String</span> <span class="n">barcode</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">String</span> <span class="n">productName</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">String</span> <span class="n">itemName</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">String</span> <span class="n">locale</span><span class="o">;</span>
-</span><span class='line'><span class="c1">//    @SerializedName(&quot;attributes&quot;)</span>
-</span><span class='line'>    <span class="n">Map</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">String</span><span class="o">&gt;</span> <span class="n">attributes</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>@Data
+</span><span class='line'>public class ParameterWrapper {
+</span><span class='line'>    Long transactionId;
+</span><span class='line'>    Long categoryId;
+</span><span class='line'>    String barcode;
+</span><span class='line'>    String productName;
+</span><span class='line'>    String itemName;
+</span><span class='line'>    String locale;
+</span><span class='line'>//    @SerializedName("attributes")
+</span><span class='line'>    Map&lt;String, String&gt; attributes;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>如果不能移动locale的位置该怎么办呢？可以再建一个类，其中包含两个变量：<br/>
@@ -569,12 +561,14 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (3)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (1)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -590,8 +584,11 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
 <a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
 <a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
 <a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 90%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
 <a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
@@ -605,11 +602,13 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 136%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 90%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -618,6 +617,14 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
+      </li>
     
       <li class="post">
         <a href="/blog/clean-code/">Clean Code Summary</a>
@@ -629,14 +636,6 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
     
       <li class="post">
         <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
       </li>
     
   </ul>
@@ -661,7 +660,7 @@ traditional默认值为false，jquery会深度序列化参数对象，以适应�
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2019 - Alpha Wang -
+  Copyright &copy; 2022 - Alpha Wang -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
   <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
 </p>

@@ -182,7 +182,7 @@ $(document).ready(
 
 <p>例如原有一个接口，模拟动物呼吸的场景：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -195,27 +195,26 @@ $(document).ready(
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Animal</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">breathe</span> <span class="o">(</span><span class="n">String</span> <span class="n">animal</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">animal</span><span class="o">+</span><span class="s">&quot;呼吸空气&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Client</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span> <span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Animal</span> <span class="n">animal</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Animal</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">animal</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;牛&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">animal</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;羊&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">animal</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;猪&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Animal {    
+</span><span class='line'>    public void breathe (String animal) {    
+</span><span class='line'>        System.out.println(animal+"呼吸空气");    
+</span><span class='line'>    }    
+</span><span class='line'>}    
+</span><span class='line'>public class Client {    
+</span><span class='line'>    public static void main (String[] args) {    
+</span><span class='line'>        Animal animal = new Animal();    
+</span><span class='line'>        animal.breathe("牛");    
+</span><span class='line'>        animal.breathe("羊");    
+</span><span class='line'>        animal.breathe("猪");    
+</span><span class='line'>    }    
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>程序上线后，发现问题了，并不是所有的动物都呼吸空气的，比如鱼就是呼吸水的。</p>
 
 <p><strong>修改一</strong>：修改时如果遵循单一职责原则，需要将Animal类细分为陆生动物类Terrestrial，水生动物Aquatic，代码如下：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -238,30 +237,29 @@ $(document).ready(
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Terrestrial</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">breathe</span><span class="o">(</span><span class="n">String</span> <span class="n">animal</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">animal</span><span class="o">+</span><span class="s">&quot;呼吸空气&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="kd">class</span> <span class="nc">Aquatic</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">breathe</span><span class="o">(</span><span class="n">String</span> <span class="n">animal</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">animal</span><span class="o">+</span><span class="s">&quot;呼吸水&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Terrestrial {    
+</span><span class='line'>    public void breathe(String animal) {    
+</span><span class='line'>        System.out.println(animal+"呼吸空气");    
+</span><span class='line'>    }    
+</span><span class='line'>}    
+</span><span class='line'>class Aquatic {    
+</span><span class='line'>    public void breathe(String animal) {    
+</span><span class='line'>        System.out.println(animal+"呼吸水");    
+</span><span class='line'>    }    
+</span><span class='line'>}    
+</span><span class='line'>    
 </span><span class='line'>
 </span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Client</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Terrestrial</span> <span class="n">terrestrial</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Terrestrial</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">terrestrial</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;牛&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">terrestrial</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;羊&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">terrestrial</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;猪&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">Aquatic</span> <span class="n">aquatic</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Aquatic</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">aquatic</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;鱼&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>public class Client {    
+</span><span class='line'>    public static void main(String[] args) {    
+</span><span class='line'>        Terrestrial terrestrial = new Terrestrial();    
+</span><span class='line'>        terrestrial.breathe("牛");    
+</span><span class='line'>        terrestrial.breathe("羊");    
+</span><span class='line'>        terrestrial.breathe("猪");          
+</span><span class='line'>        Aquatic aquatic = new Aquatic();    
+</span><span class='line'>        aquatic.breathe("鱼");    
+</span><span class='line'>    }    
+</span><span class='line'>}   </span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -270,7 +268,7 @@ $(document).ready(
 
 <p><strong>修改二</strong>：直接修改类Animal；虽然违背了单一职责原则，但花销却小的多</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -289,26 +287,25 @@ $(document).ready(
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
 <span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Animal</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">breathe</span><span class="o">(</span><span class="n">String</span> <span class="n">animal</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="o">(</span><span class="s">&quot;鱼&quot;</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">animal</span><span class="o">))</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">animal</span><span class="o">+</span><span class="s">&quot;呼吸水&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">animal</span><span class="o">+</span><span class="s">&quot;呼吸空气&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Client</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Animal</span> <span class="n">animal</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Animal</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">animal</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;牛&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">animal</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;羊&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">animal</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;猪&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">animal</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;鱼&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Animal {    
+</span><span class='line'>    public void breathe(String animal) {    
+</span><span class='line'>        if ("鱼".equals(animal)) {    
+</span><span class='line'>            System.out.println(animal+"呼吸水");    
+</span><span class='line'>        } else {    
+</span><span class='line'>            System.out.println(animal+"呼吸空气");    
+</span><span class='line'>        }    
+</span><span class='line'>    }    
+</span><span class='line'>}    
+</span><span class='line'>    
+</span><span class='line'>public class Client {    
+</span><span class='line'>    public static void main(String[] args) {    
+</span><span class='line'>        Animal animal = new Animal();    
+</span><span class='line'>        animal.breathe("牛");    
+</span><span class='line'>        animal.breathe("羊");    
+</span><span class='line'>        animal.breathe("猪");    
+</span><span class='line'>        animal.breathe("鱼");    
+</span><span class='line'>    }    
+</span><span class='line'>}  </span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -319,7 +316,7 @@ $(document).ready(
 
 <p><strong>修改三</strong>：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -337,25 +334,24 @@ $(document).ready(
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">class</span> <span class="nc">Animal</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">breathe</span><span class="o">(</span><span class="n">String</span> <span class="n">animal</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">animal</span><span class="o">+</span><span class="s">&quot;呼吸空气&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">breathe2</span><span class="o">(</span><span class="n">String</span> <span class="n">animal</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">animal</span><span class="o">+</span><span class="s">&quot;呼吸水&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Client</span> <span class="o">{</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Animal</span> <span class="n">animal</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Animal</span><span class="o">();</span>
-</span><span class='line'>        <span class="n">animal</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;牛&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">animal</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;羊&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">animal</span><span class="o">.</span><span class="na">breathe</span><span class="o">(</span><span class="s">&quot;猪&quot;</span><span class="o">);</span>
-</span><span class='line'>        <span class="n">animal</span><span class="o">.</span><span class="na">breathe2</span><span class="o">(</span><span class="s">&quot;鱼&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Animal {    
+</span><span class='line'>    public void breathe(String animal) {    
+</span><span class='line'>        System.out.println(animal+"呼吸空气");    
+</span><span class='line'>    }       
+</span><span class='line'>    public void breathe2(String animal) {    
+</span><span class='line'>        System.out.println(animal+"呼吸水");    
+</span><span class='line'>    }    
+</span><span class='line'>}    
+</span><span class='line'>    
+</span><span class='line'>public class Client {    
+</span><span class='line'>    public static void main(String[] args) {    
+</span><span class='line'>        Animal animal = new Animal();    
+</span><span class='line'>        animal.breathe("牛");    
+</span><span class='line'>        animal.breathe("羊");    
+</span><span class='line'>        animal.breathe("猪");    
+</span><span class='line'>        animal.breathe2("鱼");    
+</span><span class='line'>    }    
+</span><span class='line'>} </span></code></pre></td></tr></table></div></figure>
 
 
 <p></p>
@@ -517,12 +513,14 @@ $(document).ready(
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (3)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (1)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -538,8 +536,11 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
 <a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
 <a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 90%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
 <a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
@@ -553,11 +554,13 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 136%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 90%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -566,6 +569,14 @@ $(document).ready(
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
+      </li>
     
       <li class="post">
         <a href="/blog/clean-code/">Clean Code Summary</a>
@@ -577,14 +588,6 @@ $(document).ready(
     
       <li class="post">
         <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
       </li>
     
   </ul>
@@ -609,7 +612,7 @@ $(document).ready(
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2019 - Alpha Wang -
+  Copyright &copy; 2022 - Alpha Wang -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
   <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
 </p>

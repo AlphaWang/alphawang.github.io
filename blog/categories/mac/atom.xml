@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Mac | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/mac/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-08-18T13:03:15+08:00</updated>
+  <updated>2022-08-17T22:34:41+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -29,24 +29,18 @@ Fortunately, we can do this just by writing a configuration file, then the termi
 <p>So how can we do this? <br/>
 It&rsquo;s very simple, just create a file named <code>~/.bash_profile</code>, and fill it with the following content:</p>
 
-<p>``` bash ~./bash_profile</p>
+<pre><code>#enables colorin the terminal bash shell export
+export CLICOLOR=1
 
-<h1>enables colorin the terminal bash shell export</h1>
+#sets up thecolor scheme for list export
+export LSCOLORS=gxfxcxdxbxegedabagacad
 
-<p>export CLICOLOR=1</p>
+#sets up theprompt color (currently a green similar to linux terminal)
+export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;36m\]\w\[\033[00m\]\$ '
 
-<h1>sets up thecolor scheme for list export</h1>
-
-<p>export LSCOLORS=gxfxcxdxbxegedabagacad</p>
-
-<h1>sets up theprompt color (currently a green similar to linux terminal)</h1>
-
-<p>export PS1=&lsquo;[\033[01;32m]\u@\h[\033[00m]:[\033[01;36m]\w[\033[00m]\$ &rsquo;</p>
-
-<h1>enables colorfor iTerm</h1>
-
-<p>export TERM=xterm-color
-```</p>
+#enables colorfor iTerm
+export TERM=xterm-color
+</code></pre>
 
 <p><br/>
 If you are not satisfied with that color, you can change the value of LSCOLORS.</p>

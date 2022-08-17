@@ -153,7 +153,7 @@ $(document).ready(
 
 <blockquote><p>com.alphawang.guava.ch1.optional.Test1_FailFast</p></blockquote>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -161,14 +161,14 @@ $(document).ready(
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>  <span class="c1">// Lists.newArrayList()</span>
-</span><span class='line'>  <span class="kd">public</span> <span class="kd">static</span> <span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="nf">newArrayList</span><span class="o">(</span><span class="n">E</span><span class="o">...</span> <span class="n">elements</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">checkNotNull</span><span class="o">(</span><span class="n">elements</span><span class="o">);</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">capacity</span> <span class="o">=</span> <span class="n">computeArrayListCapacity</span><span class="o">(</span><span class="n">elements</span><span class="o">.</span><span class="na">length</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;</span> <span class="n">list</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayList</span><span class="o">&lt;</span><span class="n">E</span><span class="o">&gt;(</span><span class="n">capacity</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">Collections</span><span class="o">.</span><span class="na">addAll</span><span class="o">(</span><span class="n">list</span><span class="o">,</span> <span class="n">elements</span><span class="o">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">list</span><span class="o">;</span>
-</span><span class='line'>  <span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  // Lists.newArrayList()
+</span><span class='line'>  public static &lt;E&gt; ArrayList&lt;E&gt; newArrayList(E... elements) {
+</span><span class='line'>    checkNotNull(elements); 
+</span><span class='line'>    int capacity = computeArrayListCapacity(elements.length);
+</span><span class='line'>    ArrayList&lt;E&gt; list = new ArrayList&lt;E&gt;(capacity);
+</span><span class='line'>    Collections.addAll(list, elements);
+</span><span class='line'>    return list;
+</span><span class='line'>  }
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -192,7 +192,7 @@ $(document).ready(
 
 <p>example 2: use Unit.NONE instead of <code>null</code>.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -201,16 +201,15 @@ $(document).ready(
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">enum</span> <span class="n">Unit</span> <span class="o">{</span>
-</span><span class='line'>   <span class="n">NONE</span><span class="o">(</span><span class="s">&quot;없음&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">),</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public enum Unit {
+</span><span class='line'>   NONE("없음", "1"),
 </span><span class='line'>
-</span><span class='line'>   <span class="c1">// 길이(cm)</span>
-</span><span class='line'>   <span class="n">MM</span><span class="o">(</span><span class="s">&quot;mm&quot;</span><span class="o">,</span> <span class="s">&quot;0.1&quot;</span><span class="o">),</span>
-</span><span class='line'>   <span class="n">CM</span><span class="o">(</span><span class="s">&quot;cm&quot;</span><span class="o">,</span> <span class="s">&quot;1&quot;</span><span class="o">),</span>
-</span><span class='line'>   <span class="n">M</span><span class="o">(</span><span class="s">&quot;m&quot;</span><span class="o">,</span> <span class="s">&quot;100&quot;</span><span class="o">),</span>
-</span><span class='line'>   <span class="n">KM</span><span class="o">(</span><span class="s">&quot;km&quot;</span><span class="o">,</span> <span class="s">&quot;100000&quot;</span><span class="o">),</span> <span class="o">...</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>   // 길이(cm)
+</span><span class='line'>   MM("mm", "0.1"),
+</span><span class='line'>   CM("cm", "1"),
+</span><span class='line'>   M("m", "100"),
+</span><span class='line'>   KM("km", "100000"), ...
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <ul>
@@ -220,7 +219,7 @@ $(document).ready(
 
 <p>For example, return a empty list instead of null.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -235,21 +234,21 @@ $(document).ready(
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="c1">//BEFORE</span>
-</span><span class='line'><span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">getNames</span><span class="o">(</span><span class="n">Long</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">id</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="n">service</span><span class="o">.</span><span class="na">getNames</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'>  <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//BEFORE
+</span><span class='line'>public List&lt;String&gt; getNames(Long id) {
+</span><span class='line'>  if (id != null) {
+</span><span class='line'>      return service.getNames(id);
+</span><span class='line'>  }
+</span><span class='line'>  return null;
+</span><span class='line'>}
 </span><span class='line'>
-</span><span class='line'><span class="c1">//AFTER</span>
-</span><span class='line'><span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">getNames</span><span class="o">(</span><span class="n">Long</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">id</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="n">service</span><span class="o">.</span><span class="na">getNames</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">Collections</span><span class="o">.</span><span class="na">EMPTY_LIST</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
+</span><span class='line'>//AFTER
+</span><span class='line'>public List&lt;String&gt; getNames(Long id) {
+</span><span class='line'>  if (id != null) {
+</span><span class='line'>      return service.getNames(id);
+</span><span class='line'>  }
+</span><span class='line'>  return Collections.EMPTY_LIST;
+</span><span class='line'>}
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -269,26 +268,24 @@ api:</li>
 </ul>
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="nf">api</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="o">...</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">Optional</span><span class="o">.</span><span class="na">fromNullable</span><span class="o">(</span><span class="n">nullableObj</span><span class="o">);</span> <span class="c1">// return Optional instead of nullableObj</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public Optional&lt;Object&gt; api() {
+</span><span class='line'>    ...
+</span><span class='line'>    return Optional.fromNullable(nullableObj); // return Optional instead of nullableObj
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>client:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Optional</span><span class="o">&lt;</span><span class="n">Object</span><span class="o">&gt;</span> <span class="n">optional</span> <span class="o">=</span> <span class="n">api</span><span class="o">();</span>
-</span><span class='line'><span class="k">if</span> <span class="o">(</span><span class="n">optional</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span> <span class="o">{</span> <span class="c1">// force null-check</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Optional&lt;Object&gt; optional = api();
+</span><span class='line'>if (optional.isPresent()) { // force null-check
+</span><span class='line'>} </span></code></pre></td></tr></table></div></figure>
 
 
 <ul>
@@ -296,16 +293,15 @@ api:</li>
 </ul>
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Object</span> <span class="n">obj</span> <span class="o">=</span> <span class="n">Optional</span><span class="o">.</span><span class="na">fromNullable</span><span class="o">(</span><span class="n">nullableObj</span><span class="o">).</span><span class="na">or</span><span class="o">(</span><span class="n">defaultObj</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Object obj = Optional.fromNullable(nullableObj).or(defaultObj);</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>Enums</h2>
 
 <p><code>Enums#getIfPresent</code> can help to get an Optional<Enum> from a enum value.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -316,18 +312,17 @@ api:</li>
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>    <span class="c1">// BEFORE</span>
-</span><span class='line'>    <span class="n">VitaminLocale</span> <span class="n">vitaminLocale</span> <span class="o">=</span> <span class="n">VitaminLocale</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="s">&quot;ko_KR&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">vitaminLocale</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>    // BEFORE
+</span><span class='line'>    VitaminLocale vitaminLocale = VitaminLocale.valueOf("ko_KR");
+</span><span class='line'>    if (vitaminLocale != null) {
 </span><span class='line'>
-</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    }
 </span><span class='line'>
-</span><span class='line'>    <span class="c1">// AFTER</span>
-</span><span class='line'>    <span class="n">Optional</span><span class="o">&lt;</span><span class="n">VitaminLocale</span><span class="o">&gt;</span> <span class="n">locale</span> <span class="o">=</span> <span class="n">Enums</span><span class="o">.</span><span class="na">getIfPresent</span><span class="o">(</span><span class="n">VitaminLocale</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="s">&quot;ko_KR&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="k">if</span> <span class="o">(</span><span class="n">locale</span><span class="o">.</span><span class="na">isPresent</span><span class="o">())</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">locale</span><span class="o">.</span><span class="na">get</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    // AFTER
+</span><span class='line'>    Optional&lt;VitaminLocale&gt; locale = Enums.getIfPresent(VitaminLocale.class, "ko_KR");
+</span><span class='line'>    if (locale.isPresent()) {
+</span><span class='line'>        locale.get();
+</span><span class='line'>    }</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>Objects</h2>
@@ -336,9 +331,8 @@ api:</li>
 
 <p><code>MoreObjects.firstNonNull</code> is an alternative of <code>Optional.or</code>, both can return a default value if the object is null.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">MoreObjects</span><span class="o">.</span><span class="na">firstNonNull</span><span class="o">(</span><span class="n">cityService</span><span class="o">.</span><span class="na">getNullableCity</span><span class="o">(</span><span class="mi">1L</span><span class="o">),</span> <span class="n">defaultCity</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>MoreObjects.firstNonNull(cityService.getNullableCity(1L), defaultCity);</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>Preconditions</h2>
@@ -347,21 +341,20 @@ api:</li>
 
 <p>Of course we can fail fast in the presence of null, just like guava code. Guava provides <code>Preconditions.checkArgument</code> and <code>Preconditions.checkNotNull</code> to do this.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="n">City</span> <span class="nf">save</span><span class="o">(</span><span class="n">City</span> <span class="n">city</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Preconditions</span><span class="o">.</span><span class="na">checkArgument</span><span class="o">(</span><span class="n">city</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">,</span> <span class="s">&quot;IllegalArgumentException: city is null&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="c1">// or</span>
-</span><span class='line'>    <span class="n">city</span> <span class="o">=</span> <span class="n">Preconditions</span><span class="o">.</span><span class="na">checkNotNull</span><span class="o">(</span><span class="n">city</span><span class="o">,</span> <span class="s">&quot;NullPointerException: city is null&quot;</span><span class="o">);</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public City save(City city) {
+</span><span class='line'>    Preconditions.checkArgument(city != null, "IllegalArgumentException: city is null");
+</span><span class='line'>    // or
+</span><span class='line'>    city = Preconditions.checkNotNull(city, "NullPointerException: city is null");
 </span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">cityRepository</span><span class="o">.</span><span class="na">save</span><span class="o">(</span><span class="n">city</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    return cityRepository.save(city);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>Reference</h2>
@@ -499,12 +492,14 @@ api:</li>
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (3)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (1)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -520,8 +515,11 @@ api:</li>
 <a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
 <a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
 <a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 90%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
 <a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
@@ -535,11 +533,13 @@ api:</li>
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 136%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 90%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -548,6 +548,14 @@ api:</li>
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
+      </li>
     
       <li class="post">
         <a href="/blog/clean-code/">Clean Code Summary</a>
@@ -559,14 +567,6 @@ api:</li>
     
       <li class="post">
         <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
       </li>
     
   </ul>
@@ -591,7 +591,7 @@ api:</li>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2019 - Alpha Wang -
+  Copyright &copy; 2022 - Alpha Wang -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
   <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
 </p>

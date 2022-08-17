@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Java | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/java/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2019-08-18T13:03:15+08:00</updated>
+  <updated>2022-08-17T22:34:41+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -169,7 +169,7 @@ JVM在Eden Space中会开辟一小块独立的TLAB（Thread Local Allocation Buf
 
 <h3>Create List/Set</h3>
 
-<pre><code class="java">        // Before
+<pre><code>        // Before
         List&lt;String&gt; list1 = new ArrayList&lt;String&gt;(2);
         list1.add("A");
         list1.add("B");
@@ -721,7 +721,7 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
 
 <blockquote><p>com.alphawang.guava.ch1.optional.Test1_FailFast</p></blockquote>
 
-<pre><code class="java">  // Lists.newArrayList()
+<pre><code>  // Lists.newArrayList()
   public static &lt;E&gt; ArrayList&lt;E&gt; newArrayList(E... elements) {
     checkNotNull(elements); 
     int capacity = computeArrayListCapacity(elements.length);
@@ -948,7 +948,7 @@ com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
 
 <p>可以参考Java6中的源代码：</p>
 
-<pre><code class="java      ">//Java 6
+<pre><code class="">//Java 6
 String(int offset, int count, char value[]) {
      this.value = value;
      this.offset = offset;
@@ -1055,7 +1055,7 @@ public String substring(int beginIndex, int endIndex) {
 
 <p>switch String的语法示例如下：</p>
 
-<pre><code class="java">/**
+<pre><code>/**
 * Created by Alpha on Jan/21/15.
 */
 

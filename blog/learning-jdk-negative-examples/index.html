@@ -158,51 +158,47 @@ $(document).ready(
 
 <p>如果你调用参数化类的构造函数，那么你必须要指定类型参数，即便上下文中已明确了类型参数。这通常要求你连续两次提供类型参数：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Map</span> <span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span> <span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;();</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Map &lt;String, List &lt;String&gt;&gt; m = new HashMap&lt;String, List&lt;String&gt;&gt;(); 
 </span></code></pre></td></tr></table></div></figure>
 
 
 <p>而假设HashMap提供了如下静态工厂：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span>  <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="n">HashMap</span> <span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;</span> <span class="nf">newInstance</span><span class="o">(){</span>
-</span><span class='line'>   <span class="k">return</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">K</span><span class="o">,</span> <span class="n">V</span><span class="o">&gt;();</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public static  &lt;K, V&gt; HashMap &lt;K, V&gt; newInstance(){    
+</span><span class='line'>   return new HashMap&lt;K, V&gt;();    
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>那么你就可以讲上文冗长的声明替换为如下这种简洁的形式：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Map</span> <span class="o">&lt;</span> <span class="n">String</span><span class="o">,</span> <span class="n">List</span> <span class="o">&lt;</span> <span class="n">String</span> <span class="o">&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="n">HashMap</span><span class="o">.</span><span class="na">newInstance</span><span class="o">();</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Map &lt; String, List &lt; String &gt;&gt; m = HashMap.newInstance();</span></code></pre></td></tr></table></div></figure>
 
 
 <p>补充1：<code>com.google.common.collect.Lists</code>可以解决这个问题：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">List</span> <span class="o">&lt;</span> <span class="n">String</span> <span class="o">&gt;</span> <span class="n">l</span> <span class="o">=</span> <span class="n">Lists</span><span class="o">.</span><span class="na">newArrayList</span><span class="o">();</span>
-</span><span class='line'>
-</span><span class='line'>     <span class="kd">public</span>   <span class="kd">static</span>  <span class="n">ArrayList</span>  <span class="nf">newArrayList</span> <span class="o">()</span>
-</span><span class='line'>    <span class="o">{</span>
-</span><span class='line'>         <span class="k">return</span>   <span class="k">new</span>  <span class="nf">ArrayList</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>List &lt; String &gt; l = Lists.newArrayList();  
+</span><span class='line'> 
+</span><span class='line'>     public   static  ArrayList  newArrayList ()
+</span><span class='line'>    {
+</span><span class='line'>         return   new  ArrayList(); 
+</span><span class='line'>    }</span></code></pre></td></tr></table></div></figure>
 
 
 <p>补充2：Java7做了优化，可以这样声明：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Map</span> <span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">List</span> <span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;&gt;();</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Map &lt;String, List &lt;String&gt;&gt; m = new HashMap&lt;&gt;();</span></code></pre></td></tr></table></div></figure>
 
 
 <h1>2. 创建了不必要的对象</h1>
@@ -213,7 +209,7 @@ $(document).ready(
 
 <p>构造函数每次被调用时都会创建一个新对象，而静态工厂方法则从来不要求这样做，实际上也不会这么做。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -225,19 +221,18 @@ $(document).ready(
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="nf">Boolean</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">this</span><span class="o">(</span><span class="n">toBoolean</span><span class="o">(</span><span class="n">s</span><span class="o">));</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="kd">private</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">toBoolean</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="o">((</span><span class="n">name</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="n">name</span><span class="o">.</span><span class="na">equalsIgnoreCase</span><span class="o">(</span><span class="s">&quot;true&quot;</span><span class="o">));</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="n">Boolean</span> <span class="nf">valueOf</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nf">toBoolean</span><span class="o">(</span><span class="n">s</span><span class="o">)</span> <span class="o">?</span> <span class="n">TRUE</span> <span class="o">:</span> <span class="n">FALSE</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Boolean</span> <span class="n">TRUE</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Boolean</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
-</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">Boolean</span> <span class="n">FALSE</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Boolean</span><span class="o">(</span><span class="kc">false</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public Boolean(String s) {
+</span><span class='line'>    this(toBoolean(s));
+</span><span class='line'>}
+</span><span class='line'>private static boolean toBoolean(String name) {
+</span><span class='line'>    return ((name != null) && name.equalsIgnoreCase("true"));
+</span><span class='line'>}
+</span><span class='line'> 
+</span><span class='line'>public static Boolean valueOf(String s) {
+</span><span class='line'>    return toBoolean(s) ? TRUE : FALSE;
+</span><span class='line'>}
+</span><span class='line'>public static final Boolean TRUE = new Boolean(true);
+</span><span class='line'>public static final Boolean FALSE = new Boolean(false);</span></code></pre></td></tr></table></div></figure>
 
 
 <h1>3. 误用finalize</h1>
@@ -254,7 +249,7 @@ $(document).ready(
 
 <p>JDK有四个类（<code>FileInputStream</code>、<code>FileOutputStream</code>、<code>Timer</code>、<code>Connection</code>）使用了finalizer作为安全网，以防显式终止方法未被调用。不幸的是，这些finalizer都没有打印警告。当API发布后，这种警告一般就不能添加到API了，因为可能破坏已有的客户端代码。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -270,23 +265,22 @@ $(document).ready(
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * Ensures that the &lt;code&gt;close&lt;/code&gt; method of this file input stream is</span>
-</span><span class='line'><span class="cm"> * called when there are no more references to it.</span>
-</span><span class='line'><span class="cm"> *</span>
-</span><span class='line'><span class="cm"> * @exception  IOException  if an I/O error occurs.</span>
-</span><span class='line'><span class="cm"> * @see        java.io.FileInputStream#close()</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="kd">protected</span> <span class="kt">void</span> <span class="nf">finalize</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span>
-</span><span class='line'>    <span class="c1">// should log an error!</span>
-</span><span class='line'>    <span class="k">if</span> <span class="o">((</span><span class="n">fd</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">&amp;&amp;</span>  <span class="o">(</span><span class="n">fd</span> <span class="o">!=</span> <span class="n">FileDescriptor</span><span class="o">.</span><span class="na">in</span><span class="o">))</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">try</span> <span class="o">{</span>
-</span><span class='line'>            <span class="n">close</span><span class="o">();</span>
-</span><span class='line'>        <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
-</span><span class='line'>        <span class="o">}</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/**
+</span><span class='line'> * Ensures that the &lt;code&gt;close&lt;/code&gt; method of this file input stream is
+</span><span class='line'> * called when there are no more references to it.
+</span><span class='line'> *
+</span><span class='line'> * @exception  IOException  if an I/O error occurs.
+</span><span class='line'> * @see        java.io.FileInputStream#close()
+</span><span class='line'> */
+</span><span class='line'>protected void finalize() throws IOException {
+</span><span class='line'>    // should log an error!
+</span><span class='line'>    if ((fd != null) &&  (fd != FileDescriptor.in)) {
+</span><span class='line'>        try {
+</span><span class='line'>            close();
+</span><span class='line'>        } finally {
+</span><span class='line'>        }
+</span><span class='line'>    }
+</span><span class='line'>}  </span></code></pre></td></tr></table></div></figure>
 
 
 <h1>4. 违反equals约定</h1>
@@ -307,7 +301,7 @@ $(document).ready(
 
 <p><code>Timestamp</code>有一个免责声明，提醒程序员不要混用Date和Timestamp。虽然只要不混用他们就不会有麻烦，但是谁都不能阻止你混用他们，而结果导致的错误将会很难调试。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -320,20 +314,19 @@ $(document).ready(
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> *</span>
-</span><span class='line'><span class="cm"> * Note: This method is not symmetric with respect to the</span>
-</span><span class='line'><span class="cm"> * &lt;code&gt;equals(Object)&lt;/code&gt; method in the base class.</span>
-</span><span class='line'><span class="cm"> *</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Object</span> <span class="n">ts</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>  <span class="k">if</span> <span class="o">(</span><span class="n">ts</span> <span class="k">instanceof</span> <span class="n">Timestamp</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">equals</span><span class="o">((</span><span class="n">Timestamp</span><span class="o">)</span><span class="n">ts</span><span class="o">);</span>
-</span><span class='line'>  <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-</span><span class='line'>  <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/**
+</span><span class='line'> *
+</span><span class='line'> * Note: This method is not symmetric with respect to the
+</span><span class='line'> * &lt;code&gt;equals(Object)&lt;/code&gt; method in the base class.
+</span><span class='line'> *
+</span><span class='line'> */
+</span><span class='line'>public boolean equals(java.lang.Object ts) {
+</span><span class='line'>  if (ts instanceof Timestamp) {
+</span><span class='line'>    return this.equals((Timestamp)ts);
+</span><span class='line'>  } else {
+</span><span class='line'>    return false;
+</span><span class='line'>  }
+</span><span class='line'>}  </span></code></pre></td></tr></table></div></figure>
 
 
 <h1>5. compareTo与equals不一致</h1>
@@ -352,7 +345,7 @@ $(document).ready(
 </ul>
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -390,45 +383,44 @@ $(document).ready(
 <span class='line-number'>36</span>
 <span class='line-number'>37</span>
 <span class='line-number'>38</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kt">int</span> <span class="nf">compareTo</span><span class="o">(</span><span class="n">BigDecimal</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>   <span class="c1">// Quick path for equal scale and non-inflated case.</span>
-</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">scale</span> <span class="o">==</span> <span class="n">val</span><span class="o">.</span><span class="na">scale</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>       <span class="kt">long</span> <span class="n">xs</span> <span class="o">=</span> <span class="n">intCompact</span><span class="o">;</span>
-</span><span class='line'>       <span class="kt">long</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="na">intCompact</span><span class="o">;</span>
-</span><span class='line'>       <span class="k">if</span> <span class="o">(</span><span class="n">xs</span> <span class="o">!=</span> <span class="n">INFLATED</span> <span class="o">&amp;&amp;</span> <span class="n">ys</span> <span class="o">!=</span> <span class="n">INFLATED</span><span class="o">)</span>
-</span><span class='line'>           <span class="k">return</span> <span class="n">xs</span> <span class="o">!=</span> <span class="n">ys</span> <span class="o">?</span> <span class="o">((</span><span class="n">xs</span> <span class="o">&gt;</span> <span class="n">ys</span><span class="o">)</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">)</span> <span class="o">:</span> <span class="mi">0</span><span class="o">;</span>
-</span><span class='line'>   <span class="o">}</span>
-</span><span class='line'>   <span class="kt">int</span> <span class="n">xsign</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">signum</span><span class="o">();</span>
-</span><span class='line'>   <span class="kt">int</span> <span class="n">ysign</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="na">signum</span><span class="o">();</span>
-</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">xsign</span> <span class="o">!=</span> <span class="n">ysign</span><span class="o">)</span>
-</span><span class='line'>       <span class="k">return</span> <span class="o">(</span><span class="n">xsign</span> <span class="o">&gt;</span> <span class="n">ysign</span><span class="o">)</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
-</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">xsign</span> <span class="o">==</span> <span class="mi">0</span><span class="o">)</span>
-</span><span class='line'>       <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
-</span><span class='line'>   <span class="kt">int</span> <span class="n">cmp</span> <span class="o">=</span> <span class="n">compareMagnitude</span><span class="o">(</span><span class="n">val</span><span class="o">);</span>
-</span><span class='line'>   <span class="k">return</span> <span class="o">(</span><span class="n">xsign</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">?</span> <span class="n">cmp</span> <span class="o">:</span> <span class="o">-</span><span class="n">cmp</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public int compareTo(BigDecimal val) {
+</span><span class='line'>   // Quick path for equal scale and non-inflated case.
+</span><span class='line'>   if (scale == val.scale) {
+</span><span class='line'>       long xs = intCompact;
+</span><span class='line'>       long ys = val.intCompact;
+</span><span class='line'>       if (xs != INFLATED && ys != INFLATED)
+</span><span class='line'>           return xs != ys ? ((xs &gt; ys) ? 1 : -1) : 0;
+</span><span class='line'>   }
+</span><span class='line'>   int xsign = this.signum();
+</span><span class='line'>   int ysign = val.signum();
+</span><span class='line'>   if (xsign != ysign)
+</span><span class='line'>       return (xsign &gt; ysign) ? 1 : -1;
+</span><span class='line'>   if (xsign == 0)
+</span><span class='line'>       return 0;
+</span><span class='line'>   int cmp = compareMagnitude(val);
+</span><span class='line'>   return (xsign &gt; 0) ? cmp : -cmp;
+</span><span class='line'>}
 </span><span class='line'>
 </span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="n">Object</span> <span class="n">x</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>   <span class="k">if</span> <span class="o">(!(</span><span class="n">x</span> <span class="k">instanceof</span> <span class="n">BigDecimal</span><span class="o">))</span>
-</span><span class='line'>       <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-</span><span class='line'>   <span class="n">BigDecimal</span> <span class="n">xDec</span> <span class="o">=</span> <span class="o">(</span><span class="n">BigDecimal</span><span class="o">)</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="k">this</span><span class="o">)</span>
-</span><span class='line'>       <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">scale</span> <span class="o">!=</span> <span class="n">xDec</span><span class="o">.</span><span class="na">scale</span><span class="o">)</span>
-</span><span class='line'>       <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-</span><span class='line'>   <span class="kt">long</span> <span class="n">s</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">intCompact</span><span class="o">;</span>
-</span><span class='line'>   <span class="kt">long</span> <span class="n">xs</span> <span class="o">=</span> <span class="n">xDec</span><span class="o">.</span><span class="na">intCompact</span><span class="o">;</span>
-</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">s</span> <span class="o">!=</span> <span class="n">INFLATED</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>       <span class="k">if</span> <span class="o">(</span><span class="n">xs</span> <span class="o">==</span> <span class="n">INFLATED</span><span class="o">)</span>
-</span><span class='line'>           <span class="n">xs</span> <span class="o">=</span> <span class="n">compactValFor</span><span class="o">(</span><span class="n">xDec</span><span class="o">.</span><span class="na">intVal</span><span class="o">);</span>
-</span><span class='line'>       <span class="k">return</span> <span class="n">xs</span> <span class="o">==</span> <span class="n">s</span><span class="o">;</span>
-</span><span class='line'>   <span class="o">}</span> <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">xs</span> <span class="o">!=</span> <span class="n">INFLATED</span><span class="o">)</span>
-</span><span class='line'>       <span class="k">return</span> <span class="n">xs</span> <span class="o">==</span> <span class="n">compactValFor</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">intVal</span><span class="o">);</span>
+</span><span class='line'>public boolean equals(Object x) {
+</span><span class='line'>   if (!(x instanceof BigDecimal))
+</span><span class='line'>       return false;
+</span><span class='line'>   BigDecimal xDec = (BigDecimal) x;
+</span><span class='line'>   if (x == this)
+</span><span class='line'>       return true;
+</span><span class='line'>   if (scale != xDec.scale)
+</span><span class='line'>       return false;
+</span><span class='line'>   long s = this.intCompact;
+</span><span class='line'>   long xs = xDec.intCompact;
+</span><span class='line'>   if (s != INFLATED) {
+</span><span class='line'>       if (xs == INFLATED)
+</span><span class='line'>           xs = compactValFor(xDec.intVal);
+</span><span class='line'>       return xs == s;
+</span><span class='line'>   } else if (xs != INFLATED)
+</span><span class='line'>       return xs == compactValFor(this.intVal);
 </span><span class='line'>
-</span><span class='line'>   <span class="k">return</span> <span class="k">this</span><span class="o">.</span><span class="na">inflate</span><span class="o">().</span><span class="na">equals</span><span class="o">(</span><span class="n">xDec</span><span class="o">.</span><span class="na">inflate</span><span class="o">());</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>   return this.inflate().equals(xDec.inflate());
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h1>6. 接口设计问题</h1>
@@ -449,7 +441,7 @@ $(document).ready(
 
 <h2>Point</h2>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -460,23 +452,22 @@ $(document).ready(
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Point</span> <span class="kd">extends</span> <span class="n">Point2D</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span> <span class="o">{</span>
-</span><span class='line'>    <span class="cm">/**</span>
-</span><span class='line'><span class="cm">     * The X coordinate of this &lt;code&gt;Point&lt;/code&gt;.</span>
-</span><span class='line'><span class="cm">     * If no X coordinate is set it will default to 0.</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="n">x</span><span class="o">;</span>
-</span><span class='line'>    <span class="cm">/**</span>
-</span><span class='line'><span class="cm">     * The Y coordinate of this &lt;code&gt;Point&lt;/code&gt;.</span>
-</span><span class='line'><span class="cm">     * If no Y coordinate is set it will default to 0.</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="n">y</span><span class="o">;</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class Point extends Point2D implements java.io.Serializable {
+</span><span class='line'>    /**
+</span><span class='line'>     * The X coordinate of this &lt;code&gt;Point&lt;/code&gt;.
+</span><span class='line'>     * If no X coordinate is set it will default to 0.
+</span><span class='line'>     */
+</span><span class='line'>    public int x;
+</span><span class='line'>    /**
+</span><span class='line'>     * The Y coordinate of this &lt;code&gt;Point&lt;/code&gt;.
+</span><span class='line'>     * If no Y coordinate is set it will default to 0.
+</span><span class='line'>     */
+</span><span class='line'>    public int y;</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>Dimension</h2>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -485,16 +476,15 @@ $(document).ready(
 <span class='line-number'>7</span>
 <span class='line-number'>8</span>
 <span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Dimension</span> <span class="kd">extends</span> <span class="n">Dimension2D</span> <span class="kd">implements</span> <span class="n">java</span><span class="o">.</span><span class="na">io</span><span class="o">.</span><span class="na">Serializable</span> <span class="o">{</span>
-</span><span class='line'>    <span class="cm">/**</span>
-</span><span class='line'><span class="cm">     * The width dimension; negative values can be used.</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="n">width</span><span class="o">;</span>
-</span><span class='line'>    <span class="cm">/**</span>
-</span><span class='line'><span class="cm">     * The height dimension; negative values can be used.</span>
-</span><span class='line'><span class="cm">     */</span>
-</span><span class='line'>    <span class="kd">public</span> <span class="kt">int</span> <span class="n">height</span><span class="o">;</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class Dimension extends Dimension2D implements java.io.Serializable {
+</span><span class='line'>    /**
+</span><span class='line'>     * The width dimension; negative values can be used.
+</span><span class='line'>     */
+</span><span class='line'>    public int width;
+</span><span class='line'>    /**
+</span><span class='line'>     * The height dimension; negative values can be used.
+</span><span class='line'>     */
+</span><span class='line'>    public int height;</span></code></pre></td></tr></table></div></figure>
 
 
 <h1>8. 不可变类的设计</h1>
@@ -505,7 +495,7 @@ $(document).ready(
 
 <p>【反例】这一点在Java平台早期并没有被很好地理解，导致String类具有拷贝构造函数，应该尽量不去用这个函数。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -519,21 +509,20 @@ $(document).ready(
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * Initializes a newly created {@code String} object so that it represents</span>
-</span><span class='line'><span class="cm"> * the same sequence of characters as the argument; in other words, the</span>
-</span><span class='line'><span class="cm"> * newly created string is a copy of the argument string. Unless an</span>
-</span><span class='line'><span class="cm"> * explicit copy of {@code original} is needed, use of this constructor is</span>
-</span><span class='line'><span class="cm"> * unnecessary since Strings are immutable.</span>
-</span><span class='line'><span class="cm"> *</span>
-</span><span class='line'><span class="cm"> * @param  original</span>
-</span><span class='line'><span class="cm"> *         A {@code String}</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="kd">public</span> <span class="nf">String</span><span class="o">(</span><span class="n">String</span> <span class="n">original</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">original</span><span class="o">.</span><span class="na">value</span><span class="o">;</span>
-</span><span class='line'>    <span class="k">this</span><span class="o">.</span><span class="na">hash</span> <span class="o">=</span> <span class="n">original</span><span class="o">.</span><span class="na">hash</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/**
+</span><span class='line'> * Initializes a newly created {@code String} object so that it represents
+</span><span class='line'> * the same sequence of characters as the argument; in other words, the
+</span><span class='line'> * newly created string is a copy of the argument string. Unless an
+</span><span class='line'> * explicit copy of {@code original} is needed, use of this constructor is
+</span><span class='line'> * unnecessary since Strings are immutable.
+</span><span class='line'> *
+</span><span class='line'> * @param  original
+</span><span class='line'> *         A {@code String}
+</span><span class='line'> */
+</span><span class='line'>public String(String original) {
+</span><span class='line'>    this.value = original.value;
+</span><span class='line'>    this.hash = original.hash;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>不可变类应该不能继承: BigInteger / BigDecimal：</h2>
@@ -542,15 +531,14 @@ $(document).ready(
 
 <p>如果你编写的类的安全性依赖于（来自不可信客户端的）BigInteger或BigDecimal的不可变性，那么就必须检查参数是真正的BigInteger/BigDecimal，还是不可信任的子类实例。如果是后者，你必须把它当成是可变的，并进行保护性拷贝：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="n">BigInteger</span> <span class="nf">safeInstance</span><span class="o">(</span><span class="n">BigInteger</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>   <span class="k">if</span> <span class="o">(</span><span class="n">val</span><span class="o">.</span><span class="na">getClass</span><span class="o">()</span> <span class="o">!=</span> <span class="n">BigInteger</span><span class="o">.</span><span class="na">class</span> <span class="o">)</span>
-</span><span class='line'>          <span class="k">return</span> <span class="k">new</span> <span class="nf">BigInteger</span><span class="o">(</span><span class="n">val</span><span class="o">.</span><span class="na">toByteArray</span><span class="o">());</span>
-</span><span class='line'>   <span class="k">return</span> <span class="n">val</span><span class="o">;</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public static BigInteger safeInstance(BigInteger val) {
+</span><span class='line'>   if (val.getClass() != BigInteger.class )
+</span><span class='line'>          return new BigInteger(val.toByteArray());
+</span><span class='line'>   return val;</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>Date,  Point：理应设计成不可变类</h2>
@@ -568,21 +556,20 @@ Java平台库中有许多这种类，例如<code>java.util.Date</code>、<code>j
 
 <p><strong>Never exit a finally block with a return, break, continue, or throw, and never allow a checked exception to propagate out of a finally block.</strong></p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 <span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">decision</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>    <span class="k">try</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span> <span class="k">finally</span> <span class="o">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>static boolean decision() { 
+</span><span class='line'>    try { 
+</span><span class='line'>        return true; 
+</span><span class='line'>    } finally { 
+</span><span class='line'>        return false; 
+</span><span class='line'>    } 
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>这个程序返回false。无论try块是否正常执行完，finnaly都会被执行。</p>
@@ -595,7 +582,7 @@ Java平台库中有许多这种类，例如<code>java.util.Date</code>、<code>j
 
 <p>The set of checked exceptions that a method can throw is the <strong>intersection</strong> of the sets of checked exceptions that it is declared to throw in all applicable types, <strong>not the union</strong>.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -618,30 +605,29 @@ Java平台库中有许多这种类，例如<code>java.util.Date</code>、<code>j
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">interface</span> <span class="nc">Type1</span> <span class="o">{</span>
-</span><span class='line'>     <span class="kt">void</span> <span class="nf">f</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">CloneNotSupportedException</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">interface</span> <span class="nc">Type2</span> <span class="o">{</span>
-</span><span class='line'>     <span class="kt">void</span> <span class="nf">f</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">InterruptedException</span><span class="o">;</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">interface</span> <span class="nc">Type3</span> <span class="kd">extends</span> <span class="n">Type1</span><span class="o">,</span> <span class="n">Type2</span> <span class="o">{</span>
-</span><span class='line'><span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Arcane3</span> <span class="kd">implements</span> <span class="n">Type3</span> <span class="o">{</span>
-</span><span class='line'>
-</span><span class='line'>     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">f</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span> <span class="s">&quot;Hello world&quot;</span> <span class="o">);</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'>     <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">Type3</span> <span class="n">t3</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Arcane3</span><span class="o">();</span>
-</span><span class='line'>         <span class="n">t3</span><span class="o">.</span><span class="na">f</span><span class="o">();</span>   <span class="c1">// 不抛异常！！！</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>interface Type1 { 
+</span><span class='line'>     void f() throws CloneNotSupportedException; 
+</span><span class='line'>}
+</span><span class='line'> 
+</span><span class='line'>interface Type2 { 
+</span><span class='line'>     void f() throws InterruptedException; 
+</span><span class='line'>}
+</span><span class='line'> 
+</span><span class='line'>interface Type3 extends Type1, Type2 { 
+</span><span class='line'>}
+</span><span class='line'> 
+</span><span class='line'>public class Arcane3 implements Type3 {
+</span><span class='line'> 
+</span><span class='line'>     public void f() { 
+</span><span class='line'>        System.out.println( "Hello world" ); 
+</span><span class='line'>    }
+</span><span class='line'> 
+</span><span class='line'>     public static void main(String[] args) { 
+</span><span class='line'>        Type3 t3 = new Arcane3(); 
+</span><span class='line'>         t3.f();   // 不抛异常！！！
+</span><span class='line'>    }
+</span><span class='line'> 
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h1>10. 类型转换</h1>
@@ -650,11 +636,10 @@ Java平台库中有许多这种类，例如<code>java.util.Date</code>、<code>j
 
 <p>两个int相乘，得到的还是int，这就可能溢出！</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">long</span> <span class="n">MICROS_PER_DAY</span> <span class="o">=</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">*</span> <span class="mi">1000</span><span class="o">;</span> <span class="c1">//不精确</span>
-</span><span class='line'><span class="kt">long</span> <span class="n">MICROS_PER_DAY</span> <span class="o">=</span> <span class="mi">24</span> <span class="n">L</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">*</span> <span class="mi">1000</span><span class="o">;</span> <span class="c1">//精确</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>long MICROS_PER_DAY = 24 * 60 * 60 * 1000 * 1000; //不精确
+</span><span class='line'>long MICROS_PER_DAY = 24 L * 60 * 60 * 1000 * 1000; //精确</span></code></pre></td></tr></table></div></figure>
 
 
 <p>应该自动切换到更大的类型，以避免溢出；
@@ -664,28 +649,25 @@ Java平台库中有许多这种类，例如<code>java.util.Date</code>、<code>j
 
 <p>如果遇到跨类型计算，jdk会把低类型自动提升为高类型，然后再计算。但这种转换有时会导致问题。例如：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Long</span><span class="o">.</span><span class="na">toHexString</span><span class="o">(</span><span class="mh">0x100000000</span><span class="n">L</span> <span class="o">+</span> <span class="mh">0xcafebabe</span><span class="o">);</span> <span class="c1">//cafebabe</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Long.toHexString(0x100000000L + 0xcafebabe); //cafebabe</span></code></pre></td></tr></table></div></figure>
 
 
 <p>因为是long + int，所以后面的int会自动提升为long，再计算。即被提升为0xffffffffcafebabeL。</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'>  <span class="mh">0xffffffffcafebabe</span><span class="n">L</span>
-</span><span class='line'><span class="o">+</span> <span class="mh">0x0000000100000000</span><span class="n">L</span>
-</span><span class='line'><span class="o">=</span> <span class="mh">0x00000000cafebabe</span><span class="n">L</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  0xffffffffcafebabeL
+</span><span class='line'>+ 0x0000000100000000L 
+</span><span class='line'>= 0x00000000cafebabeL</span></code></pre></td></tr></table></div></figure>
 
 
 <p>所以得到cafebase，而不是想象中的1cafebabe。
 我们得出教训：<strong>跨类型计算可能带来混淆，所以要坚决避免！</strong>上例可以改为如下：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Long</span><span class="o">.</span><span class="na">toHexString</span><span class="o">(</span><span class="mh">0x100000000</span><span class="n">L</span> <span class="o">+</span> <span class="mh">0xcafebabe</span><span class="n">L</span><span class="o">);</span> <span class="c1">//1cafebabe</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Long.toHexString(0x100000000L + 0xcafebabeL); //1cafebabe</span></code></pre></td></tr></table></div></figure>
 
 
 <blockquote><p>Negative hex literals appear positive。十六进制的字面值，其最高位代表正负。</p></blockquote>
@@ -701,13 +683,12 @@ Java平台库中有许多这种类，例如<code>java.util.Date</code>、<code>j
 </ol>
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">char</span> <span class="n">x</span> <span class="o">=</span> <span class="sc">&#39;X&#39;</span><span class="o">;</span>
-</span><span class='line'><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="kc">false</span> <span class="o">?</span> <span class="n">i</span> <span class="o">:</span> <span class="n">x</span><span class="o">);</span> <span class="c1">//输出88，结果为int类型</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>char x = 'X';
+</span><span class='line'>int i = 0;
+</span><span class='line'>System.out.print(false ? i : x); //输出88，结果为int类型</span></code></pre></td></tr></table></div></figure>
 
 
 <p>理应强制要求他们类型一致。</p>
@@ -717,15 +698,14 @@ Java平台库中有许多这种类，例如<code>java.util.Date</code>、<code>j
 <p><code>+=</code>、<code>-=</code>等运算符会自动类型转换，即将计算结果自动转换为左侧操作数的类型。这有时会导致意想不到的问题。
 例如：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">short</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-</span><span class='line'><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">123456</span><span class="o">;</span>
-</span><span class='line'><span class="n">x</span> <span class="o">+=</span> <span class="n">i</span><span class="o">;</span> <span class="c1">//自动转换为short，损失精度，但不报错</span>
-</span><span class='line'><span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">i</span><span class="o">;</span> <span class="c1">// Won&#39;t compile - &quot;possible loss of precision&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>short x = 0; 
+</span><span class='line'>int i = 123456;
+</span><span class='line'>x += i; //自动转换为short，损失精度，但不报错
+</span><span class='line'>x = x + i; // Won't compile - "possible loss of precision"</span></code></pre></td></tr></table></div></figure>
 
 
 <p>应该不要做自动类型转换，以编译报错提醒用户。（与第二句普通赋值语句保持一致）</p>
@@ -735,15 +715,14 @@ Java平台库中有许多这种类，例如<code>java.util.Date</code>、<code>j
 </ul>
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Object</span> <span class="n">x</span> <span class="o">=</span> <span class="s">&quot;Buy &quot;</span><span class="o">;</span>
-</span><span class='line'><span class="n">String</span> <span class="n">i</span> <span class="o">=</span> <span class="s">&quot;Effective Java!&quot;</span><span class="o">;</span>
-</span><span class='line'><span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">i</span><span class="o">;</span>  <span class="c1">//合法</span>
-</span><span class='line'><span class="n">x</span> <span class="o">+=</span> <span class="n">i</span><span class="o">;</span>     <span class="c1">//非法</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Object x = "Buy "; 
+</span><span class='line'>String i = "Effective Java!";
+</span><span class='line'>x = x + i;  //合法
+</span><span class='line'>x += i;     //非法</span></code></pre></td></tr></table></div></figure>
 
 
 <ul>
@@ -752,15 +731,14 @@ An unfortunate fact about the compound assignment operators is that they can sil
 </ul>
 
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kt">short</span> <span class="n">i</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>short i = -1;
 </span><span class='line'>
-</span><span class='line'><span class="k">while</span> <span class="o">(</span><span class="n">i</span> <span class="o">!=</span> <span class="mi">0</span><span class="o">)</span>
-</span><span class='line'>    <span class="n">i</span> <span class="o">&gt;&gt;&gt;=</span> <span class="mi">1</span><span class="o">;</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>while (i != 0)
+</span><span class='line'>    i &gt;&gt;&gt;= 1;</span></code></pre></td></tr></table></div></figure>
 
 
 <ol>
@@ -782,11 +760,10 @@ An unfortunate fact about the compound assignment operators is that they can sil
 
 <h2>重写toString()</h2>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">Object</span> <span class="n">numbers</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">char</span><span class="o">[]</span> <span class="o">{</span> <span class="sc">&#39;1&#39;</span><span class="o">,</span> <span class="sc">&#39;2&#39;</span><span class="o">,</span> <span class="sc">&#39;3&#39;</span> <span class="o">};</span>
-</span><span class='line'><span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">numbers</span><span class="o">);</span> <span class="c1">// [C@16f0472</span>
-</span></code></pre></td></tr></table></div></figure>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Object numbers = new char[] { '1', '2', '3' };
+</span><span class='line'>System.out.println(numbers); // [C@16f0472</span></code></pre></td></tr></table></div></figure>
 
 
 <p>貌似Array应该默认重写toString方法。</p>
@@ -795,9 +772,8 @@ An unfortunate fact about the compound assignment operators is that they can sil
 
 <p>为了解决上一个问题，你可能想静态导入Arrays.toString()，然后调用：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">toString</span><span class="o">(</span><span class="n">numbers</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>toString(numbers);</span></code></pre></td></tr></table></div></figure>
 
 
 <p>但是会编译报错，编译器去查找当前类的toString()方法，发现参数不匹配。。</p>
@@ -810,9 +786,8 @@ An unfortunate fact about the compound assignment operators is that they can sil
 
 <p>但是JRE的默认字符集依赖于操作系统和locale。所以，it was not such a good idea to provide a String(byte[]) constructor that depends on the default charset:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="n">String</span> <span class="n">str</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="n">bytes</span><span class="o">,</span> <span class="s">&quot;ISO-8859-1&quot;</span><span class="o">);</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>String str = new String(bytes, "ISO-8859-1");</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>final字段与final方法的含义完全不同</h2>
@@ -831,7 +806,7 @@ An unfortunate fact about the compound assignment operators is that they can sil
 
 <p>methods should have names that describe their primary functions. Given the behavior of <code>Thread.interrupted</code>, it should have been named <code>clearInterruptStatus</code>.</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -846,22 +821,21 @@ An unfortunate fact about the compound assignment operators is that they can sil
 <span class='line-number'>13</span>
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm">* Tests if some Thread has been interrupted. The interrupted state</span>
-</span><span class='line'><span class="cm">* is reset or not based on the value of ClearInterrupted that is</span>
-</span><span class='line'><span class="cm">* passed.</span>
-</span><span class='line'><span class="cm">*/</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/**
+</span><span class='line'>* Tests if some Thread has been interrupted. The interrupted state
+</span><span class='line'>* is reset or not based on the value of ClearInterrupted that is
+</span><span class='line'>* passed.
+</span><span class='line'>*/
 </span><span class='line'>
-</span><span class='line'><span class="kd">private</span> <span class="kd">native</span> <span class="kt">boolean</span> <span class="nf">isInterrupted</span><span class="o">(</span> <span class="kt">boolean</span> <span class="n">ClearInterrupted</span> <span class="o">);</span>
+</span><span class='line'>private native boolean isInterrupted( boolean ClearInterrupted );
 </span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">boolean</span> <span class="nf">interrupted</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nf">currentThread</span><span class="o">().</span><span class="na">isInterrupted</span><span class="o">(</span> <span class="kc">true</span> <span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
+</span><span class='line'>public static boolean interrupted() {
+</span><span class='line'>  return currentThread().isInterrupted( true );
+</span><span class='line'>}
 </span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isInterrupted</span><span class="o">()</span> <span class="o">{</span>
-</span><span class='line'>  <span class="k">return</span> <span class="nf">isInterrupted</span><span class="o">(</span> <span class="kc">false</span> <span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>public boolean isInterrupted() {
+</span><span class='line'>  return isInterrupted( false );
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>shadow local variables</h2>
@@ -997,12 +971,14 @@ An unfortunate fact about the compound assignment operators is that they can sil
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (3)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (1)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -1018,8 +994,11 @@ An unfortunate fact about the compound assignment operators is that they can sil
 <a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
 <a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
 <a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 90%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
 <a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
@@ -1033,11 +1012,13 @@ An unfortunate fact about the compound assignment operators is that they can sil
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 136%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 90%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -1046,6 +1027,14 @@ An unfortunate fact about the compound assignment operators is that they can sil
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
+      </li>
     
       <li class="post">
         <a href="/blog/clean-code/">Clean Code Summary</a>
@@ -1057,14 +1046,6 @@ An unfortunate fact about the compound assignment operators is that they can sil
     
       <li class="post">
         <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
       </li>
     
   </ul>
@@ -1089,7 +1070,7 @@ An unfortunate fact about the compound assignment operators is that they can sil
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2019 - Alpha Wang -
+  Copyright &copy; 2022 - Alpha Wang -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
   <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
 </p>

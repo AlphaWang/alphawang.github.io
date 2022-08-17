@@ -164,7 +164,7 @@ $(document).ready(
 
 <p>Jdk中源码如下：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -188,30 +188,30 @@ $(document).ready(
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
 <span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="cm">/** </span>
-</span><span class='line'><span class="cm"> * Returns a canonical representation for the string object. </span>
-</span><span class='line'><span class="cm"> * &lt;p&gt; </span>
-</span><span class='line'><span class="cm"> * A pool of strings, initially empty, is maintained privately by the </span>
-</span><span class='line'><span class="cm"> * class &lt;code&gt;String&lt;/code&gt;. </span>
-</span><span class='line'><span class="cm"> * &lt;p&gt; </span>
-</span><span class='line'><span class="cm"> * When the intern method is invoked, if the pool already contains a </span>
-</span><span class='line'><span class="cm"> * string equal to this &lt;code&gt;String&lt;/code&gt; object as determined by </span>
-</span><span class='line'><span class="cm"> * the {@link #equals(Object)} method, then the string from the pool is </span>
-</span><span class='line'><span class="cm"> * returned. Otherwise, this &lt;code&gt;String&lt;/code&gt; object is added to the </span>
-</span><span class='line'><span class="cm"> * pool and a reference to this &lt;code&gt;String&lt;/code&gt; object is returned. </span>
-</span><span class='line'><span class="cm"> * &lt;p&gt; </span>
-</span><span class='line'><span class="cm"> * It follows that for any two strings &lt;code&gt;s&lt;/code&gt; and &lt;code&gt;t&lt;/code&gt;, </span>
-</span><span class='line'><span class="cm"> * &lt;code&gt;s.intern()&amp;nbsp;==&amp;nbsp;t.intern()&lt;/code&gt; is &lt;code&gt;true&lt;/code&gt; </span>
-</span><span class='line'><span class="cm"> * if and only if &lt;code&gt;s.equals(t)&lt;/code&gt; is &lt;code&gt;true&lt;/code&gt;. </span>
-</span><span class='line'><span class="cm"> * &lt;p&gt; </span>
-</span><span class='line'><span class="cm"> * All literal strings and string-valued constant expressions are </span>
-</span><span class='line'><span class="cm"> * interned. String literals are defined in section 3.10.5 of the </span>
-</span><span class='line'><span class="cm"> * &lt;cite&gt;The Java&amp;trade; Language Specification&lt;/cite&gt;. </span>
-</span><span class='line'><span class="cm"> * </span>
-</span><span class='line'><span class="cm"> * @return  a string that has the same contents as this string, but is </span>
-</span><span class='line'><span class="cm"> *          guaranteed to be from a pool of unique strings. </span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'><span class="kd">public</span> <span class="kd">native</span> <span class="n">String</span> <span class="nf">intern</span><span class="o">();</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/** 
+</span><span class='line'> * Returns a canonical representation for the string object. 
+</span><span class='line'> * &lt;p&gt; 
+</span><span class='line'> * A pool of strings, initially empty, is maintained privately by the 
+</span><span class='line'> * class &lt;code&gt;String&lt;/code&gt;. 
+</span><span class='line'> * &lt;p&gt; 
+</span><span class='line'> * When the intern method is invoked, if the pool already contains a 
+</span><span class='line'> * string equal to this &lt;code&gt;String&lt;/code&gt; object as determined by 
+</span><span class='line'> * the {@link #equals(Object)} method, then the string from the pool is 
+</span><span class='line'> * returned. Otherwise, this &lt;code&gt;String&lt;/code&gt; object is added to the 
+</span><span class='line'> * pool and a reference to this &lt;code&gt;String&lt;/code&gt; object is returned. 
+</span><span class='line'> * &lt;p&gt; 
+</span><span class='line'> * It follows that for any two strings &lt;code&gt;s&lt;/code&gt; and &lt;code&gt;t&lt;/code&gt;, 
+</span><span class='line'> * &lt;code&gt;s.intern()&nbsp;==&nbsp;t.intern()&lt;/code&gt; is &lt;code&gt;true&lt;/code&gt; 
+</span><span class='line'> * if and only if &lt;code&gt;s.equals(t)&lt;/code&gt; is &lt;code&gt;true&lt;/code&gt;. 
+</span><span class='line'> * &lt;p&gt; 
+</span><span class='line'> * All literal strings and string-valued constant expressions are 
+</span><span class='line'> * interned. String literals are defined in section 3.10.5 of the 
+</span><span class='line'> * &lt;cite&gt;The Java&trade; Language Specification&lt;/cite&gt;. 
+</span><span class='line'> * 
+</span><span class='line'> * @return  a string that has the same contents as this string, but is 
+</span><span class='line'> *          guaranteed to be from a pool of unique strings. 
+</span><span class='line'> */  
+</span><span class='line'>public native String intern();
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -226,9 +226,8 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 
 <p>在 jdk6中<code>StringTable</code>是固定的，就是1009的长度，<strong>所以如果常量池中的字符串过多就会导致效率下降很快</strong>。在jdk7中，<code>StringTable</code>的长度可以通过一个参数指定：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">-</span><span class="nl">XX:</span><span class="n">StringTableSize</span><span class="o">=</span><span class="mi">99991</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>-XX:StringTableSize=99991</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>Java6 和 Java7 下 intern 的区别</h2>
@@ -239,7 +238,7 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 
 <p>来看一段代码：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -250,18 +249,17 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">s</span><span class="o">.</span><span class="na">intern</span><span class="o">();</span>
-</span><span class='line'>    <span class="n">String</span> <span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span> <span class="o">==</span> <span class="n">s2</span><span class="o">);</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public static void main(String[] args) {
+</span><span class='line'>    String s = new String("1");
+</span><span class='line'>    s.intern();
+</span><span class='line'>    String s2 = "1";
+</span><span class='line'>    System.out.println(s == s2);
 </span><span class='line'>
-</span><span class='line'>    <span class="n">String</span> <span class="n">s3</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">)</span> <span class="o">+</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">s3</span><span class="o">.</span><span class="na">intern</span><span class="o">();</span>
-</span><span class='line'>    <span class="n">String</span> <span class="n">s4</span> <span class="o">=</span> <span class="s">&quot;11&quot;</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s3</span> <span class="o">==</span> <span class="n">s4</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    String s3 = new String("1") + new String("1");
+</span><span class='line'>    s3.intern();
+</span><span class='line'>    String s4 = "11";
+</span><span class='line'>    System.out.println(s3 == s4);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>打印结果是</p>
@@ -274,7 +272,7 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 
 <p>然后将<code>s3.intern();</code>语句下调一行，放到<code>String s4 = "11";</code>后面。将<code>s.intern();</code> 放到S<code>tring s2 = "1";</code>后面：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -285,18 +283,17 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 <span class='line-number'>9</span>
 <span class='line-number'>10</span>
 <span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">String</span> <span class="n">s</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">String</span> <span class="n">s2</span> <span class="o">=</span> <span class="s">&quot;1&quot;</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">s</span><span class="o">.</span><span class="na">intern</span><span class="o">();</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s</span> <span class="o">==</span> <span class="n">s2</span><span class="o">);</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public static void main(String[] args) {
+</span><span class='line'>    String s = new String("1");
+</span><span class='line'>    String s2 = "1";
+</span><span class='line'>    s.intern();
+</span><span class='line'>    System.out.println(s == s2);
 </span><span class='line'>
-</span><span class='line'>    <span class="n">String</span> <span class="n">s3</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">)</span> <span class="o">+</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="s">&quot;1&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">String</span> <span class="n">s4</span> <span class="o">=</span> <span class="s">&quot;11&quot;</span><span class="o">;</span>
-</span><span class='line'>    <span class="n">s3</span><span class="o">.</span><span class="na">intern</span><span class="o">();</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">s3</span> <span class="o">==</span> <span class="n">s4</span><span class="o">);</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    String s3 = new String("1") + new String("1");
+</span><span class='line'>    String s4 = "11";
+</span><span class='line'>    s3.intern();
+</span><span class='line'>    System.out.println(s3 == s4);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>打印结果为：</p>
@@ -368,7 +365,7 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 
 <p>如果用到了大量相同的String，那么可以使用<code>String#intern()</code>，例如：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -386,25 +383,24 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">static</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">MAX</span> <span class="o">=</span> <span class="mi">1000</span> <span class="o">*</span> <span class="mi">10000</span><span class="o">;</span>
-</span><span class='line'><span class="kd">static</span> <span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">arr</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">[</span><span class="n">MAX</span><span class="o">];</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>static final int MAX = 1000 * 10000;
+</span><span class='line'>static final String[] arr = new String[MAX];
 </span><span class='line'>
-</span><span class='line'><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-</span><span class='line'>    <span class="n">Integer</span><span class="o">[]</span> <span class="n">DB_DATA</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Integer</span><span class="o">[</span><span class="mi">10</span><span class="o">];</span>
-</span><span class='line'>    <span class="n">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">Random</span><span class="o">(</span><span class="mi">10</span> <span class="o">*</span> <span class="mi">10000</span><span class="o">);</span>
-</span><span class='line'>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">DB_DATA</span><span class="o">.</span><span class="na">length</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="n">DB_DATA</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
-</span><span class='line'>    <span class="kt">long</span> <span class="n">t</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
-</span><span class='line'>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">MAX</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-</span><span class='line'>        <span class="c1">//arr[i] = new String(String.valueOf(DB_DATA[i % DB_DATA.length]));</span>
-</span><span class='line'>         <span class="n">arr</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">String</span><span class="o">(</span><span class="n">String</span><span class="o">.</span><span class="na">valueOf</span><span class="o">(</span><span class="n">DB_DATA</span><span class="o">[</span><span class="n">i</span> <span class="o">%</span> <span class="n">DB_DATA</span><span class="o">.</span><span class="na">length</span><span class="o">])).</span><span class="na">intern</span><span class="o">();</span>
-</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>public static void main(String[] args) throws Exception {
+</span><span class='line'>    Integer[] DB_DATA = new Integer[10];
+</span><span class='line'>    Random random = new Random(10 * 10000);
+</span><span class='line'>    for (int i = 0; i &lt; DB_DATA.length; i++) {
+</span><span class='line'>        DB_DATA[i] = random.nextInt();
+</span><span class='line'>    }
+</span><span class='line'>    long t = System.currentTimeMillis();
+</span><span class='line'>    for (int i = 0; i &lt; MAX; i++) {
+</span><span class='line'>        //arr[i] = new String(String.valueOf(DB_DATA[i % DB_DATA.length]));
+</span><span class='line'>         arr[i] = new String(String.valueOf(DB_DATA[i % DB_DATA.length])).intern();
+</span><span class='line'>    }
 </span><span class='line'>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">((</span><span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">-</span> <span class="n">t</span><span class="o">)</span> <span class="o">+</span> <span class="s">&quot;ms&quot;</span><span class="o">);</span>
-</span><span class='line'>    <span class="n">System</span><span class="o">.</span><span class="na">gc</span><span class="o">();</span>
-</span><span class='line'><span class="o">}</span>
-</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>    System.out.println((System.currentTimeMillis() - t) + "ms");
+</span><span class='line'>    System.gc();
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
 
 
 <p>运行的参数是：<code>-Xmx2g -Xms2g -Xmn1500M</code></p>
@@ -424,9 +420,8 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 <p>上文提到：
 在 jdk6中<code>StringTable</code>是固定的，就是1009的长度，<strong>所以如果常量池中的字符串过多就会导致效率下降很快</strong>。在jdk7中，<code>StringTable</code>的长度可以通过一个参数指定：</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="o">-</span><span class="nl">XX:</span><span class="n">StringTableSize</span><span class="o">=</span><span class="mi">99991</span>
-</span></code></pre></td></tr></table></div></figure>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>-XX:StringTableSize=99991</span></code></pre></td></tr></table></div></figure>
 
 
 <p>所以不能无用intern，把太多字符串放到常量池中。</p>
@@ -562,12 +557,14 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (1)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (3)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (1)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (2)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -583,8 +580,11 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 <a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
 <a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
 <a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 90%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
 <a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
@@ -598,11 +598,13 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 90%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 136%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 90%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 90%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -611,6 +613,14 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
 <section>
   <h1>Recent Posts</h1>
   <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
+      </li>
     
       <li class="post">
         <a href="/blog/clean-code/">Clean Code Summary</a>
@@ -622,14 +632,6 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
     
       <li class="post">
         <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a>
       </li>
     
   </ul>
@@ -654,7 +656,7 @@ JAVA 使用 jni 调用c++实现的<code>StringTable#intern()</code>方法, <code
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2019 - Alpha Wang -
+  Copyright &copy; 2022 - Alpha Wang -
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
   <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
 </p>
