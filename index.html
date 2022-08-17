@@ -176,6 +176,49 @@ $(document).ready(
       
   <header>
     
+      <h1 class="entry-title"><a href="/blog/pulsar-load-balancing/">详解 Pulsar Broker 负载均衡</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2022-08-14T18:30:10+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2022</span></span> <span class='time'>6:30 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>最终版本发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew">https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew</a></p></blockquote>
+
+<p>In this blog, we talk about the importance of load balancing in distributed computing systems and provide a deep dive on how Pulsar handles broker load balancing. First, we’ll cover Pulsar’s topic-bundle grouping, bundle-broker ownership, and load data models. Then, we&rsquo;ll walk through Pulsar’s load balancing logic with sequence diagrams that demonstrate bundle assignment, split, and shedding. By the end of this blog, you’ll understand how Pulsar dynamically balances brokers.</p>
+
+<p>本文将探讨负载均衡在分布式计算系统中的重要性，并深入分析 Pulsar 处理 Broker 负载均衡的方式。首先我们介绍 Pulsar 中的 Topic-Bundle 分组、Bundle-Broker 归属关系以及负载数据模型。然后讲解 Pulsar 的负载均衡逻辑，通过时序图来展示 Bundle 的分配、拆分和缩减过程。通过本文，你将了解 Pulsar Broker 是如何做到动态均衡的。</p>
+
+<p>Before we dive into the details of Pulsar’s broker load balancing, we&rsquo;ll briefly discuss the challenges of distributed computing, and specifically, systems with monolithic architectures.</p>
+
+<p>在深入探讨 Pulsar Broker 负载均衡的细节之前，我们先简要讨论分布式计算的挑战，特别是单体架构系统的挑战。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/pulsar-load-balancing/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a></h1>
     
     
@@ -510,41 +553,6 @@ $(document).ready(
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/introduction-to-apache-solr/">Introduction to Apache Solr</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-01-20T15:28:10+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:28 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><blockquote><p>本文是《Solr In Action》读书笔记，包含第1~2章</p></blockquote>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/introduction-to-apache-solr/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -559,14 +567,14 @@ $(document).ready(
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (3)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (4)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
-<li class='category'><a href='/blog/categories/messaging/'>messaging (1)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (2)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
-<li class='category'><a href='/blog/categories/translation/'>translation (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (3)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -585,7 +593,7 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
-<a style="font-size: 90%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 119%" href="/blog/tags/pulsar/">Pulsar</a>
 <a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
@@ -600,13 +608,13 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 136%" href="/blog/tags/distributed-system/">distributed system</a>
-<a style="font-size: 90%" href="/blog/tags/messaging/">messaging</a>
+<a style="font-size: 148%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 119%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
-<a style="font-size: 90%" href="/blog/tags/translation/">translation</a>
+<a style="font-size: 119%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -621,6 +629,10 @@ $(document).ready(
       </li>
     
       <li class="post">
+        <a href="/blog/pulsar-load-balancing/">详解 Pulsar Broker 负载均衡</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
       </li>
     
@@ -630,10 +642,6 @@ $(document).ready(
     
       <li class="post">
         <a href="/blog/redis-mind-map/">Redis Mind Map</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
       </li>
     
   </ul>

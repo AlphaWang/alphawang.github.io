@@ -9,7 +9,7 @@
   <meta name="author" content="Alpha Wang">
 
   
-  <meta name="description" content="String#substring()在Java6和Java7中的实现是不一样的。这是因为Java6的实现可能导致内存问题，所以Java7中为了改善这个问题修改了实现方式。那么Java7中的实现就真的合理吗？ 首先让我们来猜测一下，Java是如何实现substring功能的。 &hellip;">
+  <meta name="description" content="本文是《Solr In Action》读书笔记，包含第1~2章 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -127,6 +127,41 @@ $(document).ready(
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/introduction-to-apache-solr/">Introduction to Apache Solr</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-01-20T15:28:10+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>3:28 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>本文是《Solr In Action》读书笔记，包含第1~2章</p></blockquote>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/introduction-to-apache-solr/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -509,57 +544,6 @@ $(document).ready(
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/utility-classes-are-evil/">Utility Classes Are Evil</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-09-18T15:30:18+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>18</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:30 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This post is a summary of <a href="http://www.javacodegeeks.com/2014/09/oop-alternative-to-utility-classes.html">this artical</a> and <a href="http://blogs.msdn.com/b/nickmalik/archive/2005/09/06/461404.aspx">this one</a>.</p>
-
-<h2>What&rsquo;s Utility Classes</h2>
-
-<p>A utility class is a class filled with static methods.  It is usually used to isolate a &ldquo;useful&rdquo; algorithm.</p>
-
-<blockquote><p><code>StringUtils</code>, <code>IOUtils</code>, <code>FileUtils</code> from Apache Commons; <code>Iterables</code> and <code>Iterators</code> from Guava, and <code>Files</code> from JDK7 are perfect examples of utility classes.</p></blockquote>
-
-<h2>Why Utility Classes</h2>
-
-<p>If you have two classes <code>A</code> and <code>B</code>, and have a method <code>f()</code> that both must use, then the most naive approach is to repeat the function as a method in both classes. However, this violates the <a href="http://en.wikipedia.org/wiki/Don't_repeat_yourself">Don&rsquo;t repeat yourself (DRY)</a> approach to programming.</p>
-
-<p>The most natural solution is inheritance, but it&rsquo;s not always beneficial for <code>A</code> and <code>B</code> to be subclasses of some parent class. In my case, <code>A</code> was already a subclass of another class, while <code>B</code> was not. There was no way to make <code>A</code> and <code>B</code> subclasses of a parent class without breaking that other relationship.</p>
-
-<p>The alternative is to define the utility class: a public static class that sits in the global namespace, awaiting anyone to &ldquo;borrow&rdquo; them.</p>
-
-<p>They are not bad in themselves, but they do imply relationships between your data that are not explicitly defined. Also, if your static class has any static variables, then <code>A</code> and <code>B</code> never really know what they&rsquo;re getting into when they use it.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/utility-classes-are-evil/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -576,14 +560,14 @@ $(document).ready(
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (3)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (4)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
-<li class='category'><a href='/blog/categories/messaging/'>messaging (1)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (2)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
-<li class='category'><a href='/blog/categories/translation/'>translation (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (3)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -602,7 +586,7 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
-<a style="font-size: 90%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 119%" href="/blog/tags/pulsar/">Pulsar</a>
 <a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
@@ -617,13 +601,13 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 136%" href="/blog/tags/distributed-system/">distributed system</a>
-<a style="font-size: 90%" href="/blog/tags/messaging/">messaging</a>
+<a style="font-size: 148%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 119%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
-<a style="font-size: 90%" href="/blog/tags/translation/">translation</a>
+<a style="font-size: 119%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -638,6 +622,10 @@ $(document).ready(
       </li>
     
       <li class="post">
+        <a href="/blog/pulsar-load-balancing/">详解 Pulsar Broker 负载均衡</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
       </li>
     
@@ -647,10 +635,6 @@ $(document).ready(
     
       <li class="post">
         <a href="/blog/redis-mind-map/">Redis Mind Map</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a>
       </li>
     
   </ul>
