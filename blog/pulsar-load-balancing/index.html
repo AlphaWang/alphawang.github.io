@@ -147,7 +147,8 @@ $(document).ready(
   </header>
 
 
-<div class="entry-content"><blockquote><p>最终版本发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew">https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew</a></p></blockquote>
+<div class="entry-content"><blockquote><p>本文翻译自 StreamNative 博客《Achieving Broker Load Balancing with Apache Pulsar》
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew">https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew</a></p></blockquote>
 
 <p>In this blog, we talk about the importance of load balancing in distributed computing systems and provide a deep dive on how Pulsar handles broker load balancing. First, we’ll cover Pulsar’s topic-bundle grouping, bundle-broker ownership, and load data models. Then, we&rsquo;ll walk through Pulsar’s load balancing logic with sequence diagrams that demonstrate bundle assignment, split, and shedding. By the end of this blog, you’ll understand how Pulsar dynamically balances brokers.</p>
 
@@ -359,8 +360,9 @@ $(document).ready(
 
 <h2>Shedding (unloading) bundles from overloaded brokers - 从过载的 Broker 中缩减（卸载）Bundle</h2>
 
-<p><img src="https://lh6.googleusercontent.com/4sqGjXWJpUeg_MoFLaerNqgOkBffhCLPCHEE9PFQHyO-qjtx2GfPHdW3CDprArFeYaR2bs7OXnIqqAbNKRkbKKSfKePA0a8rO_KDcOGNhJN-6LGoPmCtD-rEAigjk-LRbEmOO3NUG59IzKsIs453Zg" alt="img" />With the broker load information collected from all brokers, the leader broker identifies which brokers are overloaded and triggers bundle unload operations, with the objective of rebalancing the traffic throughout the cluster.
-Leader Broker 根据从所有 Broker 中收集的负载信息，识别出哪些 Broker 已经过载，并触发 Bundle 卸载操作，目的是为了重平衡整个集群的流量。</p>
+<p><img src="https://lh6.googleusercontent.com/4sqGjXWJpUeg_MoFLaerNqgOkBffhCLPCHEE9PFQHyO-qjtx2GfPHdW3CDprArFeYaR2bs7OXnIqqAbNKRkbKKSfKePA0a8rO_KDcOGNhJN-6LGoPmCtD-rEAigjk-LRbEmOO3NUG59IzKsIs453Zg" alt="img" />With the broker load information collected from all brokers, the leader broker identifies which brokers are overloaded and triggers bundle unload operations, with the objective of rebalancing the traffic throughout the cluster.</p>
+
+<p>Leader Broker 根据从所有 Broker 中收集的负载信息，识别出哪些 Broker 已经过载，并触发 Bundle 卸载操作，目的是为了重平衡整个集群的流量。</p>
 
 <p>Using the default <code>ThresholdShedder</code> strategy, the leader broker computes the average of the maximal resource usage among CPU, memory, and network IO. After that, the leader finds brokers whose load is higher than the average-based threshold, as shown in Section 5 below. If identified, the leader asks the overloaded brokers to unload some bundles of topics, starting from the high throughput ones, enough to bring the broker load to below the critical threshold.For the unloading request, the owner broker removes the target bundles’ ownerships in the metadata store and closes the client topic connections. Then the clients reinitiate the broker discovery mechanism. Eventually, the leader assigns less-loaded brokers to the unloaded bundles and the clients connect to them.</p>
 
@@ -525,7 +527,7 @@ Leader Broker 根据从所有 Broker 中收集的负载信息，识别出哪些 
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/" title="Previous Post: How to Verify If Resilience4j Circuit Breaker Works">&laquo; How to Verify If Resilience4j Circuit Breaker Works</a>
+        <a class="basic-alignment left" href="/blog/bookkeepr-external-consensus/" title="Previous Post: Apache BookKeeper 外部共识和动态成员">&laquo; Apache BookKeeper 外部共识和动态成员</a>
       
       
         <a class="basic-alignment right" href="/blog/kafka-versus-pulsar/" title="Next Post: Apache Pulsar 与 Apache Kafka 之对比分析">Apache Pulsar 与 Apache Kafka 之对比分析 &raquo;</a>
@@ -565,14 +567,14 @@ Leader Broker 根据从所有 Broker 中收集的负载信息，识别出哪些 
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (4)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (6)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
-<li class='category'><a href='/blog/categories/messaging/'>messaging (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (4)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
-<li class='category'><a href='/blog/categories/translation/'>translation (3)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (5)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -591,7 +593,7 @@ Leader Broker 根据从所有 Broker 中收集的负载信息，识别出哪些 
 <a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
-<a style="font-size: 119%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 148%" href="/blog/tags/pulsar/">Pulsar</a>
 <a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
@@ -606,13 +608,13 @@ Leader Broker 根据从所有 Broker 中收集的负载信息，识别出哪些 
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 148%" href="/blog/tags/distributed-system/">distributed system</a>
-<a style="font-size: 119%" href="/blog/tags/messaging/">messaging</a>
+<a style="font-size: 164%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 148%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
-<a style="font-size: 119%" href="/blog/tags/translation/">translation</a>
+<a style="font-size: 148%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -631,15 +633,15 @@ Leader Broker 根据从所有 Broker 中收集的负载信息，识别出哪些 
       </li>
     
       <li class="post">
+        <a href="/blog/bookkeepr-external-consensus/">Apache BookKeeper 外部共识和动态成员</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/kop-offset/">Offset Implementation in Kafka-on-Pulsar</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/clean-code/">Clean Code Summary</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/redis-mind-map/">Redis Mind Map</a>
       </li>
     
   </ul>

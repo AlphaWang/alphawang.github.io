@@ -4,7 +4,7 @@
   <title><![CDATA[Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2022-08-18T00:32:18+08:00</updated>
+  <updated>2022-08-18T21:38:20+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -496,7 +496,8 @@
     <link href="http://alphawang.github.io/blog/pulsar-load-balancing/"/>
     <updated>2022-08-14T18:30:10+08:00</updated>
     <id>http://alphawang.github.io/blog/pulsar-load-balancing</id>
-    <content type="html"><![CDATA[<blockquote><p>最终版本发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew">https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew</a></p></blockquote>
+    <content type="html"><![CDATA[<blockquote><p>本文翻译自 StreamNative 博客《Achieving Broker Load Balancing with Apache Pulsar》
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew">https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew</a></p></blockquote>
 
 <p>In this blog, we talk about the importance of load balancing in distributed computing systems and provide a deep dive on how Pulsar handles broker load balancing. First, we’ll cover Pulsar’s topic-bundle grouping, bundle-broker ownership, and load data models. Then, we&rsquo;ll walk through Pulsar’s load balancing logic with sequence diagrams that demonstrate bundle assignment, split, and shedding. By the end of this blog, you’ll understand how Pulsar dynamically balances brokers.</p>
 
@@ -708,8 +709,9 @@
 
 <h2>Shedding (unloading) bundles from overloaded brokers - 从过载的 Broker 中缩减（卸载）Bundle</h2>
 
-<p><img src="https://lh6.googleusercontent.com/4sqGjXWJpUeg_MoFLaerNqgOkBffhCLPCHEE9PFQHyO-qjtx2GfPHdW3CDprArFeYaR2bs7OXnIqqAbNKRkbKKSfKePA0a8rO_KDcOGNhJN-6LGoPmCtD-rEAigjk-LRbEmOO3NUG59IzKsIs453Zg" alt="img" />With the broker load information collected from all brokers, the leader broker identifies which brokers are overloaded and triggers bundle unload operations, with the objective of rebalancing the traffic throughout the cluster.
-Leader Broker 根据从所有 Broker 中收集的负载信息，识别出哪些 Broker 已经过载，并触发 Bundle 卸载操作，目的是为了重平衡整个集群的流量。</p>
+<p><img src="https://lh6.googleusercontent.com/4sqGjXWJpUeg_MoFLaerNqgOkBffhCLPCHEE9PFQHyO-qjtx2GfPHdW3CDprArFeYaR2bs7OXnIqqAbNKRkbKKSfKePA0a8rO_KDcOGNhJN-6LGoPmCtD-rEAigjk-LRbEmOO3NUG59IzKsIs453Zg" alt="img" />With the broker load information collected from all brokers, the leader broker identifies which brokers are overloaded and triggers bundle unload operations, with the objective of rebalancing the traffic throughout the cluster.</p>
+
+<p>Leader Broker 根据从所有 Broker 中收集的负载信息，识别出哪些 Broker 已经过载，并触发 Bundle 卸载操作，目的是为了重平衡整个集群的流量。</p>
 
 <p>Using the default <code>ThresholdShedder</code> strategy, the leader broker computes the average of the maximal resource usage among CPU, memory, and network IO. After that, the leader finds brokers whose load is higher than the average-based threshold, as shown in Section 5 below. If identified, the leader asks the overloaded brokers to unload some bundles of topics, starting from the high throughput ones, enough to bring the broker load to below the critical threshold.For the unloading request, the owner broker removes the target bundles’ ownerships in the metadata store and closes the client topic connections. Then the clients reinitiate the broker discovery mechanism. Eventually, the leader assigns less-loaded brokers to the unloaded bundles and the clients connect to them.</p>
 
@@ -786,6 +788,790 @@ Leader Broker 根据从所有 Broker 中收集的负载信息，识别出哪些 
 <li>Bundle 自动卸载逻辑默认使用 LoadSheddingStrategy，根据 CPU、内存以及网络 IO 的最大资源使用率平均值来查找过载的 Broker。然后 Leader 要求过载的 Broker 卸载一些高负载的主题 Bundle。被卸载的 Bundle 对应的客户端主题连接会被关闭，并重新发起 Bundle-Broker 分配。</li>
 </ul>
 
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Apache BookKeeper 外部共识和动态成员]]></title>
+    <link href="http://alphawang.github.io/blog/bookkeepr-external-consensus/"/>
+    <updated>2022-05-29T14:33:50+08:00</updated>
+    <id>http://alphawang.github.io/blog/bookkeepr-external-consensus</id>
+    <content type="html"><![CDATA[<blockquote><p>本文翻译自 《Apache BookKeeper Insights Part 1 — External Consensus and Dynamic Membership》，作者 Jack Vanlightly<br/>
+- 原文链接：<a href="https://medium.com/splunk-maas/apache-bookkeeper-insights-part-1-external-consensus-and-dynamic-membership-c259f388da21">https://medium.com/splunk-maas/apache-bookkeeper-insights-part-1-external-consensus-and-dynamic-membership-c259f388da21</a><br/>
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/i2CzmL8k2EKbjxNlW0OG6w">https://mp.weixin.qq.com/s/i2CzmL8k2EKbjxNlW0OG6w</a></p></blockquote>
+
+<p>The BookKeeper replication protocol is pretty interesting, it’s quite different to other replication protocols that people are used to in the messaging space such as Raft (RabbitMQ Quorum Queues, Red Panda, NATS Streaming) or the Apache Kafka replication protocol. But being different means that people often don’t understand it fully and can either get tripped up when it behaves in a way they don’t expect or not use it to its full potential.</p>
+
+<p>BookKeeper 复制协议非常有趣，它与人们在消息领域习惯使用的其他复制协议大不相同，例如 RabbitMQ Quorum Queues、Red Panda 及 NATS Streaming 使用的 Raft 协议和 Apache Kafka 使用的复制协议。但与众不同意味着人们往往无法完全掌握 BookKeeper 的各项玩法，例如当 BookKeeper 的运行方式不符合预期时不知如何解决，又或是没能充分利用 BookKeeper 的各项优势功能。</p>
+
+<p>This series aims to help people understand some fundamental insights into what makes BookKeeper different and also dig into some of the nuances of the protocol. We’ll dig into the “why” the protocol is the way it is and also some of the ramifications of those design decisions.</p>
+
+<p>本系列文章旨在帮助大家了解那些使 BookKeeper 与众不同的一些基本见解，详细分析该协议的一些细微差别。我们将深入研究 BookKeeper 复制协议背后的设计考量，以及这些设计决策所带来的结果。</p>
+
+<!--more-->
+
+
+<p>One of the best ways I know of how to describe design decisions is via comparison. Comparing one thing against another is a great way to discuss trade-offs, weak/strong points and many other aspects.
+I’m going to use both Raft and Apache Kafka as comparison points. I am not going to try to persuade you that BookKeeper is better than other protocols, this is not a thinly veiled marketing piece. This post is about teaching the mechanics of the BookKeeper protocol and ramifications.</p>
+
+<p>对比是描述设计决策的最好方法之一，可以让我们很好地讨论权衡、优缺点等等方面。本系列文章将同时使用 Raft 和 Apache Kafka 作为比较对象，但本系列并不旨在宣传或说服用户 BookKeeper 比其他协议更好，而是要探讨 BookKeeper 协议的机制及其衍生的结果。</p>
+
+<p>Also note that this is not an in-depth look at Raft or Kafka. I will be describing enough of those protocols for my aims, but will be glossing over large amounts of complexity. If you want to understand Raft and Apache Kafka more, the protocols are well documented elsewhere.</p>
+
+<p>另外请注意，本系列文章旨在通过对比更好地帮助大家理解 BookKeeper，而不是对 Raft 或 Kafka 进行深入研究。我们将有的放矢地尽量多地介绍这些协议，但也会跳过大量复杂的细节。如果想深入学习 Raft 和 Apache Kafka，可以参考其协议文档。</p>
+
+<p>This first post describes the biggest difference between BookKeeper and other replication protocols. This difference informs most of the later posts on the nuances of the protocol also.</p>
+
+<p>本系列的第一篇文章会为大家介绍 BookKeeper 和其他复制协议之间的最大区别，帮助大家理解本系列后续文章中会谈及的协议间的细微差别。</p>
+
+<h2>Integrated vs External Coordination - 集成协调 vs 外部协调</h2>
+
+<p>Raft is an “integrated” protocol. What I mean by that is that the control plane and data plane are both integrated into the same protocol and that protocol is exercised by the storage nodes which are all equal peers. Each node has all the data locally stored in persistent storage.</p>
+
+<p>Raft 是一个“集成”协议。这里的集成是指控制平面和数据平面都集成到同一个协议中，并且该协议由所有对等的存储节点执行。每个节点都将所有数据存储在本地持久化存储中。</p>
+
+<p>The same is true of Apache Kafka albeit with the use of ZooKeeper for metadata, though this will be removed soon (KIP-500).</p>
+
+<p>Apache Kafka 也是如此。之前通过 ZooKeeper 存储 Kafka 的元数据，尽管新版本可在不需要 ZooKeeper 的情况下运行 Kafka (KIP-500)，但也将依赖于 ZooKeeper 的控制器改造成了基于 Kafka Raft 的 Quorum 控制器。</p>
+
+<p>With Raft, we have a steady state where replication is being performed, then periods of perturbation which trigger elections. Once a leader is elected, the leader node handles all client requests and replication of entries to followers.</p>
+
+<p>Raft 在稳定状态时会执行数据复制，一旦出现扰动会触发选举。选举出 Leader 后，Leader 节点会处理所有客户端请求并将 Entry 复制到 Follower。</p>
+
+<p>With Raft the leader learns where in the log each follower is and starts replicating data to each follower according to their position. Because the leader has all the state locally, it can retrieve that state and transmit it, no matter how far behind a follower is.</p>
+
+<p>在 Raft 中，Leader 可以了解每个 Follower 在日志中的位置，并根据这些位置将数据复制到每个 Follower。由于 Leader 在本地拥有所有状态，因此无论 Follower 落后多远，它都可以检索到 Follower 当前的状态并将其后的数据传输给 Follower。</p>
+
+<p><img src="https://lh5.googleusercontent.com/mbBqIeVrIOBKxlrSBS9ly3z5um_z913Lxq21WD9f0uKMDFfp5j-V6haZIIiRmZvdKxMLGPlqxiZIAx3bon7WUDAeFhQ4Mnm51zYd0AjVekLjEdoWViGZSt68MDY3HWTs04_Ek1hLt2eVbcWWNCEjaw" alt="img" /></p>
+
+<p>Fig 1. Integrated replication protocols where the replication is performed by stateful nodes that host the data.</p>
+
+<p>图 1. 集成复制协议，存储数据的有状态节点执行数据复制</p>
+
+<p>With Kafka, the followers send fetch requests to the leader, the requests include their current position. The leader, having all the state locally, simply retrieves the next data and sends it back to the follower.</p>
+
+<p>在 Kafka 中，Follower 向 Leader 发送 fetch 请求，请求中包含它们的当前位置。Leader 因为在本地拥有所有状态，所以只需在本地检索下一个数据并将其发送回 Follower 即可。</p>
+
+<p>A byproduct of replication being performed by stateful fully integrated nodes is that cluster membership is relatively static. Yes you can perform cluster operations to add and remove members, but these are very infrequent operations with limits. The membership of a Raft cluster and the replicas that form a Kafka topic can be considered fixed in terms of the normal operation of the protocol.</p>
+
+<p>有状态的完全集成节点执行复制时，集群成员相对静态。虽然用户可以执行集群操作来添加和移除成员，但这些操作不常发生且有限制。当协议正常运行时，可以认为 Raft 集群的成员和构成 Kafka 主题的副本没有发生变化。</p>
+
+<p>BookKeeper is different. It has the consensus and storage separated. The storage nodes are simple and basically store and retrieve what they are told to. They understand almost nothing of the replication protocol itself. The replication protocol is external to the storage nodes and lives in the BookKeeper client. It is the client that performs the replication to the storage nodes.</p>
+
+<p>BookKeeper 则不同，它将共识和存储分离开来。存储节点很简单，基本上仅存储和检索它们被告知的内容。这些节点本身与复制协议几乎毫无关联——复制协议位于存储节点的外部，封装在 BookKeeper 客户端中，由客户端将数据复制到存储节点。</p>
+
+<p><img src="https://lh6.googleusercontent.com/R7aG2l0-KqcT29ZKFHmLK0V1MMcZdJ9Xl3clQgNSOHi3MHh_ydRjkjcACvkn7WVPLsLuRajhGZmPY5QLa5pG9bR6ZRVtHqGB7mQlx0hDTA3xvy5EHboDIGK98nbP284_4WLawO_EELDbmovQJsg-DQ" alt="img" /></p>
+
+<p>Fig 2. The client performs replication</p>
+
+<p>图 2. 客户端执行复制</p>
+
+<p>BookKeeper was designed to act as the distributed log storage sub-system of another data system, like a messaging system or database, for example Apache Pulsar. Pulsar brokers use BookKeeper to store topics and cursors and each broker uses the BookKeeper client to do the reading and writing to those BookKeeper nodes.</p>
+
+<p>BookKeeper 旨在充当其他数据系统的分布式日志存储子系统，这个其他数据系统可以是消息系统或数据库。例如 Apache Pulsar 使用 BookKeeper 来存储主题和游标，每个 Broker 通过 BookKeeper 客户端从 BookKeeper 节点读取和写入数据。</p>
+
+<p>The client is external and stateless which has a number of cascading effects that inform the design of the rest of the protocol. For example, because the client doesn’t have the full state locally, it needs to treat failure differently.</p>
+
+<p>客户端在存储节点外部且无状态，这会对协议其余部分的设计产生一些级联影响。例如，因为客户端在本地没有完整的状态，所以对待失败的处理方式就会不一样。</p>
+
+<p>With Raft, if one node becomes unavailable for an hour we don’t have a big problem. When the node comes back, the stateful leader will simply resume replication to the follower from where it left off. The BookKeeper client doesn’t have that luxury, if it wants to continue to make progress, it can’t be storing the last X hours of data in memory, it must do something differently.</p>
+
+<p>一个 Raft 节点宕机一个小时，也不会产生太大问题。当节点重新上线时，有状态的 Leader 很容易就能从该 Follower 离开的位置恢复复制数据。BookKeeper 客户端则没有这种功能。如果想恢复复制数据，它不可能将最后 X 小时的数据都存储在内存中，所以必须另寻他法。</p>
+
+<p>Because the replication and coordination logic lives externally of the storage nodes (in the client), the client is free to change the membership of a ledger when failure occurs. This dynamic membership is a fundamental feature differentiator and is one of BookKeeper’s most compelling features.</p>
+
+<p>因为复制和协调逻辑存在于存储节点的外部（即客户端中），所以客户端可以在发生故障时自由更改 Ledger 成员。这种动态成员机制是一个根本上区别于其他协议的功能，也是 <strong>BookKeeper 最引人注目的功能之一</strong>。</p>
+
+<blockquote><p>A data system like Pulsar having a separate storage layer has its downsides, like an extra network hop before any data hits disk and having to operate a separate cluster of bookies. If BookKeeper didn’t offer some truly valuable features, then it would become more of a liability than an asset. Luckily for us, BookKeeper has many wonderful features that make it worth it.</p>
+
+<p>像 Pulsar 这样具有单独存储层的数据系统也有自身的缺陷，例如任何数据在到达磁盘之前需要额外的网络请求，并且必须运维单独的 Bookie 集群。BookKeeper 需要提供一些真正有价值的功能才能为 Pulsar 加码。幸运的是，BookKeeper 具有许多值得使用它的出色功能。</p></blockquote>
+
+<p>Now that we’ve set the scene, we’ll dig further in to explore how an integrated, fixed membership protocol like Raft compares to an external consensus, dynamic membership protocol like BookKeeper.</p>
+
+<p>现在我们已经为大家搭建了认知，在后文中将进一步深入探讨如何将像 Raft 这样集成的、固定成员的协议与像 BookKeeper 这样外部共识、动态成员的协议进行比较。</p>
+
+<h2>Commit Index - 提交索引</h2>
+
+<p>Each of our three protocols all have the concept of a commit index, though they have different names. A commit index is an offset in the log where all entries at that point and before will survive a certain agreed number of node failures.</p>
+
+<p>本文提到的三个协议每个都有提交索引（Commit Index）的概念，不过名称各不相同。提交索引是日志中的一个偏移量，在该偏移量及其之前的所有 Entry 都能在一定数量的节点故障中幸存下来。</p>
+
+<p>In each case, an entry must reach a certain replication factor to be considered committed:</p>
+
+<p>对每个协议来说，Entry 都必须达到特定的复制因子才能被视为已提交：</p>
+
+<ul>
+<li>For Raft it is a cluster majority and the guarantee is that committed entries will survive the permanent loss of any minority of nodes (N/2). So Raft requires a majority quorum to acknowledge an entry and to consider that entry committed.
+对于 Raft 来说，复制因子是集群多数，保证已提交的 Entry 在任意少数节点（N/2）永久丢失后也能幸存下来。因此，Raft 要求多数仲裁确认 Entry 后才能认定该 Entry 已提交。</li>
+<li>For Kafka it depends on various configs. Kafka supports majority quorum behaviour via the use of the client config acks=all and the broker config min-insync-replicas=[majority]. By default it only requires the leader to persist an entry before acknowledging it.
+对于 Kafka 来说，复制因子取决于各种各样的配置。Kafka 通过使用客户端配置 <code>acks=all</code> 以及 Broker 配置 <code>min-insync-replicas=[majority]</code> 支持多数仲裁确认机制。默认情况下，它只需要 Leader 持久化 Entry 即可确认该 Entry。</li>
+<li>For BookKeeper it is the Ack Quorum (AQ)and the guarantee is that committed entries will survive the permanent loss of any (AQ-1) of bookies.
+对于 BookKeeper 来说，复制因子是 Ack Quorum（AQ），保证已提交的 Entry 在（AQ-1）个节点永久丢失后也能幸存下来。</li>
+</ul>
+
+
+<blockquote><p>NOTE: Because each protocol is different I will refer to the quorum that is required for an entry to be considered “committed” as the Commit Quorum. This is my own invented term for this post.</p>
+
+<p>注意：由于每个协议都不同，我将 Entry 被认定为“已提交”所需的仲裁数称为提交仲裁数（Commit Quorum）。这是我自己为这篇文章发明的术语。</p></blockquote>
+
+<p>Raft calls this point in the log the commit index, Kafka calls it the High Watermark and BookKeeper calls it the Last Add Confirmed (LAC). Each protocol relies on this commit index to deliver its consistency guarantees.</p>
+
+<p>Raft 称日志中的这一点为提交索引（Commit Index），Kafka 称其为高水位（High Watermark），BookKeeper 称其为最后添加确认（Last Add Confirmed，缩写 LAC）。每个协议都依赖于这个提交索引来提供一致性保证。</p>
+
+<p>In Raft and Kafka this commit index is transmitted between the leader and followers and so each node will have its own current knowledge of what the commit index is. The leader always knows the fully up to date value of the commit index whereas the followers may have a stale value, but that is ok.</p>
+
+<p>在 Raft 和 Kafka 中，这个提交索引会在 Leader 和 Follower 之间传输，因此每个节点自己都保存了一份当前提交索引的值。Leader 总是知道提交索引的最新值，而 Follower 的值可能滞后，但这没关系。</p>
+
+<p><img src="https://lh6.googleusercontent.com/BDQzUGLw7eNNgNHn4RcriADNyOqgYE_Cy-I9hvWTWw6DdT5IW-5zv5mD92GpFALHkjHa_lZF_1FeknGs5rEfsAFmsZ3XV3z2EmyJAyhLaA69zLjPWFj8thdNKjzig4kW_AQKO5hTLq85AibCtIiZRQ" alt="img" /></p>
+
+<p>Fig 3. All nodes have their own view, sometimes stale, of the current commit index.</p>
+
+<p>图 3. 所有节点都有自己的当前（有时数据滞后）提交索引的信息</p>
+
+<p>With Kafka, the leader includes the High Watermark in its fetch responses to followers.</p>
+
+<p>在 Kafka 中，Leader 在其对 Follower 的 fetch 响应中包含高水位的信息。</p>
+
+<p>With BookKeeper, the LAC is included with every entry that is sent to the storage nodes. The storage nodes themselves have little use for it, but it allows clients to retrieve this vital information at a later point. So the client that is writing a ledger knows the current LAC and the storage nodes may have a slightly stale view of the LAC, but this is also fine and the protocol handles that. More on this later.</p>
+
+<p>在 BookKeeper 中，LAC 包含在发送到各存储节点的每个 Entry 中。存储节点本身几乎不会用到 LAC，但客户端之后可以检索此重要信息。因此，正在写入 Ledger 的客户端知道当前的 LAC，而存储节点的 LAC 信息可能有滞后，但这也没问题，复制协议会处理这种情况。稍后会详细介绍。</p>
+
+<p><img src="https://lh5.googleusercontent.com/yvOWKYnSm24CaYQN3_svB7VSlOUp8rT7a8AMvbkfk6CH0eAdBna_UU6QMR5qNpFgEvv4YbkSK8_G4wjrNNQki_Wz7lhf8ZvBSgmAfV4uGwsNyXSImR2Yy9vtEuvAyeHywB073wXNxvq0I19eB50u1w" alt="img" /></p>
+
+<p>Fig 4. The client knows the current LAC and the bookies have a usually slightly stale view of it.</p>
+
+<p>图 4. 客户端可检索当前最新的 LAC，而 Bookie 的 LAC 信息往往会滞后</p>
+
+<p>Reads that go past the commit index would be dirty reads where there are no guarantees that you’d be able to read the same entry again. Entries beyond the commit index could be lost or could be replaced with a different entry. For that reason each of the protocols don’t allow readers to read past this point.</p>
+
+<p>超过提交索引的读取是脏读，无法保证能够再次读取到相同的 Entry。提交索引之后的 Entry 可能会丢失或被不同的 Entry 替换。出于这个原因，各个协议都不允许读取超过提交索引的数据。</p>
+
+<h2>Raft/Kafka Properties and Behavior - Raft VS Kafka 特性和行为</h2>
+
+<p>With a Raft based system, you’ll specify your replication factor and that will translate into a Raft cluster of that many Raft members. With Kafka, that translates into a topic with that many replicas.</p>
+
+<p>对于基于 Raft 的系统，需要指定复制因子，这决定了 Raft 集群中有多少个成员。Kafka 也需要指定复制因子，这决定了主题有多少个副本。</p>
+
+<h3>Fixed Membership - 固定成员</h3>
+
+<p>Raft members and Kafka replicas are fixed in terms of the steady state replication. One cost of this fixed membership is the tension between replication factor, availability and latency.In an ideal world we’d want each entry to be fully replicated before being acknowledged. But followers can go down or be slow. Having a cluster become unavailable for writes because a single node becomes unavailable is not acceptable to most people with good reason. So the compromise is to reduce safety a little in order to gain availability and lower latency. We allow a minority of members to be unavailable and still offer good data safety and continued availability.</p>
+
+<p>稳定状态下执行数据复制时，Raft 成员和 Kafka 副本固定不变。成员固定所带来的一个后果是复制因子、可用性和延迟之间的冲突。理想情况下，我们希望每个 Entry 在确认前都被完全复制。但是 Follower 可能宕机或者变慢，而大多数人都无法接受仅仅因为单个节点不可用就导致整个集群不可写。为此采取的折中办法是，略微降低安全性以获得较好的可用性和低延迟。在允许少数成员不可用的情况下仍然提供良好的数据安全性和持续的可用性。</p>
+
+<p>That is why Raft and Kafka really need a commit quorum that is lower than the replication factor.</p>
+
+<p>这就是为什么 Raft 和 Kafka 需要一个低于复制因子的提交仲裁（Commit Quorum）。</p>
+
+<p>This reduction in safety can be mitigated by simply increasing the replication factor. So if you want guarantees that committed entries will survive the loss of 2 nodes, then you’d need a replication factor of 5. You pay more for storage and network and also latency takes a small hit, but you only need the fastest 2 of your 4 followers to confirm an entry in order to acknowledge the entry to the client. So even with 2 slow nodes, you have acceptable latency and you reach your minimum rep factor that you are comfortable with.</p>
+
+<p>安全性的降低通过增加复制因子即可缓解。如果想保证已提交的 Entry 在丢失 2 个节点后仍然存活，那么需要指定复制因子为 5。这会增加存储和网络开销，并稍微影响延迟，不过只需要 4 个 Follower 中最快的那 2 个确认 Entry 即可返回确认给客户端。因此即便有 2 个慢速节点，延迟也是可接受的，同时复制因子也达到最小。</p>
+
+<h3>Properties - 属性</h3>
+
+<p>An invariant is something that must be true at all times. You can look at the state of a system at any time and verify that its state conforms to the invariant. For example, an invariant may state that no committed entries are lost.</p>
+
+<p>首先介绍一下不变量（Invariant）和活性属性（Liveness Property）的概念。不变量是指在任何时候都必须为 true 的事情。通过随时查看系统状态可以验证其状态是不是不变量。例如，一个不变量可以是任何已提交 Entry 都不会丢失。</p>
+
+<p>Liveness properties tell us what must happen at some point, for example, eventually a leader must be elected given that a majority of nodes are eventually functional and can see each other.</p>
+
+<p>活性属性则告诉我们在某个时刻一定会发生什么。例如，假定多数节点最终都能正常工作并对彼此可见，那么最终一定能选出 Leader。</p>
+
+<p>Our integrated log replication protocols have, among others, the invariants:</p>
+
+<p>本文讨论的集成日志复制协议至少具有以下不变量：</p>
+
+<ul>
+<li>Entries are appended to the leader’s log in temporal order.
+Entry 按照时间顺序追加到 Leader 的日志中。</li>
+<li>The leader appends entries to follower logs in the same order as its own.
+Leader 按照相同顺序将 Entry 追加到 Follower 的日志中。</li>
+<li>Committed entries are never lost as long as no majority of nodes die with total data loss (Only applies ot Kafka with ack=all, min-insync-replicas=[majority]).
+只要大多数节点没有宕机并丢失所有数据，那么已提交的 Entry 永远不会丢失（仅适用于 Kafka 中 ack=all 且 min-insync-replicas=[majority] 的情况）。</li>
+<li>The log on a follower node, is identical to the current leader’s log, from the follower’s committed index and down.
+在 Follower 的已提交索引及其之前，Follower 节点上的日志与当前 Leader 的日志完全相同。</li>
+</ul>
+
+
+<p>One liveness property is that given all nodes are functional and have visibility of each other then eventually, any given committed entry will become fully replicated (as long as the prefix of the log is also fully replicated). In other words, the log tail will eventually reach the desired replication factor.</p>
+
+<p>集成日志复制协议的一个活性属性是，假定所有节点都正常运行并对彼此可见，那么最终任何给定的已提交 Entry 都将被完全复制（前提是在此之前的日志也被完全复制）。换言之，日志尾部最终会达到所需的复制因子。</p>
+
+<p><img src="https://lh3.googleusercontent.com/W-V9urXDoJ_rF836aSTvqimV80pJ0mZfnj-xOKVy-BGpVJQmSbyfM89KM1eyrY7f1ofhQkfLRd54jxTYz75V0xA8dh9nCKw_GT2eIsj281uqCZW4O998Hktx0QuDB9jPOJxAu_tBtLUSl1kNNqS-Bw" alt="img" /></p>
+
+<p>Fig 5. The three safety zones of a Raft or Kafka log</p>
+
+<p>图 5. Raft 和 Kafka 日志的三种安全区域</p>
+
+<p>We can think of a replicated Raft log as being split into 3 zones of safety. At the head, beyond the committed index we’re in the danger zone, these entries have no guarantees and may be lost. Then the committed prefix of the log can be split into the head that reaches the majority quorum but not fully replicated yet and the tail that is fully replicated.</p>
+
+<p>我们可以认为 Raft 日志能分成 3 种安全区域。其一是“未提交区域（Uncommitted）”，指处于日志头部、在已提交索引之外的危险区域，这里的 Entry 没任何保证，可能会丢失。剩下两个区域），分别是已达到多数仲裁但尚未完全复制的“已提交头部（Committed Head）”，以及已完全复制的“已提交尾部（Committed Tail）”。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Prefix RF &gt;= Entry RF &gt;= Suffix RF</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The rule is that for any given offset in the log, the prefix from that point must have reached the same or higher replication factor and the suffix after that point must have reached the same or lower replication factor.</p>
+
+<p>对于任意给定的日志偏移量，该点之前的必定达到相同或者更高的复制因子，该点之后的必定达到相同或更低的复制因子。</p>
+
+<p>What does all this mean for the administrator?</p>
+
+<p>那么这一切对管理员意味着什么呢？</p>
+
+<p>When everything is going well, we’d expect a small uncommitted zone, a small committed head and a very large committed tail. But things don’t always go well and the committed head/tail can be of arbitrary length — the tail could be 0 length meaning no there are no fully replicated entries. This could happen because a follower is too slow (and past data retention) or it could mean a follower just died catastrophically and started up empty.</p>
+
+<p>当一切运行顺利时，预计未提交区域很小，已提交头部很小，而已提交尾部则非常大。然而事情并不总是顺利，已提交头部/尾部可能是任意长度——尾部长度可能为 0，意味着没有完全复制的条目。这可能是因为 Follower 太慢（并超过了数据保留期），或者 Follower 刚刚灾难性地宕机并重启。</p>
+
+<p>The point is that the replication factor is not a guarantee but a desired goal. The only guarantee is the commit quorum. So the commit quorum is the minimum guaranteed replication factor. As an administrator, you need to plan your procedures and planning around that value, not just the replication factor. Hence why some people run Raft and Kafka with rep factors of 5.</p>
+
+<p>这里的关键点在于复制因子并不是一个保证，而是一个期望的目标。唯一能保证的是提交仲裁。所以说提交仲裁是最小能保证的复制因子。作为管理员，需要围绕该值而不仅是复制因子来规划流程和计划。这就是为什么有些人使用复制因子 5 来运行 Raft 和 Kafka。</p>
+
+<h3>Recovery from failure - 故障恢复</h3>
+
+<p>Systems that use integrated replication protocols make recovery from total disk failure “relatively” simple. Any empty follower can be refilled from the current leader in exactly the same way as a follower that is mostly caught up. Replication saves the day.</p>
+
+<p>使用集成复制协议的系统可以“相对”简单地从整个磁盘故障中恢复。空的 Follower 可以通过当前 Leader 重新填入数据，这个过程和大多数追赶的 Follower 完全相同。数据复制保证了能从故障中成功恢复。</p>
+
+<h3>Easy to reason about - 易于推理</h3>
+
+<p>All these properties make reasoning about the state of a Raft/Kafka log relatively simple:</p>
+
+<p>上述这些特性使得对 Raft/Kafka 日志状态的推理变得相对简单：</p>
+
+<ul>
+<li>The members are fixed so we know where the data is.
+因为成员是固定的，所以可以确认数据的位置。</li>
+<li>We know only the head of the log might be at the commit quorum or less.
+仅日志头部的副本可能等于或少于提交仲裁。</li>
+<li>We know that if we lose a member it can get rehydrated by its stateful peers via the replication protocol.
+如果失去一个成员，可以通过复制协议从有状态的对等方重新恢复。</li>
+<li>We also have to accept that the replication factor is a goal not a guarantee because the committed head and tail can be of arbitrary length so might need to increase the rep factor to a high value.
+复制因子是一个目标而非一个保证，因为已提交头部和已提交尾部可能是任意长度，所以可能需要将复制因子设为一个较大的值。</li>
+</ul>
+
+
+<p>Now let’s take the same look at BookKeeper.</p>
+
+<p>现在让我们同样来看看 BookKeeper。</p>
+
+<h2>BookKeeper Properties and Behaviour - BookKeeper 的特性和行为</h2>
+
+<p>BookKeeper has similar configurations for the desired replication factor and for the commit quorum.</p>
+
+<p>BookKeeper 也有类似的配置来表示期望的复制因子以及提交仲裁。</p>
+
+<blockquote><p>NOTE: I will assume that the Ensemble Size is equal to our Write Quorum as striping lowers read performance and makes it not worthwhile in practice.
+注意：本文假设 Ensemble Size 和 Write Quorum 相等，因为条带化会降低读取性能，在实践中不值得采用。</p></blockquote>
+
+<p>Write Quorum (WQ) is our replication factor and Ack Quorum (AQ) is our commit quorum. Most people simply set Ack Quorum to be the majority quorum, so with a Write Quorum of 3, the Ack Quorum is set to 2. It would be reasonable to expect that using the quorum values of WQ=3 and AQ=2 would translate to the same behaviour as Raft or Kafka.</p>
+
+<p>Write Quorum（WQ）是 BookKeeper 的复制因子，Ack Quorum（AQ）则是 BookKeeper 的提交仲裁。大多数人简单地将 Ack Quorum 设置为多数仲裁，如果 Write Quorum 为 3，则 Ack Quorum 设为 2。因此可以合理地预期在 BookKeeper 内设置 WQ = 3 且 AQ = 2 的话，其行为与 Raft 或 Kafka 相同。</p>
+
+<p>The answer is WQ and AQ do not map onto their equivalents in Raft or Kafka and to understand why we need to look more closely at the protocol with its external consensus and dynamic membership.</p>
+
+<p>然而实际上是 WQ 和 AQ 在 Raft 或 Kafka 中并没有对等概念。想要理解其原因，我们需要更仔细地研究外部共识和动态成员协议。</p>
+
+<h3>External, Stateless Client - 外部无状态客户端</h3>
+
+<p>The replication and consensus logic lives in the client. The client is stateless, it cannot keep data in memory for any arbitrary length of time until a bookie becomes available. So it stays nimble and simply selects a new bookie to replace the one that it cannot write to and continues on its way. This dynamic membership change is called an ensemble change.</p>
+
+<p>BookKeeper 的复制和共识逻辑封装在客户端内。而客户端是无状态的，在 Bookie 可用之前，它无法将数据保存在内存中（无论保存多久都不行）。因此它灵活简单地选择一个新 Bookie 来替代无法写入数据的 Bookie，然后继续工作。这种动态的成员变化称为 Ensemble Change。</p>
+
+<p><img src="https://lh4.googleusercontent.com/XcmAMRiJL0Ui9zYm9EwDkIHJL197oZAV5DEJvq3Y909zJ0bGp7suVsQkcvGZYThul5YZ9kC9B9oCHhK_iW7UP2SP8rIWcenNvkPV5xmBtZTvdUUHGjTKbqbR2axoxG71Vs1reimIOml1Ogv2NHqvDA" alt="img" /></p>
+
+<p>Fig 6. The client performs an ensemble change after a write failure to bookie3.</p>
+
+<p>图 6. 客户端写入 bookie3 失败后，执行一次 Ensemble Change</p>
+
+<p>This ensemble change is basically an operation to update the ledger metadata in ZooKeeper as well as resending all uncommitted entries to the new bookie.</p>
+
+<p>这种 Ensemble Change 基本上就是对 ZooKeeper 中 Ledger 的元数据进行一次更新操作，并将所有未提交的 Entry 重新发送到新 Bookie 上。</p>
+
+<p>The result of these ensemble changes is that a ledger can be considered a series of mini-logs (we’ll call them fragments) that constitute a larger log. Each fragment has a range of contiguous entries where each entry shares the same bookies (it’s ensemble). Each time a write to a bookie fails, the client does an ensemble change and carries on, creating a ledger that is formed from 1 or more fragments.</p>
+
+<p>Ensemble Change 的结果是，Ledger 可以被认为是由一系列 mini-log（我们称之为 Fragment，即片段）构成的更大的日志。每个片段都有一系列连续的 Entry，其中每个 Entry 都共享相同的 Bookie（即 Ensemble）。每当客户端写入 Bookie 失败时，都会进行一次 Ensemble Change，并继续写入。这就创建出了由一个或多个片段组成的 Ledger。</p>
+
+<p><img src="https://lh5.googleusercontent.com/uv7GiGlTqDfzzchoyU-rTPTzJ8oc7br1o5kfEoCgwY6HfMsqsyvykDDbJSE8yCMguLfU_XREjerNekC06SSWc9wYb3BYGtqu3cQGLpnLLhlHgm5N6iERLPErjSn3YFIj-ofdYKSNDMUIs56PTkiAgw" alt="img" /></p>
+
+<p>Fig 7. A ledger made of 4 fragments.</p>
+
+<p>图 7. 一个由 4 个片段组成的 Ledger。</p>
+
+<p>If we were to look at each individual fragment, we’d see a similar pattern to a Raft log or Kafka topic partition. The current fragment can be split into the same three zones: committed tail, committed head and uncommitted zone.</p>
+
+<p>如果细究每个片段，就会看到类似 Raft 日志和 Kafka 主题分区的模式。当前片段也可以被分为与其相同的三个区域：已提交尾部、已提交头部和未提交区域。</p>
+
+<p><img src="https://lh5.googleusercontent.com/U_au_P3iRXYKD9emWEWBbr5jWdO8u51v8DTGaweWZyEK8buq1fTgwaN9GwQtRtcvdJd2A_HW-Jxr5kA7wU7d1UclO2ZEj0q9r1fF5T8Kp6TrbkqNJi2pswn-6Q9aHIRbfo8zoaIEV7BElAFhFalYQA" alt="img" /></p>
+
+<p>Fig 8. The three safety zones of an active fragment.</p>
+
+<p>图 8. 活跃片段的三个安全区域</p>
+
+<p>When an ensemble change occurs, the current fragment terminates at the end of the committed head (those entries that have reached Ack Quorum). The new fragment starts at the beginning of the uncommitted zone.</p>
+
+<p>当发生 Ensemble Change 时，当前片段终止于已提交头部的末尾（即那些已经达到 Ack Quorum 的 Entry)。新片段则开始于未提交区域的开头。</p>
+
+<p><img src="https://lh6.googleusercontent.com/05dv8OJhepkj7g9dbRdAU19ChKWp8e3_ILuWXWDR6u33gice8YZCzhgzq-bIa0kyWwaan0O2EeFrwyrnmOEwMgmlO1UHpkLUA4rRbX3tGFSOkfSu6ipq84x92SKkTrNfdMJCochh-haIZoWX1niLeQ" alt="img" /></p>
+
+<p>Fig 9. An ensemble change moves uncommitted entries to the next fragment.</p>
+
+<p>图 9. Ensemble Change 将未提交 Entry 移动到下一个片段</p>
+
+<p>This leaves non-active fragments with entries that can remain at the Ack Quorum. Unlike Raft or Kafka, the core BookKeeper replication protocol will not eventually replicate those AQ entries in order to reach WQ — they will remain at Ack Quorum. Those entries can only be brought up to WQ via the use of a separate recovery process but that process is not part of the core protocol (and by default runs daily if enabled).This means that a ledger could look like this:</p>
+
+<p>这样非活跃片段就会包含保留在 Ack Quorum 中的 Entry。与 Raft 或 Kafka 不同，BookKeeper 核心复制协议不会最终复制这些 AQ Entry 以达到 WQ——它们将保留在 Ack Quorum 中。这些 Entry 只能通过单独的恢复过程进入 WQ，而这个恢复过程并不是核心协议的一部分（如果启用恢复过程，则默认情况下每天运行）。Ledger 可能如下所示：</p>
+
+<p><img src="https://lh5.googleusercontent.com/JbvxQHwL84x6-BOGEe0gNi_ZFA6xtdrkQnifMAFMr43ZvT33SRI41kxyXXu1pnYkLKz1my-W6qzsjhR6sSA_-NI7kjPsqkoG89GzgX6boh1Sw31qFK6nlgz4Wvq6JyiLA-O7UPuHutoOqQRbx5h8NQ" alt="img" /></p>
+
+<p>Fig 10. Ensemble changes only move uncommitted entries into the next fragment, leaving committed entries in their original fragment.</p>
+
+<p>图 10. Ensemble Change 只将未提交 Entry 移动到下一个片段，而将已提交 Entry 保留在原始片段</p>
+
+<p>This means that not only the head of a ledger may see entries at AQ, there can be multiple sections at this lower replication factor.</p>
+
+<p>不仅 Ledger 头部有 AQ Entry，Ledger 其他部分也会有这种低于复制因子的 Entry。</p>
+
+<p><img src="https://lh6.googleusercontent.com/mIdS7khHn292Q3-Kzrnt4z1yhmRI7eCzi5gWndgkq59vH3ij4Tosbk0-rrRAM9-Dz8baqCzKYv-OAQ73RxpkwRwATfKNLEHi5GRHJv5FsqAiYTaF-NDCDe1WKtO3z4LllTxwk9-oFr7vAAf7MT6DYA" alt="img" /></p>
+
+<p>Fig 11. Ensemble changes leave AQ replicated blocks mid-ledger.</p>
+
+<p>图 11. Ensemble Change 将 AQ 复制块留在 Ledger 中间</p>
+
+<p>The fact that sections in the middle of a ledger can remain at AQ is a surprise to many. Most people probably expect a Raft/Kafka-like pattern where only the head sees this.Is it important to note that Raft and Kafka logs can have arbitrarily long committed heads where entries have only reached the commit quorum but not replication factor. So whether you are an administrator of Kafka or BookKeeper, the fact is that the commit quorum is what counts.</p>
+
+<p>与 Raft/Kafka 只有头部有 AQ Entry 的模式不同，BookKeeper Ledger 中间的部分可能包含 AQ Entry。需要注意的是 Raft 和 Kafka 日志可能有任意长度的已提交头部，其中的 Entry 仅达到提交仲裁但未达到复制因子。所以无论是对 Kafka 还是 BookKeeper 管理员来说，提交仲裁才是最重要的。</p>
+
+<h2>Ack Quorum Isn’t What You Probably Think It is -  刷新你的 Ack Quorum 认知</h2>
+
+<p>The fact that BookKeeper uses an external replicator (the client) makes a big difference to our choice of commit quorum. Essentially the Ack Quorum isn’t really like it’s equivalents in Raft and Kafka.</p>
+
+<p>BookKeeper 使用外部复制机（即客户端)，因此选择提交仲裁时有很大不同。本质上，BookKeeper Ack Quorum 与 Raft 和 Kafka 中的 Ack Quorum 并不真的相似。</p>
+
+<p>As discussed earlier, because Raft and Kafka have fixed membership they really need a commit quorum that is lower than the replication factor or else suffer big availability and latency issues. The commit quorum is the compromise between safety and availability/latency.</p>
+
+<p>如前所述，由于 Raft 和 Kafka 是固定成员的，所以它们确实需要一个低于复制因子的提交仲裁，否则会有严重的可用性和延迟问题。提交仲裁是在安全性和可用性/延迟之间的一个折中办法。</p>
+
+<p>A BookKeeper ledger is different though, it does not have fixed membership. If one bookie becomes unavailable, we swap it out for another and continue. This makes the Ack Quorum not equal to the Raft majority quorum or Kafka’s configured quorum.</p>
+
+<p>然而 BookKeeper Ledger 则不同，它并没有固定成员。如果一个 Bookie 不可用，我们会将其换成另外一个并继续。这使得 Ack Quorum 并不等同于 Raft 的多数仲裁或者 Kafka 中配置的仲裁。</p>
+
+<p>With BookKeeper we can set the commit quorum to be equal to the replication factor, i.e WQ=AQ. If we set WQ=3, AQ=3 and one bookie is down, we select a new bookie and carry on. Notice that when WQ=AQ we don’t have the three zones of committed head/tail and uncommitted. It’s either fully replicated and committed or not.</p>
+
+<p>对于 BookKeeper，我们可以将提交仲裁设置为等于复制因子，即 WQ = AQ。如果我们设置 WQ = 3、AQ = 3，一个 Bookie 宕机后可以选择一个新 Bookie 继续。请注意当 WQ = AQ 时，没有已提交头部、已提交尾部及未提交等三个区域，当前状态下的 Entry 或是完全复制并提交，或是完全未提交。</p>
+
+<p><img src="https://lh3.googleusercontent.com/5bdiesPcO3F2YknoZ0q5yw6lPc4QIVV5UB6b-x02FAmJtmQrlm_PkIkuxPGPuQsDaDE7ekrmGsgCllw4Ntp07BhCXKA6krXZXqk1OURCDJkBQYAioAYVYSlepxLD_JtgbarhtuI3d38HIAvge3NGgQ" alt="img" /></p>
+
+<p>Fig 12. With WQ=AQ, either entries are fully replicated or not committed. Ensemble changes leave the original fragment in a fully replicated state.</p>
+
+<p>图 12. 当 WQ = AQ 时，Entry 要么完全复制，要么完全未提交。Ensemble Change 后原始片段处于完全复制状态</p>
+
+<p>This also means we don’t have sections in the middle of a ledger at a lower rep factor anymore. The entire tail reaches WQ.</p>
+
+<p>这也意味着 Ledger 中间不存在低于复制因子的部分，整个日志尾部都达到了 WQ。</p>
+
+<p>In terms of data safety this is great. BookKeeper doesn’t need a majority quorum to offer high availability, we can tell BooKeeper to only acknowledge fully replicated entries.</p>
+
+<p>这样很大地保证了数据安全。BookKeeper 不需要靠多数仲裁即可保证高可用，我们可以让 BookKeeper 只确认那些完全复制的 Entry。</p>
+
+<p>There are of course some limits and impacts that need to be considered before you switch your AQ from a majority quorum to your replication factor.</p>
+
+<p>当然，在将 AQ 从多数仲裁切换到复制因子之前，需要考虑一些限制和影响。</p>
+
+<p>Firstly, using WQ=AQ without loss of availability only applies when you have enough bookies. If you only have 3 bookies and use WQ=3, then you have a fixed membership like Raft. If you have 4 bookies then as soon as one bookie is down, you’re down to 3 again and fixed membership. So you would want to have many more than 3, opting for more smaller bookies than fewer large ones. If you have 5 bookies or less you may still want the wriggle room that AQ&lt;WQ gives you.</p>
+
+<p>首先，使用 WQ = AQ 同时又不损失可用性仅适用于 Bookie 足够多的场景。如果只有 3 个Bookie 并且设置 WQ = 3，那么就跟 Raft 一样是固定成员。如果有 4 个 Bookie，那么一旦一个 Bookie 宕机，就会再次降到 3 并成为固定成员。所以 Bookie 数量要远大于 3，建议选择更多的小 Bookie，而不是更少的大 Bookie。如果 Bookie 数量小于或等于 5 个，那么最好还是设置 AQ &lt; WQ 以提供回旋余地。</p>
+
+<p>Availability % does take a small hit when using WQ=AQ as availability now also depends on operations to ZooKeeper succeeding. As soon as a write to a bookie fails, we must be able to complete an ensemble change in order to be able to resume and get entries acknowledged.However, I consider that we’re already in that boat anyway. Ledgers are small, bounded logs unlike Raft and Kafka’s theoretical infinite logs. Ledgers act as log segments and so they are getting created and closed constantly, and this requires successful metadata operations, so you cannot go for long without metadata changes in any case.</p>
+
+<p>其次，设置 WQ = AQ 时，可用性会受到少许影响，因为可用性还取决于随后对 ZooKeeper 的操作。一旦写入 Bookie 失败，我们必须能够完成一次 Ensemble Change，以便可以恢复并确认 Entry。不同于 Raft 和 Kafka 理论上无上限的日志，Ledger 是小而有界的日志。Ledger 由日志片段组成，会不断地被创建和关闭（需要成功地操作元数据)，所以如果不更改元数据，则无法长久运行。</p>
+
+<p>Write latency will have more variance as ensemble changes will cause more write latency. Ensemble changes are normally extremely fast but if ZooKeeper is under heavy load then it could be possible for slow ensemble changes to cause write latency spikes. So if having constant low latency is very important then you’ll likely want to stick with AQ being a majority quorum.</p>
+
+<p>最后，因为 Ensemble Change 会增加写入延迟，所以写入延迟的变化会更大。通常情况下 Ensemble Change 会非常快，但如果 ZooKeeper 负载很大，那么 Ensemble Change 则可能变慢，从而导致写入延迟出现毛刺。因此，如果对延迟要求非常高的话，那么就需要将 AQ 设为多数仲裁。</p>
+
+<h3>Replication Factor of 2 - 当复制因子 = 2</h3>
+
+<p>Why can’t we have Raft clusters of 2 members? Because a single node going down makes the cluster unable to make progress. We still get redundancy but we get worse availability than a single node. Likewise with Kafka, we can either offer a rep factor 1 or of 3 but not 2. To guarantee a rep factor of 2 you need to set min-insync-replicas=2. So if one replica goes down, we have the same issue as Raft.</p>
+
+<p>为什么 Raft 集群的成员不能是 2 个？因为在这种情况下，单个节点宕机会导致整个集群无法工作。虽然有冗余，但却比单节点的可用性更差。与 Kafka 类似，我们可以设置复制因子为 1 或者 3，但不能是 2。为了保证复制因子为 2，需要设置 min-insync-replicas = 2。因此当一个副本宕机，就会遇到和 Raft 一样的问题。</p>
+
+<p>But with BookKeeper, we can use a rep factor 2 without an issue. We simply set WQ=2 and AQ=2. We get redundancy and also don’t lose availability if a single node goes down. That’s pretty neat.</p>
+
+<p>然而在 BookKeeper 内可以将复制因子设为 2。简单地设置 WQ = 2 且 AQ = 2，既能获得冗余又不会在单个节点宕机的情况下失去可用性。</p>
+
+<h2>Summary - 总结</h2>
+
+<p>In this first post we’ve focused on BookKeeper’s external consensus and dynamic ledger membership and how that contrasts to a more traditional fully integrated protocol like Raft and Apache Kafka with fixed membership.</p>
+
+<p>这是本系列的第一篇文章，重点介绍了 BookKeeper 的外部共识和动态 Ledger 成员，并将其与 Raft 和 Apache Kafka 这种固定成员的传统完全集成协议进行对比。</p>
+
+<p>We’ve seen that BookKeeper’s dynamic membership allows it to side step the usual compromise between safety and availability/latency. Where conservative configurations with Raft might choose a rep factor of 5 to ensure it can survive the loss of 2 nodes, with BookKeeper we can achieve similar results with only a replication factor of 3. We can even choose WQ=4, AQ=3 to allow us to reduce the extra latency from slow ensemble changes. You have a bit more freedom than you think when setting your Write Quorum and Ack Quorum.</p>
+
+<p>BookKeeper 的动态成员机制让它不需要降低安全性和可用性/延迟任一性能。如果保守地配置 Raft 的话，可能会设置复制因子为 5，来保证 2 个节点宕机时仍能存活；对于 BookKeeper 来说，设置复制因子为 3 就能达到类似结果。甚至可以选择 WQ = 4、AQ = 3 来减少慢速 Ensemble Change 带来的额外延迟。在设置 Write Quorum 和 Ack Quorum 时，BookKeeper 的用户自由度非常大。</p>
+
+<p>We also saw that when AQ &lt; WQ you may have blocks in the middle of your ledger that only reach AQ replication, which can surprise people. In a later post we’ll look at potential tweaks to the protocol that could change this behaviour and why it might not be worth it or even safe.</p>
+
+<p>当 AQ &lt; WQ 时，Ledger 中间可能包含只达到 AQ 复制的 Entry，这让人们感到惊讶。在后续文章中我们将看到可以通过调整协议来改变这种行为，以及为什么它可能不值得甚至不安全。</p>
+
+<p>This is by no means the end of the ways that BookKeeper differs from integrated protocols like Raft and Kafka. There are many more things to consider when trying to understand the BookKeeper replication protocol in detail.</p>
+
+<p>BookKeeper 与 Raft 和 Kafka 等集成协议的区别绝不仅仅是这些。要详细理解 BookKeeper 复制协议的话需要考虑更多。</p>
+
+<blockquote><p>Finally, as with everything, it’s all about trade-offs. Integrated protocols make different trade-offs to BookKeeper and neither is “the best” and this post or even this series is not an attempt to do a This Versus That comparison. The comparison is there as a vehicle for learning.
+最后，本文乃至本系列文章的目的都不是试图进行两两比较来评判系统的优劣。其他集成协议与 BookKeeper 只不过是有不同的权衡与侧重，不能单纯地评估二者优劣。本文中的对比仅为以更易懂的方式普及概念。</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Offset Implementation in Kafka-on-Pulsar]]></title>
+    <link href="http://alphawang.github.io/blog/kop-offset/"/>
+    <updated>2022-04-21T18:30:10+08:00</updated>
+    <id>http://alphawang.github.io/blog/kop-offset</id>
+    <content type="html"><![CDATA[<blockquote><p>本文翻译自《Offset Implementation in Kafka-on-Pulsar》<br/>
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/JXLquQkJFAzu8uw_lJaIcg">https://mp.weixin.qq.com/s/JXLquQkJFAzu8uw_lJaIcg</a></p></blockquote>
+
+<p><a href="https://github.com/apache/pulsar/wiki/PIP-41%3A-Pluggable-Protocol-Handler">Protocol handlers</a> were introduced in Pulsar 2.5.0 (released in January 2020) to extend Pulsar’s capabilities to other messaging domains. By default, Pulsar brokers only support Pulsar protocol. With protocol handlers, Pulsar brokers can support other messaging protocols, including Kafka, AMQP, and MQTT. This allows Pulsar to interact with applications built on other messaging technologies, expanding the Pulsar ecosystem.</p>
+
+<p><a href="https://github.com/apache/pulsar/wiki/PIP-41%3A-Pluggable-Protocol-Handler">协议处理器</a> 是 2020 年一月份发布的 Pulsar 2.5.0 所引入的新功能，目的是将 Pulsar 的能力扩展到其他消息领域。默认情况下 Pulsar Broker 仅支持 Pulsar 协议。而通过协议处理器，Pulsar Broker 就可以支持其他消息协议，包括 Kafka、AMQP 以及 MQTT（现已新增 RocketMQ）。这使得 Pulsar 可以与基于其他消息技术的应用进行交互，从而扩展 Pulsar 生态系统。</p>
+
+<p><a href="https://github.com/streamnative/kop">Kafka-on-Pulsar (KoP)</a> is a protocol handler that brings native Kafka protocol into Pulsar. It enables developers to publish data into or fetch data from Pulsar using existing Kafka applications without code change. KoP significantly lowers the barrier to Pulsar adoption for Kafka users, making it one of the most popular protocol handlers.</p>
+
+<p><a href="https://github.com/streamnative/kop">Kafka-on-Pulsar (KoP)</a> 就是一种协议处理协议，它将原生 Kafka 协议引入了 Pulsar，使得开发人员能够使用现有的 Kafka 应用将数据发布到 Pulsar 或从 Pulsar 读取数据，而无需更改代码。KoP 极大降低了 Kafka 用户使用 Pulsar 的壁垒，这让 KoP 成为最受欢迎的协议处理器之一。</p>
+
+<!--more-->
+
+
+<p>KoP works by parsing Kafka protocol and accessing BookKeeper storage directly via streaming storage abstraction provided by Pulsar. While Kafka and Pulsar share many common concepts, such as topic and partition, there is no corresponding concept of Kafka’s offset in Pulsar. Early versions of KoP tackled this problem with a simple conversion method, which did not allow continuous offset and was prone to problems.</p>
+
+<p>KoP 解析 Kafka 协议，并通过 Pulsar 提供的流式存储抽象接口直接访问 BookKeeper。虽然 Kafka 和 Pulsar 有许多通用的概念，例如主题和分区，但在 Pulsar 中没有对应 Kafka 偏移量的概念。KoP 的早期版本通过一种简单的转换来应对这个问题，但这种转换不支持连续偏移量，同时也容易出现问题。</p>
+
+<p>To solve this pain point, broker entry metadata was introduced in KoP 2.8.0 to enable continuous offset. With this update, KoP is available and production-ready. It is important to note that with this update backward compatibility is broken. In this blog, we dive into how KoP implemented offset before and after 2.8.0. and explain the rationale behind the breaking change.</p>
+
+<p>为了解决这个痛点，KoP 2.8.0 引入了 Broker Entry Metadata，以实现连续偏移量。这个更新使得 KoP 可用并且生产就绪。需要特别注意的是，这个更新破坏了向后兼容性。本文将深入探讨 KoP 2.8.0 之前和之后分别是如何实现偏移量的，并解释该突破性变化背后的基本原理。</p>
+
+<blockquote><p><strong>Note on Version Compatibility</strong></p>
+
+<p>Since Pulsar 2.6.2, KoP version has been updated with Pulsar version accordingly. The version of KoP x.y.z.m conforms to Pulsar x.y.z, while m is the patch version number. For instance, the latest KoP release 2.8.1.22 is compatible with Pulsar 2.8.1. In this blog, 2.8.0 refers to both Pulsar 2.8.0 and KoP 2.8.0.</p>
+
+<p><strong>版本兼容性说明</strong></p>
+
+<p>Pulsar 2.6.2 版本之后，KoP 版本即随着相应的 Pulsar 版本而更新。KoP x.y.z.m 版本对应 Pulsar x.y.z 版本，其中 m 是补丁版本号。例如，最新的 KoP 2.8.1.22 版本与 Pulsar 2.8.1 版本兼容。本文中 2.8.0 同时指代 Pulsar 2.8.0 和 KoP 2.8.0。</p></blockquote>
+
+<h1>Message Identifier in Kafka and Pulsar - Kafka 和 Pulsar 的消息标识符</h1>
+
+<h2>Offset in Kafka - Kafka 偏移量</h2>
+
+<p>In Kafka, offset is a 64-bit integer that represents the position of a message in a specific partition. Kafka consumers can commit an offset to a partition. If the offset is committed successfully, after the consumer restarts, it can continue consuming from the committed offset.</p>
+
+<p>在 Kafka 中，偏移量是一个 64 位整数，表示消息在特定分区中的位置。Kafka 消费者可以向分区提交偏移量。如果偏移量提交成功，那么消费者重启后就能够从已提交的偏移量位置继续消费。</p>
+
+<ol>
+<li>The first message&rsquo;s offset is 0.
+第一条消息的偏移量为 0。</li>
+<li>If the latest message&rsquo;s offset is N, then the next message&rsquo;s offset will be N+1.
+如果最后一条消息的偏移量为 N，那么下一条消息的偏移量将会是 N + 1。</li>
+</ol>
+
+
+<p>Kafka stores messages in each broker&rsquo;s file system:
+Kafka 将消息存储在每个 broker 的文件系统中：</p>
+
+<p>Since each message records the message size in the header, for a given offset, Kafka can easily find its segment file and position.</p>
+
+<p>由于每条消息的头部都记录了消息大小，所以对于给定偏移量，Kafka 可以很容易地找到其分片文件以及位置。</p>
+
+<h2>Message ID in Pulsar - Pulsar 消息 ID</h2>
+
+<p>Unlike Kafka, which stores messages in each broker&rsquo;s file system, Pulsar uses BookKeeper as its storage system. In BookKeeper:</p>
+
+<p>Kafka 将消息存储到每个 Broker 上的文件系统，而 Pulsar 则不同，它使用 BookKeeper 作为其存储系统。在 BookKeeper 中：</p>
+
+<ul>
+<li>Each log unit is an <strong>entry</strong>
+每个日志单元称为一个 <strong>Entry</strong></li>
+<li>Streams of log entries are <strong>ledgers</strong>
+日志 Entry 流称为 <strong>Ledger</strong></li>
+<li>Individual servers storing ledgers of entries are called <strong>bookies</strong>
+存储 Entry Ledger 的单独的服务器称为 <strong>Bookie</strong></li>
+</ul>
+
+
+<p>A bookie can find any entry via a 64-bit ledger ID and a 64-bit entry ID. Pulsar can store a message or a batch (one or more messages) in an entry. Therefore, Pulsar finds a message via its message ID that consists of a ledger ID, an entry ID, and a batch index (-1 if it’s not batched). In addition, the message ID also contains the partition number.</p>
+
+<p>Bookie 可以通过 64 位 Ledger ID 和 64 位 Entry ID 找到任何 Entry。Pulsar 可以在一个 Entry 中存储单条消息或一批消息。因此，Pulsar 的消息 ID 由 Ledger ID、Entry ID、 批索引（如果不是批量消息则为 -1）以及分区编号组成，Pulsar 可通过这种消息 ID 找到一条消息。</p>
+
+<p>Just like a Kafka consumer can commit an offset to record the consumer position, a Pulsar consumer can acknowledge a message ID to record the consumer position.</p>
+
+<p>就像 Kafka 消费者可以提交偏移量来记录消费位置一样，Pulsar 消费者可以确认消息 ID 来记录消费位置。</p>
+
+<h2>How Does KoP Deal with a Kafka Offset - KoP 如何处理 Kafka 偏移量</h2>
+
+<p>KoP needs the following Kafka requests to deal with a Kafka offset:</p>
+
+<p>KoP 需要如下 Kafka 请求来处理 Kafka 偏移量：</p>
+
+<ul>
+<li>PRODUCE: After messages from a Kafka producer are persisted, KoP needs to tell the Kafka producer the offset of the first message. However, the BookKeeper client only returns a message ID.
+PRODUCE：当 Kafka 生产者生产的消息被持久化之后，KoP 需要告诉 Kafka 生产者第一条消息的偏移量。然而 BookKeeper 客户端只返回一个消息 ID。</li>
+<li>FETCH : When a Kafka consumer wants to fetch some messages from a given offset, KoP needs to find the corresponding message ID to read entries from the ledger.
+FETCH：当 Kafka 消费者想要从指定偏移量开始获取消息时，KoP 需要找到对应的消息 ID 并从 Ledger 中读取相应的 Entry。</li>
+<li>LIST_OFFSET: Find the earliest or latest available message, or find a message by timestamp.
+We must support computing a specific message offset or locating a message by a given offset.
+LIST_OFFSET：查找最早或最新的可用消息，或者按时间戳查找消息。</li>
+</ul>
+
+
+<p>We must support computing a specific message offset or locating a message by a given offset.</p>
+
+<p>我们必须支持计算特定消息的偏移量，或通过给定的偏移量定位消息。</p>
+
+<h1>How KoP Implements Offset before 2.8.0 -KoP 2.8.0 之前版本如何实现偏移量</h1>
+
+<h2>The Implementation - 实现细节</h2>
+
+<p>As explained earlier, Kafka locates a message via <strong>a partition number and an offset</strong>, while Pulsar locates a message via <strong>a message ID</strong>. Before Pulsar 2.8.0, KoP simply performed conversions between Kafka offsets and Pulsar message IDs. A 64-bit offset is mapped into a 20-bit ledger ID, a 32-bit entry id, and a 12-bit batch index. Here is a simple Java implementation.</p>
+
+<p>如前文所述，Kafka 通过 <strong>分区编号和偏移量</strong> 来定位消息，而 Pulsar 通过 <strong>消息 ID</strong> 来定位消息。在 Pulsar 2.8.0 之前，KoP 简单地在 Kafka 偏移量和 Pulsar 消息 ID 之间进行一个转换。将 64 位的偏移量映射为 20 位 Ledger ID、32 位 Entry ID 以及 12 位批索引。如下是一个简单的 Java 实现。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>
+</span><span class='line'>    public static long getOffset(long ledgerId, long entryId, int batchIndex) {
+</span><span class='line'>        return (ledgerId &lt;&lt; (32 + 12) | (entryId &lt;&lt; 12)) + batchIndex;
+</span><span class='line'>    }
+</span><span class='line'>
+</span><span class='line'>    public static PositionImpl getPosition(long offset) {
+</span><span class='line'>        long ledgerId = offset &gt;&gt;&gt; (32 + 12);
+</span><span class='line'>        long entryId = (offset & 0x0F_FF_FF_FF_FF_FFL) &gt;&gt;&gt; BATCH_BITS;
+</span><span class='line'>        // BookKeeper only needs a ledger id and an entry id to locate an entry
+</span><span class='line'>        return new PositionImpl(ledgerId, entryId);
+</span><span class='line'>    }
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In this blog, we use <code>(ledger id, entry id, batch index)</code> to represent a message ID. For example, assuming a message&rsquo;s message ID is <code>(10, 0, 0)</code>, the converted offset will be 175921860444160. This works in some cases because the offset is monotonically increasing. But it’s problematic when a ledger rollover happens or the application wants to manage offsets manually. The section below goes into details about the problems of this simple conversion implementation.</p>
+
+<p>在本文中，我们使用 <code>(ledger id, entry id, batch index)</code> 来表示一个消息 ID。例如，假设一个消息的 ID 是 <code>(10, 0, 0)</code>，则转换后的偏移量为 175921860444160。在一些情况下这样的数值能正常工作，因为偏移量是单调递增的。然而当发生 Ledger 翻转，或应用程序想要手动管理偏移量时，就会出现问题。下面详细介绍这种简单转换方法存在的问题。</p>
+
+<h2>The Problems of the Simple Conversion - 简单转换存在的问题</h2>
+
+<p>The converted offset <strong>is not continuous</strong>, which causes many serious problems.</p>
+
+<p>转换后的偏移量<strong>不连续</strong>，这会导致许多严重问题。</p>
+
+<p>For example, let’s assume the current message&rsquo;s ID is <code>(10, 5, 100)</code>. The next message&rsquo;s ID could be <code>(11, 0, 0)</code> if a ledger rollover happens. In this case, the offsets of these two messages are 175921860464740 and 193514046488576. The delta value between the two is 17,592,186,023,836.</p>
+
+<p>例如，假设当前消息 ID 是 <code>(10, 5, 100)</code>。如果发生 Ledger 翻转，则下一条消息的 ID 可能是 <code>(11, 0, 0)</code>。在这种情况下，两条消息的偏移量分别为 175921860464740 和 193514046488576，两者差了 17,592,186,023,836。</p>
+
+<p>KoP leverages Kafka&rsquo;s <code>MemoryRecordBuilder</code> to merge multiple messages into a batch. The <code>MemoryRecordBuilder</code> must ensure the batch size is less than the maximum value of a 32-bit integer (4,294,967,296). In our example, the delta value of the two continuous offsets is much greater than 4,294,967,296. This will result in an exception that says <code>Maximum offset delta exceeded</code>.</p>
+
+<p>KoP 利用 Kafka 的 <code>MemoryRecordBuilder</code> 将多条消息合并为一个批量消息。 <code>MemoryRecordBuilder</code> 必须确保批量大小小于 32 位整数的最大值 (4,294,967,296)。在上文示例中，两个连续偏移量的差值远大于 4,294,967,296。这将导致抛出 <code>Maximum offset delta exceeded</code> 异常。</p>
+
+<p>To avoid the exception, before KoP 2.8.0, we must configure <code>maxReadEntriesNum</code> (this config limits the maximum number of entries read by the BookKeeper client) to 1. Naturally, reading only one entry for each FETCH request worsens the performance significantly.</p>
+
+<p>为了避免该异常，在使用 KoP 2.8.0 之前版本时，我们必须配置 <code>maxReadEntriesNum</code> 为 1 (此配置限制 BookKeeper 客户端读取的最大 Entry 条数)。如此一来，每个 FETCH 请求只读取一个 Entry，会显著降低性能。</p>
+
+<p>However, even with the workaround of <code>maxReadEntriesNum=1</code>, this conversion implementation doesn’t work in some scenarios. For example, the Kafka integration with Spark relies on the continuance of Kafka offsets. After it consumes a message with an offset of N, it will seek the next offset (N+1). However, the offset N+1 might not be able to convert to a valid message ID.</p>
+
+<p>然而，即使使用 <code>maxReadEntriesNum=1</code> 这种变通方法，这种转换实现在某些场景下也不能正常工作。例如，Kafka 与 Spark 的集成依赖于 Kafka 偏移量的连续性。当消费偏移量为 N 的消息后，Spark 会寻找下一个偏移量 (N + 1)。但是偏移量 N + 1 可能无法转换为有效的消息 ID。</p>
+
+<p>There are other problems caused by the conversion method. And before 2.8.0, there is no good way to implement the continuous offset.</p>
+
+<p>转换方法还存在其他问题。而在 2.8.0 之前版本，没有好办法实现连续偏移量。</p>
+
+<h1>The Continuous Offset Implementation since 2.8.0 - 自 KoP 2.8.0 版本的连续偏移量实现</h1>
+
+<p>The solution to implement continuous offset is to record the offset into the metadata of a message. However, an offset is determined at the broker side before publishing messages to bookies, while the metadata of a message is constructed at the client side. To solve this problem, we need to do some extra jobs at the broker side:</p>
+
+<p>实现连续偏移量的解决方案是将偏移量记录到消息的元数据中。然而，偏移量是由 Broker 端在将消息发布到 Bookie 之前决定的，而消息的元数据则是在客户端构建的。为了解决这个问题，我们需要在 Broker 端做一些额外的工作：</p>
+
+<ol>
+<li><p>Deserialize the metadata
+反序列化元数据</p></li>
+<li><p>Set the &ldquo;offset&rdquo; property of metadata
+设置元数据的“偏移量”属性</p></li>
+<li><p>Serialize the metadata again, including re-computing the checksum value
+再次序列化元数据，包括重新计算校验和值</p></li>
+</ol>
+
+
+<p>This results in a significant increase in CPU overhead on the broker side.</p>
+
+<p>这会导致 Broker 端的 CPU 开销显著增加。</p>
+
+<h2>Broker Entry Metadata - 轻量级 Broker Entry 元数据</h2>
+
+<p><a href="https://github.com/apache/pulsar/wiki/PIP-70:-Introduce-lightweight-broker-entry-metadata">PIP 70</a> introduced lightweight broker entry metadata. It&rsquo;s a metadata of a BookKeeper entry and should only be visible inside the broker.</p>
+
+<p><a href="https://github.com/apache/pulsar/wiki/PIP-70:-Introduce-lightweight-broker-entry-metadata">PIP 70</a> 引入了轻量级 Broker Entry 元数据。它是 BookKeeper Entry 的元数据，并且只在 Broker 内部可见。
+The default message flow is:默认的消息流如下图所示：</p>
+
+<p><img src="https://lh3.googleusercontent.com/eS6w7ZRshhoBcsk3t0Q7O9njkV-Wej0b6n00rbcxnfW2BKK6qYxIbAlWsbZT4M1yh-9H534GpTM3YWd3Wg9lal4O26HmNjX1qDsS7Xk6FiS3k9kmk1QAS39Jk22bsGN6z9X4unD7WBeBK-9MUN1jnQ" alt="img" /></p>
+
+<p>If you configured <code>brokerEntryMetadataInterceptors</code>, which represents a list of <strong>broker entry metadata interceptors</strong>, then the message flow would be:</p>
+
+<p>如果配置了 <code>brokerEntryMetadataInterceptors</code>，即配置一组 <strong>Broker Entry 元数据拦截器</strong>，那么消息流将会是：</p>
+
+<p><img src="https://lh3.googleusercontent.com/eNYmZkvZx1ZDWCsr-XOLw1B2OZ6ku4_mx02uWZuZbIJvFWWYRmeCWV5nbVmI_zaZreo0_syq3bowX0wTNAk-Ls9wFl32q6XeKYjnbueQ02uhqIX01F6gueJgqC2DTj6tiTP1Rdm4Cd3Wb9ZWlt0flA" alt="img" />
+We can see the broker entry metadata is stored in bookies, but is not visible to a Pulsar consumer.</p>
+
+<p>可以看到 Broker Entry 元数据存储在 Bookie 上，但对 Pulsar 消费者不可见。</p>
+
+<blockquote><p>From 2.9.0, a Pulsar consumer can be configured to read the broker entry metadata.</p>
+
+<p>2.9.0 版本之后，可以将 Pulsar 消费者配置为可以读取 Broker Entry 元数据。</p></blockquote>
+
+<p>Each broker entry metadata interceptor adds the specific metadata (called &ldquo;broker entry metadata&rdquo;) before the message metadata. Since the broker entry metadata is independent of the message metadata, the broker does not need to deserialize the message metadata. In addition, the BookKeeper client supports sending a Netty <code>CompositeByteBuf</code> that is a list of <code>ByteBuf</code> without any copy operation. From the perspective of a BookKeeper client, only some extra bytes are sent into the socket buffer. Therefore, the extra overhead is low and acceptable.</p>
+
+<p>每个 Broker Entry 元数据拦截器都在消息元数据前面加上特定的元数据（称之为 “Broker Entry 元数据”）。由于 Broker Entry 元数据和消息元数据是独立的，所以 Broker 无需反序列化消息元数据。此外，BookKeeper 客户端支持发送包含多个 <code>ByteBuf</code> 的 Netty <code>CompositeByteBuf</code>，而无需任何复制操作。从 BookKeeper 客户端角度看，只是将一些额外字节发送到套接字缓冲区。因此，额外的开销会很低且可接受。</p>
+
+<h2>The Index Metadata - 索引元数据</h2>
+
+<p>We need to configure the <code>AppendIndexMetadataInterceptor</code> (we say <strong>index metadata interceptor</strong>) to support the Kafka offset.</p>
+
+<p>我们需要配置 <code>AppendIndexMetadataInterceptor</code> (即 <strong>索引元数据拦截器</strong>) 来支持 Kafka 偏移量。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>brokerEntryMetadataInterceptors=org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In Pulsar brokers, there is a component named &ldquo;managed ledger&rdquo; that manages all ledgers of a partition. The index metadata interceptor maintains an index that starts from 0. The &ldquo;index&rdquo; term is used instead of &ldquo;offset&rdquo;.</p>
+
+<p>Pulsar Broker 中有个名为 “Managed Ledger” 的组件，它管理分区中的所有 Ledger。索引元数据拦截器维护了一个从 0 开始的索引。Pulsar 使用术语“索引”而不是“偏移量”。</p>
+
+<p>Each time before an entry is written to bookies, the following two things happen:</p>
+
+<p>每次将 Entry 写入 Bookie 之前，都会发生如下两件事：</p>
+
+<ol>
+<li>The index is serialized into the broker entry metadata.
+将索引序列化到 Broker Entry 元数据中。</li>
+<li>The index increases by the number of messages in the entry.
+将索引自增 Entry 中的消息数目。</li>
+</ol>
+
+
+<p>After that, each entry records the first message&rsquo;s index, which is equivalent to the &ldquo;base offset&rdquo; concept in Kafka.</p>
+
+<p>之后，每个 Entry 记录第一条消息的索引，相当于 Kafka 中的“基础偏移量”概念。</p>
+
+<p>Now, we must make sure even if the partition&rsquo;s owner broker was down, the index metadata interceptor would recover the index from somewhere.</p>
+
+<p>现在，我们需要保证即使分区的 owner Broker 宕机，索引元数据拦截器也能从某个地方恢复索引。</p>
+
+<p>There are some cases where the managed ledger needs to store its metadata (usually in ZooKeeper). For example, when a ledger is rolled over, the managed ledger must archive all ledger IDs in a z-node. Here we don&rsquo;t look deeper into the metadata format. We only need to know there is a property map in the managed ledger&rsquo;s metadata.</p>
+
+<p>在某些场景下，Managed Ledger 需要将其元数据存储起来（通常存储到 ZooKeeper）。例如，当一个 Ledger 发生翻转，Managed Ledger 需要将所有 Ledger ID 归档到一个 z-node。这里我们不深入研究元数据的格式，只需要知道在 Managed Ledger 元数据中有一个属性映射。</p>
+
+<p>Before metadata is stored in ZooKeeper (or another metadata store):</p>
+
+<p>在将元数据存储到 ZooKeeper (或其他元数据存储) 之前：</p>
+
+<ol>
+<li>Retrieve the index from the index metadata interceptor, which represents the latest message&rsquo;s index.
+从索引元数据拦截器中检索索引，该索引代表了最新消息的索引。</li>
+<li>Add the property whose key is &ldquo;index&rdquo; and value is the index to the property map.
+向属性映射中添加一条属性，属性名为 “index”，属性值为索引值。</li>
+</ol>
+
+
+<p>Each time a managed ledger is initialized, it will restore the metadata from the metadata store. At that time, we can set the index metadata intercerptor&rsquo;s index to the value associated with the &ldquo;index&rdquo; key.</p>
+
+<p>每次初始 Managed Ledger 时，都会从元数据存储中恢复元数据。那时，我们可以将索引元数据拦截器中的索引设置为“index”键关联值。</p>
+
+<h2>How KoP Implements the Continuous Offsets - KoP 如何实现连续偏移量</h2>
+
+<p>Let&rsquo;s look back to the <strong>How does KoP deal with a Kafka offset</strong> section and review how we deal with the offset in following Kafka requests.</p>
+
+<p>让我们回顾一下 <strong>KoP 如何处理 Kafka 偏移量</strong> 一节，看看在如下 Kafka 请求中如何处理偏移量。</p>
+
+<ul>
+<li>PRODUCE</li>
+</ul>
+
+
+<p>When KoP handles PRODUCE requests, it leverages the managed ledger to write messages to bookies. The API has a callback that can access the entry&rsquo;s data.</p>
+
+<p>当 KoP 处理 PRODUCE 请求时，它利用 Managed Ledger 将消息写入 Bookie。相关 API 有一个回调可以访问 Entry 数据。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  @Override
+</span><span class='line'>  public void addComplete(Position pos, ByteBuf entryData, Object ctx) {</span></code></pre></td></tr></table></div></figure>
+
+
+<p> We only need to parse the broker entry metadata from <code>entryData</code> and then retrieve the index. The index is just the base offset returned to the Kafka producer.</p>
+
+<p>我们只需要从 <code>entryData</code> 中解析出 Broker Entry 元数据，然后检索索引即可。该索引就是返回给 Kafka 生产者的基础偏移量。</p>
+
+<ul>
+<li>FETCH</li>
+</ul>
+
+
+<p>The task is to find the position (ledger id and entry id) for a given offset. KoP implements a callback that reads the index from the entry and compares it with the given offset. It then passes the callback to a class named <code>OpFindNewest</code>, which uses binary search to find an entry.</p>
+
+<p> The binary search could take some time. But it only happens on the initial search unless the Kafka consumer disconnects. After the position is found, a non-durable cursor will be created to record the position. The cursor will move to a newer position as the fetch offset increases.</p>
+
+<p>FETCH 是通过给定偏移量找到消息位置 (Ledger ID 和 Entry ID)。KoP 实现了一个回调，从 Entry 中读取索引并与给定的偏移量进行比较。然后将回调传给 <code>OpFindNewest</code> 类，该类使用二分查找算法来查找 Entry。</p>
+
+<p>二分查找可能要花一些时间。但它仅发生在初始搜索中，除非 Kafka 消费者断开连接。当找到位置后，会创建一个非持久化的游标来记录该位置。随着 fetch 偏移量的增加，游标会移动到更新的位置。</p>
+
+<ul>
+<li>LIST_OFFSET
+
+<ul>
+<li><strong>Earliest</strong>: Get the first valid position in a managed ledger. Then read the entry of the position, and parse the index.
+最早：获得 Managed Ledger 中的第一个有效位置，然后读取该位置的 Entry，并解析索引。</li>
+<li><strong>Latest</strong>: Retrieve the index from the index metadata interceptor and increase by one. It should be noted that the latest offset (or called LEO) in Kafka is the next offset to be assigned to a message, while the index metadata interceptor&rsquo;s index is the offset assigned to the latest message.
+最新：从索引元数据拦截器中检索索引，并加一。需要注意的是，Kafka 中的最新偏移量（也被称为 LEO）是下一个将要分配给消息的偏移量，而索引元数据拦截器中的索引则是分配给最新消息的偏移量。</li>
+<li><strong>By timestamp</strong>: First leverage broker&rsquo;s timestamp based binary search to find the target entry. Then parse the index from the entry.
+按时间戳：首先利用 Broker 的基于时间戳的二分查找找到目标 Entry，然后从 Entry 中解析出索引。</li>
+</ul>
+</li>
+</ul>
+
+
+<h1>Upgrade from KoP Version before 2.8.0 to 2.8.0 or Higher - 从 KoP 2.8.0 之前的版本升级到 2.8.0 或更高版本</h1>
+
+<p>KoP 2.8.0 implements continuous offset with a tradeoff – <a href="https://github.com/streamnative/kop/blob/master/docs/upgrade.md">the backward compatibility is broken</a>. The offset stored by KoP versions before 2.8.0 cannot be recognized by KoP 2.8.0 or higher.</p>
+
+<p>KoP 2.8.0 实现的连续偏移量是有折衷的 —— <a href="https://github.com/streamnative/kop/blob/master/docs/upgrade.md">向后兼容性被破坏</a>。KoP 2.8.0 之前版本存储的偏移量无法被 KoP 2.8.0 或更高版本识别。</p>
+
+<p>If you have not tried KoP, please upgrade your Pulsar to 2.8.0 or higher and then use the corresponding KoP. As of this writing, the latest KoP release for Pulsar 2.8.1 is 2.8.1.22.</p>
+
+<p>如果在此之前你还没有使用过 KoP，需将 Pulsar 升级到 2.8.0 或更高版本后使用相应版本的 KoP。</p>
+
+<p>If you have already tried KoP before 2.8.0, you need to know that there&rsquo;s a breaking change from version less than 2.8.0 to version 2.8.0 or higher. You must delete the <code>__consumer_offsets</code> topic and all existing topics previously used by KoP.</p>
+
+<p>如果你在此之前已经使用过 2.8.0 之前版本的 KoP，则需要知道从低于 2.8.0 版本到 2.8.0 或更高版本有突破性变化。使用新版本前，你必须删除 <code>__consumer_offsets</code> 主题以及 KoP 之前使用过的所有主题。</p>
+
+<p>There is a latest feature in KoP that can skip these old messages by enabling a config. It would be included in 2.8.1.23 or later. Note that the old messages still won’t be accessible. It just saves the work of deleting old topics.</p>
+
+<p>KoP 中有一个最新的功能，可以通过启用配置来跳过这些旧消息。这个功能将包含在 2.8.1.23 或更高版本。注意：旧消息仍将无法访问，这个功能只是节省了删除旧主题的工作量。</p>
+
+<h1>Summary - 总结</h1>
+
+<p>In this blog, we first explained the concept of Kafka offset and the similar concept of message ID in Pulsar. Then we talked about how KoP implemented Kafka offset before 2.8.0 and the related problems.</p>
+
+<p>本文首先解释了 Kafka 偏移量的概念，以及 Pulsar 类似的消息 ID 概念。然后讲了 KoP 在 2.8.0 版本之前是如何实现 Kafka 偏移量的及其带来的相关问题。</p>
+
+<p>To solve these problems, the broker entry metadata was introduced from Pulsar 2.8.0. Based on this feature, index metadata is implemented via a corresponding interceptor. After that, KoP can leverage the index metadata interceptor to implement the continuous offset.</p>
+
+<p>为了解决这些问题，Pulsar 2.8.0 引入了 Broker Entry 元数据。基于此特性，通过相应的拦截器实现了索引元数据。之后，KoP 可以利用索引元数据拦截器来实现连续偏移量。</p>
+
+<p>Finally, since it&rsquo;s a breaking change, we talked about the upgrade from KoP version less than 2.8.0 to 2.8.0 or higher. It&rsquo;s highly recommended to try KoP 2.8.0 or higher directly.</p>
+
+<p>最后，由于这是一个突破性的变化，我们谈了从 2.8.0 之前版本到 2.8.0 或更高版本的升级。强烈建议直接尝试 KoP 2.8.0 或更高版本。</p>
 ]]></content>
   </entry>
   
@@ -6705,506 +7491,6 @@ HashMap的解决办法就是采用<code>链地址法</code>。</p>
 <p><img src="http://alphawang.github.io/images/post/2014/11/map.jpg" alt="map icon" /></p>
 
 <blockquote><p>btw, 这些图是用astah绘制的，这是个很好用的软件，推荐一下。官网：<a href="http://astah.net/editions/community">http://astah.net/editions/community</a></p></blockquote>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[How to Pass POJO Array to Spring MVC Controller]]></title>
-    <link href="http://alphawang.github.io/blog/how-to-pass-pojo-array-to-spring-mvc-controller/"/>
-    <updated>2014-10-26T15:59:15+08:00</updated>
-    <id>http://alphawang.github.io/blog/how-to-pass-pojo-array-to-spring-mvc-controller</id>
-    <content type="html"><![CDATA[<h2>问题</h2>
-
-<p>最近遇到个需求，需要将一个对象数组从前端用ajax传递给后端的Spring MVC Controller，例如传递如下数据：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>{
-</span><span class='line'>  products: [
-</span><span class='line'>    {
-</span><span class='line'>      category: 100,
-</span><span class='line'>      name: 'iPad',
-</span><span class='line'>      attributes: {
-</span><span class='line'>        volume: '32G',
-</span><span class='line'>        color: 'white'
-</span><span class='line'>      }
-</span><span class='line'>    },
-</span><span class='line'>    {
-</span><span class='line'>      category: 200,
-</span><span class='line'>      name: 'xx t-shirt',
-</span><span class='line'>      attributes: {
-</span><span class='line'>        size: 'M',
-</span><span class='line'>        color: 'red'
-</span><span class='line'>      }
-</span><span class='line'>    }
-</span><span class='line'>    
-</span><span class='line'>  ],
-</span><span class='line'>  locale: 'zh_CN'
-</span><span class='line'>}  </span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<!--more-->
-
-
-<p>其中locale是一个字符串，products是一个对象数组。该对象的attributes属性名是不固定的，例如有的产品的attributes是volume+color，而有的则是size+color；所以这个attributes属性我们用Map来表示。</p>
-
-<h2>传递基本数组</h2>
-
-<p>首先看看如何传递基本类型数组，例如Long[]。<br/>
-在后端接收该参数时很简单，只需要使用Long[]类型的@RequestParam即可，例如：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>@RequestMapping(value = "/test/findproduct", method = RequestMethod.POST)
-</span><span class='line'>@ResponseBody
-</span><span class='line'>public List&lt;Product&gt; findProduct(
-</span><span class='line'>  @RequestParam(value="objectValues", required=false) String[] objectValues) {
-</span><span class='line'> //注意value="objectValues"
-</span><span class='line'>
-</span><span class='line'>}
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>前端代码如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>            $.ajax({
-</span><span class='line'>                type: "POST",
-</span><span class='line'>                contentType: 'application/x-www-form-urlencoded; charset=utf-8;',
-</span><span class='line'>                url: '/kcci/test/findproduct',
-</span><span class='line'>                data: {
-</span><span class='line'>                    objectValues: [1000, 1001, 1002]
-</span><span class='line'>                },
-</span><span class='line'>                traditional: true,
-</span><span class='line'>                success: function(items){ },
-</span><span class='line'>                error: function(ejqXHR, textStatus, errorThrown) { }
-</span><span class='line'>            });  </span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<h3>关于traditional: true</h3>
-
-<p>注意ajax中有个参数<code>traditional: true</code>，<strong>网上很多文章说只有这样才能让Java后台识别数组参数，但貌似并非如此</strong>。
-traditional默认值为false，jquery会深度序列化参数对象，以适应如PHP和Ruby on Rails框架。序列化后的格式为：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>objectValues[]:1000  
-</span><span class='line'>objectValues[]:1001  
-</span><span class='line'>objectValues[]:1002  </span></code></pre></td></tr></table></div></figure>
-
-
-<p>但servelt api无法处理，我们可以通过设置traditional: true阻止深度序列化，这样序列化结果如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>objectValues:1000
-</span><span class='line'>objectValues:1001
-</span><span class='line'>objectValues:1002</span></code></pre></td></tr></table></div></figure>
-
-
-<p>区别仅仅是参数名不一样，那么是否将后台的<code>@RequestParam(value="objectValues"）</code>改成<code>@RequestParam(value="objectValues[]")</code>，就能接收traditional:false的参数了呢？测试下来貌似确实是可以的！</p>
-
-<h2>传递Map</h2>
-
-<p>前文说到要传递的对象中有个Map属性，那么如果只仅仅传递Map参数应该怎么做呢？如果直接使用Map类型的RequestParam，例如<code>@RequestParam(required = false) Map&lt;String, String&gt; params</code>，那么这个params参数实际是所有传入参数的集合。如果我们发送的参数是：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>{
-</span><span class='line'> objectValues: [1000, 1001, 1002],
-</span><span class='line'> attributes: {
-</span><span class='line'>  COLOR: 'red',
-</span><span class='line'>  SIZE: 'M'
-</span><span class='line'> }
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-那么接收到的params为：<br/>
-<img src="http://alphawang.github.io/images/post/2014/10/mapParams.png" alt="params icon" /></p>
-
-<p>可见这个params里不仅有attributes这个Map，还有其他参数。</p>
-
-<p>如果要让params仅仅包含我们关心的attributes map改怎么处理呢？我们需要自己新建一个Wrapper类：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>@Data
-</span><span class='line'>public class AttributeMapWrapper {
-</span><span class='line'>    Map&lt;String, String&gt; attributes;
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-然后在Controller方法参数里这样写：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>@ModelAttribute(value = "attributes") AttributeMapWrapper attrWrapper</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>传递对象数组</h2>
-
-<p>前面讲了如何传递基本数组和Map，那么现在问题来了，如何才能传递对象数组呢？<br/>
-网络上能找到一些方法，例如下面这两个：</p>
-
-<ul>
-<li><a href="http://stackoverflow.com/questions/14459171/spring-mvc-and-jquery-post-request-with-array-of-pojo">http://stackoverflow.com/questions/14459171/spring-mvc-and-jquery-post-request-with-array-of-pojo</a></li>
-<li><a href="http://stackoverflow.com/questions/17987234/passing-json-array-from-javascript-to-spring-mvc-controller">http://stackoverflow.com/questions/17987234/passing-json-array-from-javascript-to-spring-mvc-controller</a></li>
-</ul>
-
-
-<p>基本思路是通过<code>@RequestBody</code>来获取Map，但是我在本地没有测试成功，可能原因是这里输入的并不是单一的数组，还有一个和数组并列的locale变量。</p>
-
-<h3>HttpServletRequest + GSon</h3>
-
-<p>可以利用HttpServletRequest获取传回的string，然后利用Gson转换为对象。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public List&lt;Item&gt; matchItems(
-</span><span class='line'>  @RequestParam(required = false, value = "Locale") String locale
-</span><span class='line'>  HttpServletRequest request) {
-</span><span class='line'>Gson gson = new Gson();
-</span><span class='line'>List&lt;ParameterWrapper&gt; param = gson.fromJson(request.getParameter("paramList"), 
-</span><span class='line'>new TypeToken&lt;List&lt;ParameterWrapper&gt;&gt;(){}.getType());
-</span><span class='line'>...
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>这里为参数对象写了一个Wrapper类：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>@Data
-</span><span class='line'>public class ParameterWrapper {
-</span><span class='line'>    Long transactionId;
-</span><span class='line'>    Long categoryId;
-</span><span class='line'>    String barcode;
-</span><span class='line'>    String productName;
-</span><span class='line'>    String itemName;
-</span><span class='line'>//    @SerializedName("attributes")
-</span><span class='line'>    Map&lt;String, String&gt; attributes;
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>这样就能成功接收本文开头那种对象数组参数了。</p>
-
-<h3>@RequestBody</h3>
-
-<p>HttpServletRequest方法显得太过于底层，过于面向细节。上文说到因为和数组并列有个locale变量，导致无法使用@RequestBody，那是否可以通过修改API输入参数的设计来解决呢，把locale变量放到<code>ParameterWrapper</code>中是否就可以使用@RequestBody了呢？<br/>
-当然可以，代码如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>public List&lt;Item&gt; matchItems(@RequestBody ParameterWrapper[] params) {
-</span><span class='line'>
-</span><span class='line'>...
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>@Data
-</span><span class='line'>public class ParameterWrapper {
-</span><span class='line'>    Long transactionId;
-</span><span class='line'>    Long categoryId;
-</span><span class='line'>    String barcode;
-</span><span class='line'>    String productName;
-</span><span class='line'>    String itemName;
-</span><span class='line'>    String locale;
-</span><span class='line'>//    @SerializedName("attributes")
-</span><span class='line'>    Map&lt;String, String&gt; attributes;
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
-
-
-<p>如果不能移动locale的位置该怎么办呢？可以再建一个类，其中包含两个变量：<br/>
-- <code>ParameterWrapper[]</code> <br/>
-- <code>String locale</code></p>
-
-<h2>总结</h2>
-
-<p>本文讨论了如何往Spring MVC Controller中传入基本数组、传入Map、传入对象数组。当遇到技术瓶颈时，不妨换个思路，有时修改一下设计就能豁然开朗。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Integrate Octopress With Flickr]]></title>
-    <link href="http://alphawang.github.io/blog/integrate-octopress-with-flickr/"/>
-    <updated>2014-09-22T15:59:15+08:00</updated>
-    <id>http://alphawang.github.io/blog/integrate-octopress-with-flickr</id>
-    <content type="html"><![CDATA[<p>Octopress Blog有一个很酷的<a href="https://github.com/neilk/octopress-flickr">插件</a>，可以将Flickr中的某个图片插入到你的博文中。像这样：  <br/>
-{\% flickr_image 15313566521 o \%}</p>
-
-<p>还可以把Flickr某个相册中的所有图片都插入进来，像<a href="http://alphawang.com/photography/">这样</a>。</p>
-
-<!--more-->  
-
-
-<p>使用起来非常简单，只需要在博文中插入类似如下内容：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>// 注意：要删除\
-</span><span class='line'>
-</span><span class='line'>// 插入图片  
-</span><span class='line'>\{\% flickr_image 15313566521 o \%\}
-</span><span class='line'>
-</span><span class='line'>// 插入相册  
-</span><span class='line'>\{\% flickr_set 72157647828539946 q \%\}   </span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>当然，在这之前要安装这个插件。</p>
-
-<h2>安装octopress-flickr</h2>
-
-<p>基本上按照<a href="https://github.com/neilk/octopress-flickr">github</a>上的步骤就可以顺利安装。<br/>
-主要步骤如下。</p>
-
-<p><strong>1、获取Flickr api key</strong></p>
-
-<p>首先去<a href="http://www.flickr.com/services/developer/api/">Flickr</a>获取一个api key以及对应的secret。然后将它们写入<code>_config.yml</code>：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>flickr:  
-</span><span class='line'>  api_key: &lt;api_key&gt;  
-</span><span class='line'>  shared_secret: &lt;shared_secret&gt;  </span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-<strong>2、获取插件</strong><br/>
-git clone <a href="https://github.com/neilk/octopress-flickr">插件</a>到本地，拷贝其中的<code>.rb</code>和<code>.scss</code>文件到Octopress得相应目录中。 <br/>
-<strong>3、安装插件</strong><br/>
-在Gemfile文件中新增如下几行：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>  gem 'flickraw'  
-</span><span class='line'>  gem 'builder', '&gt; 2.0.0'  
-</span><span class='line'>  gem 'persistent_memoize'  </span></code></pre></td></tr></table></div></figure>
-
-
-<p>
-运行命令：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>bundle install</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>并确保<code>sass/screen.scss</code>以如下行结尾：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>@import "plugins/**/*";</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>4、插入图片</strong></p>
-
-<p>至此，你就可以在blog里插入Flickr图片了，只要找到图片id或者相册id，然后像本文开头那样写到文章即可。</p>
-
-<p>这个插件提供了2个新的tag，分别用来插入单个图片和相册，语法如下：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>
-</span><span class='line'>\{\% flickr_image id [preview-size [alignment [caption]] \%\}  
-</span><span class='line'>\{\% flickr_set id [preview-size [desc|nodesc]] \%\}  
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p><code>preview-size</code>用一个字符来表示图片大小：</p>
-
-<ul>
-<li>o : &ldquo;Original&rdquo;, no maximum dimension</li>
-<li>b : &ldquo;Large&rdquo;, 1024px</li>
-<li>z : &ldquo;Medium 640&rdquo;, 640px</li>
-<li>n : &ldquo;Small 320&rdquo;, 320px</li>
-<li>m : &ldquo;Small&rdquo;, 240px,</li>
-<li>t : &ldquo;Thumbnail&rdquo;, 100px</li>
-<li>q : &ldquo;Large Square&rdquo;, 150px</li>
-<li>s : &ldquo;Square&rdquo;, 75px</li>
-</ul>
-
-
-<p><code>alignment</code>可以设为<code>left</code>, <code>right</code>, 或者<code>center</code>。</p>
-
-<p><code>caption</code> 是图片标题。</p>
-
-<blockquote><p>不过仅仅这样还有个小问题：点击图片，会跳转到Flickr页面去，我们可以用Fancybox达到在当前页面弹出图片。</p></blockquote>
-
-<h2>安装Fancybox</h2>
-
-<p>Fancybox的效果是这样的：<br/>
-<img src="http://alphawang.github.io/images/post/2014/09/fancybox.png" alt=" fancybox " /></p>
-
-<p>去<a href="http://fancyapps.com/fancybox/">Fancybox官网</a>下载并解压，将<code>source</code>目录中的文件拷贝到<code>octopress/source/fancybox</code>目录中。<br/>
-接下来将octopress-flickr插件中的<code>source/_includes/custom/fancybox_head.html</code>文件拷贝到Octopress相应目录中。</p>
-
-<p>编辑<code>source/_includes/head.html</code>文件，在末尾插入：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>\{\% include custom/fancybox_head.html \%\}   </span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>然后修改<code>sass/base/_theme.scss</code>：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>body {
-</span><span class='line'>-  &gt; div {
-</span><span class='line'>+  &gt; #main {
-</span><span class='line'>     border-bottom: 1px solid $page-border-bottom;
-</span><span class='line'>-    &gt; div {
-</span><span class='line'>+    &gt; #content {
-</span><span class='line'>       border-right: 1px solid $sidebar-border;
-</span><span class='line'>     }
-</span><span class='line'>   }</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>大功告成。</p>
-
-<h2>设置导航</h2>
-
-<p>你还可以在导航栏设置一个页面来专门显示Flickr中的照片流。执行：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>rake new_page['photography'] </span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>按照本文开头的语法，添加一个相册到相应的index.makrdown中。</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>// 注意：要删除\
-</span><span class='line'>\{\% flickr_set 72157647828539946 q \%\}    </span></code></pre></td></tr></table></div></figure>
-
-
-<p>在<code>source/_includes/custom/navigation.html</code>中添加导航:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;li&gt;&lt;a href="http://alphawang.github.io/photography"&gt;Photography&lt;/a&gt;&lt;/li&gt;</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<!--Google Adsense-->
-
-
-<p class="meta" style="text-align:center">
-    <!-- 789*90 -->
-    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <ins class="adsbygoogle"
-         style="display:inline-block;width:789px;height:90px"
-         data-ad-client="ca-pub-6393503301700908"
-         data-ad-slot="7806666870"></ins>
-    <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-</p>
-
-
-
 ]]></content>
   </entry>
   

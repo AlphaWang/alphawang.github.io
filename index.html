@@ -193,7 +193,8 @@ $(document).ready(
   </header>
 
 
-  <div class="entry-content"><blockquote><p>最终版本发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew">https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew</a></p></blockquote>
+  <div class="entry-content"><blockquote><p>本文翻译自 StreamNative 博客《Achieving Broker Load Balancing with Apache Pulsar》
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew">https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew</a></p></blockquote>
 
 <p>In this blog, we talk about the importance of load balancing in distributed computing systems and provide a deep dive on how Pulsar handles broker load balancing. First, we’ll cover Pulsar’s topic-bundle grouping, bundle-broker ownership, and load data models. Then, we&rsquo;ll walk through Pulsar’s load balancing logic with sequence diagrams that demonstrate bundle assignment, split, and shedding. By the end of this blog, you’ll understand how Pulsar dynamically balances brokers.</p>
 
@@ -208,6 +209,95 @@ $(document).ready(
   
     <footer>
       <a rel="full-article" href="/blog/pulsar-load-balancing/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/bookkeepr-external-consensus/">Apache BookKeeper 外部共识和动态成员</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2022-05-29T14:33:50+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2022</span></span> <span class='time'>2:33 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>本文翻译自 《Apache BookKeeper Insights Part 1 — External Consensus and Dynamic Membership》，作者 Jack Vanlightly<br/>
+- 原文链接：<a href="https://medium.com/splunk-maas/apache-bookkeeper-insights-part-1-external-consensus-and-dynamic-membership-c259f388da21">https://medium.com/splunk-maas/apache-bookkeeper-insights-part-1-external-consensus-and-dynamic-membership-c259f388da21</a><br/>
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/i2CzmL8k2EKbjxNlW0OG6w">https://mp.weixin.qq.com/s/i2CzmL8k2EKbjxNlW0OG6w</a></p></blockquote>
+
+<p>The BookKeeper replication protocol is pretty interesting, it’s quite different to other replication protocols that people are used to in the messaging space such as Raft (RabbitMQ Quorum Queues, Red Panda, NATS Streaming) or the Apache Kafka replication protocol. But being different means that people often don’t understand it fully and can either get tripped up when it behaves in a way they don’t expect or not use it to its full potential.</p>
+
+<p>BookKeeper 复制协议非常有趣，它与人们在消息领域习惯使用的其他复制协议大不相同，例如 RabbitMQ Quorum Queues、Red Panda 及 NATS Streaming 使用的 Raft 协议和 Apache Kafka 使用的复制协议。但与众不同意味着人们往往无法完全掌握 BookKeeper 的各项玩法，例如当 BookKeeper 的运行方式不符合预期时不知如何解决，又或是没能充分利用 BookKeeper 的各项优势功能。</p>
+
+<p>This series aims to help people understand some fundamental insights into what makes BookKeeper different and also dig into some of the nuances of the protocol. We’ll dig into the “why” the protocol is the way it is and also some of the ramifications of those design decisions.</p>
+
+<p>本系列文章旨在帮助大家了解那些使 BookKeeper 与众不同的一些基本见解，详细分析该协议的一些细微差别。我们将深入研究 BookKeeper 复制协议背后的设计考量，以及这些设计决策所带来的结果。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/bookkeepr-external-consensus/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/kop-offset/">Offset Implementation in Kafka-on-Pulsar</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2022-04-21T18:30:10+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2022</span></span> <span class='time'>6:30 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>本文翻译自《Offset Implementation in Kafka-on-Pulsar》<br/>
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/JXLquQkJFAzu8uw_lJaIcg">https://mp.weixin.qq.com/s/JXLquQkJFAzu8uw_lJaIcg</a></p></blockquote>
+
+<p><a href="https://github.com/apache/pulsar/wiki/PIP-41%3A-Pluggable-Protocol-Handler">Protocol handlers</a> were introduced in Pulsar 2.5.0 (released in January 2020) to extend Pulsar’s capabilities to other messaging domains. By default, Pulsar brokers only support Pulsar protocol. With protocol handlers, Pulsar brokers can support other messaging protocols, including Kafka, AMQP, and MQTT. This allows Pulsar to interact with applications built on other messaging technologies, expanding the Pulsar ecosystem.</p>
+
+<p><a href="https://github.com/apache/pulsar/wiki/PIP-41%3A-Pluggable-Protocol-Handler">协议处理器</a> 是 2020 年一月份发布的 Pulsar 2.5.0 所引入的新功能，目的是将 Pulsar 的能力扩展到其他消息领域。默认情况下 Pulsar Broker 仅支持 Pulsar 协议。而通过协议处理器，Pulsar Broker 就可以支持其他消息协议，包括 Kafka、AMQP 以及 MQTT（现已新增 RocketMQ）。这使得 Pulsar 可以与基于其他消息技术的应用进行交互，从而扩展 Pulsar 生态系统。</p>
+
+<p><a href="https://github.com/streamnative/kop">Kafka-on-Pulsar (KoP)</a> is a protocol handler that brings native Kafka protocol into Pulsar. It enables developers to publish data into or fetch data from Pulsar using existing Kafka applications without code change. KoP significantly lowers the barrier to Pulsar adoption for Kafka users, making it one of the most popular protocol handlers.</p>
+
+<p><a href="https://github.com/streamnative/kop">Kafka-on-Pulsar (KoP)</a> 就是一种协议处理协议，它将原生 Kafka 协议引入了 Pulsar，使得开发人员能够使用现有的 Kafka 应用将数据发布到 Pulsar 或从 Pulsar 读取数据，而无需更改代码。KoP 极大降低了 Kafka 用户使用 Pulsar 的壁垒，这让 KoP 成为最受欢迎的协议处理器之一。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/kop-offset/">Read on &rarr;</a>
     </footer>
   
 
@@ -458,101 +548,6 @@ $(document).ready(
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/google-guava-dealing-with-null/">Google Guava: 1. Dealing With Null</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-03-23T14:00:40+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>2:00 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><blockquote><p>Please ref to the demo code: <code>git clone https://github.com/AlphaWang/guava-demo.git</code></p></blockquote>
-
-<p>Many of Guava&rsquo;s utilities are designed to fail fast in the presence of null rather than allow nulls to be used.</p>
-
-<blockquote><p>com.alphawang.guava.ch1.optional.Test1_FailFast</p></blockquote>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>  // Lists.newArrayList()
-</span><span class='line'>  public static &lt;E&gt; ArrayList&lt;E&gt; newArrayList(E... elements) {
-</span><span class='line'>    checkNotNull(elements); 
-</span><span class='line'>    int capacity = computeArrayListCapacity(elements.length);
-</span><span class='line'>    ArrayList&lt;E&gt; list = new ArrayList&lt;E&gt;(capacity);
-</span><span class='line'>    Collections.addAll(list, elements);
-</span><span class='line'>    return list;
-</span><span class='line'>  }
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Additionally, Guava provides a number of facilities both to make using <code>null</code> easier, when you must, and to help you avoid using <code>null</code>.</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/google-guava-dealing-with-null/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/key-solr-concepts/">Key Solr Concepts</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2015-01-20T16:00:40+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:00 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><blockquote><p>本文是《Solr In Action》读书笔记，包含第3章</p></blockquote>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/key-solr-concepts/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/2">&larr; Older</a>
@@ -567,14 +562,14 @@ $(document).ready(
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (4)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (6)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
-<li class='category'><a href='/blog/categories/messaging/'>messaging (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (4)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
-<li class='category'><a href='/blog/categories/translation/'>translation (3)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (5)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -593,7 +588,7 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
-<a style="font-size: 119%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 148%" href="/blog/tags/pulsar/">Pulsar</a>
 <a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
@@ -608,13 +603,13 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 148%" href="/blog/tags/distributed-system/">distributed system</a>
-<a style="font-size: 119%" href="/blog/tags/messaging/">messaging</a>
+<a style="font-size: 164%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 148%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
-<a style="font-size: 119%" href="/blog/tags/translation/">translation</a>
+<a style="font-size: 148%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -633,15 +628,15 @@ $(document).ready(
       </li>
     
       <li class="post">
+        <a href="/blog/bookkeepr-external-consensus/">Apache BookKeeper 外部共识和动态成员</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/kop-offset/">Offset Implementation in Kafka-on-Pulsar</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/clean-code/">Clean Code Summary</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/redis-mind-map/">Redis Mind Map</a>
       </li>
     
   </ul>

@@ -9,7 +9,7 @@
   <meta name="author" content="Alpha Wang">
 
   
-  <meta name="description" content="本文是《Solr In Action》读书笔记，包含第1~2章 ">
+  <meta name="description" content="Please ref to the demo code: git clone https://github.com/AlphaWang/guava-demo.git Many of Guava&rsquo;s utilities are designed to fail fast in the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -127,6 +127,101 @@ $(document).ready(
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/google-guava-dealing-with-null/">Google Guava: 1. Dealing With Null</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-23T14:00:40+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2015</span></span> <span class='time'>2:00 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>Please ref to the demo code: <code>git clone https://github.com/AlphaWang/guava-demo.git</code></p></blockquote>
+
+<p>Many of Guava&rsquo;s utilities are designed to fail fast in the presence of null rather than allow nulls to be used.</p>
+
+<blockquote><p>com.alphawang.guava.ch1.optional.Test1_FailFast</p></blockquote>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>  // Lists.newArrayList()
+</span><span class='line'>  public static &lt;E&gt; ArrayList&lt;E&gt; newArrayList(E... elements) {
+</span><span class='line'>    checkNotNull(elements); 
+</span><span class='line'>    int capacity = computeArrayListCapacity(elements.length);
+</span><span class='line'>    ArrayList&lt;E&gt; list = new ArrayList&lt;E&gt;(capacity);
+</span><span class='line'>    Collections.addAll(list, elements);
+</span><span class='line'>    return list;
+</span><span class='line'>  }
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Additionally, Guava provides a number of facilities both to make using <code>null</code> easier, when you must, and to help you avoid using <code>null</code>.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/google-guava-dealing-with-null/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/key-solr-concepts/">Key Solr Concepts</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-01-20T16:00:40+08:00'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>20</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>4:00 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>本文是《Solr In Action》读书笔记，包含第3章</p></blockquote>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/key-solr-concepts/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -421,129 +516,6 @@ $(document).ready(
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/how-to-pass-pojo-array-to-spring-mvc-controller/">How to Pass POJO Array to Spring MVC Controller</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-10-26T15:59:15+08:00'><span class='date'><span class='date-month'>Oct</span> <span class='date-day'>26</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>3:59 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>问题</h2>
-
-<p>最近遇到个需求，需要将一个对象数组从前端用ajax传递给后端的Spring MVC Controller，例如传递如下数据：</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>{
-</span><span class='line'>  products: [
-</span><span class='line'>    {
-</span><span class='line'>      category: 100,
-</span><span class='line'>      name: 'iPad',
-</span><span class='line'>      attributes: {
-</span><span class='line'>        volume: '32G',
-</span><span class='line'>        color: 'white'
-</span><span class='line'>      }
-</span><span class='line'>    },
-</span><span class='line'>    {
-</span><span class='line'>      category: 200,
-</span><span class='line'>      name: 'xx t-shirt',
-</span><span class='line'>      attributes: {
-</span><span class='line'>        size: 'M',
-</span><span class='line'>        color: 'red'
-</span><span class='line'>      }
-</span><span class='line'>    }
-</span><span class='line'>    
-</span><span class='line'>  ],
-</span><span class='line'>  locale: 'zh_CN'
-</span><span class='line'>}  </span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/how-to-pass-pojo-array-to-spring-mvc-controller/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/integrate-octopress-with-flickr/">Integrate Octopress With Flickr</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-09-22T15:59:15+08:00'><span class='date'><span class='date-month'>Sep</span> <span class='date-day'>22</span><span class='date-suffix'>nd</span>, <span class='date-year'>2014</span></span> <span class='time'>3:59 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Octopress Blog有一个很酷的<a href="https://github.com/neilk/octopress-flickr">插件</a>，可以将Flickr中的某个图片插入到你的博文中。像这样：  <br/>
-{\% flickr_image 15313566521 o \%}</p>
-
-<p>还可以把Flickr某个相册中的所有图片都插入进来，像<a href="http://alphawang.com/photography/">这样</a>。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/integrate-octopress-with-flickr/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -560,14 +532,14 @@ $(document).ready(
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (4)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (6)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
-<li class='category'><a href='/blog/categories/messaging/'>messaging (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (4)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
-<li class='category'><a href='/blog/categories/translation/'>translation (3)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (5)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -586,7 +558,7 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
-<a style="font-size: 119%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 148%" href="/blog/tags/pulsar/">Pulsar</a>
 <a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
@@ -601,13 +573,13 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 148%" href="/blog/tags/distributed-system/">distributed system</a>
-<a style="font-size: 119%" href="/blog/tags/messaging/">messaging</a>
+<a style="font-size: 164%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 148%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
-<a style="font-size: 119%" href="/blog/tags/translation/">translation</a>
+<a style="font-size: 148%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -626,15 +598,15 @@ $(document).ready(
       </li>
     
       <li class="post">
+        <a href="/blog/bookkeepr-external-consensus/">Apache BookKeeper 外部共识和动态成员</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/kop-offset/">Offset Implementation in Kafka-on-Pulsar</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/clean-code/">Clean Code Summary</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/redis-mind-map/">Redis Mind Map</a>
       </li>
     
   </ul>
