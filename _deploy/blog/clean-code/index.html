@@ -1,0 +1,1318 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Clean Code Summary - Alpha's Programming Notes</title>
+  <meta name="author" content="Alpha Wang">
+
+  
+  <meta name="description" content="2019年在大团队内部组织了一个 Study Group，主要目的是一起学习、一起分享、一起成长；上个季度我们的一项重点是完成了《Clean Code》这本书的拆解和分享，本文是对其中最后一章的一个总结。其实最后一章是对全书的总结，随意本文也可以近似看成是对全书的总结吧。 原始总结请参考 &hellip;">
+  <meta name="keywords" content="clean code, 代码整洁之道, 学习总结, comments, environment, functions, general, java, names, tests">
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://alphawang.github.io/blog/clean-code">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Alpha's Programming Notes" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script>
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+
+$(document).bind('DOMNodeInserted', function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-54659411-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">AlphaWang.com</a></h1>
+  
+    <h2>Alpha's Programming Notes | 一个程序员的日常</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:alphawang.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/tag-cloud/">Tags</a></li>
+  <li><a href="/photography/">Photo</a></li>
+  <li><a href="/about/">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Clean Code Summary</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-08-16T17:46:12+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2019</span></span> <span class='time'>5:46 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><blockquote><p>2019年在大团队内部组织了一个 Study Group，主要目的是一起学习、一起分享、一起成长；上个季度我们的一项重点是完成了《Clean Code》这本书的拆解和分享，本文是对其中最后一章的一个总结。其实最后一章是对全书的总结，随意本文也可以近似看成是对全书的总结吧。</p>
+
+<p>原始总结请参考 <a href="https://github.com/AlphaWang/alpha-book-clean-code/tree/master/17_smells_heuristics">https://github.com/AlphaWang/alpha-book-clean-code/tree/master/17_smells_heuristics</a></p></blockquote>
+
+<!--more-->
+
+
+<h2>17.1 注释（Comments）</h2>
+
+<h3>C1: 不恰当的信息（Inappropriate Information）</h3>
+
+<p>注释只应该描述有关代码和设计的技术性信息。</p>
+
+<p>反例：修改历史记录</p>
+
+<h3>C2: 废弃的注释（Obsolete Comment）</h3>
+
+<p>过时、无关、不正确的注释就是废弃的注释。</p>
+
+<p>问题：造成误导</p>
+
+<h3>C3: 冗余注释（Redundant Comment）</h3>
+
+<p>注释应该谈及代码自身 <del>没有</del>（不能）提到的东西。
+Comments should say things that the code cannot say for itself.</p>
+
+<p>反例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>i++; // increment i</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/**
+</span><span class='line'>* @param sellRequest
+</span><span class='line'>* @return
+</span><span class='line'>* @throws ManagedComponentException
+</span><span class='line'>*/
+</span><span class='line'>public SellResponse beginSellItem(SellRequest sellRequest) throws ManagedComponentException</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>C4: 糟糕的注释（Poorly Written Comment）</h3>
+
+<p>如果注释值得写，那就值得好好写。</p>
+
+<ul>
+<li>注意语法、拼写；</li>
+<li>不画蛇添足、保持简洁。</li>
+</ul>
+
+
+<h3>C5: 注释掉的代码（Commented-Out Code）</h3>
+
+<p>看到注释掉的代码，就删掉它！</p>
+
+<h2>17.2 环境（Environment）</h2>
+
+<h3>E1: 需要多步才能实现的构建（Build Requires More Than One Step）</h3>
+
+<p>You should be able to check out the system with one simple command and then issue one other simple command to build it.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>svn get mySystem 
+</span><span class='line'>cd mySystem
+</span><span class='line'>ant all</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>E2: 需要多步才能做到的测试（Tests Require More Than One Step）</h3>
+
+<p>You should be able to run all the unit tests with just one command.</p>
+
+<h2>17.3 函数（Functions）</h2>
+
+<p>see <a href="03_functions/03_functions.md">Chapter3 Functions</a></p>
+
+<h3>F1: 过多的参数（Too Many Arguments）</h3>
+
+<p>函数参数越少越好。</p>
+
+<h3>F2: 输出参数（Output Arguments）</h3>
+
+<p>Readers expect arguments to be inputs, not outputs.</p>
+
+<h3>F3: 标识参数（Flag Arguments）</h3>
+
+<p>有布尔值参数，说明函数做了不止一件事。</p>
+
+<h3>F4: 死函数（Dead Function）</h3>
+
+<p>永不被调用的方法应该丢弃。</p>
+
+<h2>17.4 一般性问题（General）</h2>
+
+<h3>G1: 一个源文件中存在多种语言（Multiple Languages in One Source File）</h3>
+
+<h3>G2: 明显的行为未被实现（Obvious Behavior Is Unimplemented）</h3>
+
+<p>Following <code>The Principle of Least Surprise</code>, any function or class should implement the behaviors that another programmer could reasonably expect.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Day day = DayDate.StringToDay(String dayName);</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Reasonable expectations:</p>
+
+<ul>
+<li>&ldquo;Monday&rdquo; &ndash;> Day.MONDAY</li>
+<li>&ldquo;monday&rdquo; &ndash;> Day.MONDAY</li>
+<li>&ldquo;Mon&rdquo; &ndash; Day.MONDAY</li>
+</ul>
+
+
+<h3>G3: 不正确的边界行为（Incorrect Behavior at the Boundaries）</h3>
+
+<p>Don’t rely on your intuition.
+Look for every boundary condition and write a test for it.</p>
+
+<h3>G4: 忽视安全（Overridden Safeties）</h3>
+
+<p>Turning off certain compiler warnings may help you get the build to succeed, but at the risk of endless debugging sessions.</p>
+
+<h3>G5: 重复（Duplication）</h3>
+
+<p>DRY: Don&rsquo;t Repeat Yourself. 这是本书最重要的规则之一</p>
+
+<ul>
+<li>重复代码代表遗漏了抽象。</li>
+</ul>
+
+
+<h3>G6: 在错误的抽象层级上的代码（Code at Wrong Level of Abstraction）</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public interface Stack {
+</span><span class='line'>  Object pop() throws EmptyException;
+</span><span class='line'>  void push(Object o) throws FullException; 
+</span><span class='line'>  double percentFull();
+</span><span class='line'>}  </span></code></pre></td></tr></table></div></figure>
+
+
+<ul>
+<li>percentFull()方法应该放到子接口<code>BoundedStack</code>上。</li>
+</ul>
+
+
+<h3>G7: 基类依赖于派生类（Base Classes Depending on Their Derivatives）</h3>
+
+<p>In general, base classes should know nothing about their derivatives.</p>
+
+<h3>G8: 信息过多（TMI, Too Much Information）</h3>
+
+<ul>
+<li>类或模块中暴露的接口越少越好；</li>
+<li>类中的方法越少越好；</li>
+<li>函数知道的变量越少越好；</li>
+<li>类拥有的实体变量越少越好；</li>
+</ul>
+
+
+<h3>G9: 死代码（Dead Code）</h3>
+
+<ul>
+<li>不被调用的方法；</li>
+<li>不会进入的if/switch条件；</li>
+<li>从不抛出异常的try-catch；</li>
+</ul>
+
+
+<p>Tips: find dead code by IntelliJ</p>
+
+<p><code>Analyze</code> —> <code>Run Inspection by Name…</code> —> <code>Unused declaration</code></p>
+
+<h3>G10: 垂直分隔（Vertical Separation）</h3>
+
+<p>垂直距离要短，</p>
+
+<ul>
+<li>变量和函数应该在靠近被使用的地方定义。</li>
+<li>本地变量应该在首次被使用的位置上面声明。</li>
+<li>私有函数应该刚好在其首次被调用的位置下面定义。</li>
+</ul>
+
+
+<h3>G11: 前后不一致（Inconsistency）</h3>
+
+<p>If you do something a certain way, do all similar things in the same way.</p>
+
+<ul>
+<li><code>HttpServletResponse response;</code> vs. <code>HttpServletResponse httpResponse;</code></li>
+<li><code>loadInterstellarVendorItem()</code> vs. <code>getInterstellarVendorItem()</code></li>
+</ul>
+
+
+<h3>G12: 混淆视听（Clutter）</h3>
+
+<ul>
+<li><p>没有用到的变量；</p></li>
+<li><p>从不调用的函数；</p></li>
+<li><p>没有信息量的注释；</p>
+
+<p>All these things are clutter and should be removed.</p></li>
+</ul>
+
+
+<h3>G13: 人为耦合（Artificial Coupling）</h3>
+
+<p>不互相依赖的东西就不该耦合。</p>
+
+<p>反例：把普通的enum声明在特殊类中。</p>
+
+<h3>G14: 特性依恋 （Feature Envy）</h3>
+
+<p>see Martin Fowler’s Refactoring.</p>
+
+<p>The methods of a class should be interested in the variables and functions of the class they belong to, and not the variables and functions of other classes.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class HourlyPayCalculator {
+</span><span class='line'>  public Money calculateWeeklyPay(HourlyEmployee e) {
+</span><span class='line'>    int tenthRate = e.getTenthRate().getPennies();
+</span><span class='line'>    int tenthsWorked = e.getTenthsWorked();
+</span><span class='line'>    int straightTime = Math.min(400, tenthsWorked);
+</span><span class='line'>    int overTime = Math.max(0, tenthsWorked - straightTime); 
+</span><span class='line'>    int straightPay = straightTime * tenthRate;
+</span><span class='line'>    int overtimePay = (int)Math.round(overTime*tenthRate*1.5);
+</span><span class='line'>    return new Money(straightPay + overtimePay); 
+</span><span class='line'>  }
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<blockquote><p>The calculateWeeklyPay method envies the scope of HourlyEmployee. It “wishes” that it could be inside HourlyEmployee.</p></blockquote>
+
+<p>但事无绝对，下面这个reportHours方法如果移到HourlyEmployee类中，就会违反SRP原则。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class HourlyEmployeeReport { 
+</span><span class='line'>  private HourlyEmployee employee ;
+</span><span class='line'>  public HourlyEmployeeReport(HourlyEmployee e) { 
+</span><span class='line'>    this.employee = e;
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  String reportHours() { 
+</span><span class='line'>    return String.format("Name: %s\tHours:%d.%1d\n", 
+</span><span class='line'>      employee.getName(), 
+</span><span class='line'>      employee.getTenthsWorked()/10, 
+</span><span class='line'>      employee.getTenthsWorked()%10);
+</span><span class='line'>  } 
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G15: 选择算子参数（Selector Arguments）</h3>
+
+<p>什么是selector arguments：用于选择函数行为的参数。</p>
+
+<ul>
+<li>boolean</li>
+<li>enum</li>
+<li>&hellip;</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public int calculateWeeklyPay(boolean overtime) { //Selector Argument
+</span><span class='line'>  int tenthRate = getTenthRate();
+</span><span class='line'>  int tenthsWorked = getTenthsWorked();
+</span><span class='line'>  int straightTime = Math.min(400, tenthsWorked);
+</span><span class='line'>  int overTime = Math.max(0, tenthsWorked - straightTime); 
+</span><span class='line'>  int straightPay = straightTime * tenthRate;
+</span><span class='line'>  double overtimeRate = overtime ? 1.5 : 1.0 * tenthRate; 
+</span><span class='line'>  int overtimePay = (int)Math.round(overTime*overtimeRate); 
+</span><span class='line'>  return straightPay + overtimePay;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G16: 晦涩的意图（Obscured Intent）</h3>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public int m_otCalc() { 
+</span><span class='line'>  return iThsWkd * iThsRte +
+</span><span class='line'>       (int) Math.round(0.5 * iThsRte * 
+</span><span class='line'>          Math.max(0, iThsWkd - 400)
+</span><span class='line'>       ); 
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个函数看起来短小紧凑，但究竟是在做什么事情呢？</p>
+
+<h3>G17: 位置错误的权责（Misplaced Responsibility）</h3>
+
+<p>Question: PI常量应该放在Math类、Trigonometry类、还是Circle类？</p>
+
+<ul>
+<li>Following <code>The Principle of Least Surprise</code>. Code should be placed where a reader would naturally expect it to be.</li>
+</ul>
+
+
+<h3>G18: 不恰当的静态方法（Inappropriate Static）</h3>
+
+<p>恰当的静态方法：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Math.max(double a, double b)
+</span><span class='line'>
+</span><span class='line'>// to avoid:
+</span><span class='line'>new Math().max(a, b);
+</span><span class='line'>a.max(b);</span></code></pre></td></tr></table></div></figure>
+
+
+<p>不恰当的静态方法：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>HourlyPayCalculator.calculatePay(employee, overtimeRate).</span></code></pre></td></tr></table></div></figure>
+
+
+<p>原因：有理由希望这个函数是多态的。（OvertimeHourlyPayCalculator, StraightTimeHourlyPayCalculator）</p>
+
+<blockquote><p>可以作为Employee方法的非静态函数。</p></blockquote>
+
+<h3>G19: 使用解释性变量（Use Explanatory Variables）</h3>
+
+<p>让程序可读的有力方法之一就是将计算过程打散，用有意义的变量名存储中间值。</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Matcher match = headerPattern.matcher(line); 
+</span><span class='line'>if(match.find()) {
+</span><span class='line'>  String key = match.group(1); //中间值
+</span><span class='line'>  String value = match.group(2); //中间值 
+</span><span class='line'>  headers.put(key.toLowerCase(), value);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G20: 函数名称应该表达其行为（Function Names Should Say What They Do）</h3>
+
+<p>反例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Date newDate = date.add(5);</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Date newDate = date.addDaysTo(5);
+</span><span class='line'>Date newDate = date.increaseByDays(5);</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G21: 理解算法（Understand the Algorithm）</h3>
+
+<p>Before you consider yourself to be done with a function, make sure you understand how it works.
+It is not good enough that it passes all the tests.
+You must know that the solution is correct.</p>
+
+<h3>G22: 把逻辑依赖改为物理依赖（Make Logical Dependencies Physical）</h3>
+
+<p>Logical Dependency:</p>
+
+<ul>
+<li>The dependent module should not make <strong>assumptions</strong> about the module it depends upon.</li>
+</ul>
+
+
+<p>Physical Dependency:</p>
+
+<ul>
+<li>it should explicitly ask that module for all the information it depends upon.</li>
+</ul>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class HourlyReporter {
+</span><span class='line'>  private HourlyReportFormatter formatter; 
+</span><span class='line'>  private List&lt;LineItem&gt; page;
+</span><span class='line'>  private final int PAGE_SIZE = 55;
+</span><span class='line'>  
+</span><span class='line'>  public void generateReport(List&lt;HourlyEmployee&gt; employees) { 
+</span><span class='line'>    for (HourlyEmployee e : employees) {
+</span><span class='line'>      addLineItemToPage(e);
+</span><span class='line'>      if (page.size() == PAGE_SIZE)
+</span><span class='line'>        printAndClearItemList(); 
+</span><span class='line'>    }
+</span><span class='line'>    if (page.size() &gt; 0) 
+</span><span class='line'>      printAndClearItemList();
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  private void printAndClearItemList() { 
+</span><span class='line'>    formatter.format(page); 
+</span><span class='line'>    page.clear();
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  private void addLineItemToPage(HourlyEmployee e) { 
+</span><span class='line'>    LineItem item = new LineItem();
+</span><span class='line'>    item.name = e.getName();
+</span><span class='line'>    item.hours = e.getTenthsWorked() / 10;
+</span><span class='line'>    item.tenths = e.getTenthsWorked() % 10;
+</span><span class='line'>    page.add(item); 
+</span><span class='line'>  }</span></code></pre></td></tr></table></div></figure>
+
+
+<p>PAGE_SIZE应该是HourlyReportFormatter的职责； 此处HourlyReporter被假定知道PAGE_SIZE，所以是逻辑依赖。</p>
+
+<ul>
+<li>We can physicalize this dependency by creating a new method in <code>HourlyReportFormatter</code> named <code>getMaxPageSize()</code>.</li>
+<li><code>HourlyReporter</code> will then call that function rather than using the <code>PAGE_SIZE</code> constant.</li>
+</ul>
+
+
+<h3>G23: 用多态替代 if-else 或 switch-case（Prefer Polymorphism to If/Else or Switch/Case）</h3>
+
+<p>反例：
+CartSectionHeaderAssembler</p>
+
+<h3>G24: 遵循标准约定（Follow Standard Conventions）</h3>
+
+<p>建议参考阿里巴巴Java开发手册：<a href="https://github.com/alibaba/p3c">https://github.com/alibaba/p3c</a></p>
+
+<h3>G25: 用命名常量替代魔术数（Replace Magic Numbers with Named Constants）</h3>
+
+<p>反例：</p>
+
+<ul>
+<li>86400</li>
+</ul>
+
+
+<p>正例：</p>
+
+<ul>
+<li>int SECONDS_PER_DAY = 86400;</li>
+</ul>
+
+
+<p>问题：是不是所有数字都需要替换成常量？</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>// 计算圆周长
+</span><span class='line'>// 数字 2 是否需要定义一个常量？ --&gt; NO
+</span><span class='line'>double circumference = radius * Math.PI * 2;</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G26: 准确（Be Precise）</h3>
+
+<ul>
+<li>不要用<code>float</code>表示货币；</li>
+<li>如果所调用的方法可能返回null，就必须要做null检查；</li>
+</ul>
+
+
+<h3>G27: 结构优于约定（Structure over Convention）</h3>
+
+<p>switch/cases with nicely named enumerations are inferior to base classes with abstract methods.</p>
+
+<h3>G28: 封装条件（Encapsulate Conditionals）</h3>
+
+<p>如果 if 或者 while 语句没有上下文，那就很难理解其判断逻辑了。</p>
+
+<p>反例</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if (timer.hasExpired() && !timer.isRecurrent())</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if (shouldBeDeleted(timer))</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G29: 避免否定性条件（Avoid Negative Conditionals）</h3>
+
+<p>Negatives are just a bit harder to understand than positives.</p>
+
+<p>反例</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if (!buffer.shouldNotCompact())</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if (buffer.shouldCompact())
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G30: 函数只该做一件事（Functions Should Do One Thing）</h3>
+
+<p>SRP原则。</p>
+
+<h3>G31: 掩蔽时序耦合（Hidden Temporal Couplings）</h3>
+
+<p>有时函数的执行次序很重要，这时就需要用某种机制（例如 bucket brigade）来确保其他程序员不能随意调整执行次序。</p>
+
+<p>反例</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class MoogDiver { 
+</span><span class='line'>  Gradient gradient; 
+</span><span class='line'>  List&lt;Spline&gt; splines;
+</span><span class='line'>  
+</span><span class='line'>  public void dive(String reason) { 
+</span><span class='line'>    saturateGradient(); 
+</span><span class='line'>    reticulateSplines(); 
+</span><span class='line'>    diveForMoog(reason);
+</span><span class='line'>  }
+</span><span class='line'>  ... 
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class MoogDiver { 
+</span><span class='line'>  Gradient gradient; 
+</span><span class='line'>  List&lt;Spline&gt; splines;
+</span><span class='line'>  
+</span><span class='line'>  public void dive(String reason) {
+</span><span class='line'>    Gradient gradient = saturateGradient(); 
+</span><span class='line'>    List&lt;Spline&gt; splines = reticulateSplines(gradient); 
+</span><span class='line'>    diveForMoog(splines, reason);
+</span><span class='line'>  }
+</span><span class='line'>  ... 
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G32: 别随意（Don’t Be Arbitrary）</h3>
+
+<p>反例：</p>
+
+<p>滥用内部类。本应是一个顶级类，却随意定义在另一个类内部作为内部类。</p>
+
+<h3>G33: 封装边界条件（Encapsulate Boundary Conditions）</h3>
+
+<p>要把处理边界条件的代码集中到一处，而不是散落在代码中。</p>
+
+<p>反例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>if(level + 1 &lt; tags.length) {
+</span><span class='line'>  parts = new Parse(body, tags, level + 1, offset + endTag);
+</span><span class='line'>  body = null; 
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>int nextLevel = level + 1; 
+</span><span class='line'>if(nextLevel &lt; tags.length) {
+</span><span class='line'>  parts = new Parse(body, tags, nextLevel, offset + endTag);
+</span><span class='line'>  body = null; 
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G34: 函数应该只在一个抽象层级上（Functions Should Descend Only One Level of Abstraction）</h3>
+
+<p>反例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public String render() throws Exception {
+</span><span class='line'>  StringBuffer html = new StringBuffer("&lt;hr"); 
+</span><span class='line'>  if(size &gt; 0)
+</span><span class='line'>    html.append(" size=\"").append(size + 1).append("\""); 
+</span><span class='line'>  html.append("&gt;");
+</span><span class='line'>  return html.toString(); 
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>这个方法混杂了至少两个抽象层级：</p>
+
+<ol>
+<li>The first is the notion that a horizontal rule has a size.</li>
+<li>The second is the syntax of the HR tag itself.</li>
+</ol>
+
+
+<p>正例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public String render() throws Exception {
+</span><span class='line'>  HtmlTag hr = new HtmlTag("hr"); 
+</span><span class='line'>  if (extraDashes &gt; 0)
+</span><span class='line'>    hr.addAttribute("size", hrSize(extraDashes)); 
+</span><span class='line'>  return hr.html();
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>private String hrSize(int height) {
+</span><span class='line'>  int hrSize = height + 1;
+</span><span class='line'>  return String.format("%d", hrSize); 
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G35: 在较高层级放置可配置数据（Keep Configurable Data at High Levels）</h3>
+
+<p>如果你有一个常量值表示默认值或者配置值，不要把它埋在底层的函数中。</p>
+
+<p>正例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public static void main(String[] args) throws Exception {
+</span><span class='line'>  Arguments arguments = parseCommandLine(args);
+</span><span class='line'>  ... 
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>public class Arguments {
+</span><span class='line'>  public static final String DEFAULT_PATH = ".";
+</span><span class='line'>  public static final String DEFAULT_ROOT = "FitNesseRoot"; 
+</span><span class='line'>  public static final int DEFAULT_PORT = 80;
+</span><span class='line'>  public static final int DEFAULT_VERSION_DAYS = 14;
+</span><span class='line'>  ...
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>G36: 避免传递浏览（Avoid Transitive Navigation）</h3>
+
+<p>Law of Demeter.不要让模块了解太多其写作者的信息。</p>
+
+<p>反例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>a.getB().getC().doSomething();
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例：</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>myCollaborator.doSomething();
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>17.5 Java</h2>
+
+<h3>J1: 通过使用通配符避免过长的导入清单（Avoid Long Import Lists by Using Wildcards）</h3>
+
+<p>如果使用了来自同一包的两个或多个类，用通配符导入：<code>import package.*</code>。</p>
+
+<blockquote><p>仅仅是为了减少代码行？</p></blockquote>
+
+<h3>J2: 不要继承常量（Don’t Inherit Constants）</h3>
+
+<p>不要在子类中访问父类的常量。因为不方便找到常量究竟定义在哪个类里。</p>
+
+<blockquote><p>通过IDEA可以方便地找到呀。。。</p></blockquote>
+
+<h3>J3: 常量 vs. 枚举（Constants versus Enums）</h3>
+
+<p>推荐用枚举。</p>
+
+<h2>17.6 名称（Names）</h2>
+
+<h3>N1: 采用描述性名称（Choose Descriptive Names）</h3>
+
+<h3>N2: 名称应与抽象层级相符（Choose Names at the Appropriate Level of Abstraction）</h3>
+
+<p>Don’t pick names that communicate implementation; choose names the reflect the level of abstraction of the class or function you are working in.</p>
+
+<p>命名不要暴露实现细节，只用描述功能抽象。</p>
+
+<h3>N3: 尽可能使用标准命名法（Use Standard Nomenclature Where Possible）</h3>
+
+<p>如果用装饰者模式，就以Decorator结尾。</p>
+
+<h3>N4: 无歧义的命名（Unambiguous Names）</h3>
+
+<p>反例</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>private String doRename() throws Exception {
+</span><span class='line'>  if(refactorReferences) 
+</span><span class='line'>    renameReferences();
+</span><span class='line'>  renamePage();
+</span><span class='line'>  
+</span><span class='line'>  pathToRename.removeNameFromEnd(); 
+</span><span class='line'>  pathToRename.addNameToEnd(newName); 
+</span><span class='line'>  return PathParser.render(pathToRename);
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>private String renamePageAndOptionallyAllReferences() throws Exception {
+</span><span class='line'>  ...
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>N5: 为较大作用范围选用较长名称（Use Long Names for Long Scopes）</h3>
+
+<p>如果变量作用范围很小，例如5行之内，那么取名为<code>i</code> <code>j</code> 是没问题的；但是如果作为范围较大，则应该使用较长的名称。</p>
+
+<h3>N6: 避免编码（Avoid Encodings）</h3>
+
+<p>不要在名称中包含类型或作用域信息。</p>
+
+<h3>N7: 名称应该说明副作用（Names Should Describe Side-Effects）</h3>
+
+<p>反例</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public ObjectOutputStream getOos() throws IOException { 
+</span><span class='line'>  if (m_oos == null) {
+</span><span class='line'>    m_oos = new ObjectOutputStream(m_socket.getOutputStream()); 
+</span><span class='line'>  }
+</span><span class='line'>  
+</span><span class='line'>  return m_oos; 
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>正例</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public ObjectOutputStream createOrReturnOos() throws IOException { 
+</span><span class='line'> ... 
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>17.7 测试（Tests）</h2>
+
+<h3>T1: 测试不足（Insufficient Tests）</h3>
+
+<p>一套测试应该测到所有可能失败的东西。</p>
+
+<p>只要还有没被测试探测过的条件，或是还有没被验证过的计算，那么测试就是不足的。</p>
+
+<h3>T2: 使用覆盖率工具（Use a Coverage Tool!）</h3>
+
+<p>IDE支持。</p>
+
+<h3>T3: 别略过小测试（Don’t Skip Trivial Tests）</h3>
+
+<p>小测试易于编写，其文档上的价值高于编写成本。</p>
+
+<h3>T4: 被忽略的测试就是对不确定事物的疑问（An Ignored Test Is a Question about an Ambiguity）</h3>
+
+<p>有时因为需求不明，我们可以把测试表为<code>@Ignore</code>。</p>
+
+<h3>T5: 测试边界条件（Test Boundary Conditions）</h3>
+
+<p>边界判断错误的情形很常见。</p>
+
+<h3>T6: 全面测试相近的缺陷（Exhaustively Test Near Bugs）</h3>
+
+<p>80% 的软件缺陷常常生存在软件 20% 的空间里。</p>
+
+<h3>T7: 测试失败的模式有启发性（Patterns of Failure Are Revealing）</h3>
+
+<p>有时可以通过测试用例失败的模式来诊断问题所在。</p>
+
+<h3>T8: 测试覆盖率的模式有启发性（Test Coverage Patterns Can Be Revealing）</h3>
+
+<p>Looking at the code that is or is not executed by the passing tests gives clues to why the failing tests fail.</p>
+
+<h3>T9: 测试应该快速（Tests Should Be Fast）</h3>
+
+<p>A slow test is a test that won’t get run. When things get tight, it’s the slow tests that will be dropped from the suite. So <em>do what you must</em> to keep your tests fast.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alpha Wang</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2019-08-16T17:46:12+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2019</span></span> <span class='time'>5:46 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/design-patterns/'>design patterns</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  	
+<!--Baidu Share-->
+<div class="bdsharebuttonbox">
+<a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+<a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+<a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+<a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+<a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+<a href="#" class="bds_more" data-cmd="more"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"",
+"bdStyle":"2", //1
+"bdSize":"24"},
+"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 728*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:728px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="2039334876"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+	
+	<!-- 789*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+</p>
+
+<!-- UY BEGIN -->
+<!--<div id="uyan_frame"></div>-->
+<!--<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>-->
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/redis-mind-map/" title="Previous Post: Redis Mind Map">&laquo; Redis Mind Map</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/" title="Next Post: How to Verify If Resilience4j Circuit Breaker Works">How to Verify If Resilience4j Circuit Breaker Works &raquo;</a>
+      
+    </p>
+
+    <!-- Gitalk 评论 start  -->
+
+    <!-- Link Gitalk 的支持文件  -->
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script>
+    <div id="gitalk-container"></div>     <script type="text/javascript">
+      var gitalk = new Gitalk({
+
+          // gitalk的主要参数
+          clientID: 'd4cba670eb5bd4b63a2e',
+          clientSecret: '5a3498bf127676c9aaacf738a8b26d976154fad3',
+          repo: 'alphawang.github.io',
+          owner: 'AlphaWang',
+          admin: ['AlphaWang'],
+          id: location.pathname,
+
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <!-- Gitalk end -->
+  </footer>
+</article>
+
+  
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+ <h1>Categories</h1>
+ <ul id="categories">
+	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (8)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (6)</a></li>
+<li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
+<li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
+<li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (7)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
+
+ </ul>
+</section>
+<section>
+<h1>Tags</h1>
+<ul class="tag-cloud">
+	<a style="font-size: 90%" href="/blog/tags/css/">CSS</a>
+<a style="font-size: 119%" href="/blog/tags/collection/">Collection</a>
+<a style="font-size: 171%" href="/blog/tags/design-pattern/">Design Pattern</a>
+<a style="font-size: 119%" href="/blog/tags/guava/">Guava</a>
+<a style="font-size: 171%" href="/blog/tags/jdk/">JDK</a>
+<a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
+<a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
+<a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 119%" href="/blog/tags/kafka/">Kafka</a>
+<a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
+<a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 164%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
+<a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
+<a style="font-size: 119%" href="/blog/tags/site/">Site</a>
+<a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
+<a style="font-size: 164%" href="/blog/tags/source-code/">Source Code</a>
+<a style="font-size: 90%" href="/blog/tags/spring-mvc/">Spring MVC</a>
+<a style="font-size: 119%" href="/blog/tags/spring-solr/">Spring Solr</a>
+<a style="font-size: 136%" href="/blog/tags/string/">String</a>
+<a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
+<a style="font-size: 119%" href="/blog/tags/web/">Web</a>
+<a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+<a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
+<a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
+<a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
+<a style="font-size: 176%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 164%" href="/blog/tags/messaging/">messaging</a>
+<a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
+<a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
+<a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
+<a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 164%" href="/blog/tags/translation/">translation</a>
+<a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
+<a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
+
+</ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/pulsar-load-balancing/">详解 Pulsar Broker 负载均衡</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/flip/">What the FLiP Is the FLiP Stack?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/bookkeepr-external-consensus/">Apache BookKeeper 外部共识和动态成员</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/pulsar-kafka-benchmark/">2022 Pulsar Performance Report: Better Performance and Data Resiliency With Apache Pulsar</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Links</h1>
+  <ul id="recent_posts">
+    <li class="post"><a href="https://alpha.blog.csdn.net/">Alpha's CSDN Blog</a></li>
+    <li class="post"><a href="https://github.com/AlphaWang/">Alpha's Github</a></li>
+  </ul>
+</section><section>
+  <h1>Visitors Map</h1>
+  <div class="earth">
+    <script type="text/javascript" src="//ri.revolvermaps.com/0/0/8.js?i=awaok66hddi&amp;m=0&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=49" async="async"></script>
+  </div>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2022 - Alpha Wang -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

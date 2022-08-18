@@ -1,0 +1,770 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>What the FLiP Is the FLiP Stack? - Alpha's Programming Notes</title>
+  <meta name="author" content="Alpha Wang">
+
+  
+  <meta name="description" content="构建 IoT 应用——FLiP 技术栈简介">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://alphawang.github.io/blog/flip">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Alpha's Programming Notes" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script>
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+
+$(document).bind('DOMNodeInserted', function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-54659411-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">AlphaWang.com</a></h1>
+  
+    <h2>Alpha's Programming Notes | 一个程序员的日常</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:alphawang.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/tag-cloud/">Tags</a></li>
+  <li><a href="/photography/">Photo</a></li>
+  <li><a href="/about/">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">What the FLiP Is the FLiP Stack?</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2022-06-07T23:17:09+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2022</span></span> <span class='time'>11:17 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><blockquote><p>本文翻译自 StreamNative 博客《What the FLiP is the FLiP Stack?》<br/>
+- 原文链接：<a href="https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/">https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/</a><br/>
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/KoigahiZ2sTG-GhD2fG0Fw">https://mp.weixin.qq.com/s/KoigahiZ2sTG-GhD2fG0Fw</a></p></blockquote>
+
+<p>In this article on the FLiP Stack, we will explain how to build a real-time event driven application using the latest open source frameworks. We will walk through building a Python IoT application utilizing Apache Pulsar, Apache Flink, Apache Spark, and Apache NiFi. You will see how quickly we can build applications for a plethora of use cases. The easy, fast, scalable way: The FLiP Way.</p>
+
+<p>本文将介绍 FLiP 技术栈，我们将解释如何使用最新的开源框架构建实时事件驱动应用程序，并介绍如何通过 Apache Pulsar、Apache Flink、Apache Spark 和 Apache NiFi 构建一个 Python IoT 应用。得益于 FLiP 的简单、快速、可扩展的特性，使用 FLiP 可以快速地为各种场景构建应用程序。</p>
+
+<p>The FLiP Stack is a number of open source technologies that work well together. FLiP is a best practice pattern for building a variety of streaming data applications. The projects in the stack are dictated by the needs of that use case; the available technologies in the builder’s current stack; and the desired end results. As we shall see, there are several variations of the FLiP stack built upon the base of Apache Flink and Apache Pulsar.</p>
+
+<p>FLiP 技术栈由许多可协同工作的开源技术组成，是构建各种流数据应用程序的最佳实践模式。FLiP 技术栈包含哪些项目并不是固定的，而是由特定场景的需求、团队当前掌握的技术栈、以及期望的最终结果决定。建立在 Apache Flink 和 Apache Pulsar 基础上的 FLiP 技术栈有很多变体。</p>
+
+<!--more-->
+
+
+<p>For some use cases like log analytics, you will need a nice dashboard for visualizing, aggregating, and querying your log data. For that one you would most likely want something like FLiPEN, as an enhancement to the <a href="https://www.elastic.co/what-is/elk-stack">ELK Stack</a>. As you can tell, FLiP+ is a moving list of acronyms for open source projects that are commonly used together.</p>
+
+<p>例如对于日志分析这种场景，通常需要清晰直观的仪表板来可视化、聚合并查询日志数据。对于这种场景，你可能需要像 FLiPEN 这样的技术，作为对 <a href="https://www.elastic.co/what-is/elk-stack">ELK 技术栈</a> 的增强。由此可以看出，FLiP+ 是一个可变的缩写，表示多种配合使用的开源项目。</p>
+
+<h2>Common Use Cases - 常见场景</h2>
+
+<p>With so many variations of the FLiP stack, it might be difficult to figure out which one is right for you. Therefore, we have provided some general guidelines for selecting the proper FLiP+ stack to use based on your use case. We already mentioned Log Analytics, which is a common use case. There are many more, driven usually by data sources and data sinks.</p>
+
+<p>由于 FLiP 技术栈的变体非常多，所以可能很难确定哪一种适合你的场景。因此，我们提供了一些通用指南，你可以根据不同的场景选择合适的 FLiP+ 技术栈。上文提到的日志分析是一种常用场景，当然还有其他更多的场景，通常由数据 source 和 sink 驱动。</p>
+
+<table>
+<thead>
+<tr>
+<th> 场景（数据）        </th>
+<th> 技术栈      </th>
+<th> 演示                                                         </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 点击流              </td>
+<td> FLiP-C      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Stream2Clickhouse">https://github.com/tspannhw/FLiP-Stream2Clickhouse</a>           </td>
+</tr>
+<tr>
+<td> IoT                 </td>
+<td> FLiP-I      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-InfluxDB">https://github.com/tspannhw/FLiP-InfluxDB</a>                    </td>
+</tr>
+<tr>
+<td> CDC                 </td>
+<td> FLiPS       </td>
+<td> <a href="https://github.com/tspannhw/FLiPS-SparkOnPulsar">https://github.com/tspannhw/FLiPS-SparkOnPulsar</a>              </td>
+</tr>
+<tr>
+<td> 统一消息            </td>
+<td> FLiP*       </td>
+<td> <a href="https://github.com/tspannhw/FLiPN-Demos">https://github.com/tspannhw/FLiPN-Demos</a>                      </td>
+</tr>
+<tr>
+<td> Lakehouse，云数据湖 </td>
+<td> FLiP        </td>
+<td> <a href="https://github.com/tspannhw/FLiP-CloudIngest">https://github.com/tspannhw/FLiP-CloudIngest</a>                 </td>
+</tr>
+<tr>
+<td> 移动应用            </td>
+<td> FLiP-M      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Mobile">https://github.com/tspannhw/FLiP-Mobile</a>                      </td>
+</tr>
+<tr>
+<td> 微服务              </td>
+<td> FLiP        </td>
+<td> <a href="https://streamnative.io/blog/engineering/2021-12-14-developing-event-driven-microservices-with-apache-pulsar/">https://streamnative.io/blog/engineering/2021-12-14-developing-event-driven-microservices-with-apache-pulsar/</a> </td>
+</tr>
+<tr>
+<td> SQL on Topics       </td>
+<td> FLiPiT      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Into-Trino">https://github.com/tspannhw/FLiP-Into-Trino</a>                  </td>
+</tr>
+<tr>
+<td> 边缘 AI             </td>
+<td> FLip-EdgeAI </td>
+<td> <a href="https://github.com/tspannhw/FLiP-EdgeAI">https://github.com/tspannhw/FLiP-EdgeAI</a>                      </td>
+</tr>
+<tr>
+<td> ETL                 </td>
+<td> FLiPS       </td>
+<td> <a href="https://github.com/tspannhw/FLiPS-SparkOnPulsar">https://github.com/tspannhw/FLiPS-SparkOnPulsar</a>              </td>
+</tr>
+<tr>
+<td> 搜索                </td>
+<td> FLiPEN      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Elastic">https://github.com/tspannhw/FLiP-Elastic</a>                     </td>
+</tr>
+<tr>
+<td> Python 应用         </td>
+<td> FLiP-Py     </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Py-Pi-GasThermal">https://github.com/tspannhw/FLiP-Py-Pi-GasThermal</a>            </td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>Flink-Pulsar Integration - Flink-Pulsar 集成</h2>
+
+<p>A critical component of the FLiP stack is utilizing <a href="https://flink.apache.org/">Apache Flink</a> as a stream processing engine against Apache Pulsar data. This is enabled by the Pulsar-Flink Connector that enables developers to build Flink applications natively and stream in events from Pulsar at scale as they happen. This allows for use cases such as streaming ELT and continuous SQL on joined topic streams. SQL is the language of business that can drive event-driven, real-time applications by writing simple SQL queries against Pulsar streams with Flink SQL, including aggregation and joins.</p>
+
+<p>FLiP 技术栈的一个关键组件是利用 <a href="https://flink.apache.org/">Apache Flink</a> 作为流式处理引擎来处理 Apache Pulsar 数据。这是基于 Pulsar-Flink 连接器实现的，开发人员可以构建原生的 Flink 应用，并在事件发生时从 Pulsar 大规模地流式传输事件，适用于流式 ELT 以及在主题流上持续执行 SQL 等场景。SQL 是一种业务语言，可以通过使用 Flink SQL 编写针对 Pulsar 流的简单 SQL 查询（包括聚合和连接）来实现事件驱动的实时应用程序。</p>
+
+<p>The connector builds an elastic data processing platform enabled by Apache Pulsar and Apache Flink that is seamlessly integrated to allow full read and write access to all Pulsar messages at any scale. As a citizen data engineer or analyst you can focus on building business logic without concern about where the data is coming from or how it is stored.Check out the resources below to learn more about this connector:</p>
+
+<p>Pulsar-Flink 连接器构建了一个弹性数据处理平台，通过无缝集成 Apache Pulsar 和 Apache Flink 允许以任何规模对 Pulsar 消息进行完全读写访问。作为数据工程师或数据分析师，你可以专注于业务逻辑，而无需担心数据来源以及存储。可以通过如下资源学习更多关于 Pulsar-Flink 连接器的知识：</p>
+
+<ul>
+<li>[Blog] <a href="https://flink.apache.org/2021/01/07/pulsar-flink-connector-270.html">What&rsquo;s New in the Pulsar Flink Connector 2.7.0</a>
+[博客] <a href="https://mp.weixin.qq.com/s?__biz=MzUyMjkzMjA1Ng==&amp;mid=2247489855&amp;idx=1&amp;sn=4c45af964787ad4f881e1e69b269c13d&amp;chksm=f9c50308ceb28a1e9593d6478cf2b79b2f0c160b62b5bc1eb92bc75b9207fd46f84f54002797#rd">打造全新批流融合：详解 Apache Flink 1.14.0 发布的 Pulsar Flink Connector</a></li>
+<li>[Blog] <a href="https://streamnative.io/blog/release/2021-04-20-flink-sql-on-streamnative-cloud/">Flink SQL on StreamNative Cloud</a>
+[博客] <a href="https://mp.weixin.qq.com/s?__biz=MzUxOTc4NDc2MQ==&amp;mid=2247488114&amp;idx=1&amp;sn=3eaf397cb698eb75f76cbed34d185d53&amp;chksm=f9f50224ce828b326f0d662b321a14e4721586746945a6721a99d549bd7df18347a6229ccdd2#rd">批流一体上云：StreamNative Cloud 支持 Flink SQL</a></li>
+<li>[Code] <a href="https://github.com/tspannhw/FLiP-SQL">Streaming Analytics with Apache Pulsar and Apache Flink SQL</a>
+[代码] <a href="https://github.com/tspannhw/FLiP-SQL">使用 Apache Pulsar 和 Apache Flink SQL 进行流式分析</a></li>
+</ul>
+
+
+<h2>NiFi-Pulsar Integration - NiFi-Pulsar 集成</h2>
+
+<p>If you have been following <a href="https://streamnative.io/blog/">our blog</a>, you have seen the recent formal <a href="https://streamnative.io/blog/release/2022-03-09-cloudera-and-streamnative-announce-the-integration-of-apache-nifi-and-apache-pulsar/">announcement</a> of the Apache Pulsar processor for Apache NiFi release. We now have an official way to consume and produce messages from any Pulsar topic with the low code streaming tool that is Apache NiFi.</p>
+
+<p>近期，<a href="https://mp.weixin.qq.com/s?__biz=MzUxOTc4NDc2MQ==&amp;mid=2247488900&amp;idx=1&amp;sn=615d76f7ba33287c999ff8633ea9c419&amp;chksm=f9f505d2ce828cc494ffea9c6a2a9db6cb716301870883fa339aea9f6f021b1be42d6ad47395#rd">StreamNative 与 Cloudera 宣布推出 Apache Pulsar + Apache NiFi 联合解决方案</a>。现在我们官方支持利用 Apache NiFi 这种低代码流式工具从任何 Pulsar 主题中消费和生产消息。</p>
+
+<p>This integration allows us to build a real-time data processing and analytics platform for all types of rich data pipelines. This is the keystone connector for the democratization of streaming application development.</p>
+
+<p>利用 NiFi-Pulsar 集成，我们可以为任何数据管道构建实时数据处理和分析平台。这是流式应用程序开发平民化的关键连接器。</p>
+
+<p><img src="https://lh3.googleusercontent.com/8H8Dwfonm-kRyQIC5Ymr1tBJIevxrsiXcLwPuMrZAEJq9vHzi86_6xcN6AgO3_fPgIxoZDpRb7sWpObF8-vUjRNFdnBWHpBdQbUAbqJtP2IXhozx0MsJlimtCOPpZWKe3ERMCFua-BMuVljrY2RDeg" alt="img" />
+Read the articles below to learn more:</p>
+
+<p>若要了解更多信息，可以阅读如下文章：</p>
+
+<ul>
+<li><p>[Blog] <a href="https://streamnative.io/blog/release/2022-03-09-cloudera-and-streamnative-announce-the-integration-of-apache-nifi-and-apache-pulsar/">Cloudera and StreamNative Announce the Integration of Apache NiFi and Apache Pulsar</a>
+[博客] <a href="https://mp.weixin.qq.com/s?__biz=MzUxOTc4NDc2MQ==&amp;mid=2247488900&amp;idx=1&amp;sn=615d76f7ba33287c999ff8633ea9c419&amp;chksm=f9f505d2ce828cc494ffea9c6a2a9db6cb716301870883fa339aea9f6f021b1be42d6ad47395#rd">StreamNative 与 Cloudera 宣布推出 Apache Pulsar + Apache NiFi 联合解决方案</a></p></li>
+<li><p>[Blog] <a href="https://www.datainmotion.dev/2021/11/producing-and-consuming-pulsar-messages.html">Producing and Consuming Pulsar messages with Apache NiFi</a>
+[博客] <a href="https://www.datainmotion.dev/2021/11/producing-and-consuming-pulsar-messages.html">Producing and Consuming Pulsar messages with Apache NiFi</a></p></li>
+<li><p>[Datanami Article] <a href="https://www.datanami.com/2022/03/09/code-for-pulsar-nifi-tie-up-now-open-source/">Code for Pulsar, NiFi Tie-Up Now Open Source</a>
+[Datanami 文章] <a href="https://www.datanami.com/2022/03/09/code-for-pulsar-nifi-tie-up-now-open-source/">Code for Pulsar, NiFi Tie-Up Now Open Source</a></p></li>
+<li><p>[Resources] <a href="https://streamnative.io/apache-nifi-connector/">Pulsar and NiFi Integration Resources</a>
+[资源] <a href="https://streamnative.io/apache-nifi-connector/">Pulsar and NiFi Integration Resources</a></p></li>
+</ul>
+
+
+<h2>An Example FLiP Stack Application - FLiP 技术栈示例</h2>
+
+<p>Now that you have seen the combinations, use cases, and the basic integration, we can walk through an example FLiP Stack application. In this example, we will be ingesting sensor data from a device running a Python Pulsar application.</p>
+
+<p>上文介绍了 FLiP 的技术组合、使用场景以及基本集成，现在我们来看一个 FLiP 技术栈应用的示例。在此示例中，我们从一个运行 Python Pulsar 程序的设备中采集传感数据。</p>
+
+<h3><img src="https://lh5.googleusercontent.com/oGsyno1rf1JN7A3ympFITwpk-qfa2Yl1qkYsJewaR0qNO-SDMiBUIOayEDskUjDJICTK83ON7GuXv8Qfr0XMijdGGIecaF6jx6udJEBFPF_dUFPpJ9bvOyJ3qjF5V26uWmXA-TcM6mo3baqgUgkWKw" alt="img" />Demo Edge Hardware Specifications - 演示使用的边缘端硬件规格</h3>
+
+<ul>
+<li><p>2GB 内存的 Raspberry Pi 4</p></li>
+<li><p>Pimoroni BreakoutGarden Hat</p></li>
+<li><p>Sensiron SGP30 TVOC 及 eCO2 传感器</p>
+
+<ul>
+<li>TVOC 传感器用于 0-60,000 ppb（十亿分之几）</li>
+<li>CO2 传感器用于 400-60,000 ppm（百万分之几）</li>
+</ul>
+</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/y38evgusXR-cOyx_1buIz_4JVytUrWd1Kvt9n9BuN6f0upQLOs8gYR2hF_B73sX7H72ZZaR1tJPIvokB-Oc1UnaS0TkOWynDbEoZX-jvTYxqn4ZMRdTgJcpEEB811gzLwDPfEBOYTz5FO_NzfccHzQ" alt="img" /></p>
+
+<h3>Demo Edge Software Specification - 演示所用的边缘端软件规格</h3>
+
+<ul>
+<li>Apache Pulsar C++ 及 Python 客户端</li>
+<li>Pimoroni <a href="https://github.com/pimoroni/sgp30-python">SGP30</a> Python 库</li>
+</ul>
+
+
+<h3>Streaming Server - 流式服务器</h3>
+
+<ul>
+<li>HP ProLiant DL360 G7 1U RackMount 64 位服务器</li>
+<li>Ubuntu 18.04.6 LTS</li>
+<li>72GB PC3 RAM</li>
+<li>X5677 Xeon 3.46GHz 24 核 CPU</li>
+<li>4×900GB 10K SAS SFF HDD</li>
+<li>Apache Pulsar 2.9.1</li>
+<li>Apache Spark 3.2.0</li>
+<li>Scala 2.12.15 (OpenJDK 64-Bit Server VM, Java 1.8.0_302)</li>
+<li>Apache Flink 1.13.2</li>
+<li>MongoDB</li>
+</ul>
+
+
+<h3>NiFi/AI Server - NiFi/AI 服务器</h3>
+
+<ul>
+<li>NVIDIA® Jetson Xavier™ NX Developer Kit</li>
+<li>AI Perf: 21 TOPS</li>
+<li>GPU: 48 Tensor Core 的 384 核 NVIDIA Volta™ GPU</li>
+<li>CPU：6 核 NVIDIA Carmel ARM®v8.2 64 位 CPU 6 MB L2 + 4 MB L3</li>
+<li>内存：8 GB 128 位 LPDDR4x 59.7GB/s</li>
+<li>Ubuntu 18.04.5 LTS (GNU/Linux 4.9.201-tegra aarch64)</li>
+<li>Apache NiFi 1.15.3</li>
+<li>Apache NiFi Registry 1.15.3</li>
+<li>Apache NiFi Toolkit 1.15.3</li>
+<li>Pulsar 处理器</li>
+<li>OpenJDK 8 and 11</li>
+<li>Jetson Inference GoogleNet</li>
+<li>Python 3</li>
+</ul>
+
+
+<h3>Building the Air Quality Sensors Application with FLiPN-Py - 使用 FLiPN-Py 构建空气质量传感器程序</h3>
+
+<p><img src="https://lh4.googleusercontent.com/QVjIhaUab8L5-jHq2YHccphBhqnohVGm8LIZb6zjcc0SOTMnCPAaNbHTGk52H0YUHthmVrlX6NaqVqZIK8kUqXDPZT9wUgGDPFmKFXyXpbiubIeT5svO5tHQqApDA54n9Yj7hXNrrpZzVhOos-Ptvw" alt="img" />In this application, we want to monitor the air quality in an office continuously and then hand off a large amount of data to a data scientist to make predictions. Once that model is done, we will add that model to a Pulsar function for live anomaly detection to alert office occupants of the situation. We will also want dashboards to monitor trends, aggregates and advanced analytics.</p>
+
+<p>在这个示例程序中，我们希望持续监测办公室的空气质量，然后将大量数据交给数据科学家进行预测。一旦该模型完成，我们会将其添加到 Puslar Function 中进行实时异常检测，发送告警给办公室人员。我们还需要仪表盘来监控趋势、进行聚合和高级分析。</p>
+
+<p>Once the initial prototype proves itself, we will deploy it to all the remote offices for monitoring internal air quality. For future enhancements, we will ingest outside air quality data as well local weather conditions.</p>
+
+<p>一旦初始的原型证明可用，我们将部署到所有远程办公室以监测内部空气质量。未来我们将持续改进，采集外部空气质量数据以及当地天气状况。</p>
+
+<p>On our edge devices, we will perform the following three steps to collect the sensor readings, format the data into the desired schema, and forward the records to Pulsar.</p>
+
+<p>我们的客户端设备执行如下三个步骤来收集传感器读数，将数据格式化为期望的 schema，并将记录发送到 Pulsar。</p>
+
+<h4>Edge Step 1: Collect Sensor Readings - 边缘端第一步：收集传感器读数</h4>
+
+<p>result = sgp30.get_air_quality()</p>
+
+<h4>Edge Step 2: Format Data According to Schema - 边缘端第二步：根据 Schema 格式化数据</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>class Garden(Record):
+</span><span class='line'>    cpu = Float()
+</span><span class='line'>    diskusage = String()
+</span><span class='line'>    endtime = String()
+</span><span class='line'>    equivalentco2ppm = String()
+</span><span class='line'>    host = String()
+</span><span class='line'>    hostname = String()
+</span><span class='line'>    ipaddress = String()
+</span><span class='line'>    macaddress = String()
+</span><span class='line'>    memory = Float()
+</span><span class='line'>    rowid = String()
+</span><span class='line'>    runtime = Integer()
+</span><span class='line'>    starttime = String()
+</span><span class='line'>    systemtime = String()
+</span><span class='line'>    totalvocppb = String()
+</span><span class='line'>    ts = Integer()
+</span><span class='line'>    uuid = String()
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Edge Step 3: Produce Record to Pulsar Topic - 边缘端第三步：生产记录到 Pulsar 主题</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>producer.send(gardenRec,partition_key=str(uniqueid))</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now that we have built the edge-to-pulsar ingestion pipeline, let’s do something interesting with the sensor data that we have published to Pulsar.</p>
+
+<p>现在我们构建了从边缘设备到 Pulsar 的数据采集管道，接下来我们对发布到 Pulsar 的传感器数据做一些有意思的处理。</p>
+
+<h4>Cloud Step 1: Spark ETL to Parquet Files - 云端第一步：通过 Spark ETL 转成 Parquet 文件</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>val dfPulsar = 
+</span><span class='line'>spark.readStream.format("pulsar")
+</span><span class='line'>.option("service.url", "pulsar://pulsar1:6650")
+</span><span class='line'>.option("admin.url", "http://pulsar1:8080")
+</span><span class='line'>.option("topic","persistent://public/default/garden3")
+</span><span class='line'>.load()
+</span><span class='line'>
+</span><span class='line'>val pQuery = dfPulsar.selectExpr("*")
+</span><span class='line'>.writeStream
+</span><span class='line'>.format("parquet")
+</span><span class='line'>.option("truncate", false) 
+</span><span class='line'>.option("checkpointLocation", "/tmp/checkpoint")
+</span><span class='line'>.option("path", "/opt/demo/gasthermal").start()
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Cloud Step 2: Continuous SQL Analytics with Flink SQL - 云端第二步：使用 Flink SQL 进行持续 SQL 分析</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>select equivalentco2ppm, totalvocppb, cpu, starttime, systemtime, ts, cpu, diskusage, endtime, memory, uuid from garden3;
+</span><span class='line'>
+</span><span class='line'>select max(equivalentco2ppm) as MaxCO2, max(totalvocppb) as MaxVocPPB from garden3;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Cloud Step 3: SQL Analytics with Pulsar SQL - 云端第三步：使用 Pulsar SQL 进行 SQL 分析</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>select * from pulsar."public/default"."garden3"</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Cloud Step 4: NiFi Filter, Route, Transform and Store to MongoDB - 云端第四步：NiFi 过滤、路由、转换并存储到 MongoDB</h4>
+
+<p><img src="https://lh5.googleusercontent.com/dMIdWijv2ULWY0VQTKdDlFBaapQmSjDxOJaPzAIg-YzwjzCkk7N3xOIioCUWqQy5XZT_yb1AgpCVSakD5nQ-LUU3kAefmSuVeh92VTtH-lMa5jZv4sVRUH77NX_-06Kh1ad3IVOqymU0cdpfqAf0ag" alt="img" /><img src="https://lh6.googleusercontent.com/_jsQxHMUvW1ph4su-zS9OBLRSIMLPLn9pNr4PY2fqebYQxHEXQB_fQ3LbNi5ofqVpuxXiIswwkZzuYjfto0AyUY2KOQMCLjUIj88mdl-DcI9SXhX3e-a83rohIhgdjGBwG2YzIS_vFnJvZRf0eKp5w" alt="img" /></p>
+
+<p>We could have used a Pulsar Function and Pulsar IO Sink for MongoDB instead, but you may want to do other data enrichment with Apache NiFi without coding.</p>
+
+<p>我们本可以为 MongoDB 使用 Pulsar Function 和 Pulsar IO Sink，但使用 Apache NiFi 无需编码就能完成数据丰富。</p>
+
+<h4>Cloud Step 5: Validate MongoDB Data - 云端第五步：验证 MongoDB 数据</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>show collections
+</span><span class='line'>db.garden3.find().pretty()</span></code></pre></td></tr></table></div></figure>
+
+
+<p><img src="https://lh6.googleusercontent.com/Ih1XG0GKFugYzAJQvHMZ-0sH528BxWN_zxbt3x9XL-0pxPOKUtcDfTvfpUDdeCcGeMg3oBck7ko6WyvC3zd1AzYArENVM1IoddPuBfEel56gFU7Kaiib4Ctxep88ggqo1ktKW8oYgw3-Ny4uU7izZA" alt="img" /><img src="https://lh5.googleusercontent.com/6ujqRSIanJXokhpOmt6NlLqk2tJiWrQrBtIapYiIHeJ8HpVtfcN80e1blxd5L7EgBxSlT5SRtpgAr8UyGEpvgd1YHYeKowpl9Sjt55HC1tvG7FMVIkM9yuc51itXZh5a7F0Y8BN-jCxLMxJbXKpflw" alt="img" /></p>
+
+<h4>Example Row - 示例数据</h4>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>{'cpu': 0.3, 'diskusage': '101615.7 MB', 'endtime': '1647276937.7144697', 'equivalentco2ppm': '  411', 'host': 'garden3', 'hostname': 'garden3', 'ipaddress': '192.168.1.199', 'macaddress': 'dc:a6:32:32:98:20', 'memory': 8.9, 'rowid': '20220314165537_a9941b0d-6ce2-48f9-8a1b-4ac7cfbd889e', 'runtime': 0, 'starttime': '03/14/2022 12:55:37', 'systemtime': '03/14/2022 12:55:38', 'totalvocppb': ' 18', 'ts': 1647276938, 'uuid': 'garden3_uuid_oqz_20220314165537'}</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Example HTML Data Display Utilizing Web Sockets - 使用 Web Socket 的 HTML 示例数据展示<img src="https://lh6.googleusercontent.com/6JDLc5wYzECJSABKDzcGOgfnwCefsgRslF12920BqNr5KkaONSt96HXYtuDCxGBeEU0fvfV7FTlVodhm9QEmnxqbII2aLNwfHRUXBdfx3FWHUk_E2i_XeQoAAX3wkBGQLzBKFydMPAEHf5c9p8iN2w" alt="img" /></h4>
+
+<h4>Watch the Demo观看演示视频</h4>
+
+<p>(<a href="https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/">https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/</a>)<img src="https://lh3.googleusercontent.com/yfn2HZlPFkGhjjRUAmjM5N0Uy7pDNUaxawJ3dRtAhIMP5tPvPG6_M4bjfqfIF0qpbKV7caFA2yLoBY6LoiJAlblgGQcVGvIOenCYlfU__5sEBHz6SbQ2X1k-nynWbOQOFun0frigxxhpklK71z1Z6g" alt="img" /></p>
+
+<h2>Conclusion - 结论</h2>
+
+<p>In this blog, we explained how to build real-time event driven applications utilizing the latest open source frameworks together as FLiP Stack applications. So now you know what we are talking about when we say “FLiPN Stack”. By using the latest and greatest open source Apache streaming and big data projects together, we can build applications faster, easier, and with known scalable results.</p>
+
+<p>本文介绍了如何利用最新的开源框架组成 FLiP 技术栈，来构建实时事件驱动应用程序。通过使用最新的优秀的开源 Apache 流处理和大数据项目，我们可以更快、更轻松、更可扩展地构建应用程序。</p>
+
+<p>Join us in building scalable applications today with Pulsar and its awesome friends. Start with data, route it through Pulsar, transform it to meet your analytic needs, and stream it to every corner of your enterprise. Dashboards, live reports, applications, and machine learning analytics driven by fast data at scale built by citizen data engineers in hours, not months. Let’s get these FLiPN applications built now.</p>
+
+<p>欢迎大家使用 Pulsar 及其他上下游生态中出色的工具来构建可扩展的应用程序。从数据开始，通过 Pulsar 进行路由，对其进行转换以满足分析需求，并将其流式传输到企业的每个角落。无需数月的时间，数据工程师即可在数小时内构建出大规模快速数据驱动的仪表板、实时报告、应用程序以及机器学习分析数据。现在就开始构建这些 FLiPN 应用程序吧。</p>
+
+<h2>资源</h2>
+
+<ul>
+<li><p>[代码] <a href="https://github.com/tspannhw/FLiP-Py-Pi-GasThermal/">Source code for the air quality sensors application</a></p></li>
+<li><p>[资源] <a href="https://www.flipstack.dev/">FLiP Stack for Apache Pulsar Developer</a></p></li>
+<li><p>[演讲] <a href="https://www.youtube.com/watch?v=pfhoF3yTdHU">Using the FLiPN Stack for Edge AI (Flink, NiFi, Pulsar)</a></p></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Alpha Wang</span></span>
+
+      
+
+
+
+
+<time class='entry-date' datetime='2022-06-07T23:17:09+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2022</span></span> <span class='time'>11:17 pm</span></time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/distributed-system/'>distributed system</a>, <a class='category' href='/blog/categories/messaging/'>messaging</a>, <a class='category' href='/blog/categories/translation/'>translation</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  
+  
+  
+  	
+<!--Baidu Share-->
+<div class="bdsharebuttonbox">
+<a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+<a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+<a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+<a href="#" class="bds_youdao" data-cmd="youdao" title="分享到有道云笔记"></a>
+<a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+<a href="#" class="bds_more" data-cmd="more"></a>
+</div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"",
+"bdStyle":"2", //1
+"bdSize":"24"},
+"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+<!--Google Adsense-->
+<p class="meta" style="text-align:center">
+	<!-- 728*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:728px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="2039334876"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+	
+	<!-- 789*90 -->
+	<!--
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+	<ins class="adsbygoogle"
+	     style="display:inline-block;width:789px;height:90px"
+	     data-ad-client="ca-pub-6393503301700908"
+	     data-ad-slot="7806666870"></ins>
+	<script>
+	(adsbygoogle = window.adsbygoogle || []).push({});
+	</script>
+	-->
+</p>
+
+<!-- UY BEGIN -->
+<!--<div id="uyan_frame"></div>-->
+<!--<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=1965224"></script>-->
+<!-- UY END -->
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/blog/bookkeepr-external-consensus/" title="Previous Post: Apache BookKeeper 外部共识和动态成员">&laquo; Apache BookKeeper 外部共识和动态成员</a>
+      
+      
+        <a class="basic-alignment right" href="/blog/pulsar-load-balancing/" title="Next Post: 详解 Pulsar Broker 负载均衡">详解 Pulsar Broker 负载均衡 &raquo;</a>
+      
+    </p>
+
+    <!-- Gitalk 评论 start  -->
+
+    <!-- Link Gitalk 的支持文件  -->
+    <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+    <script src="https://unpkg.com/gitalk@latest/dist/gitalk.min.js"></script>
+    <div id="gitalk-container"></div>     <script type="text/javascript">
+      var gitalk = new Gitalk({
+
+          // gitalk的主要参数
+          clientID: 'd4cba670eb5bd4b63a2e',
+          clientSecret: '5a3498bf127676c9aaacf738a8b26d976154fad3',
+          repo: 'alphawang.github.io',
+          owner: 'AlphaWang',
+          admin: ['AlphaWang'],
+          id: location.pathname,
+
+      });
+      gitalk.render('gitalk-container');
+    </script>
+    <!-- Gitalk end -->
+  </footer>
+</article>
+
+  
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+ <h1>Categories</h1>
+ <ul id="categories">
+	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (8)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (6)</a></li>
+<li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
+<li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
+<li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (7)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
+
+ </ul>
+</section>
+<section>
+<h1>Tags</h1>
+<ul class="tag-cloud">
+	<a style="font-size: 90%" href="/blog/tags/css/">CSS</a>
+<a style="font-size: 119%" href="/blog/tags/collection/">Collection</a>
+<a style="font-size: 171%" href="/blog/tags/design-pattern/">Design Pattern</a>
+<a style="font-size: 119%" href="/blog/tags/guava/">Guava</a>
+<a style="font-size: 171%" href="/blog/tags/jdk/">JDK</a>
+<a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
+<a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
+<a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 119%" href="/blog/tags/kafka/">Kafka</a>
+<a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
+<a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 164%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
+<a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
+<a style="font-size: 119%" href="/blog/tags/site/">Site</a>
+<a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
+<a style="font-size: 164%" href="/blog/tags/source-code/">Source Code</a>
+<a style="font-size: 90%" href="/blog/tags/spring-mvc/">Spring MVC</a>
+<a style="font-size: 119%" href="/blog/tags/spring-solr/">Spring Solr</a>
+<a style="font-size: 136%" href="/blog/tags/string/">String</a>
+<a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
+<a style="font-size: 119%" href="/blog/tags/web/">Web</a>
+<a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+<a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
+<a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
+<a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
+<a style="font-size: 176%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 164%" href="/blog/tags/messaging/">messaging</a>
+<a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
+<a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
+<a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
+<a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 164%" href="/blog/tags/translation/">translation</a>
+<a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
+<a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
+
+</ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/pulsar-load-balancing/">详解 Pulsar Broker 负载均衡</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/flip/">What the FLiP Is the FLiP Stack?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/bookkeepr-external-consensus/">Apache BookKeeper 外部共识和动态成员</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/pulsar-kafka-benchmark/">2022 Pulsar Performance Report: Better Performance and Data Resiliency With Apache Pulsar</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Links</h1>
+  <ul id="recent_posts">
+    <li class="post"><a href="https://alpha.blog.csdn.net/">Alpha's CSDN Blog</a></li>
+    <li class="post"><a href="https://github.com/AlphaWang/">Alpha's Github</a></li>
+  </ul>
+</section><section>
+  <h1>Visitors Map</h1>
+  <div class="earth">
+    <script type="text/javascript" src="//ri.revolvermaps.com/0/0/8.js?i=awaok66hddi&amp;m=0&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=49" async="async"></script>
+  </div>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2022 - Alpha Wang -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

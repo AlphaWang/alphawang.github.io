@@ -1,0 +1,1151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Java | Alpha's Programming Notes]]></title>
+  <link href="http://alphawang.github.io/blog/categories/java/atom.xml" rel="self"/>
+  <link href="http://alphawang.github.io/"/>
+  <updated>2022-08-18T23:35:22+08:00</updated>
+  <id>http://alphawang.github.io/</id>
+  <author>
+    <name><![CDATA[Alpha Wang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[JMM: Java Runtime Data Area]]></title>
+    <link href="http://alphawang.github.io/blog/jmm-runtime-data-area/"/>
+    <updated>2018-06-03T14:00:40+08:00</updated>
+    <id>http://alphawang.github.io/blog/jmm-runtime-data-area</id>
+    <content type="html"><![CDATA[<p>下图展示了JVM的主要结构：
+<img src="/images/post/2018/jmm/runtime-data-area.png" alt="user icon" /></p>
+
+<p>可以看出，JVM主要由以下几部分组成：
+- 类加载器子系统
+- 运行时数据区（内存空间）
+- 执行引擎
+- 本地方法接口</p>
+
+<p>运行时数据区又分为：
+1. 程序计数器
+2. Java栈
+3. 本地方法栈
+4. 方法区
+5. 堆</p>
+
+<!--more-->
+
+
+<p>其中 方法区 和 堆 是所有Java线程共享的，而Java栈、本地方法栈、PC寄存器则由每个线程私有。</p>
+
+<h2>1. 程序计数器（Program Counter Register）</h2>
+
+<p>程序计数器可以看做是当前线程所执行的字节码的行号指示器。
+字节码解释器工作时，通过改变这个计数器的值来选取下一条需要执行的字节码指令。</p>
+
+<p>线程私有：
+- 为了线程切换后能够恢复到正确的执行位置，每条线程都需要有一个独立的程序计数器。</p>
+
+<p>OOM：
+- 不会出现OOM。</p>
+
+<h2>2. Java栈（Java Stack）</h2>
+
+<p>Java栈描述的是Java方法执行的内存模型。
+Java栈由栈帧组成，一个帧对应一个方法调用。调用方法时压入栈帧，方法返回时弹出栈帧并抛弃。
+Java栈的主要任务是存储方法参数、局部变量、中间运算结果，并且提供部分其它模块工作需要的数据。</p>
+
+<p>线程私有：
+- 前面已经提到Java栈是线程私有的，这就保证了线程安全性，使得程序员无需考虑栈同步访问的问题，只有线程本身可以访问它自己的局部变量区。</p>
+
+<p>OOM:
+- 如果线程请求的栈深度大于JVM所允许的深度，则抛出StackOverflowError。
+- 如果VM可以动态扩展，但是扩展是无法申请到足够的内存，则抛出OutOfMemoryError。
+- 可以通过减少-Xss，同时递归调用某个方法，模拟StackOverflowError</p>
+
+<p>它分为三部分：局部变量区、操作数栈、帧数据区。</p>
+
+<h4>1、局部变量区</h4>
+
+<p>局部变量区是以字长为单位的数组，在这里，byte、short、char类型会被转换成int类型存储，除了long和 double类型占两个字长以外，其余类型都只占用一个字长。特别地，boolean类型在编译时会被转换成int或byte类型，boolean数组会被当做byte类型数组来处理。局部变量区也会包含对象的引用，包括类引用、接口引用以及数组引用。
+局部变量区包含了 方法参数 和 局部变量，此外，实例方法隐含第一个局部变量this，它指向调用该方法的对象引用。对于对象，局部变量区中永远只有指向堆的引用。</p>
+
+<h4>2、操作数栈</h4>
+
+<p>操作数栈也是以字长为单位的数组，但是正如其名，它只能进行入栈出栈的基本操作。在进行计算时，操作数被弹出栈，计算完毕后再入栈。</p>
+
+<h4>3、帧数据区</h4>
+
+<p>帧数据区的任务主要有：
+记录指向类的常量池的指针，以便于解析。
+帮助方法的正常返回，包括恢复调用该方法的栈帧，设置PC寄存器指向调用方法对应的下一条指令，把返回值压入调用栈帧的操作数栈中。
+记录异常表，发生异常时将控制权交由对应异常的catch子句，如果没有找到对应的catch子句，会恢复调用方法的栈帧并重新抛出异常。</p>
+
+<p>局部变量区和操作数栈的大小依照具体方法在编译时就已经确定。调用方法时会从方法区中找到对应类的类型信息，从中得到具体方法的局部变量区和操作数栈的大小，依此分配栈帧内存，压入Java栈。</p>
+
+<h2>3. 本地方法栈（Native Method Stack）</h2>
+
+<p>本地方法栈类似于Java栈，主要存储了本地方法调用的状态。
+在Sun JDK中，本地方法栈和Java栈是同一个。</p>
+
+<p>线程私有：
+- 同上</p>
+
+<p>OOM：
+- 同上</p>
+
+<h2>4. 方法区（Method Area）</h2>
+
+<p>存储 <strong>类型信息</strong> 和 <strong>类的静态变量</strong>。
+在Sun JDK中，方法区对应了永久代（Permanent Generation），默认最小值为16MB，最大值为64MB。</p>
+
+<p>方法区中对于每个类存储了以下数据：
+- 类及其父类的全限定名（java.lang.Object没有父类）
+- 类的类型（Class or Interface）
+- 访问修饰符（public, abstract, final）
+- 实现的接口的全限定名的列表
+- 常量池
+- 字段信息
+- 方法信息
+- 静态变量
+- ClassLoader引用
+- Class引用</p>
+
+<p>可见类的所有信息都存储在方法区中。</p>
+
+<p>线程共享：
+- 由于方法区是所有线程共享的，所以必须保证线程安全，举例来说，如果两个类同时要加载一个尚未被加载的类，那么一个类会请求它的ClassLoader去加载需要的类，另一个类只能等待而不会重复加载。</p>
+
+<p>OOM：
+- 当方法区无法满足内存分配需求时，将抛出OutOfMemoryError。
+——OSGi这种频繁自定义ClassLoader的场景，需要虚拟机剧本类卸载功能，以保证永久代不会溢出。
+- 通过限制永久代大小-XX:PermSize, -XX:MaxPermSize；同时大量添加常量池；或借助CGLib生成大量动态类，可以模拟OutOfMemoryError。
+——注：运行时添加常量池可用list.add(String.valueOf(i++).intern()) //Jdk7以下</p>
+
+<h2>5. 堆（Heap）</h2>
+
+<p>堆用于存储 <strong>对象实例</strong> 以及 <strong>数组</strong>。
+堆中有指向类数据的指针，该指针指向了方法区中对应的类型信息。堆中还可能存放了指向方法表的指针。</p>
+
+<p>线程共享：
+- 堆是所有线程共享的，所以在进行实例化对象等操作时，需要解决同步问题。
+- 此外，堆中的实例数据中还包含了对象锁，并且针对不同的垃圾收集策略，可能存放了引用计数或清扫标记等数据。</p>
+
+<p>OOM：
+- Java堆是垃圾收集器管理的主要区域。
+- 如果堆中没有内存完成实例分配，并且堆也无法再扩展时，则抛出OutOfMemoryError。
+- 可以通过减少-Xms, -Xmx；同时创建无数对象来模拟OutOfMemoryError。
+- 同时-XX:+HeapDumpOnOutOfMemoryError，可以dump出当前的内存堆转储快照，以便分析。</p>
+
+<p>在堆的管理上，Sun JDK从1.2版本开始引入了分代管理的方式。主要分为新生代、旧生代。分代方式大大改善了垃圾收集的效率。</p>
+
+<h4>1、新生代（New Generation）</h4>
+
+<p>大多数情况下新对象都被分配在新生代中，新生代由Eden Space和两块相同大小的Survivor Space组成，后两者主要用于Minor GC时的对象复制（Minor GC的过程在此不详细讨论）。
+JVM在Eden Space中会开辟一小块独立的TLAB（Thread Local Allocation Buffer）区域用于更高效的内存分配，我们知道在堆上分配内存需要锁定整个堆，而在TLAB上则不需要，JVM在分配对象时会尽量在TLAB上分配，以提高效率。</p>
+
+<h4>2、旧生代（Old Generation/Tenuring Generation）</h4>
+
+<p>在新生代中存活时间较久的对象将会被转入旧生代，旧生代进行垃圾收集的频率没有新生代高。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Google Guava: 2. Collections]]></title>
+    <link href="http://alphawang.github.io/blog/google-guava-collections/"/>
+    <updated>2015-03-24T14:00:40+08:00</updated>
+    <id>http://alphawang.github.io/blog/google-guava-collections</id>
+    <content type="html"><![CDATA[<blockquote><p>Please ref to the demo code: <code>git clone https://github.com/AlphaWang/guava-demo.git</code></p></blockquote>
+
+<p>The Guava library has its history rooted in working with collections, starting out as <code>google-collections</code>. The Google Collections Library has long since been abandoned, and all the functionality from the original library has been merged into Guava.</p>
+
+<!--more-->
+
+
+<h2>Create</h2>
+
+<blockquote><p>com.alphawang.guava.ch2.collection.Test1_Create</p></blockquote>
+
+<h3>Create List/Set</h3>
+
+<pre><code>        // Before
+        List&lt;String&gt; list1 = new ArrayList&lt;String&gt;(2);
+        list1.add("A");
+        list1.add("B");
+
+        // After
+        List&lt;String&gt; list2 = Lists.newArrayList(); //Lists.newArrayListWithCapacity(2)
+        list2.add("A");
+        list2.add("B");
+</code></pre>
+
+<ul>
+<li>Lists.newArrayList()</li>
+<li>Lists.newArrayList(E&hellip;)</li>
+<li>Lists.newArrayList(java.lang.Iterable&lt;? extends E>)</li>
+<li>Lists.newArrayListWithCapacity</li>
+<li>Lists.newArrayListWithExpectedSize()</li>
+<li>Lists.newLinkedList()</li>
+<li>Sets.newHashSet()</li>
+<li>Sets.newTreeSet()</li>
+</ul>
+
+
+<h3>Create Map</h3>
+
+<pre><code>        // Before
+        Map&lt;String, String&gt; map1 = new HashMap&lt;String, String&gt;();
+
+        // After
+        Map&lt;String, String&gt; map2 = Maps.newHashMapWithExpectedSize(2);  // Maps.newHashMap();
+</code></pre>
+
+<ul>
+<li>Maps.newHashMap()</li>
+<li>Maps.newHashMapWithExpectedSize()</li>
+<li>Maps.newLinkedHashMap()</li>
+<li>Maps.newTreeMap()</li>
+</ul>
+
+
+<h3>Immutable Collections</h3>
+
+<pre><code>        // Before
+        List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+        list.add("A");
+        list.add("B");
+        List&lt;String&gt; list1 = Collections.unmodifiableList(list);
+
+        // After
+        List&lt;String&gt; list2 = ImmutableList.of("A", "B");
+</code></pre>
+
+<pre><code>        // Before
+        Map&lt;String, String&gt; map = new HashMap&lt;String, String&gt;();
+        map.put("A", "1");
+        map.put("B", "2");
+        Map&lt;String, String&gt; map1 = Collections.unmodifiableMap(map);
+
+        // After
+        Map&lt;String, String&gt; map2 = ImmutableMap.of("A", "1", "B", "2");
+</code></pre>
+
+<ul>
+<li>ImmutableList.of()</li>
+<li>ImmutableList.copyOf(java.lang.Iterable&lt;? extends E>)</li>
+<li>ImmutableMap.of()</li>
+<li>ImmutableMap.copyOf(Map&lt;? extends K, ? extends V> map)</li>
+</ul>
+
+
+<p>Immutable objects have many advantages, including:</p>
+
+<ol>
+<li>Safe for use by untrusted libraries.</li>
+<li>Thread-safe: can be used by many threads with no risk of race conditions.</li>
+<li>Doesn&rsquo;t need to support mutation, and can make time and space savings with that assumption. All immutable collection implementations are more memory-efficient than their mutable siblings.</li>
+<li>Can be used as a constant, with the expectation that it will remain fixed.</li>
+</ol>
+
+
+<h2>Transform and Filter</h2>
+
+<blockquote><p>com.alphawang.guava.ch2.collection.Test2_Transform
+com.alphawang.guava.ch2.collection.Test3_Filter</p></blockquote>
+
+<p>Transform List:
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+<span class='line-number'>145</span>
+<span class='line-number'>146</span>
+<span class='line-number'>147</span>
+<span class='line-number'>148</span>
+<span class='line-number'>149</span>
+<span class='line-number'>150</span>
+<span class='line-number'>151</span>
+<span class='line-number'>152</span>
+<span class='line-number'>153</span>
+<span class='line-number'>154</span>
+<span class='line-number'>155</span>
+<span class='line-number'>156</span>
+<span class='line-number'>157</span>
+<span class='line-number'>158</span>
+<span class='line-number'>159</span>
+<span class='line-number'>160</span>
+<span class='line-number'>161</span>
+<span class='line-number'>162</span>
+<span class='line-number'>163</span>
+<span class='line-number'>164</span>
+<span class='line-number'>165</span>
+<span class='line-number'>166</span>
+<span class='line-number'>167</span>
+<span class='line-number'>168</span>
+<span class='line-number'>169</span>
+<span class='line-number'>170</span>
+<span class='line-number'>171</span>
+<span class='line-number'>172</span>
+<span class='line-number'>173</span>
+<span class='line-number'>174</span>
+<span class='line-number'>175</span>
+<span class='line-number'>176</span>
+<span class='line-number'>177</span>
+<span class='line-number'>178</span>
+<span class='line-number'>179</span>
+<span class='line-number'>180</span>
+<span class='line-number'>181</span>
+<span class='line-number'>182</span>
+<span class='line-number'>183</span>
+<span class='line-number'>184</span>
+<span class='line-number'>185</span>
+<span class='line-number'>186</span>
+<span class='line-number'>187</span>
+<span class='line-number'>188</span>
+<span class='line-number'>189</span>
+<span class='line-number'>190</span>
+<span class='line-number'>191</span>
+<span class='line-number'>192</span>
+<span class='line-number'>193</span>
+<span class='line-number'>194</span>
+<span class='line-number'>195</span>
+<span class='line-number'>196</span>
+<span class='line-number'>197</span>
+<span class='line-number'>198</span>
+<span class='line-number'>199</span>
+<span class='line-number'>200</span>
+<span class='line-number'>201</span>
+<span class='line-number'>202</span>
+<span class='line-number'>203</span>
+<span class='line-number'>204</span>
+<span class='line-number'>205</span>
+<span class='line-number'>206</span>
+<span class='line-number'>207</span>
+<span class='line-number'>208</span>
+<span class='line-number'>209</span>
+<span class='line-number'>210</span>
+<span class='line-number'>211</span>
+<span class='line-number'>212</span>
+<span class='line-number'>213</span>
+<span class='line-number'>214</span>
+<span class='line-number'>215</span>
+<span class='line-number'>216</span>
+<span class='line-number'>217</span>
+<span class='line-number'>218</span>
+<span class='line-number'>219</span>
+<span class='line-number'>220</span>
+<span class='line-number'>221</span>
+<span class='line-number'>222</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>/&lt;em&gt;*
+</span><span class='line'> * Lists.transform
+</span><span class='line'> &lt;/em&gt;/
+</span><span class='line'>@Test
+</span><span class='line'>public void transformList() {
+</span><span class='line'>    // before:
+</span><span class='line'>    List&lt;String&gt; cityNamesBefore = new ArrayList&lt;&gt;();
+</span><span class='line'>    for (City city : cities) {
+</span><span class='line'>        System.out.println(&ldquo;&ndash; normal transform: &rdquo; + city);
+</span><span class='line'>        cityNamesBefore.add(city.getName());
+</span><span class='line'>    }&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;    // or Iterables.transform()
+</span><span class='line'>List&lt;String&gt; cityNames = Lists.transform(cities, new Function&lt;City, String&gt;() {
+</span><span class='line'>    @Override
+</span><span class='line'>    public String apply(City input) {
+</span><span class='line'>        System.out.println("-- guava transform: " + input);
+</span><span class='line'>        return input.getName();
+</span><span class='line'>    }
+</span><span class='line'>});
+</span><span class='line'>
+</span><span class='line'>Assert.assertTrue(cityNames.size() == 4);
+</span><span class='line'>System.out.println(cityNames);   // lazy
+</span><span class='line'>}
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;/**
+</span><span class='line'> * FluentIterable.transform
+</span><span class='line'> */
+</span><span class='line'>@Test
+</span><span class='line'>public void transformFluent() {
+</span><span class='line'>List&lt;Integer&gt; cityNameLength = FluentIterable.from(cities)
+</span><span class='line'>    .transform(cityNameFunction)
+</span><span class='line'>    .transform(stringLengthFunction)
+</span><span class='line'>    .toList();
+</span><span class='line'>
+</span><span class='line'>System.out.println(cityNameLength);
+</span><span class='line'>Assert.assertTrue(cityNameLength.size() == 4);
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'> * Functions.compose
+</span><span class='line'> */
+</span><span class='line'>@Test
+</span><span class='line'>public void functions() {
+</span><span class='line'>List&lt;Integer&gt; cityNameLength = Lists.transform(cities, Functions.compose(stringLengthFunction, cityNameFunction));
+</span><span class='line'>
+</span><span class='line'>System.out.println(cityNameLength);
+</span><span class='line'>Assert.assertTrue(cityNameLength.size() == 4);
+</span><span class='line'>}
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;
+</span><span class='line'>Transform Map:
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;@Test
+</span><span class='line'>public void transformMapEntry() {
+</span><span class='line'>Map&lt;City, String&gt; map = Maps.transformEntries(cityLocaleMap, new Maps.EntryTransformer&lt;City, VitaminLocale, String&gt;() {
+</span><span class='line'>    @Override
+</span><span class='line'>    public String transformEntry(City key, VitaminLocale value) {
+</span><span class='line'>        return key.getPopulation() + "|" + value.getKoreaTitle();
+</span><span class='line'>    }
+</span><span class='line'>});
+</span><span class='line'>
+</span><span class='line'>System.out.print(map);
+</span><span class='line'>Assert.assertTrue(map.size() == cityLocaleMap.size());
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@Test
+</span><span class='line'>public void transformMapValue() {
+</span><span class='line'>Map&lt;City, String&gt; map = Maps.transformValues(cityLocaleMap, new Function&lt;VitaminLocale, String&gt;() {
+</span><span class='line'>    @Override
+</span><span class='line'>    public String apply(VitaminLocale input) {
+</span><span class='line'>        return input.getEnglishTitle();
+</span><span class='line'>    }
+</span><span class='line'>});
+</span><span class='line'>
+</span><span class='line'>System.out.print(map);
+</span><span class='line'>Assert.assertTrue(map.size() == cityLocaleMap.size());
+</span><span class='line'>}
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;
+</span><span class='line'>Filter:
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;/**
+</span><span class='line'> *  Iterables.filter()
+</span><span class='line'> */
+</span><span class='line'>@Test
+</span><span class='line'>public void iterablesFilter() {
+</span><span class='line'>Iterable&lt;City&gt; largeCities = Iterables.filter(cities, new Predicate&lt;City&gt;() {
+</span><span class='line'>    @Override public boolean apply(City input) {
+</span><span class='line'>        return input.getPopulation() &gt; 1000L;
+</span><span class='line'>    }
+</span><span class='line'>});
+</span><span class='line'>
+</span><span class='line'>System.out.println(largeCities);
+</span><span class='line'>Assert.assertTrue(Iterables.size(largeCities) == 2);
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'> * FluentIterable.filter()
+</span><span class='line'> */
+</span><span class='line'>@Test
+</span><span class='line'>public void fluentIterableFilter() {
+</span><span class='line'>
+</span><span class='line'>List&lt;City&gt; result = FluentIterable.from(cities)
+</span><span class='line'>    .filter(populationPredicate)
+</span><span class='line'>    .filter(namePredicate)
+</span><span class='line'>    .toList();
+</span><span class='line'>
+</span><span class='line'>Assert.assertTrue(result != null);
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>/**
+</span><span class='line'> * Predicates.and()
+</span><span class='line'> */
+</span><span class='line'>@Test
+</span><span class='line'>public void predicates() {
+</span><span class='line'>Iterable&lt;City&gt; result = Iterables.filter(cities, Predicates.and(populationPredicate, namePredicate));
+</span><span class='line'>
+</span><span class='line'>Assert.assertTrue(!Iterables.isEmpty(result));
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>@Test
+</span><span class='line'>public void filterMap() {
+</span><span class='line'>Map&lt;String, City&gt; nameCityMap = Maps.uniqueIndex(cities, new Function&lt;City, String&gt;() {
+</span><span class='line'>    @Override
+</span><span class='line'>    public String apply(City input) {
+</span><span class='line'>        return input.getName();
+</span><span class='line'>    }
+</span><span class='line'>});
+</span><span class='line'>System.out.println(nameCityMap);
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>Map&lt;String, City&gt; filteredMap = Maps.filterEntries(nameCityMap, new Predicate&lt;Map.Entry&lt;String, City&gt;&gt;() {
+</span><span class='line'>    @Override
+</span><span class='line'>    public boolean apply(Map.Entry&lt;String, City&gt; input) {
+</span><span class='line'>        return input.getKey().startsWith("S")
+</span><span class='line'>            &amp;&amp; input.getValue().getPopulation() &gt; 1000L;
+</span><span class='line'>    }
+</span><span class='line'>});
+</span><span class='line'>
+</span><span class='line'>Assert.assertTrue(filteredMap.size() == 1);
+</span><span class='line'>}
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;
+</span><span class='line'>
+</span><span class='line'>## Convert between List and Map
+</span><span class='line'>
+</span><span class='line'>&gt; com.alphawang.guava.ch2.collection.Test4_Convert
+</span><span class='line'>
+</span><span class='line'>### List to Map
+</span><span class='line'>
+</span><span class='line'>1. `Maps.uniqueIndex` method uses Function to generate keys from the given values. 
+</span><span class='line'>2. `Maps.asMap` method takes a set of objects to be used as keys, and Function is applied to each key object to generate the value for entry into a map instance.
+</span><span class='line'>3. `Maps.toMap` returns ImmutableMap.
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;Function&lt;City, Long&gt; cityToIdFunction = new Function&lt;City, Long&gt;() {
+</span><span class='line'>    @Override
+</span><span class='line'>    public Long apply(City input) {
+</span><span class='line'>        return input.getId();
+</span><span class='line'>    }
+</span><span class='line'>};
+</span><span class='line'>
+</span><span class='line'>@Test
+</span><span class='line'>public void listToMapAsValue() {
+</span><span class='line'>Map&lt;Long, City&gt; idCityMap = Maps.uniqueIndex(cities, cityToIdFunction);
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>@Test
+</span><span class='line'>public void listToMapAsKey() {
+</span><span class='line'>Map&lt;City, Long&gt; cityIdMap = Maps.toMap(cities, cityToIdFunction);
+</span><span class='line'>// or
+</span><span class='line'>cityIdMap = FluentIterable.from(cities).toMap(cityToIdFunction);
+</span><span class='line'>}
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;
+</span><span class='line'>
+</span><span class='line'>### Map to List
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;@Test
+</span><span class='line'>public void mapToList() {
+</span><span class='line'>Map&lt;City, String&gt; cityCommentMap = ImmutableMap.of(
+</span><span class='line'>    new City(1L, "Shanghai", 1360L), "big",
+</span><span class='line'>    new City(2L, "Beijing", 1020L), "dirty"
+</span><span class='line'>);
+</span><span class='line'>
+</span><span class='line'>List&lt;String&gt; cityComments = FluentIterable.from(cityCommentMap.entrySet())
+</span><span class='line'>    .transform(new Function&lt;Map.Entry&lt;City,String&gt;, String&gt;() {
+</span><span class='line'>        @Override
+</span><span class='line'>        public String apply(Map.Entry&lt;City, String&gt; input) {
+</span><span class='line'>            return input.getKey().getName() + " IS " + input.getValue();
+</span><span class='line'>        }
+</span><span class='line'>    }).toList();
+</span><span class='line'>System.out.println("\nmapToList:\n" + cityComments);
+</span><span class='line'>}
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;
+</span><span class='line'>
+</span><span class='line'>## Utils
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;Iterables.getOnlyElement()
+</span><span class='line'>Iterables.concat()&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;Sets.unin()
+</span><span class='line'>Sets.difference()
+</span><span class='line'>Sets.intersection()
+</span><span class='line'>Lists.partition()</span></code></pre></td></tr></table></div></figure></p>
+
+<h2>Reference</h2>
+
+<ul>
+<li>Guava User Guide : <a href="https://code.google.com/p/guava-libraries/wiki/GuavaExplained">https://code.google.com/p/guava-libraries/wiki/GuavaExplained</a></li>
+<li>Getting Started with Google Guava : <a href="http://pan.baidu.com/s/1o6LZJf0">http://pan.baidu.com/s/1o6LZJf0</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Google Guava: 1. Dealing With Null]]></title>
+    <link href="http://alphawang.github.io/blog/google-guava-dealing-with-null/"/>
+    <updated>2015-03-23T14:00:40+08:00</updated>
+    <id>http://alphawang.github.io/blog/google-guava-dealing-with-null</id>
+    <content type="html"><![CDATA[<blockquote><p>Please ref to the demo code: <code>git clone https://github.com/AlphaWang/guava-demo.git</code></p></blockquote>
+
+<p>Many of Guava&rsquo;s utilities are designed to fail fast in the presence of null rather than allow nulls to be used.</p>
+
+<blockquote><p>com.alphawang.guava.ch1.optional.Test1_FailFast</p></blockquote>
+
+<pre><code>  // Lists.newArrayList()
+  public static &lt;E&gt; ArrayList&lt;E&gt; newArrayList(E... elements) {
+    checkNotNull(elements); 
+    int capacity = computeArrayListCapacity(elements.length);
+    ArrayList&lt;E&gt; list = new ArrayList&lt;E&gt;(capacity);
+    Collections.addAll(list, elements);
+    return list;
+  }
+</code></pre>
+
+<p>Additionally, Guava provides a number of facilities both to make using <code>null</code> easier, when you must, and to help you avoid using <code>null</code>.</p>
+
+<!--more-->
+
+
+<h2>Null object pattern</h2>
+
+<p>see <a href="http://www.tutorialspoint.com/design_pattern/null_object_pattern.htm">http://www.tutorialspoint.com/design_pattern/null_object_pattern.htm</a></p>
+
+<ul>
+<li>Consider if there is a natural &ldquo;null object&rdquo; that can be used.</li>
+</ul>
+
+
+<p>If it&rsquo;s an enum, add a constant to mean whatever you&rsquo;re expecting null to mean here.</p>
+
+<p>example 1, <code>java.math.RoundingMode</code> has an <code>UNNECESSARY</code> value to indicate &ldquo;do no rounding, and throw an exception if rounding would be necessary.&rdquo;</p>
+
+<p>example 2: use Unit.NONE instead of <code>null</code>.
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public enum Unit {
+</span><span class='line'>   NONE(&ldquo;없음&rdquo;, &ldquo;1&rdquo;),&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;   // 길이(cm)
+</span><span class='line'>   MM(&ldquo;mm&rdquo;, &ldquo;0.1&rdquo;),
+</span><span class='line'>   CM(&ldquo;cm&rdquo;, &ldquo;1&rdquo;),
+</span><span class='line'>   M(&ldquo;m&rdquo;, &ldquo;100&rdquo;),
+</span><span class='line'>   KM(&ldquo;km&rdquo;, &ldquo;100000&rdquo;), &hellip;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure></p>
+
+<ul>
+<li>Never return null.</li>
+</ul>
+
+
+<p>For example, return a empty list instead of null.
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>//BEFORE
+</span><span class='line'>public List&lt;String&gt; getNames(Long id) {
+</span><span class='line'>    if (id != null) {
+</span><span class='line'>        return service.getNames(id);
+</span><span class='line'>    }
+</span><span class='line'>    return null;
+</span><span class='line'>}&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;//AFTER
+</span><span class='line'>public List&lt;String&gt; getNames(Long id) {
+</span><span class='line'>    if (id != null) {
+</span><span class='line'>        return service.getNames(id);
+</span><span class='line'>    }
+</span><span class='line'>    return Collections.EMPTY_LIST;
+</span><span class='line'>}&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;
+</span><span class='line'>
+</span><span class='line'>## Optional
+</span><span class='line'>
+</span><span class='line'>&gt; com.alphawang.guava.ch1.optional.Test2_Optional
+</span><span class='line'>
+</span><span class='line'>`Optional&lt;T&gt;` is a way of replacing a nullable T reference with a non-null value. 
+</span><span class='line'>
+</span><span class='line'>Besides the increase in readability that comes from giving `null` a *name*, the biggest advantage of Optional is its idiot-proof-ness. **It forces you to actively think about the absent case if you want your program to compile at all, since you have to actively unwrap the Optional and address that case**. 
+</span><span class='line'>
+</span><span class='line'>there are two main use cases of `Optional`.
+</span><span class='line'>
+</span><span class='line'>- remind your client that the returned value can be null, can force he to check null case:
+</span><span class='line'>api:
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;public Optional&lt;Object&gt; api() {
+</span><span class='line'>    &hellip;
+</span><span class='line'>    return Optional.fromNullable(nullableObj); // return Optional instead of nullableObj
+</span><span class='line'>}
+</span><span class='line'>&lt;code&gt;
+</span><span class='line'>client:
+</span><span class='line'>&lt;/code&gt;
+</span><span class='line'>Optional&lt;Object&gt; optional = api();
+</span><span class='line'>if (optional.isPresent()) { // force null-check
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure></p>
+
+<ul>
+<li>return a default value if the object is null:</li>
+</ul>
+
+
+<pre><code>Object obj = Optional.fromNullable(nullableObj).or(defaultObj);
+</code></pre>
+
+<h2>Enums</h2>
+
+<p><code>Enums#getIfPresent</code> can help to get an Optional<Enum> from a enum value.</p>
+
+<pre><code>        // BEFORE
+        VitaminLocale vitaminLocale = VitaminLocale.valueOf("ko_KR");
+        if (vitaminLocale != null) {
+
+        }
+
+        // AFTER
+        Optional&lt;VitaminLocale&gt; locale = Enums.getIfPresent(VitaminLocale.class, "ko_KR");
+        if (locale.isPresent()) {
+            locale.get();
+        }
+</code></pre>
+
+<h2>Objects</h2>
+
+<blockquote><p>com.alphawang.guava.ch1.optional.Test3_Objects</p></blockquote>
+
+<p><code>MoreObjects.firstNonNull</code> is an alternative of <code>Optional.or</code>, both can return a default value if the object is null.</p>
+
+<pre><code>MoreObjects.firstNonNull(cityService.getNullableCity(1L), defaultCity);
+</code></pre>
+
+<h2>Preconditions</h2>
+
+<blockquote><p>com.alphawang.guava.ch1.optional.Test4_Preconditions</p></blockquote>
+
+<p>Of course we can fail fast in the presence of null, just like guava code. Guava provides <code>Preconditions.checkArgument</code> and <code>Preconditions.checkNotNull</code> to do this.</p>
+
+<pre><code>    public City save(City city) {
+        Preconditions.checkArgument(city != null, "IllegalArgumentException: city is null");
+        // or
+        city = Preconditions.checkNotNull(city, "NullPointerException: city is null");
+
+        return cityRepository.save(city);
+    }
+</code></pre>
+
+<h2>Reference</h2>
+
+<ul>
+<li>Guava User Guide : <a href="https://code.google.com/p/guava-libraries/wiki/GuavaExplained">https://code.google.com/p/guava-libraries/wiki/GuavaExplained</a></li>
+<li>Getting Started with Google Guava : <a href="http://pan.baidu.com/s/1o6LZJf0">http://pan.baidu.com/s/1o6LZJf0</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Is the Improvement of String.substring() in Java7 Really Reasonable?]]></title>
+    <link href="http://alphawang.github.io/blog/the-impovement-of-string-substring-in-java7-/"/>
+    <updated>2014-12-24T15:59:15+08:00</updated>
+    <id>http://alphawang.github.io/blog/the-impovement-of-string-substring-in-java7-</id>
+    <content type="html"><![CDATA[<p><code>String#substring()</code>在Java6和Java7中的实现是不一样的。这是因为Java6的实现可能导致内存问题，所以Java7中为了改善这个问题修改了实现方式。那么Java7中的实现就真的合理吗？</p>
+
+<p>首先让我们来猜测一下，Java是如何实现substring功能的。由于String是不可变的，可能我们会猜测实现机制如下图：</p>
+
+<p><img src="/images/post/2014/12/substring-user.png" alt="user icon" /></p>
+
+<!--more-->   
+
+
+<p>​然而，这个图并不完全正确，或者说并没有完全表示出Java堆中真正发生的事情。</p>
+
+<h2>Java6中的substring()</h2>
+
+<p>Java中字符串是通过字符数组来支持实现的，在JDK6中，String类包含3个实例变量：<br/>
+- <code>char[] value</code> 表示真实的字符数组；<br/>
+- <code>int offset</code> 表示数组的偏移量；<br/>
+- <code>int count</code> 表示String所包含的字符的个数。</p>
+
+<p>当调用<code>substring()</code>方法时，会创建一个新的字符串对象，但是这个字符串的值在java堆中仍然指向的是同一个数组，这两个字符串的不同之处只是他们的count和offset的值。</p>
+
+<p><img src="/images/post/2014/12/substring-java6.png" alt="java6 icon" /></p>
+
+<p>可以参考Java6中的源代码：</p>
+
+<pre><code class="">//Java 6
+String(int offset, int count, char value[]) {
+     this.value = value;
+     this.offset = offset;
+     this.count = count;
+}
+
+public String substring(int beginIndex, int endIndex) {
+     //check boundary
+     return new String(offset + beginIndex, endIndex - beginIndex, value);
+}
+</code></pre>
+
+<h3>Java6中substring()可能导致的问题</h3>
+
+<p>这么实现有一个问题：如果你有一个非常长的字符串，但是你仅仅只需要这个字符串的一小部分，你需要的只是很小的部分，而这个子字符串却要包含整个字符数组。这可能导致内存溢出问题。</p>
+
+<p>我们可以用一个办法来规避这个问题：为<code>substring()</code>得到的子字符串重新创建一个对象。例如：</p>
+
+<pre><code> String littleString = largeString.substring(0,2) + "";
+</code></pre>
+
+<p>或者：</p>
+
+<pre><code>String littleString = new String(largeString.substring(0,2));
+</code></pre>
+
+<h2>Java7中的substring()</h2>
+
+<p>Java7中对上述问题做了修正，当调用<code>substring()</code>方法时，在堆中真正的创建了一个新的数组，当原字符数组没有被引用后就被GC回收了。</p>
+
+<p><img src="/images/post/2014/12/substring-java7.png" alt="java7 icon" /></p>
+
+<p>我们看源码：</p>
+
+<pre><code>// Java 7
+    public String substring(int beginIndex, int endIndex) {
+        return ((beginIndex == 0) &amp;&amp; (endIndex == value.length)) ? this
+                : new String(value, beginIndex, subLen);
+    }
+
+    public String(char value[], int offset, int count) {
+        this.value = Arrays.copyOfRange(value, offset, offset+count);
+    }    
+</code></pre>
+
+<p>可以看到Java7通过<code>Arrays.copyOfRange</code>重新创建了一个字符数组。</p>
+
+<h2>Java7的修改合理吗？</h2>
+
+<p>Java7虽然规避了substring可能出现的内存问题，但是新的实现真的好吗？</p>
+
+<p>Java6的实现，当进行substring时，使用共享内容字符数组，速度会更快，不用重新申请内存。虽然有可能出现本文中的内存性能问题，但也是有方法可以解决的。</p>
+
+<p>而Java7的实现，对任何String，即便不是Large String，都会重新申请内存，速度也会更慢，性能会更差。如果我们程序中处理的大部分都不是Large String的话，这种对性能的影响是不是得不偿失？</p>
+
+<p>如果保持Java6的实现，在处理非Large String时，我们直接调用substring即可；而对Large String则用上文提到的规避方法来解决。</p>
+
+<h2>List#sublist()的实现为什么没改变？</h2>
+
+<p>Java中有一个和<code>String#substring</code>有着类似逻辑、功能、实现机制的方法：<code>List#sublist</code>。Java6 处理Large List的sublist时，也会出现内存问题；而奇怪的时Java7并未对这个实现进行修改：</p>
+
+<pre><code>//AbstractList
+
+    public List&lt;E&gt; subList(int fromIndex, int toIndex) {
+        return (this instanceof RandomAccess ?
+                new RandomAccessSubList&lt;&gt;(this, fromIndex, toIndex) :
+                new SubList&lt;&gt;(this, fromIndex, toIndex));
+    }
+
+    SubList(AbstractList&lt;E&gt; list, int fromIndex, int toIndex) {
+        l = list;
+        offset = fromIndex;
+        size = toIndex - fromIndex;
+        this.modCount = l.modCount;
+    }
+</code></pre>
+
+<p>所以我们在处理Large List时还是需要用规避方法：</p>
+
+<pre><code>    public static &lt;E&gt; List&lt;E&gt; sublist(List&lt;E&gt; originalList, int fromIndex, int toIndex) {
+        return new ArrayList&lt;E&gt;(originalList.subList(fromIndex, toIndex));
+    }
+</code></pre>
+
+<p>为什么Java7不对<code>List#sublist</code>做修改，以让它和<code>String#substring</code>的实现机制继续保持一致呢？不得而知。</p>
+
+<h2>Reference</h2>
+
+<p><a href="http://www.programcreek.com/2013/09/the-substring-method-in-jdk-6-and-jdk-7/">http://www.programcreek.com/2013/09/the-substring-method-in-jdk-6-and-jdk-7/</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[How String in Switch Works in Java 7]]></title>
+    <link href="http://alphawang.github.io/blog/how-string-in-switch-works-in-java7/"/>
+    <updated>2014-12-20T10:02:33+08:00</updated>
+    <id>http://alphawang.github.io/blog/how-string-in-switch-works-in-java7</id>
+    <content type="html"><![CDATA[<p>支持switch字符串是Java7增加的一个新特性，那么它的底层是如何实现的呢？我们来看一个switch String的例子，然后分析编译器是如何处理的。</p>
+
+<!--more-->
+
+
+<h2>switch字符串的原理</h2>
+
+<p>switch String的语法示例如下：</p>
+
+<pre><code>/**
+* Created by Alpha on Jan/21/15.
+*/
+
+public class StringSwitch {
+  public static void main(String[] args) {
+     String mode = args[0];
+     switch (mode) {
+        case "ACTIVE":
+           System.out.println("Application is running on Active mode");
+           break;
+        case "PASSIVE":
+           System.out.println("Application is running on Passive mode");
+           break;
+        case "SAFE":
+           System.out.println("Application is running on Safe mode");
+     }
+  }
+}
+</code></pre>
+
+<p>那么在底层是如何实现的呢？我们可以通过反编译看看编译器是如何处理上述代码的：</p>
+
+<pre><code>
+public class StringSwitch {
+   public StringSwitch() {
+   }
+
+   public static void main(String[] args) {
+       String mode = args[0];
+       byte var3 = -1;
+       switch(mode.hashCode()) {
+       case -74056953:
+           if(mode.equals("PASSIVE")) {
+               var3 = 1;
+           }
+           break;
+       case 2537357:
+           if(mode.equals("SAFE")) {
+               var3 = 2;
+           }
+           break;
+       case 1925346054:
+           if(mode.equals("ACTIVE")) {
+               var3 = 0;
+           }
+       }
+
+       switch(var3) {
+       case 0:
+           System.out.println("Application is running on Active mode");
+           break;
+       case 1:
+           System.out.println("Application is running on Passive mode");
+           break;
+       case 2:
+           System.out.println("Application is running on Safe mode");
+       }
+
+   }
+}
+</code></pre>
+
+<p>可以看到处理流程是：</p>
+
+<ul>
+<li>编译器首先调用字符串的<code>hashCode()</code>，返回一个int；</li>
+<li>然后在对这个int进行switch；</li>
+<li>每个switch case中再加上<code>equals()</code>比较来进行安全检查。</li>
+</ul>
+
+
+<h2>分析</h2>
+
+<p>我们看到实际上底层进行switch的是哈希值，所以Java7中所谓的支持switch字符串只是一个语法糖，底层还是一样：switch中只能使用整型，比如<code>byte</code>，<code>short</code>，<code>char</code>以及<code>int</code>。</p>
+
+<p>另外switch case中通过<code>equals()</code>方法比较进行安全检查，这个检查是必要的，因为哈希可能会发生碰撞。</p>
+
+<p>正式因为加上了这个检查，因此它的性能一定是不如使用枚举进行switch或者使用纯整数常量。</p>
+
+<h2>建议</h2>
+
+<p>因为上述性能问题，建议尽量使用纯整数常量进行swtich，或者用enum进行switch。</p>
+
+<p>如果无法避免用字符串进行switch的话，还要注意大小写敏感的问题，建议统一用全大写字符串。
+​</p>
+
+<h2>Reference</h2>
+
+<p><a href="http://javarevisited.blogspot.sg/2014/05/how-string-in-switch-works-in-java-7.html">http://javarevisited.blogspot.sg/2014/05/how-string-in-switch-works-in-java-7.html</a></p>
+]]></content>
+  </entry>
+  
+</feed>

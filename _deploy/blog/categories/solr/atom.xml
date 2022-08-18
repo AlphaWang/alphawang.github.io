@@ -1,0 +1,522 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Solr | Alpha's Programming Notes]]></title>
+  <link href="http://alphawang.github.io/blog/categories/solr/atom.xml" rel="self"/>
+  <link href="http://alphawang.github.io/"/>
+  <updated>2022-08-18T23:35:22+08:00</updated>
+  <id>http://alphawang.github.io/</id>
+  <author>
+    <name><![CDATA[Alpha Wang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Key Solr Concepts]]></title>
+    <link href="http://alphawang.github.io/blog/key-solr-concepts/"/>
+    <updated>2015-01-20T16:00:40+08:00</updated>
+    <id>http://alphawang.github.io/blog/key-solr-concepts</id>
+    <content type="html"><![CDATA[<blockquote><p>本文是《Solr In Action》读书笔记，包含第3章</p></blockquote>
+
+<!--more-->
+
+
+<h1>Chpater 03. Key Solr Concepts</h1>
+
+<h2>Basic</h2>
+
+<ul>
+<li><code>Document</code>:</li>
+</ul>
+
+
+<p>A document is a collection of fields that map to particular field types defined in a schema.</p>
+
+<blockquote><p>Solr is a document storage and retrieval engine. Every piece of data submitted to Solr for processing is a document.</p></blockquote>
+
+<ul>
+<li><code>Inverted index</code>:</li>
+</ul>
+
+
+<p>Maps each word/term in the corpus to all of the documents in which it appears.</p>
+
+<blockquote><p>determin textually similar words, understand synonyms, remove unimportant words, score each result&hellip; Solr accomplishes all of this by using an index that maps content to documents instead of mapping documents to content as in a traditional database model.</p></blockquote>
+
+<p><img src="/images/post/2015/01/solr-inverted-index.png" alt="user icon" /></p>
+
+<h2>Query</h2>
+
+<p>通过Inverted Index，可以实现如下查询：</p>
+
+<ul>
+<li><p><code>Required Terms</code>: new AND house; +new +house</p></li>
+<li><p><code>Optional Terms</code>: new house; new OR house.  (default)</p></li>
+<li><p><code>Negated Terms</code>: new house NOT rental; new house -rental</p></li>
+<li><p><code>Phrases</code>: &ldquo;new home&rdquo; OR &ldquo;new house&rdquo;</p></li>
+<li><p><code>Grouped expressions</code>: New AND (house OR  home)</p></li>
+</ul>
+
+
+<p>为了支持Phrase查询：</p>
+
+<ul>
+<li><code>Term Position</code>: recording of the relative position of terms within a document. can tell us where in the document each term appears.
+
+<blockquote><p>存储在inverted index中，可用于支持<code>Phrase查询</code>。</p></blockquote></li>
+</ul>
+
+
+<h2>Fuzzy matching</h2>
+
+<p><code>Fuzzy matching</code> is defined as the ability to perform inexact matches on terms in the search index. For example,</p>
+
+<ul>
+<li><code>Wildcard searching</code></li>
+</ul>
+
+
+<p>search for any words that start with a particular prefix.</p>
+
+<pre><code>offi*
+off*r
+off?r
+</code></pre>
+
+<p>注意：</p>
+
+<blockquote><ol>
+<li>the more characters you specify at the beginning of the term before the wildcard, the faster the query should run.</li>
+<li>执行<code>leading wildcard</code>(*ing)会很耗时，可以通过<code>ReversedWildcardFilterFactory</code>来解决，不过这样会增加index时间，并减慢整体查询速度。</li>
+</ol>
+</blockquote>
+
+<ul>
+<li><code>Range searching</code></li>
+</ul>
+
+
+<pre><code>title:{boat TO boulder}  //exclusive
+price:[12.99 TO 14.99]  //inclusive
+</code></pre>
+
+<ul>
+<li><code>Fuzzy searching</code> / <code>Edit-distance searching</code></li>
+</ul>
+
+
+<p>find spelling variations within one or two characters (handle spelling errors).</p>
+
+<pre><code>administrator~ //Matches: adminstrator, administrater, administratior, and so forth 
+administrator~2 //Matches within 2 edit distances. 
+</code></pre>
+
+<blockquote><p>Solr provides the ability to handle character variations using edit-distance measurements based upon Damerau-Levenshtein distances, which account for more than 80% of all human misspellings.</p>
+
+<p>An <code>edit distance</code> is defined as an insertion, a deletion, a substitution, or a transposition of characters.</p></blockquote>
+
+<ul>
+<li><code>Proximity searching</code></li>
+</ul>
+
+
+<p>match two terms within some maximum distance of each other.
+e.g. search:</p>
+
+<pre><code>"chief executive officer" OR "chief financial officer" OR "chief marketing officer" OR "chief technology officer" OR ... 
+</code></pre>
+
+<p>改进：</p>
+
+<pre><code>"chief officer"~1
+</code></pre>
+
+<p>Solr内部用<code>tem positions</code>来计算edit distance.</p>
+
+<h2>Relevancy</h2>
+
+<p>Solr calculaes a <code>relevancy score</code> for each document and then sorting the search results from the high- est score to the lowest.</p>
+
+<h3>Similarity</h3>
+
+<p>【Q】那么relevancy score是如何计算的？受哪些因素的影响呢？</p>
+
+<p>【A】Similarity:</p>
+
+<ul>
+<li>Solr’s relevancy scores are based upon the <code>Similarity</code> class, which can be defined on a per-field basis in Solr’s <code>schema.xml</code>.</li>
+<li><code>Similarity</code> is a Java class that defines how a relevancy score is calculated based upon the results of a query.</li>
+</ul>
+
+
+<p>实现原理：<strong>two-pass model</strong></p>
+
+<ol>
+<li>First, it makes use of a <code>Boolean model</code> to filter out any documents that do not match the customer’s query.</li>
+<li>Then it uses a <code>vector space model</code> for scoring and drawing the query as a vector, as well as an additional vector for each document.</li>
+<li>The similarity score for each document is based upon the <code>cosine</code> between the query vector and that document’s vector.</li>
+</ol>
+
+
+<p><img src="/images/post/2015/01/solr-relevancy-vector.png" alt="user icon" /></p>
+
+<p>【Q】显然，重点是如何算出合理的vector？</p>
+
+<p>【A】算法如下：</p>
+
+<p><img src="/images/post/2015/01/solr-relevancy-algorithm.png" alt="user icon" /></p>
+
+<ul>
+<li>term frequency (<code>tf</code>),</li>
+<li>inverse document frequency (<code>idf</code>),</li>
+<li>term boosts (<code>t.getBoost</code>),</li>
+<li>field normalization (<code>norm</code>),</li>
+<li>coordination factor (<code>coord</code>),</li>
+<li>query normalization (<code>queryNorm</code>)</li>
+</ul>
+
+
+<h3>Term Frequency</h3>
+
+<ul>
+<li><code>Term frequency (tf)</code> is a measure of how often a particular term appears in a matching document.</li>
+<li>The more times the search term appears within a document, the more relevant that document is considered.
+
+<blockquote><p>并非线性关系；而用了平方根。见上图。</p></blockquote></li>
+</ul>
+
+
+<h3>Inverse Document Frequency</h3>
+
+<ul>
+<li><code>Inverse document frequency (idf)</code>, a measure of how “rare” a search term is, is calcu- lated by finding the document frequency (<em>how many total documents the search term appears within</em>), and calculating its inverse.</li>
+<li><code>Term frequency</code> and <code>inverse document frequency</code>, when multiplied together in the relevancy calculation, provide a nice counterbalance :</li>
+<li>The <code>term frequency</code> elevates terms that appear multiple times within a document,</li>
+<li>whereas the <code>inverse document frequency</code> penalizes those terms that appear commonly across many documents.
+
+<blockquote><p>作用：减少common words对评分的影响。</p></blockquote></li>
+</ul>
+
+
+<h3>Boosting</h3>
+
+<p>If you have domain knowledge about your content—you know that certain fields or terms are more (or less) important than others—you can supply boosts at either indexing time or query time to ensure that the weights of those fields or terms are adjusted accordingly.</p>
+
+<ul>
+<li>Query-time boosting</li>
+</ul>
+
+
+<pre><code>title:(solrinaction)^2.5description:(solrinaction) 
+title:(solr^2in^.01action^1.5)^3OR"solrinaction"^2.5 
+</code></pre>
+
+<ul>
+<li>Index-time boosting</li>
+</ul>
+
+
+<p>it’s possible to boost documents or fields within documents at index time</p>
+
+<h3>Filed Normalization</h3>
+
+<blockquote><p>The default Solr relevancy formula calculates three kinds of normalization factors (norms): <code>field norms</code>, <code>query norms</code>, and the <code>coord factor</code>.</p></blockquote>
+
+<ul>
+<li>The <code>field normalization factor (field norm)</code> is a combination of factors describing the importance of a particular field on a per-document basis.</li>
+</ul>
+
+
+<p>This byte packs a lot of information:</p>
+
+<ol>
+<li>the boost set on the document when indexed,</li>
+<li>the boost set on the field when indexed,</li>
+<li>and a length normalization factor that penalizes longer documents and helps shorter documents</li>
+</ol>
+
+
+<h3>Query Normalization</h3>
+
+<p><code>Query Norm</code> does not affect the overall relevancy ordering, as the same queryNorm is applied to all documents.
+It merely serves as a normalization factor to attempt to make scores between queries comparable.</p>
+
+<h3>The Coord Factor</h3>
+
+<p>Its role is to measure how much of the query each document matches.</p>
+
+<h2>Precision and Recall</h2>
+
+<h3>Precision:</h3>
+
+<pre><code># Correct Matches / # Total Results Returned
+</code></pre>
+
+<ul>
+<li>Precision is a measure of how “good” each of the results of a query is,</li>
+<li>but it pays no attention to how thorough it is; *a query that returns one single correct doc- ument out of a million other correct documents is still considered perfectly precise. *</li>
+<li>Precision is answering the question: “Were the documents that came back the ones I was looking for?”</li>
+</ul>
+
+
+<h3>Recall</h3>
+
+<pre><code># Correct Matches / (# Correct Matches + # Missed Matches)
+</code></pre>
+
+<ul>
+<li>Recall is a measure of how thorough the search results are.</li>
+<li>Recall is answering the question: “How many of the correct documents were returned?”</li>
+</ul>
+
+
+<p>区别：</p>
+
+<ul>
+<li>Precision is high when the results returned are correct; Recall is high when the correct results are present.</li>
+<li>Recall does not care that all of the results are correct. Precision does not care that all of the results are present.</li>
+</ul>
+
+
+<p>平衡：</p>
+
+<ul>
+<li>measuring for <code>Recall</code> across the entire result set;</li>
+<li>measuring for<code>Precision</code> only within the first page (or few pages) of search results.</li>
+</ul>
+
+
+<h2>Searching at Scale</h2>
+
+<p>Solr is able to scale to handle billions of documents and an infinite number of queries by adding servers.</p>
+
+<h3>The denormalized document</h3>
+
+<ul>
+<li>A <code>denormalized document</code> is one in which all fields are self-contained within the document, even if the values in those fields are duplicated across many documents.</li>
+<li>优点：extreme scalability. Because we can make the assumption that each document is self-contained（自包含）, this means that we can also partition documents across multiple servers without having to keep related documents on the same server (because documents are independent of one another)</li>
+</ul>
+
+
+<blockquote><ul>
+<li>不同document的字段值会有重复。</li>
+<li>与传统关系数据库不一样！</li>
+</ul>
+</blockquote>
+
+<h3>Distributed Searching</h3>
+
+<ul>
+<li>sometimes your search servers may become overloaded by either <em>too many queries at a time</em> or by <em>too much data needing to be searched through</em> for a single server to handle.</li>
+<li>后一种情况的解决办法：aggregated search:</li>
+</ul>
+
+
+<pre><code>http://box1:8983/solr/core1/select?q=*:*&amp;shards=box1:8983/solr/core1, 
+          box2:8983/solr/core2,box2:8983/solr/core3
+// 注意core2和core3是在同一个server
+</code></pre>
+
+<ul>
+<li>distributed search across multiple Solr cores is run in parallel on each of those index partitions</li>
+</ul>
+
+
+<blockquote><p>即：<code>partition</code>, <code>shard</code>；将大量的数据分区到不同的core，然后通过aggregated search并行地同时在这些core上进行查询。</p></blockquote>
+
+<h3>Clusters vs. Servers</h3>
+
+<ul>
+<li>the servers for this use case are mutually dependent. If one becomes unavailable for searching, they all become unavailable for searching and begin failing</li>
+<li>上例中，如果box2服务器挂掉，返回结果就会报错。</li>
+<li>Solr provides excellent built-in cluster-management capabilities through the use of Apache ZooKeeper</li>
+</ul>
+
+
+<h2>Limits</h2>
+
+<ul>
+<li>Solr is NOT relational in any way across documents. It’s not well suited for joining significant amounts of data across different fields on different documents, and <strong>it can’t perform join operations at all across multiple servers</strong>.</li>
+<li>The denormalized nature of Solr can be particularly problematic when the data in one field that is shared across many documents changes</li>
+<li><p>you can insert, delete, and update documents, but not sin- gle fields (easily).</p>
+
+<blockquote><p>whenever a new field is added to Solr or the contents of an existing field have changed, every single document in the Solr index must be reprocessed in its entirety before the data will be populated for the new field in all documents.</p></blockquote></li>
+<li><p>Solr is not optimized for processing quite long queries (thousands of terms) or returning quite large result sets to users.</p></li>
+<li>elastic scalability: the ability to automatically add and remove servers and redistribute content to handle load.</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Introduction to Apache Solr]]></title>
+    <link href="http://alphawang.github.io/blog/introduction-to-apache-solr/"/>
+    <updated>2015-01-20T15:28:10+08:00</updated>
+    <id>http://alphawang.github.io/blog/introduction-to-apache-solr</id>
+    <content type="html"><![CDATA[<blockquote><p>本文是《Solr In Action》读书笔记，包含第1~2章</p></blockquote>
+
+<!--more-->
+
+
+<h1>Chapter 01. Introduction to Solr</h1>
+
+<h2>What&rsquo;s Solr</h2>
+
+<p>Apache Solr, is a specific NoSQL technology.</p>
+
+<p>Solr is a <code>scalable</code>, <code>ready-to-deploy</code> enterprise search engine that’s <code>optimized to search</code> <code>large volumes</code> of <code>text-centric</code> data and <code>return results sorted by relevance</code>.</p>
+
+<ul>
+<li><code>Scalable</code>— Solr scales by distributing work (indexing and query processing) to multiple servers in a cluster.</li>
+<li><code>Ready to deploy</code>— Solr is open source, is easy to install and configure, and provides a preconfigured example to help you get started.</li>
+<li><code>Optimized for search</code>— Solr is fast and can execute complex queries in subsecond speed, often only tens of milliseconds.</li>
+<li><code>Large volumes of documents</code>— Solr is designed to deal with indexes containing many millions of documents.</li>
+<li><code>Text-centric</code>— Solr is optimized for searching natural-language text, like emails, web pages, resumes, PDF documents, and social messages such as tweets or blogs.</li>
+<li><code>Results sorted by relevance</code>— Solr returns documents in ranked order based on how relevant each document is to the user’s query.</li>
+</ul>
+
+
+<p>Solr is:</p>
+
+<ol>
+<li><p><strong>Information retrieval engine</strong>
+inverted index;  ranking documents by relevance</p></li>
+<li><p><strong>Flexible schema management</strong>
+xml-configuration</p></li>
+<li><p><strong>Java web application</strong>
+REST-like services</p></li>
+<li><p><strong>Multiple indexes in one server</strong>
+data partitioning</p></li>
+<li><p><strong>Extendable (plugins)</strong>
+Each subsystem (document management; query processing; text analysis) is composed of a modular “pipeline” that allows you to plug in new functionality</p></li>
+<li><p><strong>Scalable</strong>
+Provides flexible cache-management features. <br/>
+<em>Query throughput</em>: add <code>replicas</code> of your index so that more servers can handle more requests.  <br/>
+<em>The number of documents indexed</em>: split the index into smaller chunks called <code>shards</code>, then distribute the searches across the shards.</p></li>
+<li><p><strong>Fault-tolerant</strong></p></li>
+</ol>
+
+
+<h2>Solr适合处理哪种数据</h2>
+
+<p>Solr are optimized to handle data exhibiting four main characteristics:</p>
+
+<ol>
+<li><strong>Text-centric</strong>
+Text-centric data implies that the text of a document contains information that users are interested in finding.</li>
+<li><strong>Read- dominant</strong>
+Think of read-dominant as meaning that documents are read far more often than they’re created or updated.</li>
+<li><strong>Document-oriented</strong>
+In a search engine, a document is a self-contained collection of fields, in which each field only holds data and doesn’t contain nested fields. (FLAT structure)</li>
+<li><strong>Flexible schema</strong>
+This means that documents in a search index don’t need to have a uniform structure.</li>
+</ol>
+
+
+<h2>Features</h2>
+
+<p>User-experience features</p>
+
+<ul>
+<li><code>Pagination and sorting</code></li>
+<li><code>Faceting</code>: category search results into subgroups.</li>
+<li><code>Autosuggest</code></li>
+<li><code>Spell checker</code></li>
+<li><code>Hit highlighting</code></li>
+<li><code>Geospatial search</code></li>
+</ul>
+
+
+<p>Data-modeling features</p>
+
+<ul>
+<li><code>Result grouping /field collapsing</code>. 不同于facet: allows you to return unique groups instead of individual documents in the results</li>
+<li><code>Flexible query support</code></li>
+<li><code>Joins</code>: like sql subquery</li>
+<li><code>Document clustering</code>: identify groups of documents that are similar</li>
+<li><code>Import rich document formats</code>: pdf, word</li>
+<li><code>Import relational databases</code></li>
+<li><code>Multilingual support</code></li>
+</ul>
+
+
+<p>New features in Solr4</p>
+
+<ul>
+<li><code>Near real-time search</code> : be searchable within seconds of being added to the index.</li>
+<li><code>Atomic updates with optimistic concurrency</code>: Solr uses a special version field named <em>version</em> to enforce safe update semantics for documents.</li>
+<li><code>Real-time get</code>: ?</li>
+<li><code>Write durability using a transaction log</code>: can control when to commit documents to make them visible in search results without risking data loss if a server fails before you commit.</li>
+<li><code>Easy sharding and replication using ZooKeeper</code>: uses Apache ZooKeeper to distribute configurations and manage shard leaders and replicas</li>
+</ul>
+
+
+<h2>Compare</h2>
+
+<h3>Solr vs. Lucene</h3>
+
+<ul>
+<li>Lucene provides the library for indexing documents and executing queries.</li>
+<li>With Lucene, you need to write Java code to define fields and how to analyze those fields.</li>
+<li>Solr uses <code>schema.xml</code> to represent all of the possible fields and data types necessary to map documents into a Lucene index.</li>
+<li>Solr also adds nice constructs on top of the core Lucene indexing functionality (<code>copy field</code> and <code>dynamic field</code>).</li>
+</ul>
+
+
+<p>Lucene provides a powerful library for indexing documents, executing queries, and ranking results. And, with schema.xml, you have a flexible way to define the index structure using an XML-configuration document instead of having to program to the Lucene API.</p>
+
+<h3>Solr vs. MapReduce</h3>
+
+<ul>
+<li>The need to build a web-scale <code>inverted index</code> led to the invention of MapReduce.</li>
+<li>The map phase produces a unique term and document ID where the term occurs.</li>
+<li>In the reduce phase, terms are sorted so that all term/docID pairs are sent to the same reducer process for each unique term. The reducer sums up all term frequencies for each term to generate the inverted index.</li>
+</ul>
+
+
+<blockquote><p>Apache <code>Hadoop</code> provides an open source implementation of <code>MapReduce</code>, and it’s used by the Apache <code>Nutch</code> open source project to build a <code>Lucene</code> inverted index for web-scale search using <code>Solr</code>.</p></blockquote>
+
+<h3>Solr vs. SolrCloud</h3>
+
+<ul>
+<li>SolrCloud is the code name for a subset of features in Solr 4 that makes it easier to configure and run a scalable, fault-tolerant cluster of Solr servers.</li>
+<li>Think of SolrCloud as a way to configure a distributed installation of Solr 4.</li>
+</ul>
+
+
+<h1>Chapter 02. Getting to know Solr</h1>
+
+<h2>Query 参数</h2>
+
+<p><img src="/images/post/2015/01/solr-query.png" alt="user icon" /></p>
+
+<p><img src="/images/post/2015/01/solr-query-param.png" alt="user icon" /></p>
+
+<ul>
+<li><code>Filter query</code>: restricts the result set to documents matching this filter but doesn’t affect scoring.</li>
+<li><code>start, rows</code>: 用于分页。
+the underlying Lucene index isn’t optimized for returning many documents at once.<br/>
+in comparison to query execution, results construction is a slow process.</li>
+</ul>
+
+
+<p>When you fill out the query form, an HTTP GET request is created and sent to Solr.<br/>
+对应的HTTP Get请求：
+<img src="/images/post/2015/01/solr-query-http.png" alt="user icon" /></p>
+
+<h2>返回参数</h2>
+
+<p><img src="/images/post/2015/01/solr-response.png" alt="user icon" />
+返回结果是按照score排序的：Ranked retrieval。
+除非指定了sort参数。</p>
+
+<h2>Solritas</h2>
+
+<p>Solr prov ides a customizable example search UI, called Solritas, to help you prototype your own awesome search application.
+<a href="http://localhost:8983/solr/collection1/browse">http://localhost:8983/solr/collection1/browse</a></p>
+]]></content>
+  </entry>
+  
+</feed>

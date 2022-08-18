@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Web | Alpha's Programming Notes]]></title>
+  <link href="http://alphawang.github.io/blog/categories/web/atom.xml" rel="self"/>
+  <link href="http://alphawang.github.io/"/>
+  <updated>2022-08-18T23:35:22+08:00</updated>
+  <id>http://alphawang.github.io/</id>
+  <author>
+    <name><![CDATA[Alpha Wang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Zapfino: A Cool Font]]></title>
+    <link href="http://alphawang.github.io/blog/zapfino-a-cool-font/"/>
+    <updated>2014-09-16T17:28:52+08:00</updated>
+    <id>http://alphawang.github.io/blog/zapfino-a-cool-font</id>
+    <content type="html"><![CDATA[<p>I&rsquo;m tring to look for some fonts for my blog these days, and find a cool font <a href="http://en.wikipedia.org/wiki/Zapfino"><code>Zapfino</code></a> inadvertently.</p>
+
+<p>Here is how it looks:</p>
+
+<p><img src="/images/post/2014/09/font-Zapfino.png" alt="zapfino icon" /></p>
+
+<!--more-->  
+
+
+<p>Umh&hellip; The logo looks pale by comparison, I need to find a more fantastic logo later :)</p>
+
+<p>Unfortunately, Zapfino is not installed on Windows by default, so I use <code>Lucida Handwriting</code> instead. See below:<br/>
+<img src="/images/post/2014/09/font-LucidaHandwriting.png" alt="lucida icon" /></p>
+
+<p>The font-family defined in my css is shown below.<br/>
+<code>
+body &gt; header h1 {   
+  padding-left: 45px;   
+  font-family: "Zapfino","Snell Roundhand","Lucida Handwriting","PT Serif","Georgia","Helvetica Neue",Arial,serif;
+}  
+</code></p>
+
+<p>Apprently, this font is suitable for titles, but not contents.</p>
+
+<p>Here is a blog about web font in more detail: <a href="http://www.ruanyifeng.com/blog/2008/06/typography_notes.html">http://www.ruanyifeng.com/blog/2008/06/typography_notes.html</a></p>
+
+<p>BTW, the history of Zapfino is interesting, the development had become seriously delayed: began from 1944, but released in 1998. Cite from wiki：</p>
+
+<blockquote><p>Zapf remembered a page of calligraphy from his sketchbook from 1944, and considered the possibility of making a typeface from it. &hellip; Siegel also hired Gino Lee, a programmer from Boston, Massachusetts, to help work on the project.</p>
+
+<p>However, just before the project was completed, Siegel wrote a letter to Zapf, saying that his girlfriend had left him and that he had lost all interest in anything. Siegel abandoned the project and started a new life, working on bringing color to Macintosh computers and later becoming an Internet design expert.</p>
+
+<p>Zapfino&rsquo;s development had become seriously delayed,&hellip; Zapfino was released in 1998 as a Type 1 font.</p></blockquote>
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+]]></content>
+  </entry>
+  
+</feed>

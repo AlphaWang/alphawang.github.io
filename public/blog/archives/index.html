@@ -1,0 +1,765 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Blog Archive - Alpha's Programming Notes</title>
+  <meta name="author" content="Alpha Wang">
+
+  
+  <meta name="description" content="Blog Archive 2022 Apache Pulsar 与 Apache Kafka 之对比分析
+Aug 17 2022 posted in distributed system, messaging, translation 详解 Pulsar Broker 负载均衡
+Aug 14 &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://alphawang.github.io/blog/archives">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Alpha's Programming Notes" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script>
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+
+$(document).bind('DOMNodeInserted', function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-54659411-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">AlphaWang.com</a></h1>
+  
+    <h2>Alpha's Programming Notes | 一个程序员的日常</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:alphawang.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/tag-cloud/">Tags</a></li>
+  <li><a href="/photography/">Photo</a></li>
+  <li><a href="/about/">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article role="article">
+  
+  <header>
+    <h1 class="entry-title">Blog Archive</h1>
+    
+  </header>
+  
+  <div id="blog-archives">
+
+
+
+  
+  <h2>2022</h2>
+
+<article>
+  
+<h1><a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a></h1>
+<time datetime="2022-08-17T21:35:10+08:00" pubdate><span class='month'>Aug</span> <span class='day'>17</span> <span class='year'>2022</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/distributed-system/'>distributed system</a>, <a class='category' href='/blog/categories/messaging/'>messaging</a>, <a class='category' href='/blog/categories/translation/'>translation</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/pulsar-load-balancing/">详解 Pulsar Broker 负载均衡</a></h1>
+<time datetime="2022-08-14T18:30:10+08:00" pubdate><span class='month'>Aug</span> <span class='day'>14</span> <span class='year'>2022</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/distributed-system/'>distributed system</a>, <a class='category' href='/blog/categories/messaging/'>messaging</a>, <a class='category' href='/blog/categories/translation/'>translation</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/flip/">What the FLiP Is the FLiP Stack?</a></h1>
+<time datetime="2022-06-07T23:17:09+08:00" pubdate><span class='month'>Jun</span> <span class='day'>07</span> <span class='year'>2022</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/distributed-system/'>distributed system</a>, <a class='category' href='/blog/categories/messaging/'>messaging</a>, <a class='category' href='/blog/categories/translation/'>translation</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/bookkeepr-external-consensus/">Apache BookKeeper 外部共识和动态成员</a></h1>
+<time datetime="2022-05-29T14:33:50+08:00" pubdate><span class='month'>May</span> <span class='day'>29</span> <span class='year'>2022</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/distributed-system/'>distributed system</a>, <a class='category' href='/blog/categories/messaging/'>messaging</a>, <a class='category' href='/blog/categories/translation/'>translation</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/pulsar-kafka-benchmark/">2022 Pulsar Performance Report: Better Performance and Data Resiliency With Apache Pulsar</a></h1>
+<time datetime="2022-05-01T23:17:09+08:00" pubdate><span class='month'>May</span> <span class='day'>01</span> <span class='year'>2022</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/distributed-system/'>distributed system</a>, <a class='category' href='/blog/categories/messaging/'>messaging</a>, <a class='category' href='/blog/categories/translation/'>translation</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/kop-offset/">Offset Implementation in Kafka-on-Pulsar</a></h1>
+<time datetime="2022-04-21T18:30:10+08:00" pubdate><span class='month'>Apr</span> <span class='day'>21</span> <span class='year'>2022</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/distributed-system/'>distributed system</a>, <a class='category' href='/blog/categories/messaging/'>messaging</a>, <a class='category' href='/blog/categories/translation/'>translation</a></span>
+</footer>
+
+
+</article>
+
+
+
+  
+  <h2>2019</h2>
+
+<article>
+  
+<h1><a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a></h1>
+<time datetime="2019-12-23T17:20:44+08:00" pubdate><span class='month'>Dec</span> <span class='day'>23</span> <span class='year'>2019</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/distributed-system/'>distributed system</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/clean-code/">Clean Code Summary</a></h1>
+<time datetime="2019-08-16T17:46:12+08:00" pubdate><span class='month'>Aug</span> <span class='day'>16</span> <span class='year'>2019</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/design-patterns/'>design patterns</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/redis-mind-map/">Redis Mind Map</a></h1>
+<time datetime="2019-05-01T22:57:45+08:00" pubdate><span class='month'>May</span> <span class='day'>01</span> <span class='year'>2019</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/nosql/'>nosql</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a></h1>
+<time datetime="2019-03-24T12:04:46+08:00" pubdate><span class='month'>Mar</span> <span class='day'>24</span> <span class='year'>2019</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/distributed-system/'>distributed system</a>, <a class='category' href='/blog/categories/translation/'>translation</a></span>
+</footer>
+
+
+</article>
+
+
+
+  
+  <h2>2018</h2>
+
+<article>
+  
+<h1><a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a></h1>
+<time datetime="2018-06-03T14:00:40+08:00" pubdate><span class='month'>Jun</span> <span class='day'>03</span> <span class='year'>2018</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a></span>
+</footer>
+
+
+</article>
+
+
+
+  
+  <h2>2015</h2>
+
+<article>
+  
+<h1><a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a></h1>
+<time datetime="2015-03-24T14:00:40+08:00" pubdate><span class='month'>Mar</span> <span class='day'>24</span> <span class='year'>2015</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/google-guava-dealing-with-null/">Google Guava: 1. Dealing With Null</a></h1>
+<time datetime="2015-03-23T14:00:40+08:00" pubdate><span class='month'>Mar</span> <span class='day'>23</span> <span class='year'>2015</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/key-solr-concepts/">Key Solr Concepts</a></h1>
+<time datetime="2015-01-20T16:00:40+08:00" pubdate><span class='month'>Jan</span> <span class='day'>20</span> <span class='year'>2015</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/solr/'>solr</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/introduction-to-apache-solr/">Introduction to Apache Solr</a></h1>
+<time datetime="2015-01-20T15:28:10+08:00" pubdate><span class='month'>Jan</span> <span class='day'>20</span> <span class='year'>2015</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/solr/'>solr</a></span>
+</footer>
+
+
+</article>
+
+
+
+  
+  <h2>2014</h2>
+
+<article>
+  
+<h1><a href="/blog/the-impovement-of-string-substring-in-java7-/">Is the Improvement of String.substring() in Java7 Really Reasonable?</a></h1>
+<time datetime="2014-12-24T15:59:15+08:00" pubdate><span class='month'>Dec</span> <span class='day'>24</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/how-string-in-switch-works-in-java7/">How String in Switch Works in Java 7</a></h1>
+<time datetime="2014-12-20T10:02:33+08:00" pubdate><span class='month'>Dec</span> <span class='day'>20</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/what-is-string-intern/">What's String.intern()</a></h1>
+<time datetime="2014-12-15T15:23:45+08:00" pubdate><span class='month'>Dec</span> <span class='day'>15</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/learning-jdk-positive-examples/">Learning JDK Source Code: Positive Examples</a></h1>
+<time datetime="2014-12-02T16:21:09+08:00" pubdate><span class='month'>Dec</span> <span class='day'>02</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/learning-jdk-negative-examples/">Learning JDK Source Code: Negative Examples</a></h1>
+<time datetime="2014-12-01T15:00:45+08:00" pubdate><span class='month'>Dec</span> <span class='day'>01</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/how-to-implement-a-hashmap/">How to Implement a HashMap</a></h1>
+<time datetime="2014-11-17T19:24:35+08:00" pubdate><span class='month'>Nov</span> <span class='day'>17</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/collection-map-uml%20copy/">Uml Class Diagram of Collection and Map</a></h1>
+<time datetime="2014-11-15T14:05:15+08:00" pubdate><span class='month'>Nov</span> <span class='day'>15</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/how-to-pass-pojo-array-to-spring-mvc-controller/">How to Pass POJO Array to Spring MVC Controller</a></h1>
+<time datetime="2014-10-26T15:59:15+08:00" pubdate><span class='month'>Oct</span> <span class='day'>26</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/integrate-octopress-with-flickr/">Integrate Octopress With Flickr</a></h1>
+<time datetime="2014-09-22T15:59:15+08:00" pubdate><span class='month'>Sep</span> <span class='day'>22</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/site/'>site</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/utility-classes-are-evil/">Utility Classes Are Evil</a></h1>
+<time datetime="2014-09-18T15:30:18+08:00" pubdate><span class='month'>Sep</span> <span class='day'>18</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/java/'>java</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/zapfino-a-cool-font/">Zapfino: A Cool Font</a></h1>
+<time datetime="2014-09-16T17:28:52+08:00" pubdate><span class='month'>Sep</span> <span class='day'>16</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/web/'>web</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/make-iterm-colorful/">Make Mac Terminal Console / iTerm Colorful</a></h1>
+<time datetime="2014-09-11T14:36:31+08:00" pubdate><span class='month'>Sep</span> <span class='day'>11</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/mac/'>mac</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/mac-calendar-tool/">Calendar Tools on Mac</a></h1>
+<time datetime="2014-09-10T17:15:35+08:00" pubdate><span class='month'>Sep</span> <span class='day'>10</span> <span class='year'>2014</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/mac/'>mac</a></span>
+</footer>
+
+
+</article>
+
+
+
+  
+  <h2>2012</h2>
+
+<article>
+  
+<h1><a href="/blog/6_open-closed-principle/">[六大设计原则] 6. Open Closed Principle</a></h1>
+<time datetime="2012-12-31T16:47:20+08:00" pubdate><span class='month'>Dec</span> <span class='day'>31</span> <span class='year'>2012</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/design-patterns/'>design patterns</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/5_least-knowledge-principle/">[六大设计原则] 5. Least Knowledge Principle</a></h1>
+<time datetime="2012-12-31T16:31:41+08:00" pubdate><span class='month'>Dec</span> <span class='day'>31</span> <span class='year'>2012</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/design-patterns/'>design patterns</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/4_interface-segrefation-principle/">[六大设计原则] 4. Interface Segrefation Principle</a></h1>
+<time datetime="2012-12-31T16:11:26+08:00" pubdate><span class='month'>Dec</span> <span class='day'>31</span> <span class='year'>2012</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/design-patterns/'>design patterns</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/3_dependence-inversion-principle/">[六大设计原则] 3. Dependence Inversion Principle</a></h1>
+<time datetime="2012-12-30T19:41:26+08:00" pubdate><span class='month'>Dec</span> <span class='day'>30</span> <span class='year'>2012</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/design-patterns/'>design patterns</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/2_liskov-substitution-principle/">[六大设计原则] 2. Liskov Substitution Principle</a></h1>
+<time datetime="2012-12-29T18:07:50+08:00" pubdate><span class='month'>Dec</span> <span class='day'>29</span> <span class='year'>2012</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/design-patterns/'>design patterns</a></span>
+</footer>
+
+
+</article>
+
+
+
+<article>
+  
+<h1><a href="/blog/1_single-responsibility-principle/">[六大设计原则] 1. Single Responsibility Principle</a></h1>
+<time datetime="2012-12-29T09:14:07+08:00" pubdate><span class='month'>Dec</span> <span class='day'>29</span> <span class='year'>2012</span></time>
+
+<footer>
+  <span class="categories">posted in <a class='category' href='/blog/categories/design-patterns/'>design patterns</a></span>
+</footer>
+
+
+</article>
+
+</div>
+
+  
+</article>
+
+</div>
+
+<aside class="sidebar">
+  
+    <section>
+ <h1>Categories</h1>
+ <ul id="categories">
+	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (8)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (6)</a></li>
+<li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
+<li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
+<li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (7)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
+
+ </ul>
+</section>
+<section>
+<h1>Tags</h1>
+<ul class="tag-cloud">
+	<a style="font-size: 90%" href="/blog/tags/css/">CSS</a>
+<a style="font-size: 119%" href="/blog/tags/collection/">Collection</a>
+<a style="font-size: 171%" href="/blog/tags/design-pattern/">Design Pattern</a>
+<a style="font-size: 119%" href="/blog/tags/guava/">Guava</a>
+<a style="font-size: 171%" href="/blog/tags/jdk/">JDK</a>
+<a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
+<a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
+<a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 119%" href="/blog/tags/kafka/">Kafka</a>
+<a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
+<a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 164%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
+<a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
+<a style="font-size: 119%" href="/blog/tags/site/">Site</a>
+<a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
+<a style="font-size: 164%" href="/blog/tags/source-code/">Source Code</a>
+<a style="font-size: 90%" href="/blog/tags/spring-mvc/">Spring MVC</a>
+<a style="font-size: 119%" href="/blog/tags/spring-solr/">Spring Solr</a>
+<a style="font-size: 136%" href="/blog/tags/string/">String</a>
+<a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
+<a style="font-size: 119%" href="/blog/tags/web/">Web</a>
+<a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+<a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
+<a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
+<a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
+<a style="font-size: 176%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 164%" href="/blog/tags/messaging/">messaging</a>
+<a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
+<a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
+<a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
+<a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 164%" href="/blog/tags/translation/">translation</a>
+<a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
+<a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
+
+</ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/pulsar-load-balancing/">详解 Pulsar Broker 负载均衡</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/flip/">What the FLiP Is the FLiP Stack?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/bookkeepr-external-consensus/">Apache BookKeeper 外部共识和动态成员</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/pulsar-kafka-benchmark/">2022 Pulsar Performance Report: Better Performance and Data Resiliency With Apache Pulsar</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Links</h1>
+  <ul id="recent_posts">
+    <li class="post"><a href="https://alpha.blog.csdn.net/">Alpha's CSDN Blog</a></li>
+    <li class="post"><a href="https://github.com/AlphaWang/">Alpha's Github</a></li>
+  </ul>
+</section><section>
+  <h1>Visitors Map</h1>
+  <div class="earth">
+    <script type="text/javascript" src="//ri.revolvermaps.com/0/0/8.js?i=awaok66hddi&amp;m=0&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=49" async="async"></script>
+  </div>
+</section>
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2022 - Alpha Wang -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

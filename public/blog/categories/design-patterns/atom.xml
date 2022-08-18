@@ -1,0 +1,1174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Design Patterns | Alpha's Programming Notes]]></title>
+  <link href="http://alphawang.github.io/blog/categories/design-patterns/atom.xml" rel="self"/>
+  <link href="http://alphawang.github.io/"/>
+  <updated>2022-08-18T23:35:22+08:00</updated>
+  <id>http://alphawang.github.io/</id>
+  <author>
+    <name><![CDATA[Alpha Wang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Clean Code Summary]]></title>
+    <link href="http://alphawang.github.io/blog/clean-code/"/>
+    <updated>2019-08-16T17:46:12+08:00</updated>
+    <id>http://alphawang.github.io/blog/clean-code</id>
+    <content type="html"><![CDATA[<blockquote><p>2019年在大团队内部组织了一个 Study Group，主要目的是一起学习、一起分享、一起成长；上个季度我们的一项重点是完成了《Clean Code》这本书的拆解和分享，本文是对其中最后一章的一个总结。其实最后一章是对全书的总结，随意本文也可以近似看成是对全书的总结吧。</p>
+
+<p>原始总结请参考 <a href="https://github.com/AlphaWang/alpha-book-clean-code/tree/master/17_smells_heuristics">https://github.com/AlphaWang/alpha-book-clean-code/tree/master/17_smells_heuristics</a></p></blockquote>
+
+<!--more-->
+
+
+<h2>17.1 注释（Comments）</h2>
+
+<h3>C1: 不恰当的信息（Inappropriate Information）</h3>
+
+<p>注释只应该描述有关代码和设计的技术性信息。</p>
+
+<p>反例：修改历史记录</p>
+
+<h3>C2: 废弃的注释（Obsolete Comment）</h3>
+
+<p>过时、无关、不正确的注释就是废弃的注释。</p>
+
+<p>问题：造成误导</p>
+
+<h3>C3: 冗余注释（Redundant Comment）</h3>
+
+<p>注释应该谈及代码自身 <del>没有</del>（不能）提到的东西。
+Comments should say things that the code cannot say for itself.</p>
+
+<p>反例：</p>
+
+<pre><code>i++; // increment i
+</code></pre>
+
+<pre><code>/**
+* @param sellRequest
+* @return
+* @throws ManagedComponentException
+*/
+public SellResponse beginSellItem(SellRequest sellRequest) throws ManagedComponentException
+</code></pre>
+
+<h3>C4: 糟糕的注释（Poorly Written Comment）</h3>
+
+<p>如果注释值得写，那就值得好好写。</p>
+
+<ul>
+<li>注意语法、拼写；</li>
+<li>不画蛇添足、保持简洁。</li>
+</ul>
+
+
+<h3>C5: 注释掉的代码（Commented-Out Code）</h3>
+
+<p>看到注释掉的代码，就删掉它！</p>
+
+<h2>17.2 环境（Environment）</h2>
+
+<h3>E1: 需要多步才能实现的构建（Build Requires More Than One Step）</h3>
+
+<p>You should be able to check out the system with one simple command and then issue one other simple command to build it.</p>
+
+<pre><code>svn get mySystem 
+cd mySystem
+ant all
+</code></pre>
+
+<h3>E2: 需要多步才能做到的测试（Tests Require More Than One Step）</h3>
+
+<p>You should be able to run all the unit tests with just one command.</p>
+
+<h2>17.3 函数（Functions）</h2>
+
+<p>see <a href="03_functions/03_functions.md">Chapter3 Functions</a></p>
+
+<h3>F1: 过多的参数（Too Many Arguments）</h3>
+
+<p>函数参数越少越好。</p>
+
+<h3>F2: 输出参数（Output Arguments）</h3>
+
+<p>Readers expect arguments to be inputs, not outputs.</p>
+
+<h3>F3: 标识参数（Flag Arguments）</h3>
+
+<p>有布尔值参数，说明函数做了不止一件事。</p>
+
+<h3>F4: 死函数（Dead Function）</h3>
+
+<p>永不被调用的方法应该丢弃。</p>
+
+<h2>17.4 一般性问题（General）</h2>
+
+<h3>G1: 一个源文件中存在多种语言（Multiple Languages in One Source File）</h3>
+
+<h3>G2: 明显的行为未被实现（Obvious Behavior Is Unimplemented）</h3>
+
+<p>Following <code>The Principle of Least Surprise</code>, any function or class should implement the behaviors that another programmer could reasonably expect.</p>
+
+<pre><code class="">Day day = DayDate.StringToDay(String dayName);
+</code></pre>
+
+<p>Reasonable expectations:</p>
+
+<ul>
+<li>&ldquo;Monday&rdquo; &ndash;> Day.MONDAY</li>
+<li>&ldquo;monday&rdquo; &ndash;> Day.MONDAY</li>
+<li>&ldquo;Mon&rdquo; &ndash; Day.MONDAY</li>
+</ul>
+
+
+<h3>G3: 不正确的边界行为（Incorrect Behavior at the Boundaries）</h3>
+
+<p>Don’t rely on your intuition.
+Look for every boundary condition and write a test for it.</p>
+
+<h3>G4: 忽视安全（Overridden Safeties）</h3>
+
+<p>Turning off certain compiler warnings may help you get the build to succeed, but at the risk of endless debugging sessions.</p>
+
+<h3>G5: 重复（Duplication）</h3>
+
+<p>DRY: Don&rsquo;t Repeat Yourself. 这是本书最重要的规则之一</p>
+
+<ul>
+<li>重复代码代表遗漏了抽象。</li>
+</ul>
+
+
+<h3>G6: 在错误的抽象层级上的代码（Code at Wrong Level of Abstraction）</h3>
+
+<pre><code>public interface Stack {
+  Object pop() throws EmptyException;
+  void push(Object o) throws FullException; 
+  double percentFull();
+}  
+</code></pre>
+
+<ul>
+<li>percentFull()方法应该放到子接口<code>BoundedStack</code>上。</li>
+</ul>
+
+
+<h3>G7: 基类依赖于派生类（Base Classes Depending on Their Derivatives）</h3>
+
+<p>In general, base classes should know nothing about their derivatives.</p>
+
+<h3>G8: 信息过多（TMI, Too Much Information）</h3>
+
+<ul>
+<li>类或模块中暴露的接口越少越好；</li>
+<li>类中的方法越少越好；</li>
+<li>函数知道的变量越少越好；</li>
+<li>类拥有的实体变量越少越好；</li>
+</ul>
+
+
+<h3>G9: 死代码（Dead Code）</h3>
+
+<ul>
+<li>不被调用的方法；</li>
+<li>不会进入的if/switch条件；</li>
+<li>从不抛出异常的try-catch；</li>
+</ul>
+
+
+<p>Tips: find dead code by IntelliJ</p>
+
+<p><code>Analyze</code> —> <code>Run Inspection by Name…</code> —> <code>Unused declaration</code></p>
+
+<h3>G10: 垂直分隔（Vertical Separation）</h3>
+
+<p>垂直距离要短，</p>
+
+<ul>
+<li>变量和函数应该在靠近被使用的地方定义。</li>
+<li>本地变量应该在首次被使用的位置上面声明。</li>
+<li>私有函数应该刚好在其首次被调用的位置下面定义。</li>
+</ul>
+
+
+<h3>G11: 前后不一致（Inconsistency）</h3>
+
+<p>If you do something a certain way, do all similar things in the same way.</p>
+
+<ul>
+<li><code>HttpServletResponse response;</code> vs. <code>HttpServletResponse httpResponse;</code></li>
+<li><code>loadInterstellarVendorItem()</code> vs. <code>getInterstellarVendorItem()</code></li>
+</ul>
+
+
+<h3>G12: 混淆视听（Clutter）</h3>
+
+<ul>
+<li><p>没有用到的变量；</p></li>
+<li><p>从不调用的函数；</p></li>
+<li><p>没有信息量的注释；</p>
+
+<p>All these things are clutter and should be removed.</p></li>
+</ul>
+
+
+<h3>G13: 人为耦合（Artificial Coupling）</h3>
+
+<p>不互相依赖的东西就不该耦合。</p>
+
+<p>反例：把普通的enum声明在特殊类中。</p>
+
+<h3>G14: 特性依恋 （Feature Envy）</h3>
+
+<p>see Martin Fowler’s Refactoring.</p>
+
+<p>The methods of a class should be interested in the variables and functions of the class they belong to, and not the variables and functions of other classes.</p>
+
+<pre><code>public class HourlyPayCalculator {
+  public Money calculateWeeklyPay(HourlyEmployee e) {
+    int tenthRate = e.getTenthRate().getPennies();
+    int tenthsWorked = e.getTenthsWorked();
+    int straightTime = Math.min(400, tenthsWorked);
+    int overTime = Math.max(0, tenthsWorked - straightTime); 
+    int straightPay = straightTime * tenthRate;
+    int overtimePay = (int)Math.round(overTime*tenthRate*1.5);
+    return new Money(straightPay + overtimePay); 
+  }
+}
+</code></pre>
+
+<blockquote><p>The calculateWeeklyPay method envies the scope of HourlyEmployee. It “wishes” that it could be inside HourlyEmployee.</p></blockquote>
+
+<p>但事无绝对，下面这个reportHours方法如果移到HourlyEmployee类中，就会违反SRP原则。</p>
+
+<pre><code>public class HourlyEmployeeReport { 
+  private HourlyEmployee employee ;
+  public HourlyEmployeeReport(HourlyEmployee e) { 
+    this.employee = e;
+  }
+
+  String reportHours() { 
+    return String.format("Name: %s\tHours:%d.%1d\n", 
+      employee.getName(), 
+      employee.getTenthsWorked()/10, 
+      employee.getTenthsWorked()%10);
+  } 
+}
+</code></pre>
+
+<h3>G15: 选择算子参数（Selector Arguments）</h3>
+
+<p>什么是selector arguments：用于选择函数行为的参数。</p>
+
+<ul>
+<li>boolean</li>
+<li>enum</li>
+<li>&hellip;</li>
+</ul>
+
+
+<pre><code>public int calculateWeeklyPay(boolean overtime) { //Selector Argument
+  int tenthRate = getTenthRate();
+  int tenthsWorked = getTenthsWorked();
+  int straightTime = Math.min(400, tenthsWorked);
+  int overTime = Math.max(0, tenthsWorked - straightTime); 
+  int straightPay = straightTime * tenthRate;
+  double overtimeRate = overtime ? 1.5 : 1.0 * tenthRate; 
+  int overtimePay = (int)Math.round(overTime*overtimeRate); 
+  return straightPay + overtimePay;
+}
+</code></pre>
+
+<h3>G16: 晦涩的意图（Obscured Intent）</h3>
+
+<pre><code>public int m_otCalc() { 
+  return iThsWkd * iThsRte +
+       (int) Math.round(0.5 * iThsRte * 
+          Math.max(0, iThsWkd - 400)
+       ); 
+}
+</code></pre>
+
+<p>这个函数看起来短小紧凑，但究竟是在做什么事情呢？</p>
+
+<h3>G17: 位置错误的权责（Misplaced Responsibility）</h3>
+
+<p>Question: PI常量应该放在Math类、Trigonometry类、还是Circle类？</p>
+
+<ul>
+<li>Following <code>The Principle of Least Surprise</code>. Code should be placed where a reader would naturally expect it to be.</li>
+</ul>
+
+
+<h3>G18: 不恰当的静态方法（Inappropriate Static）</h3>
+
+<p>恰当的静态方法：</p>
+
+<pre><code>Math.max(double a, double b)
+
+// to avoid:
+new Math().max(a, b);
+a.max(b);
+</code></pre>
+
+<p>不恰当的静态方法：</p>
+
+<pre><code>HourlyPayCalculator.calculatePay(employee, overtimeRate).
+</code></pre>
+
+<p>原因：有理由希望这个函数是多态的。（OvertimeHourlyPayCalculator, StraightTimeHourlyPayCalculator）</p>
+
+<blockquote><p>可以作为Employee方法的非静态函数。</p></blockquote>
+
+<h3>G19: 使用解释性变量（Use Explanatory Variables）</h3>
+
+<p>让程序可读的有力方法之一就是将计算过程打散，用有意义的变量名存储中间值。</p>
+
+<pre><code>Matcher match = headerPattern.matcher(line); 
+if(match.find()) {
+  String key = match.group(1); //中间值
+  String value = match.group(2); //中间值 
+  headers.put(key.toLowerCase(), value);
+}
+</code></pre>
+
+<h3>G20: 函数名称应该表达其行为（Function Names Should Say What They Do）</h3>
+
+<p>反例：</p>
+
+<pre><code>Date newDate = date.add(5);
+</code></pre>
+
+<p>正例：</p>
+
+<pre><code>Date newDate = date.addDaysTo(5);
+Date newDate = date.increaseByDays(5);
+</code></pre>
+
+<h3>G21: 理解算法（Understand the Algorithm）</h3>
+
+<p>Before you consider yourself to be done with a function, make sure you understand how it works.
+It is not good enough that it passes all the tests.
+You must know that the solution is correct.</p>
+
+<h3>G22: 把逻辑依赖改为物理依赖（Make Logical Dependencies Physical）</h3>
+
+<p>Logical Dependency:</p>
+
+<ul>
+<li>The dependent module should not make <strong>assumptions</strong> about the module it depends upon.</li>
+</ul>
+
+
+<p>Physical Dependency:</p>
+
+<ul>
+<li>it should explicitly ask that module for all the information it depends upon.</li>
+</ul>
+
+
+<pre><code>public class HourlyReporter {
+  private HourlyReportFormatter formatter; 
+  private List&lt;LineItem&gt; page;
+  private final int PAGE_SIZE = 55;
+
+  public void generateReport(List&lt;HourlyEmployee&gt; employees) { 
+    for (HourlyEmployee e : employees) {
+      addLineItemToPage(e);
+      if (page.size() == PAGE_SIZE)
+        printAndClearItemList(); 
+    }
+    if (page.size() &gt; 0) 
+      printAndClearItemList();
+  }
+
+  private void printAndClearItemList() { 
+    formatter.format(page); 
+    page.clear();
+  }
+
+  private void addLineItemToPage(HourlyEmployee e) { 
+    LineItem item = new LineItem();
+    item.name = e.getName();
+    item.hours = e.getTenthsWorked() / 10;
+    item.tenths = e.getTenthsWorked() % 10;
+    page.add(item); 
+  }
+</code></pre>
+
+<p>PAGE_SIZE应该是HourlyReportFormatter的职责； 此处HourlyReporter被假定知道PAGE_SIZE，所以是逻辑依赖。</p>
+
+<ul>
+<li>We can physicalize this dependency by creating a new method in <code>HourlyReportFormatter</code> named <code>getMaxPageSize()</code>.</li>
+<li><code>HourlyReporter</code> will then call that function rather than using the <code>PAGE_SIZE</code> constant.</li>
+</ul>
+
+
+<h3>G23: 用多态替代 if-else 或 switch-case（Prefer Polymorphism to If/Else or Switch/Case）</h3>
+
+<p>反例：
+CartSectionHeaderAssembler</p>
+
+<h3>G24: 遵循标准约定（Follow Standard Conventions）</h3>
+
+<p>建议参考阿里巴巴Java开发手册：<a href="https://github.com/alibaba/p3c">https://github.com/alibaba/p3c</a></p>
+
+<h3>G25: 用命名常量替代魔术数（Replace Magic Numbers with Named Constants）</h3>
+
+<p>反例：</p>
+
+<ul>
+<li>86400</li>
+</ul>
+
+
+<p>正例：</p>
+
+<ul>
+<li>int SECONDS_PER_DAY = 86400;</li>
+</ul>
+
+
+<p>问题：是不是所有数字都需要替换成常量？</p>
+
+<pre><code>// 计算圆周长
+// 数字 2 是否需要定义一个常量？ --&gt; NO
+double circumference = radius * Math.PI * 2;
+</code></pre>
+
+<h3>G26: 准确（Be Precise）</h3>
+
+<ul>
+<li>不要用<code>float</code>表示货币；</li>
+<li>如果所调用的方法可能返回null，就必须要做null检查；</li>
+</ul>
+
+
+<h3>G27: 结构优于约定（Structure over Convention）</h3>
+
+<p>switch/cases with nicely named enumerations are inferior to base classes with abstract methods.</p>
+
+<h3>G28: 封装条件（Encapsulate Conditionals）</h3>
+
+<p>如果 if 或者 while 语句没有上下文，那就很难理解其判断逻辑了。</p>
+
+<p>反例</p>
+
+<pre><code>if (timer.hasExpired() &amp;&amp; !timer.isRecurrent())
+</code></pre>
+
+<p>正例</p>
+
+<pre><code>if (shouldBeDeleted(timer))
+</code></pre>
+
+<h3>G29: 避免否定性条件（Avoid Negative Conditionals）</h3>
+
+<p>Negatives are just a bit harder to understand than positives.</p>
+
+<p>反例</p>
+
+<pre><code>if (!buffer.shouldNotCompact())
+</code></pre>
+
+<p>正例</p>
+
+<pre><code>if (buffer.shouldCompact())
+</code></pre>
+
+<h3>G30: 函数只该做一件事（Functions Should Do One Thing）</h3>
+
+<p>SRP原则。</p>
+
+<h3>G31: 掩蔽时序耦合（Hidden Temporal Couplings）</h3>
+
+<p>有时函数的执行次序很重要，这时就需要用某种机制（例如 bucket brigade）来确保其他程序员不能随意调整执行次序。</p>
+
+<p>反例</p>
+
+<pre><code>public class MoogDiver { 
+  Gradient gradient; 
+  List&lt;Spline&gt; splines;
+
+  public void dive(String reason) { 
+    saturateGradient(); 
+    reticulateSplines(); 
+    diveForMoog(reason);
+  }
+  ... 
+}
+</code></pre>
+
+<p>正例</p>
+
+<pre><code>public class MoogDiver { 
+  Gradient gradient; 
+  List&lt;Spline&gt; splines;
+
+  public void dive(String reason) {
+    Gradient gradient = saturateGradient(); 
+    List&lt;Spline&gt; splines = reticulateSplines(gradient); 
+    diveForMoog(splines, reason);
+  }
+  ... 
+}
+</code></pre>
+
+<h3>G32: 别随意（Don’t Be Arbitrary）</h3>
+
+<p>反例：</p>
+
+<p>滥用内部类。本应是一个顶级类，却随意定义在另一个类内部作为内部类。</p>
+
+<h3>G33: 封装边界条件（Encapsulate Boundary Conditions）</h3>
+
+<p>要把处理边界条件的代码集中到一处，而不是散落在代码中。</p>
+
+<p>反例：</p>
+
+<pre><code>if(level + 1 &lt; tags.length) {
+  parts = new Parse(body, tags, level + 1, offset + endTag);
+  body = null; 
+}
+</code></pre>
+
+<p>正例：</p>
+
+<pre><code>int nextLevel = level + 1; 
+if(nextLevel &lt; tags.length) {
+  parts = new Parse(body, tags, nextLevel, offset + endTag);
+  body = null; 
+}
+</code></pre>
+
+<h3>G34: 函数应该只在一个抽象层级上（Functions Should Descend Only One Level of Abstraction）</h3>
+
+<p>反例：</p>
+
+<pre><code>public String render() throws Exception {
+  StringBuffer html = new StringBuffer("&lt;hr"); 
+  if(size &gt; 0)
+    html.append(" size=\"").append(size + 1).append("\""); 
+  html.append("&gt;");
+  return html.toString(); 
+}
+</code></pre>
+
+<p>这个方法混杂了至少两个抽象层级：</p>
+
+<ol>
+<li>The first is the notion that a horizontal rule has a size.</li>
+<li>The second is the syntax of the HR tag itself.</li>
+</ol>
+
+
+<p>正例：</p>
+
+<pre><code>public String render() throws Exception {
+  HtmlTag hr = new HtmlTag("hr"); 
+  if (extraDashes &gt; 0)
+    hr.addAttribute("size", hrSize(extraDashes)); 
+  return hr.html();
+}
+
+private String hrSize(int height) {
+  int hrSize = height + 1;
+  return String.format("%d", hrSize); 
+}
+</code></pre>
+
+<h3>G35: 在较高层级放置可配置数据（Keep Configurable Data at High Levels）</h3>
+
+<p>如果你有一个常量值表示默认值或者配置值，不要把它埋在底层的函数中。</p>
+
+<p>正例：</p>
+
+<pre><code>public static void main(String[] args) throws Exception {
+  Arguments arguments = parseCommandLine(args);
+  ... 
+}
+
+public class Arguments {
+  public static final String DEFAULT_PATH = ".";
+  public static final String DEFAULT_ROOT = "FitNesseRoot"; 
+  public static final int DEFAULT_PORT = 80;
+  public static final int DEFAULT_VERSION_DAYS = 14;
+  ...
+}
+</code></pre>
+
+<h3>G36: 避免传递浏览（Avoid Transitive Navigation）</h3>
+
+<p>Law of Demeter.不要让模块了解太多其写作者的信息。</p>
+
+<p>反例：</p>
+
+<pre><code>a.getB().getC().doSomething();
+</code></pre>
+
+<p>正例：</p>
+
+<pre><code>myCollaborator.doSomething();
+</code></pre>
+
+<h2>17.5 Java</h2>
+
+<h3>J1: 通过使用通配符避免过长的导入清单（Avoid Long Import Lists by Using Wildcards）</h3>
+
+<p>如果使用了来自同一包的两个或多个类，用通配符导入：<code>import package.*</code>。</p>
+
+<blockquote><p>仅仅是为了减少代码行？</p></blockquote>
+
+<h3>J2: 不要继承常量（Don’t Inherit Constants）</h3>
+
+<p>不要在子类中访问父类的常量。因为不方便找到常量究竟定义在哪个类里。</p>
+
+<blockquote><p>通过IDEA可以方便地找到呀。。。</p></blockquote>
+
+<h3>J3: 常量 vs. 枚举（Constants versus Enums）</h3>
+
+<p>推荐用枚举。</p>
+
+<h2>17.6 名称（Names）</h2>
+
+<h3>N1: 采用描述性名称（Choose Descriptive Names）</h3>
+
+<h3>N2: 名称应与抽象层级相符（Choose Names at the Appropriate Level of Abstraction）</h3>
+
+<p>Don’t pick names that communicate implementation; choose names the reflect the level of abstraction of the class or function you are working in.</p>
+
+<p>命名不要暴露实现细节，只用描述功能抽象。</p>
+
+<h3>N3: 尽可能使用标准命名法（Use Standard Nomenclature Where Possible）</h3>
+
+<p>如果用装饰者模式，就以Decorator结尾。</p>
+
+<h3>N4: 无歧义的命名（Unambiguous Names）</h3>
+
+<p>反例</p>
+
+<pre><code>private String doRename() throws Exception {
+  if(refactorReferences) 
+    renameReferences();
+  renamePage();
+
+  pathToRename.removeNameFromEnd(); 
+  pathToRename.addNameToEnd(newName); 
+  return PathParser.render(pathToRename);
+}
+</code></pre>
+
+<p>正例</p>
+
+<pre><code>private String renamePageAndOptionallyAllReferences() throws Exception {
+  ...
+}
+</code></pre>
+
+<h3>N5: 为较大作用范围选用较长名称（Use Long Names for Long Scopes）</h3>
+
+<p>如果变量作用范围很小，例如5行之内，那么取名为<code>i</code> <code>j</code> 是没问题的；但是如果作为范围较大，则应该使用较长的名称。</p>
+
+<h3>N6: 避免编码（Avoid Encodings）</h3>
+
+<p>不要在名称中包含类型或作用域信息。</p>
+
+<h3>N7: 名称应该说明副作用（Names Should Describe Side-Effects）</h3>
+
+<p>反例</p>
+
+<pre><code>public ObjectOutputStream getOos() throws IOException { 
+  if (m_oos == null) {
+    m_oos = new ObjectOutputStream(m_socket.getOutputStream()); 
+  }
+
+  return m_oos; 
+}
+</code></pre>
+
+<p>正例</p>
+
+<pre><code>public ObjectOutputStream createOrReturnOos() throws IOException { 
+ ... 
+}
+</code></pre>
+
+<h2>17.7 测试（Tests）</h2>
+
+<h3>T1: 测试不足（Insufficient Tests）</h3>
+
+<p>一套测试应该测到所有可能失败的东西。</p>
+
+<p>只要还有没被测试探测过的条件，或是还有没被验证过的计算，那么测试就是不足的。</p>
+
+<h3>T2: 使用覆盖率工具（Use a Coverage Tool!）</h3>
+
+<p>IDE支持。</p>
+
+<h3>T3: 别略过小测试（Don’t Skip Trivial Tests）</h3>
+
+<p>小测试易于编写，其文档上的价值高于编写成本。</p>
+
+<h3>T4: 被忽略的测试就是对不确定事物的疑问（An Ignored Test Is a Question about an Ambiguity）</h3>
+
+<p>有时因为需求不明，我们可以把测试表为<code>@Ignore</code>。</p>
+
+<h3>T5: 测试边界条件（Test Boundary Conditions）</h3>
+
+<p>边界判断错误的情形很常见。</p>
+
+<h3>T6: 全面测试相近的缺陷（Exhaustively Test Near Bugs）</h3>
+
+<p>80% 的软件缺陷常常生存在软件 20% 的空间里。</p>
+
+<h3>T7: 测试失败的模式有启发性（Patterns of Failure Are Revealing）</h3>
+
+<p>有时可以通过测试用例失败的模式来诊断问题所在。</p>
+
+<h3>T8: 测试覆盖率的模式有启发性（Test Coverage Patterns Can Be Revealing）</h3>
+
+<p>Looking at the code that is or is not executed by the passing tests gives clues to why the failing tests fail.</p>
+
+<h3>T9: 测试应该快速（Tests Should Be Fast）</h3>
+
+<p>A slow test is a test that won’t get run. When things get tight, it’s the slow tests that will be dropped from the suite. So <em>do what you must</em> to keep your tests fast.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[六大设计原则] 6. Open Closed Principle]]></title>
+    <link href="http://alphawang.github.io/blog/6_open-closed-principle/"/>
+    <updated>2012-12-31T16:47:20+08:00</updated>
+    <id>http://alphawang.github.io/blog/6_open-closed-principle</id>
+    <content type="html"><![CDATA[<h2>定义</h2>
+
+<p>Open Closed Principle:</p>
+
+<ul>
+<li>Software entities like classes, modules and functions should be open for extension but closed for modifications.
+
+<blockquote><p><strong>对扩展开放，对修改关闭。</strong>  <br/>
+一个软件实体应该通过扩展来实现变化，而不是通过修改已有的代码来实现变化。<em>——but，并不意味着不做任何修改；底层模块的扩展，必然要有高层模块进行耦合</em>。</p></blockquote></li>
+</ul>
+
+
+<p>“变化”可分为三种类型：</p>
+
+<ul>
+<li>逻辑变化——不涉及其他模块，可修改原有类中的方法；</li>
+<li>子模块变化——会对其他模块产生影响，通过扩展来完成变化；</li>
+<li>可见视图变化——界面变化，有时需要通过扩展来完成变化。</li>
+</ul>
+
+
+<h2>问题由来</h2>
+
+<p>在软件的生命周期内，因为变化、升级和维护等原因需要对软件原有代码进行修改时，可能会给旧代码中引入错误，也可能会使我们不得不对整个功能进行重构，并且需要原有代码经过重新测试。</p>
+
+<!--more-->
+
+
+<h2>解决方案</h2>
+
+<p>当软件需要变化时，尽量通过扩展软件实体的行为来实现变化，而不是通过修改已有的代码来实现变化。<br/>
+这要求：</p>
+
+<p><strong>1、抽象约束（要实现对扩展开放，首要前提就是抽象约束）</strong></p>
+
+<p>通过接口或抽象类可以约束一组可能变化的行为，并能实现对扩展开放。包含三层含义：</p>
+
+<ul>
+<li>通过接口或抽象类可以约束扩展，对扩展进行边界限定，不允许出现在接口抽象类中不存在的public方法；</li>
+<li>参数类型、引用对象尽量使用接口或抽象类，而不是实现类；</li>
+<li>抽象应尽量保持稳定，一旦确定即不允许修改。</li>
+</ul>
+
+
+<p><strong>2、元数据（metadata）控制模块行为</strong> <br/>
+元数据，即用来描述环境和数据的数据，即配置数据。例如SpingContext。</p>
+
+<p><strong>3、制定项目章程</strong></p>
+
+<p><strong>4、封装变化</strong><br/>
+封装可能发生的变化。将相同的变化封装到一个接口或抽象类中；将不同的变化封装到不同的接口或抽象类中。</p>
+
+<h2>好处</h2>
+
+<ul>
+<li>易于单元测试
+
+<blockquote><p>如果直接修改已有代码，则需要同时修改单元测试类；而通过扩展，则只需生成一个测试类。</p></blockquote></li>
+<li>可提高复用性</li>
+<li>可提高可维护性</li>
+<li>面向对象开发的要求</li>
+</ul>
+
+
+<h2>建议</h2>
+
+<p>开闭原则是最基础的原则，前5个原则都是开闭原则的具体形态。</p>
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[六大设计原则] 5. Least Knowledge Principle]]></title>
+    <link href="http://alphawang.github.io/blog/5_least-knowledge-principle/"/>
+    <updated>2012-12-31T16:31:41+08:00</updated>
+    <id>http://alphawang.github.io/blog/5_least-knowledge-principle</id>
+    <content type="html"><![CDATA[<h2>定义</h2>
+
+<p>最少知识原则（Least Knowledge Principle），又称迪米特法则（LoD，Law of Demeter），是指一个对象应该对其他对象有最少的了解。
+一个类对自己依赖的类知道的越少越好。<br/>
+也就是说，对于被依赖的类来说，无论逻辑多么复杂，都尽量地的将逻辑封装在类的内部，对外除了提供的public方法，不对外泄漏任何信息。</p>
+
+<h2>问题由来</h2>
+
+<p>类与类之间的关系越密切，耦合度越大，当一个类发生改变时，对另一个类的影响也越大。</p>
+
+<!--more-->
+
+
+<h2>解决方案</h2>
+
+<p>迪米特法则包含4层含义：</p>
+
+<p><strong>1、只和朋友交流</strong></p>
+
+<p>Only talk to your immediate friends. 两个对象之间的耦合就成为朋友关系。即，出现在成员变量、方法输入输出参数中的类就是朋友；局部变量不属于朋友。</p>
+
+<blockquote><p>不与无关的对象发生耦合！</p></blockquote>
+
+<p>方针：不要调用从另一个方法中返回的对象中的方法！只应该调用以下方法：</p>
+
+<ul>
+<li>该对象本身的方法</li>
+<li>该对象中的任何组件的方法</li>
+<li>方法参数中传入的对象的方法</li>
+<li>方法内部实例化的对象的方法</li>
+</ul>
+
+
+<p>【例】：Teacher类可以命令TeamLeader对Students进行清点，则Teacher无需和Students耦合，只需和TeamLeader耦合即可。</p>
+
+<p>【反例】：<br/>
+<code>
+public float getTemp(){  
+     Thermometer t = station.getThermometer(); //温度计对象
+     return t.getTemp();  
+}
+</code></p>
+
+<p>客户端不应该了解气象站类中的温度计对象；应在气象站类中直接加入获取温度的方法。<br/>
+改为：
+<code>
+public float getTemp(){  
+      return station.getTemp();  
+}
+</code></p>
+
+<p><strong>2、朋友间也应该有距离</strong></p>
+
+<p>即使是朋友类之间也不能无话不说，无所不知。</p>
+
+<blockquote><p>一个类公开的public属性或方法应该尽可能少！</p></blockquote>
+
+<p><strong>3、是自己的就是自己的</strong></p>
+
+<p>如果一个方法放在本类中也可以、放在其他类中也可以，怎么办？</p>
+
+<blockquote><p>如果一个方法放在本类中，既不增加类间关系，也对本类不产生负面影响，就放置在本类中。</p></blockquote>
+
+<p><strong>4、谨慎使用Serializable</strong></p>
+
+<p>否则，若后来修改了属性，序列化时会抛异常NotSerializableException。</p>
+
+<h2>建议</h2>
+
+<p>迪米特法则的核心观念是：类间解耦。<br/>
+其结果是产生了大量中转或跳转类。</p>
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[六大设计原则] 4. Interface Segrefation Principle]]></title>
+    <link href="http://alphawang.github.io/blog/4_interface-segrefation-principle/"/>
+    <updated>2012-12-31T16:11:26+08:00</updated>
+    <id>http://alphawang.github.io/blog/4_interface-segrefation-principle</id>
+    <content type="html"><![CDATA[<h2>定义</h2>
+
+<p>Interface Segregation Principle:</p>
+
+<ul>
+<li><p>Clients should not be forced to depend upon interfaces that they don&rsquo;t use.</p>
+
+<blockquote><p>客户端只依赖于它所需要的接口；它需要什么接口就提供什么接口，把不需要的接口剔除掉。</p></blockquote></li>
+<li><p>The dependency of one class to another one should depend on the smallest possible interface.</p>
+
+<blockquote><p>类间的依赖关系应建立在最小的接口上。<br/>
+即，接口尽量细化，接口中的方法尽量少</p></blockquote></li>
+</ul>
+
+
+<h2>问题由来</h2>
+
+<p>类<code>A</code>通过接口<code>I</code>依赖类<code>B</code>，类<code>C</code>通过接口<code>I</code>依赖类<code>D</code>。如果接口<code>I</code>对于类<code>A</code>和类<code>B</code>来说不是最小接口，则类<code>B</code>和类<code>D</code>必须去实现他们不需要的方法。</p>
+
+<!--more-->
+
+
+<h2>解决方案</h2>
+
+<p>将臃肿的接口I拆分为独立的几个接口，类A和类C分别与他们需要的接口建立依赖关系。包含4层含义：</p>
+
+<p><strong>1、接口要尽量小</strong></p>
+
+<p>不能出现Fat Interface；但是要有限度，首先不能违反单一职责原则（不能一个接口对应半个职责）。</p>
+
+<p><strong>2、接口要高内聚</strong></p>
+
+<p>在接口中尽量少公布public方法。<br/>
+接口是对外的承诺，承诺越少对系统的开发越有利。</p>
+
+<p><strong>3、定制服务</strong></p>
+
+<p>只提供访问者需要的方法。例如，为管理员提供IComplexSearcher接口，为公网提供ISimpleSearcher接口。</p>
+
+<p><strong>4、接口的设计是有限度的</strong></p>
+
+<h2>建议</h2>
+
+<ul>
+<li>一个接口只服务于一个子模块或业务逻辑；</li>
+<li>通过业务逻辑压缩接口中的public方法；</li>
+<li>已被污染了的接口，尽量去修改；若变更的风险较大，则采用适配器模式转化处理；</li>
+<li>拒绝盲从</li>
+</ul>
+
+
+<h2>与单一职责原则的区别</h2>
+
+<p>二者审视角度不同：</p>
+
+<ul>
+<li>单一职责原则要求的是类和接口职责单一，注重的是职责，这是业务逻辑上的划分；</li>
+<li>接口隔离原则要求接口的方法尽量少。。。</li>
+</ul>
+
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[[六大设计原则] 3. Dependence Inversion Principle]]></title>
+    <link href="http://alphawang.github.io/blog/3_dependence-inversion-principle/"/>
+    <updated>2012-12-30T19:41:26+08:00</updated>
+    <id>http://alphawang.github.io/blog/3_dependence-inversion-principle</id>
+    <content type="html"><![CDATA[<h2>定义</h2>
+
+<p>DIP，Dependence Inversion Principle:</p>
+
+<ul>
+<li>High level modules should not depend upon low level modules. Both should depend upon abstractions.</li>
+<li>Abstractions should not depend upon details. Details should depend upon abstractions.</li>
+</ul>
+
+
+<p>即“面向接口编程”：</p>
+
+<ul>
+<li>高层模块不应该依赖低层模块，两者都应该依赖其抽象；
+
+<blockquote><p>模块间的依赖通过抽象发生。实现类之间不发生直接的依赖关系（eg. 类B被用作类A的方法中的参数），其依赖关系是通过接口或抽象类产生的；</p></blockquote></li>
+<li>抽象不应该依赖细节；
+
+<blockquote><p>接口或抽象类不依赖于实现类</p></blockquote></li>
+<li>细节应该依赖抽象；
+
+<blockquote><p>实现类依赖接口或抽象类</p></blockquote>
+
+<pre><code>  **何为“倒置”？**  
+  依赖正置：类间的依赖是实实在在的实现类间的依赖，即面向实现编程，这是正常人的思维方式；     
+  而依赖倒置是对现实世界进行抽象，产生了抽象间的依赖，代替了人们传统思维中的事物间的依赖。
+</code></pre></li>
+</ul>
+
+
+<!--more-->
+
+
+<h2>问题由来</h2>
+
+<p>类A直接依赖类B，假如要将类A改为依赖类C，则必须通过修改类A的代码来达成。<br/>
+这种场景下，类A一般是高层模块，负责复杂的业务逻辑；类B和类C是低层模块，负责基本的原子操作；假如修改类A，会给程序带来不必要的风险。</p>
+
+<p><strong>示例（类间的耦合性）：</strong></p>
+
+<p>例如有一个Driver，可以驾驶Benz：
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>public class Driver {&lt;br/&gt;
+</span><span class='line'>    public void drive(Benz benz) {&lt;br/&gt;
+</span><span class='line'>        benz.run();&lt;br/&gt;
+</span><span class='line'>    }&lt;br/&gt;
+</span><span class='line'>}&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;public class Benz {&lt;br/&gt;
+</span><span class='line'>    public void run() {&lt;br/&gt;
+</span><span class='line'>        System.out.println(&ldquo;Benz开动&hellip;&rdquo;);&lt;br/&gt;
+</span><span class='line'>    }&lt;br/&gt;
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure></p>
+
+<p>问题来了：现在有变更，Driver不仅要驾驶Benz，还需要驾驶BMW，怎么办？<br/>
+Driver和Benz是紧耦合的，导致可维护性大大降低、稳定性大大降低（增加一个车就需要修改Driver，Driver是不稳定的）。</p>
+
+<p><strong>示例（并行开发风险性）：</strong></p>
+
+<p>如上例，Benz类没开发完成前，Driver是不能编译的！不能并行开发！</p>
+
+<h2>解决办法</h2>
+
+<p>将类A修改为依赖接口I，类B和类C各自实现接口I，类A通过接口I间接与类B或者类C发生联系，则会大大降低修改类A的几率。</p>
+
+<p>上例中，新增一个抽象ICar接口，ICar不依赖于BMW和Benz两个实现类（抽象不依赖于细节）。<br/>
+1）Driver和ICar实现类松耦合<br/>
+2）接口定下来，Driver和BMW就可独立开发了，并可独立地进行单元测试</p>
+
+<h2>依赖的三种写法</h2>
+
+<p><strong>1、构造函数传递依赖对象（构造函数注入）</strong></p>
+
+<pre><code>public interface IDriver {  
+    public void drive();  
+}  
+
+public class Driver implements IDriver {  
+    private ICar car;    
+    public Driver(**ICar** _car) {  
+        this.car = _car;  
+    }   
+    public void drive() {  
+        this.car.run();  
+    }  
+}
+</code></pre>
+
+<p><strong>2、setter方法传递依赖对象（setter依赖注入）</strong></p>
+
+<pre><code>public interface IDriver{  
+    public void setCar(ICar car);  
+    public void drive();  
+}  
+
+public class Driver implements IDriver {  
+    private ICar car;  
+    public void setCar(**ICar** car) {  
+        this.car = car;  
+    }  
+    public void drive() {  
+        this.car.run();  
+    }  
+}  
+</code></pre>
+
+<p><strong>3、接口声明依赖对象（接口注入）</strong></p>
+
+<h2>好处</h2>
+
+<p>依赖倒置可以减少类间的耦合性、降低并行开发引起的风险。</p>
+
+<h2>建议</h2>
+
+<p>DIP的核心是面向接口编程；<br/>
+DIP的本质是通过抽象（接口、抽象类）使各个类或模块的实现彼此独立，不互相影响。</p>
+
+<p>在项目中遵循以下原则：</p>
+
+<ul>
+<li>每个类尽量都有接口或抽象类</li>
+<li>变量的表面类型尽量使接口或抽象类</li>
+<li>任何类都不应该从具体类派生*——否则就会依赖具体类。</li>
+<li>尽量不要重写父类中已实现的方法——否则父类就不是一个真正适合被继承的抽象。</li>
+<li>结合里氏替代原则使用</li>
+</ul>
+
+
+<!--Google Adsense-->
+
+
+<p class="meta" style="text-align:center">
+    <!-- 789*90 -->
+    <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <ins class="adsbygoogle"
+         style="display:inline-block;width:789px;height:90px"
+         data-ad-client="ca-pub-6393503301700908"
+         data-ad-slot="7806666870"></ins>
+    <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</p>
+
+]]></content>
+  </entry>
+  
+</feed>
