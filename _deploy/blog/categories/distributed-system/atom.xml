@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Distributed System | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/distributed-system/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2022-08-18T23:35:22+08:00</updated>
+  <updated>2022-08-18T23:59:29+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -1549,7 +1549,7 @@ Leader 按照相同顺序将 Entry 追加到 Follower 的日志中。</li>
     <id>http://alphawang.github.io/blog/pulsar-kafka-benchmark</id>
     <content type="html"><![CDATA[<blockquote><p>本文译自 StreamNatvie 官方发布的《2022 Pulsar 性能测试报告》</p></blockquote>
 
-<p>As we move into 2022, the Apache PulsarTM versus Apache KafkaⓇ debate continues. Organizations often make comparisons based on features, capabilities, size of the community, and a number of other metrics of varying importance. This report focuses purely on comparing the technical performance based on benchmark tests.</p>
+<p>As we move into 2022, the Apache Pulsar<sup>TM</sup> versus Apache Kafka<sup>Ⓡ</sup> debate continues. Organizations often make comparisons based on features, capabilities, size of the community, and a number of other metrics of varying importance. This report focuses purely on comparing the technical performance based on benchmark tests.</p>
 
 <p>进入 2022 年，人们对 Apache Pulsar<sup>TM</sup> 与 Apache Kafka<sup>Ⓡ </sup>的争论仍在持续。大家通常会对比二者的特性、能力、社区规模以及其他一系列重要性各异的指标。本报告则侧重于基于基准测试对比二者的技术性能。</p>
 
