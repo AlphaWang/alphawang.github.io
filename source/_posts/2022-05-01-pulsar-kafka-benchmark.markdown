@@ -10,8 +10,6 @@ description: Pulsar Kafka 性能对比
 
 > 本文译自 StreamNatvie 官方发布的《2022 Pulsar 性能测试报告》
 
-
-
 As we move into 2022, the Apache Pulsar<sup>TM</sup> versus Apache Kafka<sup>Ⓡ</sup> debate continues. Organizations often make comparisons based on features, capabilities, size of the community, and a number of other metrics of varying importance. This report focuses purely on comparing the technical performance based on benchmark tests.
 
 进入 2022 年，人们对 Apache Pulsar<sup>TM</sup> 与 Apache Kafka<sup>Ⓡ </sup>的争论仍在持续。大家通常会对比二者的特性、能力、社区规模以及其他一系列重要性各异的指标。本报告则侧重于基于基准测试对比二者的技术性能。
@@ -51,10 +49,10 @@ Let’s take a look at three key findings before jumping into the full results.
 
 ## Key Benchmark Findings - 基准测试的主要发现
 
-| 2.5x<br />比 Kafka 更高的最大吞吐量          | Pulsar 能够达到 Kafka 2.5 倍的最大吞吐量。这对于导入并处理大量数据的场景来说是一个巨大优势，例如日志分析、网络安全和传感器数据收集。更高的吞吐量意味着只需要更少的硬件，从而降低运营成本。 |
-| -------------------------------------------- | ------------------------------------------------------------ |
-| **100x<br/>比 Kafka 更低的个位数的发布延迟** | Pulsar 提供稳定的个位数的发布延迟，这比 Kafka 的 P99.99 (ms) 延迟低 100 倍。低发布延迟是很重要的，它使得系统能够快速将消息发布到消息总线。一旦消息发布成功，数据即能安全地进行各种“处理”。 |
-| **1.5x<br />比 Kafka 更快的历史读取速率**    | Pulsar 的历史读取速率比 Kafka 快 1.5 倍，因此使用 Pulsar 作为消息系统的应用可以在意外中断后只需一半的时间即可追上数据。对于数据库迁移/复制这类将数据传输到记录系统的场景来说，读取吞吐量至关重要。 |
+| 2.5x<br />比 Kafka 更高的最大吞吐量      | Pulsar 能够达到 Kafka 2.5 倍的最大吞吐量。这对于导入并处理大量数据的场景来说是一个巨大优势，例如日志分析、网络安全和传感器数据收集。更高的吞吐量意味着只需要更少的硬件，从而降低运营成本。 |
+| ---------------------------------------- | ------------------------------------------------------------ |
+| 100x<br/>比 Kafka 更低的个位数的发布延迟 | Pulsar 提供稳定的个位数的发布延迟，这比 Kafka 的 P99.99 (ms) 延迟低 100 倍。低发布延迟是很重要的，它使得系统能够快速将消息发布到消息总线。一旦消息发布成功，数据即能安全地进行各种“处理”。 |
+| 1.5x<br />比 Kafka 更快的历史读取速率    | Pulsar 的历史读取速率比 Kafka 快 1.5 倍，因此使用 Pulsar 作为消息系统的应用可以在意外中断后只需一半的时间即可追上数据。对于数据库迁移/复制这类将数据传输到记录系统的场景来说，读取吞吐量至关重要。 |
 
 
 Below we provide details on how the benchmark was performed and its results.
