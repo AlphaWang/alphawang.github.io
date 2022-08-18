@@ -1,0 +1,2221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Translation | Alpha's Programming Notes]]></title>
+  <link href="http://alphawang.github.io/blog/categories/translation/atom.xml" rel="self"/>
+  <link href="http://alphawang.github.io/"/>
+  <updated>2022-08-18T23:35:22+08:00</updated>
+  <id>http://alphawang.github.io/</id>
+  <author>
+    <name><![CDATA[Alpha Wang]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Apache Pulsar 与 Apache Kafka 之对比分析]]></title>
+    <link href="http://alphawang.github.io/blog/kafka-versus-pulsar/"/>
+    <updated>2022-08-17T21:35:10+08:00</updated>
+    <id>http://alphawang.github.io/blog/kafka-versus-pulsar</id>
+    <content type="html"><![CDATA[<blockquote><p>本文可能是全网最好的对比 Kafka 与 Pulsar 的文章之一。</p>
+
+<ul>
+<li><p>翻译自 <a href="https://learning.oreilly.com/library/view/apache-pulsar-versus/9781492076551/ch01.html#what_is_apache_pulsar">https://learning.oreilly.com/library/view/apache-pulsar-versus/9781492076551/ch01.html#what_is_apache_pulsar</a> ，原作者 Chris Bartholomew。</p></li>
+<li><p>如有错漏，欢迎提 PR 至 <a href="https://github.com/AlphaWang/Translation-Apache-Pulsar-Versus-Apache-Kafka">https://github.com/AlphaWang/Translation-Apache-Pulsar-Versus-Apache-Kafka</a></p></li>
+</ul>
+</blockquote>
+
+<p>Apache Kafka 是一种广泛使用的发布订阅（pub-sub）消息系统，起源于 LinkedIn，并于 2011 年成为 Apache 软件基金会（ASF）项目。而近年来，Apache Pulsar 逐渐成为 Kafka 的重要替代品，原本被 Kafka 占据的使用场景正越来越多地转向 Pulsar。在本报告中，我们将回顾 Kafka 与 Pulsar 之间的主要区别，并深入了解 Pulsar 为何势头如此强劲。</p>
+
+<!--more-->
+
+
+<h1>什么是 Apache Pulsar？</h1>
+
+<p>与 Kafka 类似，Apache Pulsar 也是起源于一家互联网公司内部，用于解决自己特有的问题。2015 年，雅虎的工程师们需要一个可以在商业硬件上提供低延迟的 pub-sub 消息系统，并且需要支持扩展到数百万个主题，并为其处理的所有消息提供强持久性保证。</p>
+
+<p>雅虎的工程师们评估了当时已有的解决方案，但无一能满足所有需求。于是他们决定着手构建一个全新的 pub-sub 消息系统，使之可以支持他们的全球应用程序，例如邮箱、金融、体育以及广告。他们的解决方案后来演化成 Apache Pulsar，自 2016 年就开始在雅虎的生产环境中运行。</p>
+
+<h1>架构对比</h1>
+
+<p>让我们先从架构角度对比 Kafka 和 Pulsar 这两个系统。由于在开发 Pulsar 的时候 Kafka 已经广为人知，所以 Pulsar 的作者对其架构了如指掌。你将看到这两个系统有相似之处，也有不同之处。如您所料，这是因为 Pulsar 的作者参考了 Kafka 架构中的可取之处，同时改进了其短板。既然一切都源于 Kafka，那我们就先从 Kafka 的架构开始讲起吧。</p>
+
+<h2>Kafka</h2>
+
+<p>Kafka 有两个主要组件：Apache ZooKeeper 和 Kafka Broker，如图 1 所示。ZooKeeper 用于服务发现、领导者选举以及元数据存储。在旧版本中，ZooKeeper 也用来存储消费者组信息，包括主题消费偏移量；但新版本不再这样了。</p>
+
+<p><img src="/images/post/2022/pulsar-kafka/apak_0101.png" alt="img" /></p>
+
+<p><em>图 1. Kafka 架构图</em></p>
+
+<p>Kafka Broker 承包了 Kafka 的所有消息功能，包括终止生产者和消费者连接、接受来自生产者的新消息并将消息发送给消费者。为了保证消息持久化，Broker 还为消息提供持久化存储功能。每个 Kafka Broker 负责一组主题。</p>
+
+<p>Kafka Broker 是有状态的。每个 Broker 都存储了相关主题的完整状态，有了这些信息 Broker 才能正常运行。如果一个 Broker 发生故障，并不是任何 Broker 都可以接管它，而是必须拥有相关主题副本的 Broker 才能接管。如果一个 Broker 负载太高，也不能简单地通过增加 Broker 来分担负载，还需要移动主题（状态）才能平衡集群中的负载。虽然 Kafka 提供了用来帮助重平衡的工具，但是要用它来运维 Kafka 集群的话，你必须了解 Kafka Broker 与其磁盘上存储的消息状态的关系才行。</p>
+
+<p>消息计算（Serving）是指消息在生产者和消费者之间的流动，在 Kafka Broker 中消息计算与消息存储是相互耦合的。如果你的使用场景中所有消息都能被快速地消费掉，那么对消息存储的要就可能较低，而对消息计算的要求则较高。相反，如果你的使用场景中消息消费得很慢，则需要存储大量消息。在这种情况下，对消息计算的要求可能较低，而对消息存储的要求则较高。</p>
+
+<p>由于消息的计算和存储都封装在单个 Kafka Broker 中，所以无法独立地扩展这两个维度。即便你的集群只对消息计算有较高要求，你还是得通过添加 Broker 实现扩展，也就是说不得不同时扩展消息计算和消息存储。而如果你对消息存储有较高要求，而对消息计算的要求较低，最简单的方案也是添加 Kafka Broker，也就是说还是必须同时扩展消息计算和消息存储。</p>
+
+<p>在扩展存储的场景中，你可以在现有的 Broker 上添加更多磁盘或者增加磁盘容量，但需要小心不要创建出一些具有不同存储配置和容量的独特 Kafka Broker。这种“雪花”（Snowflake）服务器环境比具有统一配置的服务器环境要复杂得多，更难以管理。</p>
+
+<h2>Pulsar</h2>
+
+<p>Pulsar 架构中主要有三个组件：ZooKeeper、Pulsar Broker 和 Apache BookKeeper Bookie，如图 2 所示。与 Kafka 一样，ZooKeeper 提供服务发现、领导者选举和元数据存储。与 Kafka 不同的是，Pulsar 通过 Broker 和 BookKeeper Bookie 组件分离了消息处理计算与消息存储功能。</p>
+
+<p><img src="/images/post/2022/pulsar-kafka/apak_0102.png" alt="img" /></p>
+
+<p><em>图 2. Pulsar 架构图</em></p>
+
+<p>Pulsar Broker 负责消息计算，而 BookKeeper Bookie 负责消息存储。这是一种分层架构，Pulsar Broker 处理生产者和消费者之间的消息流动，而将消息存储交给 BookKeeper 层处理。</p>
+
+<p>得益于这种分层架构，Pulsar Broker 是无状态的，这一点与 Kafka 不同。这意味着任何 Broker 均可接管失效的 Broker。也意味着新的 Broker 上线后可以立即开始处理生产者和消费者的消息流动。为了确保 Broker 之间的负载均衡，Pulsar Broker 内置了一套负载均衡器，不断监视每个 Broker 的 CPU、内存以及网络使用情况，并据此在 Broker 之间转移主题归属以保持负载均衡。这个过程会让 Latency 小幅增加，但最终能让集群的负载达到均衡。</p>
+
+<p>BookKeeper 作为数据存储层当然是有状态的。提供可靠消息投递保证的消息系统必须为消费者保留消息，所以消息必须持久化存储到某个地方。BookKeeper 旨在构建跨服务器的分布式日志，它是一个独立的 Apache 项目，用于多种应用中，而非仅仅是 Puslar 中。</p>
+
+<p>BookKeeper 将日志切分成一个一个被称为 Ledger 的分片（Segment），这样就很容易在 BookKeeper Bookie 节点之间保持均衡。如果 Bookie 节点故障，一些主题会变成小于复制因子（Under Replicated）。发生这种情况后 BookKeeper 会自动从存储与其他 Bookie 中的副本复制 Ledger，从而让其恢复到复制因子，而无需等待故障 Bookie 恢复或等待其他 Bookie 上线。如果添加一个新 Bookie，它能立即开始存储已有主题的新 Ledger。由于主题或分区并不从属于某个 Bookie，所以故障恢复过程无需将主题或分区移动到新服务器。</p>
+
+<h2>复制模型</h2>
+
+<p>为了保证消息持久性，Kafka 和 Pulsar 都对每个消息存储多个拷贝或副本。但是他们各自使用了不同的复制模型。</p>
+
+<p>Kafka 使用的是 Leader-Follower 复制模型。对每个主题（确切说是主题分区，稍后我们会详细解释）都会选出一个 Broker 作为 Leader。所有消息最初都写入到 Leader，然后 Follower 从 Leader 读取并复制消息，如图 3 所示。这种关系是静态的，除非 Broker 发生故障。同一主题的消息总是被写入同一组 Leader 和 Follower Broker。引入新的 Broker 并不会改变现有主题的关系。</p>
+
+<p><img src="/images/post/2022/pulsar-kafka/apak_0103.png" alt="img" /></p>
+
+<p><em>图 3. Kafka leader–follower 复制模型</em></p>
+
+<p>Pulsar 使用的则是法定人数投票复制模型（quorum-vote）。Pulsar 并行写入消息的多个副本（Write Quorum）。一旦一定数量的副本被确认写入成功，则该消息被确认（Ack Quorum）。与 Leader-Follower 模型不同，Pulsar 将副本分散（或称为条带化写入）到一组存储节点（Ensemble）中，这能改善读写性能。这也意味着新的节点添加成功后，即可立即成为可写入集合的一部分，用于存储消息。</p>
+
+<p>如图 4 所示，消息被发往 Broker，然后被切分成分片（Segment）并写入多个 Bookie 节点。这些 Bookie 节点存储分片并发送确认给 Broker。一旦 Broker 从足够多的 Bookie 节点收到足够多的分片确认，则向生产者发送消息确认。</p>
+
+<p><img src="/images/post/2022/pulsar-kafka/apak_0104.png" alt="img" /></p>
+
+<p><em>图 4. Pulsar quorum–vote 复制模型</em></p>
+
+<p>由于 Broker 层是无状态的、存储层是分布式的、并且使用了法定人数投票复制模型（quorum-vote），所以与 Kafka 相比 Puslar 能更容易地处理服务器故障。只需替换掉故障服务器，Pulsar 即可自动恢复。增加新容量也更容易，只需简单的水平扩展即可。</p>
+
+<p>而且由于计算层和存储层是分离的，所以你可以独立地扩展它们。如果对计算要求较高而对存储要求较低，那么在集群中加入更多的 Puslar Broker 即可扩展计算层。如果对存储要求很高而对计算要求很低，那么加入更多 BookKeeper Bookie 即可扩展存储层。这种独立的可扩展性意味着你可以更好地优化集群资源，避免在仅需要扩展计算能力时不得不浪费额外的存储，反之亦然。</p>
+
+<h1>Pub–Sub 消息系统概览</h1>
+
+<p>Kafka 和 Pulsar 支持的基础消息模式都是 pub-sub，又称发布订阅。在 pub-sub系统中，消息的发送方和接收方是解耦的，因此彼此透明。发送方（生产者）将消息发送到一个主题，而无需知道谁将接收到这些消息；接收方（消费者）订阅要接收消息的主题。发送方和接收方并不互相连接，且随时间推移可能变化。</p>
+
+<p><img src="/images/post/2022/pulsar-kafka/apak_0105.png" alt="img" /></p>
+
+<p><em>图 5. Pub–sub 消息模式：每个订阅者都能收到生产者发送的一条消息拷贝</em></p>
+
+<p>Pub-sub 消息模式的一个关键特性是单个主题上可能有多个生产者与订阅者。如图 5 所示，多个发布应用可以发送消息到一个主题，多个订阅应用可以接收这些消息。重要的是，每个订阅应用都会收到自己的消息拷贝。所以如果发布了一条消息并且有 10 个订阅者，那么就会发送 10 条消息拷贝，每个订阅者收到一条消息拷贝。</p>
+
+<p>Pub-sub 消息模式并不是什么新鲜事物，且被多种消息系统支持：RabbitMQ、ActiveMQ、IBM MQ，数不胜数。Kafka 与这些传统消息系统的区别在于，它有能力扩展到支持海量消息，同时保持一致的消息延迟。</p>
+
+<p>与 Kafka 类似，Pulsar 也支持 pub-sub 消息模式，且也能支持海量消息且具有一致延迟。Kafka 使用消费者组来实现多个消费者接收同一消息的不同拷贝。Kafka 会与主题关联的每个消费者组发送一条消息。Pulsar 使用订阅（Subscription）来实现相同的行为， 向与主题关联的每个订阅发送一条消息。</p>
+
+<h2>日志抽象</h2>
+
+<p>Kafka 与传统消息系统的另一个主要区别是将日志作为处理消息的基本抽象。生产者写入主题，即写入日志；而消费者独立地读取日志。然而与传统消息系统不同，消息被读取后并不会从日志中删除。消息被持久化到日志中直至配置的时间到期。Kafka 消费者确认消息后并不会删除消息，而是提交一个偏移量值来表示它已读取了多少日志。此操作不会从日志中删除消息或以任何方式修改日志。总之，日志是不可变的。</p>
+
+<p>为了防止日志变得无限长，日志中的消息在一段时间（保留周期）后会过期。过期的消息会从日志中删除。Kafka 默认的保留周期是七天。图 6 展示了发布的消息是如何附加到日志中，消费者如何以不同的偏移量读取它。日志中的消息到期后会过期并被删除。</p>
+
+<p><img src="/images/post/2022/pulsar-kafka/apak_0106.png" alt="img" /></p>
+
+<p><em>图 6. 日志抽象</em></p>
+
+<h2>消息重放</h2>
+
+<p>利用日志抽象可以允许多个消费者独立地读取同一个主题，同时还能支持消息重放。由于消费者只是从日志中读取消息并提交日志偏移量，因此只要将偏移量移动到较早位置就能很容易地让消费者重放已消费过的消息。支持消息重放有很多优势。例如，有 bug 的应用程序修复后可以重放之前消费过的消息以纠正其状态。在测试应用程序或开发新应用程序时，消息重放也很有用。</p>
+
+<p>与 Kafka 类似，Pulsar 也使用日志来抽象其主题，只不过具体实现有所不同。这意味着 Puslar 也能支持消息重放。在 Puslar 中，每个订阅都有一个游标来跟踪其在主题日志中的消费位置。创建订阅的时候可以指定游标从主题的最早或最新消息开始读取。你可以将订阅游标倒回到特定消息或特定时间（例如倒回 24 小时）。</p>
+
+<h1>传统消息模型</h1>
+
+<p>到目前为止，我们看到 Kafka 与 Pulsar 有许多相似之处。他们都是能处理海量消息的 pub-sub 消息系统，都使用日志来抽象主题，并支持消息回放。不同之处在于对传统消息模型的支持。</p>
+
+<p>在传统消息模型中，消息系统负责确保将消息投递给消费者。消息系统会跟踪消费者是否已经确认消息，并周期性地将未被确认的消息重新投递给消费者，直至被确认为止。一旦消息被确认，即可被删除（或标记为将来删除）。而未被确认的消息永远不会被删除，它将永远存在。而已确认的消息永远不会再发送给消费者。</p>
+
+<p>Pulsar 利用订阅充分支持上述模型。 由于这种能力，Puslar 能够支持额外的消息模式，专注于消息如何被消费。</p>
+
+<h1>队列与竞争消费者</h1>
+
+<p>我们首先要分析的消息模式是传统队列模型。这种模型中队列消息代表一系列将要完成的工作（工作队列）。你可以使用单个消费者从队列中读取消息并执行工作，但更常见的做法是在多个消费者中分配工作。这种模式被称为竞争消费者模式，如图 7 所示。</p>
+
+<p>在竞争消费者模式中，队列用于存储需要很长时间来处理的消息，例如转换视频。一条消息被发布到队列中后，被消费者读取并处理。当消息被处理完成后，消费者发回确认，然后消息从队列中删除。如果是单个消费者，则队列中的所有消息会被阻塞，直到消息被处理并确认。</p>
+
+<p><img src="/images/post/2022/pulsar-kafka/apak_0107.png" alt="img" /></p>
+
+<p><em>图 7. 竞争消费者：每条消息被一个消费者处理一次</em></p>
+
+<p>为了改善整个流程并保持队列不被填满，你可以往队列中添加多个消费者。然后多个消费者会“竞争”从队列中获取消息并处理它们。如果上述视频转换的例子中我们有两个消费者，则相同时间内能处理的视频量会增加到两倍。如果这还不够快，我们可以添加更多消费者来提高吞吐量。</p>
+
+<p>为了更有效，工作队列需要始终将消息分发给那些有能力处理队列消息的消费者。如果消费者有能力处理消息，则队列就将消息发给它。</p>
+
+<h2>Kafka</h2>
+
+<p>Kafka 使用消费者组和多分区来实现竞争消费者模式。Kafka 主题由一个或多个分区组成，消息被发布后通过 round-robin 或者消息 key 分布到主题分区中，随后被消费者组从主题分区中读取。</p>
+
+<p>需要注意的是，Kafka 的一个分区一次只能被一个消费者消费。要实现竞争消费者模式，则每个消费者要有对应的分区。如果消费者数目多于分区数目，则多出来的消费者就会被闲置。举个例子，假设你的主题有两个分区，则消费者组中最多有两个活跃消费者。如果增加第三个消费者，则该消费者没有分区可以读取，所以不会竞争读取队列中的工作（消息）。</p>
+
+<p>这意味着在创建主题时就需要明确有多少竞争消费者。当然你可以增加主题分区数，但这是相当重的变动，尤其当根据 key 分配分区时。除了 Kafka 消费者与主题的对应关系外，往消费者组中添加消费者会重平衡该主题的所有消费者，这种重平衡会暂停对所有消费者的消息投递。</p>
+
+<p>所以说 Kafka 虽然确实支持竞争消费者消息模式，但是需要你仔细管理主题的分区数，确保添加新消费者时能真的处理消息。另外，与传统消息系统不同，Kafka 不会周期性地重新投递消息以便可以再次处理这些消息。如果想要有消息重试机制，你需要自己实现。</p>
+
+<p>Kafka 确实比传统消息系统有个优势。竞争消费者模式的一个弊端是消息可能被乱序处理。因为竞争消费消息的多个消费者可能处理速率不同，很有可能消息会乱序处理。如果消息代表独立的工作，那么这不是什么问题。但如果消息代表像金融交易这样的事件，那有序性就很重要了。</p>
+
+<p>由于 Kafka 分区一次只能被一个消费者消费，所以 Kafka 可以在竞争消费者模式下保证相同 key 的消息被顺序投递。如果消息是按照 key 路由到分区，则每个分区中的消息是按照发布的顺序存储的。消费者可以消费该分区并按顺序获取消息。这使得你可以扩展消费者以并行处理同时保持消息顺序，当然这一切都需要仔细的规划才行。</p>
+
+<h2>Pulsar</h2>
+
+<p>Pulsar 中的竞争消费者模式很容易实现，只需在主题上创建共享订阅即可。之后消费者使用此共享订阅连接到主题，消息以 round-robin 方式被连接到该订阅上的消费者消费。消费者的上线下线并不会像 Kafka 那样触发重平衡。当新的消费者上线后即开始参与 round-robin 消息接收。这是因为与 Kafka 不同，Pulsar 并不使用分区来在消费者之间分发消息，而完全通过订阅来控制。Pulsar 当然也支持分区，这一点我们稍后将讨论，但消息的消费主要是由订阅控制，而不受分区控制。</p>
+
+<p>Pulsar 订阅会周期性地将未确认消息重新投递给消费者。不仅如此，Pulsar 还支持高级确认语义，例如单条消息确认（选择性确认）和否定确认（negative acknowledgment），这一点对工作队列场景很有用。单条消息确认允许消息不按顺序确认，所以慢速消费者不会阻塞对其他消费者投递消息，而累积确认是可能发生这种阻塞的。否定确认允许消费者将消息放回主题中，之后可以被其他消费者处理。</p>
+
+<p>Pulsar 支持按 key 将消息路由到分区，所以也可以使用与 Kafka 一样的方案来实现竞争消费者。共享订阅这种实现方式更加简单，但是如果你想在横向扩展消费者并行处理能力的同时也保证按 key 有序，Pulsar 也是可以实现的。</p>
+
+<h2>Pulsar 订阅模型</h2>
+
+<p>共享订阅是 Pulsar 中实现工作队列的一种简单方式。Puslar 还支持其他订阅模型来支持多种消息消费模式：独占、 灾备、共享、键共享，如图 8 所示。</p>
+
+<p>独占订阅模型中，不允许超过一个消费者消费主题消息。如果其他消费者尝试消费消息，则会被拒绝。如果你需要保证消息被单个消费者按顺序消费，那就使用独占订阅模型。</p>
+
+<p>灾备订阅模型中，允许多个消费者连接到一个主题，但是在任何时间都只有一个消费者可以消费主题。这就建立了一种主备关系，一个消费者处于活跃状态，其他的处于备用状态，当活跃消费者故障时进行接管。当活跃消费者断开连接或失败，所有未确认消息会被重新投递到某个备用消费者。</p>
+
+<p><img src="/images/post/2022/pulsar-kafka/apak_0108.png" alt="img" /></p>
+
+<p><em>图 8. Pulsar 订阅模型：独占、灾备、共享、键共享</em></p>
+
+<p>前文已提到，基于共享订阅模型实现的竞争消费者模式的一个弱点是消息可能被乱序处理。在 Kafka 和 Pulsar 中，都可以通过将消息按 key 路由到分区来解决。Puslar 最近推出了一种新的名为 key_shared 的订阅模型，可以更简单地解决这个问题。这种订阅模式的优点是可以按 key 有序投递消息而无需关心分区。消息可以发布到单个主题并分发给多个消费者，这跟共享订阅模型一样。不一样的是，单个消费者只会接受对应某个 key 的消息。这种订阅模型可以通过 key 按顺序投递消息而无需对主题进行分区。</p>
+
+<h1>Pulsar：整合 Pub–Sub 与队列</h1>
+
+<p>如我们所见，Kafka 和 Pulsar 都支持 pub-sub 消息投递。它们都使用日志来抽象主题，所以可以支持重放已被消费者处理过的消息。但是 Kafka 只能有限地支持按不同方式来消费消息，不会自动重新投递消息，也不能保证未确认的消息不会丢失。实际上，保留周期之外的所有消息无论是否被消费过都会被删除。Kafka 可以实现工作队列，但有很多事项需要注意和考虑。</p>
+
+<p>由于这些限制，如果企业需要高性能 pub-sub 消息系统、同时需要可靠性投递保证以及传统消息模式，他们通常会在 Kafka 之外使用传统的消息系统，例如 RabbitMQ。将 Kafka 用于高性能 pub-sub 场景，而将 RabbitMQ 用于要求可靠性投递保证的场景，例如工作队列。</p>
+
+<p>Pulsar 在单个消息系统中同时支持高性能 pub-sub 以及保证可靠性投递的传统消息模式。在 Pulsar 中实现工作队列非常简单——实际上这也是 Puslar 最开始设计时就想解决的场景。如果你正同时使用多个消息系统——使用 Kafka 处理高流量 pub-sub场景、使用 RabbitMQ 处理工作队列场景——那么可以考虑使用 Puslar 把它们整合成单个消息系统。即便最初只有一种消息场景需求，也可以直接使用 Pulsar 以应对未来可能出现的新的消息场景。</p>
+
+<p>运维单个消息系统显然要比运维两个要更加简单、所需的 IT 和人力资源也更少。</p>
+
+<h1>日志抽象</h1>
+
+<p>现在我们介绍了 Kafka 与 Puslar 的高层次架构，也了解了这两个系统能实现的各种消息模式，接下来让我们更详细地了解这两个系统的底层模块。首先我们来看看日志抽象。</p>
+
+<p>Kafka 团队的设计思路值得称赞，日志的确是实时数据交换系统的一个很好的抽象。因为日志只能追加，所以数据可以快速写入；因为日志中的数据是连续的，所以可以按照写入顺序快速读取。数据的顺序读写是很快的，而随机读写则不然。在提供数据保证的系统中，持久化存储交互都是瓶颈，而日志抽象则让这一点变得尽可能高效。Kafka 和 Pulsar 都使用日志作为其底层模块。</p>
+
+<p>为了简单起见，下文假设 Kafka 主题是单分区的，因此下文中主题和分区是同义词。</p>
+
+<h2>Kafka 日志</h2>
+
+<p>在 Kafka 中，每个主题都是一个日志。日志作为单个存储单元存储在 Kafka Broker 上。虽然日志由一系列文件组成，但日志并不能拆分到多个 Broker 上，也不能拆分到同一个 Broker 的多个磁盘上。这种将整个日志作为最小存储单元的方式通常运行良好，但是当规模增大或在维护期间会很麻烦。</p>
+
+<p>比方说日志的最大大小会受其所在磁盘容量的限制。因此，存储日志的 Broker 磁盘大小限制了主题的大小。在 Broker 上添加磁盘并不能解决问题，因为日志是最小存储单元，并不能跨磁盘拆分。唯一的选择是增加磁盘大小。这在云环境中是可行的，但如果你在物理硬件上运行 Kafka，那么增加现有磁盘的容量不是一件容易的事。</p>
+
+<p>还有另一件麻烦的事，由于日志与其底层文件是一对一绑定的，所以在实时系统上执行维护操作是很麻烦的。如果 Broker 服务器出现故障，或者需要增加新的 Broker 来分担高负载，都需要在服务器之间拷贝大量日志文件。在保持数据实时性的同时执行大量文件拷贝会给 Kafka 集群带来很大压力。</p>
+
+<h2>Pulsar 分布式日志</h2>
+
+<p>与 Kafka 一样，Apache Pulsar 也使用日志抽象作为其实时消息系统的基础，每个主题在 Pulsar 中也是一个日志。然而 Pulsar 采用不一样的方式将日志写入存储。Pulsar 不是将日志作为最小存储单元存储到单个服务器，而是将日志分解为分片（或称为 Ledger），然后将 Ledger 分布到多个服务器。通过这种方式，Pulsar 创建的分布式日志驻留在多个服务器上。</p>
+
+<p>分布式日志有许多优点。日志的最大大小不再受限于单个服务器的磁盘容量。由于分片是跨服务器分布的，所以日志可以增长到所有服务器的总存储容量一样大。增加分布式日志的容量就像往集群添加服务器一样简单。一旦新服务器上线，分布式日志即可开始使用新上线的容量来写入新的日志分片。也无需调整磁盘大小或重平衡分区来分配负载了。一旦服务器出现故障，故障恢复也很简单。故障丢失的分片可以从多个不同的服务器恢复出来，从而缩短恢复时间。</p>
+
+<p>显而易见，让分布式日志可靠地工作起来是很困难的。这也是为什么 Puslar 要使用另一个 Apache 项目（BookKeeper）来实现分布式日志的原因。要运行 Pulsar 的话必须同时运行 Apache BookKeeper 集群。尽管这会引入运维复杂度，但是 BookKeeper 这个分布式日志的底层组件已经过验证且被广泛应用。BookKeeper 专为健壮的、低延迟的读写而设计。举个例子，BookKeeper 从架构上将写入和读取分离到单独的磁盘，这样一来慢速消费者就不会影响生产者发布新消息的性能。</p>
+
+<p>BookKeeper 还为 Puslar 提供高持久性保证。当消息存储到 BookKeeper 时，会先刷到磁盘再给生产者发回确认；即便 BookKeeper 服务器故障，所有已确认的消息仍然能保证永久存储在磁盘上。BookKeeper 能够在保持低延迟的同时提供这种高持久性保证。</p>
+
+<p>反观 Kafka，默认情况下定期将消息刷到磁盘。这意味着 Kafka Broker 发生故障后几乎总会导致消息丢失，因为这些消息尚未被刷到磁盘。当然，通过配置在线副本数，这些丢失的消息可以恢复；但是 BookKeeper 服务器发生类似故障的情况下，不会有数据丢失，所以也就不需要数据恢复。Kafka 也可以配置为将每条消息即时刷到磁盘，但这会带来性能损失。</p>
+
+<h2>多级存储</h2>
+
+<p>Pulsar 存储计算分离的另一个优点是允许在架构中引入第三层，即长期存储，又称冷存储。Pulsar 和 BookKeeper 针对快速访问主题中的消息进行了优化；然而，如果你的消息量非常大但不需要快速访问，或者只需要快速访问最新的消息即可，那么 Pulsar 允许你将这些消息推送到云对象存储，例如 AWS S3 或者 Google Cloud Storage。Pulsar 是这样实现该功能的：将主题中的老分片卸载（offload）到云提供商，然后从 bookie 本地存储中删除这些消息。</p>
+
+<p>云对象存储比起构建高性能消息系统常用的高速 SSD 磁盘要便宜得多，因此运营成本也更低。由于云存储提供了几乎无限的存储容量，所以你不必担心超出你集群的存储容量。非常大的主题可能主要驻留在云存储中，而其他较小的主题则驻留在 bookie 节点的高速磁盘。</p>
+
+<p>这种三层架构可以很好地适应需要永久存储消息的场景，比方说事件溯源。事件溯源是将所有状态变化都记录为事件，存储为 Pulsar 中的消息。应用的当前状态是由直到当前时间为止的整个事件历史记录确定。为了确保可以重建当前状态，你必须保存完整的事件历史。得益于持久性保证、使用分层存储实现近乎无限的存储容量，以及重放主题中所有消息的能力，Pulsar 非常适合事件溯源应用架构。</p>
+
+<h1>分区</h1>
+
+<p>如果你用过 Kafka，那么对分区一定很熟悉。本文中已经多次提及分区，因为这是绕不过去的。分区是 Kafka 中的一个基本概念，非常有用。Pulsar 也支持分区，但是是可选的。</p>
+
+<h2>Kafka 分区</h2>
+
+<p>Kafka 的所有主题都是分区的。一个主题可能只有一个分区，但必须至少有一个分区。分区在 Kafka 中是很重要的，因为分区是 Kafka 并行度的基本单元。将负载分散到多个分区即可分散到多个 Broker，单个主题的处理速度就能提高。Kafka 旨在处理高吞吐量，特别是要使用商用硬件来达到这个目的，分区在其中扮演着不可或缺的角色。</p>
+
+<p>自 Kafka 诞生以来，商用硬件的容量不断提升。此外运行 Kafka 的 Java 虚拟机性能也不断提升。 这种硬件和软件的提升意味着现在在商用硬件上使用单分区也可以获得良好的性能。从性能角度来看，单分区主题也足以满足很多使用场景。</p>
+
+<p>然而，正如前文所述，如果你想用多个消费者读取 Kafka 主题，就不能使用单分区。因为分区是 Kafka 生产和消费并行度的基本单元。因此即便单个分区足以满足主题的输入消息速度，你也希望使用多分区，以便将来可以选择增加多个消费者。当然，你也可以在创建主题之后再增加分区，但如果使用基于 key 的分区，这将会改变哪些 key 分配给哪些分区，从而影响分区中消息的处理顺序；而且分区会消耗资源（例如 Broker 上的文件句柄、客户端的内存占用），所以增加分区绝非一个轻量操作；另外虽然可以增加主题分区，但永远不能减少主题分区数。</p>
+
+<p>正因为分区是 Kafka 的基础，所以要想用好 Kafka 就必须理解分区的工作原理。在创建主题时，你就需要考虑需要（或将来可能需要）多少分区数；在连接消费者时，你需要理解消费者如何与消费者组中的分区进行交互；如果你运维一个 Kafka 集群，一切都以分区级别运行，在维护和维修时，你需要以分区为中心。</p>
+
+<h2>Pulsar 分区</h2>
+
+<p>Pulsar 也支持分区，但是它们完全是可选的。事实上运行 Pulsar 时完全可以不使用分区。不分区的主题即可支持发布海量消息并支持多个消费者读取。如果你需要额外的性能，或需要基于 key 的有序消息消费，那么可以创建 Pulsar 分区主题。Pulsar 完全支持分区，其功能与 Kafka 大体相同。</p>
+
+<p>Pulsar 分区被实现为一组主题的集合，用后缀来表示分区编号。例如创建一个包含三个分区的主题 <code>mytopic</code>，则会自动创建三个主题，分别名为 <code>mytopic-parition-1</code>、<code>mytopic-partition-2</code> 和 <code>mytopic-partition-3</code>。生产者可以连接到主主题 <code>mytopic</code>，根据生产者定义的路由规则将消息分发到分区主题。也可以直接发布到分区主题。同样地，消费者可以连接到主主题，也可以连接到一个分区主题。与 Kafka 一样，可以增加主题的分区数，但永远不能减少分区数。</p>
+
+<p>由于分区在 Pulsar 中是可选的，所以 Pulsar 使用起来更加简单，尤其对于初学者来说。在 Pulsar 中你可以放心地忽略分区，除非你的使用场景需要用到分区提供的功能。这不仅简化了 Pulsar 集群的运维，也使得 Pulsar 客户端 API 更容易使用。分区是个有用的概念，不过如果你无需处理分区即可满足需求，那就有助于简化固有的复杂技术。</p>
+
+<h1>性能</h1>
+
+<p>Kafka 以其性能而闻名，以能够在实时环境中支持海量消息而著称。比较消息系统之间的性能有点棘手，每个系统都有性能最佳点和性能盲点，很难进行公平的比较。</p>
+
+<p><a href="http://openmessaging.cloud/">OpenMessaging 项目</a> 是一个旨在公平比较消息系统之间性能的项目，它是一个 Linux 软件基金会协作项目。OpenMessaging 项目由多个消息系统供应商支持，其目标是为消息和流系统提供供应商中立和语言独立的标准。该项目包含一个性能测试框架，支持多种消息系统，包括 Kafka 和 Pulsar。</p>
+
+<p>其思想是利用标准的测试框架和方法，在评估中引入一定程度的公平性。OpenMessaging 项目的所有代码都是开源的，任何人都可以运行基准测试并输出自己的结果。</p>
+
+<p>对 Kafka 和 Pulsar 进行详细的性能分析已经超出了本文的范围。不过一些基于 OpenMessaging 基准测试框架的测试结果表明 Pulsar 的性能要优于 Kafka。</p>
+
+<p>GigaOm 发布的一份<a href="https://oreil.ly/vGoPy">报告</a>显示：</p>
+
+<ul>
+<li>Pulsar 的最大吞吐量高出 150%</li>
+<li>Pulsar 的消息延迟降低了 40%，且更加稳定</li>
+<li>Pulsar 扩展性更好，在不同消息大小和分区数量下均能提供一致的结果</li>
+</ul>
+
+
+<p>为了验证其中一些结果，我使用 OpenMessaging 项目的基准框架对 Kafka 和 Pulsar 的延迟进行了一个 <a href="https://oreil.ly/34h_v">详细对比</a>。在这次对比中，我得出的结论是 Pulsar 能提供更加可预测的延迟。在许多情况下，Pulsar 的延迟比 Kafka 更低，尤其是在需要强持久性保证场景下，或需要大量分区的场景下。</p>
+
+<h1>多租户</h1>
+
+<p>租户是指可以独立使用系统的用户或用户组数量。在单租户系统中，所有的资源都是共享的，因此系统用户需要知道系统的其他用户在做什么。由于资源是共享的，必然引入争用和可能的冲突。如果多个用户组使用单租户系统，那么通常需要为系统提供多个拷贝，每个用户组使用一个拷贝，以提供隔离性和隐私。</p>
+
+<p>在多租户系统中，不同的用户组或租户可以独立地使用系统。每个租户都是与其他租户隔离的。系统资源被各租户割据，所以每个用户都有自己的系统私有实例。我们只需提供一套系统，但每个租户都有自己的虚拟隔离环境。多租户系统可以支持多个用户组。</p>
+
+<p>消息系统是一种核心基础设施，它最终会被多个不同的团队用于不同的项目。如果为每个团队或项目都创建一个新集群，那么运维复杂度会很高，而且也不能有效地利用资源。因此，多租户在消息系统中是一个令人向往的特性。</p>
+
+<h2>Pulsar</h2>
+
+<p>多租户是 Pulsar 的关键设计要求。因此 Pulsar 有多种多租户特性，让单个 Puslar 系统可以支持多个团队以及多个项目。</p>
+
+<p>在 Pulsar 中，每个租户有自己的虚拟消息环境，与其他租户隔离开。一个租户创建的主题也与其他租户创建的主题隔离。通常，一个租户可以被一个团队或部门的所有成员使用。每个租户可以有多个命名空间。命名空间包含一组主题。不同命名空间可以包含同名的主题。命名空间可以便捷地将特定项目中的所有主题组织到一起。</p>
+
+<p>命名空间也是一种在主题之间共享策略配置的机制。举个例子，所有需要 14 天保留周期的主题可以归到同一命名空间。在命名空间上配置该保留周期策略后，该命名空间内的所有主题都将继承这个策略。</p>
+
+<p>当多个租户共享同一资源时，很重要的一点是要有某种机制确保所有租户都能公平地访问。需要确保一个租户不会消耗掉所有资源，导致其他租户饥饿。</p>
+
+<p>Pulsar 有多种策略确保单个租户不至于消耗掉集群里的所有资源，例如限制消息出站速率、限制未确认消息存储以及限制消息保留期。可以在命名空间级别设置这些策略，这样各个主题组可以有不同的策略。</p>
+
+<p>为了让多租户更好地工作，Pulsar 支持命名空间级别的授权。这意味着你可以限制对命名空间中主题的访问，可以控制谁有权限在命名空间中创建主题，以及谁有权限生产和消费这些主题。</p>
+
+<h2>Kafka</h2>
+
+<p>Kafka 是单租户系统，所有主题都属于一个全局命名空间。诸于保留周期等策略可以设置全局默认值，或者在单个主题上进行覆盖。但无法将相关主题组织到一起，也无法将策略应用到一组主题上。</p>
+
+<p>关于授权，Kafka 支持访问控制列表（ACL），允许限制谁可以从主题上生产和消费。ACL 允许对集群中的授权进行细粒度的控制，可以对各种资源设置策略，比如集群、主题和消费者组；还可以指定各种特定的操作，比如创建、描述、更改和删除。除了基于用户（主体）的授权之外，还支持基于主机的授权。例如你可以允许 <code>User:Bob</code> 读写某个主题，但限制只能从 IP 地址 198.51.100.0 进行读写。而 Pulsar 没有这种细粒度的授权以及基于主机的限制，只支持少数几个操作（管理、生产、消费），并且不提供基于主机的授权。</p>
+
+<p>尽管 Kafka 在授权控制上有更大的灵活性，但它本质上仍然是一个单租户系统。如果多个用户组使用同一个 Kafka 集群，他们需要保证主题名称不要冲突，并且 ACL 被正确应用。而多租户在 Pulsar 中是内置的，因此在不同团队和项目之间共享集群是非常简单的。</p>
+
+<h1>跨地域复制</h1>
+
+<p>Kafka 和 Pulsar 这类系统要实现高性能，重要一点是让其中的组件互相靠近以便有较低的互相通讯时延。这意味着 Kafka 和 Pulsar 要部署在单个数据中心，组件之间由高速网络互联。当集群内一个或多个组件（计算、存储、网络）发生故障时，集群内的消息复制机制保证免受消息丢失和服务宕机之苦。在云环境中，组件可以分布到一个数据中心（区域）内的多个可用区，以防止一个可用区发生故障。</p>
+
+<p>但如果整个数据中心发生故障或被隔离，那么消息系统则会发生宕机（或发生灾难时丢失数据）。如果这对你来说不可接受，那么你可以使用跨地域复制。跨地域复制是指将消息复制到远端的另一个集群，发布到数据中心的每条消息都会被自动且可靠地复制到另一个数据中心。这可以防止整个数据中心发生故障。</p>
+
+<p>跨地域复制对于全球应用程序来说也非常有用，消息从世界上某个位置生产出来，并被世界上其他地方的消费者消费。通过将消息复制到远程数据中心，可以分散负载，并提高客户端响应能力。</p>
+
+<h2>Pulsar</h2>
+
+<p>雅虎的团队在构建 Apache Pulsar 之初，一个关键需求就是要支持在跨地域的数据中心之间复制消息，需要确保即便整个数据中心发生故障消息仍然可用。因此对于 Pulsar 来说跨地域复制是一项核心功能，完全集成到管理界面中。可以在命名空间级别开启或关闭跨地域复制功能。管理员可以轻松配置哪些主题需要复制，哪些不需要复制。甚至生产者在发布消息时可以排除某些数据中心让它不接收消息复制。</p>
+
+<p><img src="/images/post/2022/pulsar-kafka/apak_0109.png" alt="img" /></p>
+
+<p><em>图 9. Active–standby 复制</em></p>
+
+<p>Pulsar 的跨地域复制支持多种拓扑结构，例如主备（active-standby）、双活（active-active）、全网格（full mesh）以及边缘聚合（edge aggregation）。图 9 展示的是 active-standby 复制。所有消息都被发布到主数据中心（Data Center 1），然后被复制到备用数据中心（Data Center 2），如果主数据中心发生故障，客户端可以切换到备用数据中心。对于主备复制拓扑，Pulsar 新近引入了复制订阅（replicated subscription）功能，该功能在主备集群之间同步订阅状态，以便应用程序可以切换到备用数据中心并从中断的地方继续消费。</p>
+
+<p>在主备（active–standby）复制中，客户端一次只连接到一个数据中心。而在双活（active-active）复制中，客户端连接到多个数据中心。图 10 所示的事一个全网格配置的双活复制拓扑。发布到一个数据中心的消息会被同步到其他多个数据中心。</p>
+
+<p>图 11 所示的是边缘聚合拓扑（edge aggregation）。在此拓扑中，客户端连接到多个数据中心，这些数据中心将消息复制到中央数据中心进行处理。如果边缘数据中心处于客户端附近，那么即使中央数据中心离得很远，已发布的消息也能快速被确认。</p>
+
+<p><img src="/images/post/2022/pulsar-kafka/apak_0110.png" alt="img" /></p>
+
+<p><em>图 10. Active–active, full-mesh replication</em></p>
+
+<p><img src="/images/post/2022/pulsar-kafka/apak_0111.png" alt="img" /></p>
+
+<p><em>图 11. Edge aggregation</em></p>
+
+<p>Pulsar 也可以进行同步跨地域复制。在典型的跨地域复制配置中，消息复制是异步完成的。生产者将消息发送到主数据中心后，消息即被持久化并确认回生产者；然后再被可靠地复制到远端数据中心。整个过程是异步的，因为消息在被复制到远端数据中心之前已向生产者确认。只要远端数据中心可用并且可以通过网络访问，这种异步复制就没有任何问题。然而，如果远端数据中心出现问题，或者网络连接变慢，那么已确认的消息就可能不能马上被复制到远端数据中心。如果主数据中心在消息被复制到远端数据中心之前发生故障，那么消息可能会丢失。</p>
+
+<p>如果这种消息丢失对你来说不可接受，那么可以配置 Pulsar 进行同步复制。在同步复制时，消息直到被安全地存储到多个数据中心之后才会确认回生产者。由于消息要发到多数距离分散的数据中心，而数据中心之间有网络延迟，因此同步复制确认消息的时间会更长一些。不过这保证了即便整个数据中心故障也不会发生消息丢失。</p>
+
+<p>Pulsar 有着丰富的跨地域复制功能，能支持几乎所有你能想到的配置。跨地域复制的配置和管理完全集成到 Pulsar 中，无需外部包也无需扩展。</p>
+
+<h2>Kafka</h2>
+
+<p>Kafka 中有多种方式可以实现跨地域复制，或者像 Kafka 文档那样称之为 mirroring。Kafka 提供了一个 MirrorMaker 工具，用来在消息生产后将其从一个集群复制到其他集群。这个工具很简单，只是将一个数据中心的 Kafka 消费者与另一个数据中心的 Kafka 生产者连接起来。它不能动态配置（改变配置后需要重启），且不支持在本地和远端集群机制同步配置信息或同步订阅信息。</p>
+
+<p>另一个跨地域方案是由 Uber 开发并开源的 uReplicator。Uber 之所以开发 uReplicator 是为了解决 MirrorMaker 的许多缺点，提高其性能、可扩展性和可运维性。无疑 uReplicator 是更好的 Kafka 跨地域复制方案。然而它是一个独立的分布式系统，有控制器节点和工作节点，需要与 Kafka 集群并行运维。</p>
+
+<p>Kafka 中还有用于跨地域复制的其他商业解决方案，例如 Confluent Replicator。它支持双活（active-active）复制，支持在集群间同步配置，并且比 MirrorMaker 更容易运维。它依赖于 Kafka Connect，需要与 Kafka 集群并行运维。</p>
+
+<p>在 Kafka 中是可以实现跨地域复制的，但做起来并不简单。必须在多个方案中做出选择，需要并行运维各种工具，甚至并行运维整个分布式系统；所以说 Kafka 跨地域复制是很复杂的，尤其与 Pulsar 内置的跨地域复制能力相比。</p>
+
+<h1>生态</h1>
+
+<p>我们花了大量篇幅研究 Kafka 与 Pulsar 的核心技术。现在让我们放宽视野，看看围绕他们的生态系统。</p>
+
+<h2>社区及相关项目</h2>
+
+<p>Kafka 于 2011 年开源，而 Pulsar 于 2016 年开源。因此 Kafka 在社区构建和周边产品这方面具有五年的领先优势。Kafka 被广泛应用，已构建出了许多开源和商业产品。现在有多个商业 Kafka 发行版本可用，也有许多云提供商提供托管 Kafka 服务。</p>
+
+<p>不仅有许多运行 Kafka 的选项，还有许多开源项目为 Kafka 提供各种客户端、工具、集成和连接器。由于 Kafka 被大型互联网公司使用，因此其中许多项目来自 Salesforce、LinkedIn、Uber 和 Shopify 这类公司。当然，Kafka 同时还有许多商业补充项目。</p>
+
+<p>Kafka 知识也广为人知，因此很容易找到有关 Kafka 问题的答案。有很多博客文章、在线课程、超过 15,000 条 StackOverflow 问题、超过 500 位 GitHub 贡献者，以及有着丰富使用经验的大量专家。</p>
+
+<p>Pulsar 成为开源项目的时间相对要短一些，其生态系统和社区显然还无法与 Kafka 匹敌。然而，Pulsar 从 Apache 孵化项目迅速发展为顶级项目，并且在许多社区指标上都呈现出稳步增长，例如 GitHub 贡献者、Slack 工作区成员数等。虽然 Pulsar 社区相对较小，但却热情活跃。</p>
+
+<p>尽管如此，Kafka 在社区和相关项目上还是具有明显优势。</p>
+
+<h2>开源</h2>
+
+<p>Kafka 与 Pulsar 都是 ASF 开源项目。最近有很多关于开源许可证的讨论，一些开源软件供应商已经修改了他们的许可证，以防止云提供商在某些应用里使用他们的开源项目。这种做法是开源项目之间的一个重要区别。</p>
+
+<p>一些开源项目由商业公司控制，另一些由软件基金会控制，例如 ASF。开源项目可以自由更改其软件许可证。今天他们可能会使用像 Apache 2.0 或 MIT 这样的宽松许可证，但明天就可能转向使用更加严格的许可方案。如果你正在使用由商业公司控制的开源项目，就要面对该公司出于特定商业原因更改许可证的风险。如果发生这种情况，并且你的使用方式违反了新的许可，而你又想继续获得新的更新（例如安全补丁），那么你就需要找到一个友好的项目分支，或者自己维护一个分支，或者向商业公司支付许可证费用。</p>
+
+<p>由软件基金会控制的开源项目不太可能更改许可。使用广泛的 Apache 2.0 许可自 2004 年就已存在。即便软件基金会确实要更改其开源项目的许可证，也不太可能改成更严格，因为大多数基金会都有授权以免费提供软件且不受限制。</p>
+
+<p>当评估开源软件时，必须牢记这一区别。Kafka 是 Apache 下的一个开源项目，Kafka 生态中的许多组件虽然是开源的，但并不受 Apache 控制，例如：</p>
+
+<ul>
+<li>除 Java 以外的所有客户端库</li>
+<li>各种用于与第三方系统集成的连接器</li>
+<li>监控和仪表盘工具</li>
+<li>模式注册表</li>
+<li>Kafka SQL</li>
+</ul>
+
+
+<p>Apache Pulsar 开源项目将更广泛的生态系统包含在项目之中。它将 Java、Python、Go 以及 C++ 客户端包含在主项目之中。许多连接器也是 Pulsar IO 包的一部分，例如 Aerospike、Apache Cassandra 以及 AWS Kinesis。Pulsar 自带模式注册表以及名为 Pulsar SQL 的基于 SQL 的主题查询机制。还包含仪表盘应用程序以及基于 Prometheus 的指标和告警功能。</p>
+
+<p>由于所有这些组件都在 Pulsar 主项目中，并受 Apache 管理，其许可证不太可能变得更加严格。此外，只要项目整体得到积极维护，这些组件也会得到维护。社区对这些组件会定期进行测试，并在发布 Puslar 新版本之前修复不兼容性。</p>
+
+<h1>总结</h1>
+
+<p>作为 Apache Kafka 替代品，Apache Pulsar 发展势头正劲。在本文中，我们从多个维度对比了 Kafka 和 Pulsar，总结如 [表 1]。</p>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left;"> 对比维度                </th>
+<th style="text-align:left;"> Kafka                    </th>
+<th style="text-align:left;"> Pulsar                               </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;"> 架构组件                </td>
+<td style="text-align:left;"> ZooKeeper、Kafka broker  </td>
+<td style="text-align:left;"> ZooKeeper、Pulsar broker、BookKeeper </td>
+</tr>
+<tr>
+<td style="text-align:left;"> 复制模型                </td>
+<td style="text-align:left;"> Leader–follower          </td>
+<td style="text-align:left;"> Quorum-vote                          </td>
+</tr>
+<tr>
+<td style="text-align:left;"> 高性能 pub-sub 消息系统 </td>
+<td style="text-align:left;"> 支持                     </td>
+<td style="text-align:left;"> 支持                                 </td>
+</tr>
+<tr>
+<td style="text-align:left;"> 消息重放                </td>
+<td style="text-align:left;"> 支持                     </td>
+<td style="text-align:left;"> 支持                                 </td>
+</tr>
+<tr>
+<td style="text-align:left;"> 竞争消费者              </td>
+<td style="text-align:left;"> 有限支持                 </td>
+<td style="text-align:left;"> 支持                                 </td>
+</tr>
+<tr>
+<td style="text-align:left;"> 传统消费模式            </td>
+<td style="text-align:left;"> 不支持                   </td>
+<td style="text-align:left;"> 支持                                 </td>
+</tr>
+<tr>
+<td style="text-align:left;"> 日志抽象                </td>
+<td style="text-align:left;"> 单节点                   </td>
+<td style="text-align:left;"> 分布式                               </td>
+</tr>
+<tr>
+<td style="text-align:left;"> 多级存储                </td>
+<td style="text-align:left;"> 不支持                   </td>
+<td style="text-align:left;"> 支持                                 </td>
+</tr>
+<tr>
+<td style="text-align:left;"> 分区                    </td>
+<td style="text-align:left;"> 必选                     </td>
+<td style="text-align:left;"> 可选                                 </td>
+</tr>
+<tr>
+<td style="text-align:left;"> 性能                    </td>
+<td style="text-align:left;"> 高                       </td>
+<td style="text-align:left;"> 更高                                 </td>
+</tr>
+<tr>
+<td style="text-align:left;"> 跨地域复制              </td>
+<td style="text-align:left;"> 由额外工具或外部系统实现 </td>
+<td style="text-align:left;"> 内置支持                             </td>
+</tr>
+<tr>
+<td style="text-align:left;"> 社区及相关项目          </td>
+<td style="text-align:left;"> 大而成熟                 </td>
+<td style="text-align:left;"> 小而成长                             </td>
+</tr>
+<tr>
+<td style="text-align:left;"> 开源                    </td>
+<td style="text-align:left;"> ASF 与其他混合           </td>
+<td style="text-align:left;"> 纯 ASF                               </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>我们对比了这两个系统的架构以及不同的复制模型。二者都使用 Apache ZooKeeper 以及 Broker，但 Pulsar 将 Broker 分为两层：消息计算层以及消息存储层。Pulsar 使用 Apache BookKeeper 作为其存储层。这种计算和存储分离的架构，以及 Apache BookKeeper 本身的水平扩展性，使得在 Kebernetes 等云原生环境中运行 Pulsar 变得自然而然。</p>
+
+<p>Kafka 和 Pulsar 都使用消息复制来实现持久性。Kafka 使用 leader-follower 复制模型，而 Pulsar 使用 quorum-vote 复制模型。</p>
+
+<p>我们分析了 Kafka 和 Pulsar 都能支持的消息模式，以及只有 Pulsar 能支持的传统消息系统（例如 RabbitMQ）的消息模式。由于 Pulsar 支持 pub-sub、流式消息模式、以及传统消息系统的基于队列的模式，因此在同时运行 Kafka 和 RabbitMQ 的组织中，可以将这些系统整合为单个 Pulsar 消息系统。如果企业想要为流式系统或传统队列部署一套消息系统，那么也可以选用 Pulsar，将来如果要支持新消息模式也能完美适配。</p>
+
+<p>Kafka 与 Pulsar 都建立在日志抽象之上，消息被附加到不可变日志中。在 Kafka 中，日志与 Broker 节点绑定；而在 Puslar 中，日志分布在多个 Bookie 节点中。</p>
+
+<p>分区是 Kafka 中的基础概念，但对 Pulsar 来说是可选的。这意味着 Pulsar 在处理客户端 API 以及运维上比 Kafka 更简单。</p>
+
+<p>Pulsar 提供 Kafka 所不具备的功能，例如多级存储、内置跨地域复制、多租户等。报告表明 Pulsar 在延迟和吞吐量方面都比 Kafka 更具性能优势。Pulsar 绝大多数开源组件都由 ASF 控制，而不受商业公司控制。</p>
+
+<p>虽然 Pulsar 的生态和社区尚不能与 Kafka 匹敌，但它在很多方面比 Kafka 更有优势。鉴于这些优势，Pulsar 作为 Kafka 替代品如此势头强劲就不足为奇了。一旦更多的人意识到它的优势，Pulsar 有望继续取得发展。</p>
+
+<h1>致谢</h1>
+
+<p>感谢 Sijie Guo 给予的技术评审，感谢 Jeff Bleiel 的洞察及耐心，感谢 Jess Haberman 的热情和支持。</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[详解 Pulsar Broker 负载均衡]]></title>
+    <link href="http://alphawang.github.io/blog/pulsar-load-balancing/"/>
+    <updated>2022-08-14T18:30:10+08:00</updated>
+    <id>http://alphawang.github.io/blog/pulsar-load-balancing</id>
+    <content type="html"><![CDATA[<blockquote><p>本文翻译自 StreamNative 博客《Achieving Broker Load Balancing with Apache Pulsar》
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew">https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew</a></p></blockquote>
+
+<p>In this blog, we talk about the importance of load balancing in distributed computing systems and provide a deep dive on how Pulsar handles broker load balancing. First, we’ll cover Pulsar’s topic-bundle grouping, bundle-broker ownership, and load data models. Then, we&rsquo;ll walk through Pulsar’s load balancing logic with sequence diagrams that demonstrate bundle assignment, split, and shedding. By the end of this blog, you’ll understand how Pulsar dynamically balances brokers.</p>
+
+<p>本文将探讨负载均衡在分布式计算系统中的重要性，并深入分析 Pulsar 处理 Broker 负载均衡的方式。首先我们介绍 Pulsar 中的 Topic-Bundle 分组、Bundle-Broker 归属关系以及负载数据模型。然后讲解 Pulsar 的负载均衡逻辑，通过时序图来展示 Bundle 的分配、拆分和缩减过程。通过本文，你将了解 Pulsar Broker 是如何做到动态均衡的。</p>
+
+<p>Before we dive into the details of Pulsar’s broker load balancing, we&rsquo;ll briefly discuss the challenges of distributed computing, and specifically, systems with monolithic architectures.</p>
+
+<p>在深入探讨 Pulsar Broker 负载均衡的细节之前，我们先简要讨论分布式计算的挑战，特别是单体架构系统的挑战。</p>
+
+<!--more-->
+
+
+<h2>The challenges of load balancing in distributed streaming - 分布式流系统中负载均衡的挑战</h2>
+
+<p>A key challenge of distributed computing is load balancing. Distributed systems need to evenly distribute message loads among servers to avoid overloaded servers that can malfunction and harm the performance of the cluster. Topics are naturally a good choice to partition messages because messages under the same topic (or topic partition) can be grouped and served by a single logical server. In most distributed streaming systems, including Pulsar, topics or groups of topics are considered a load-balance entity, where the systems need to evenly distribute the message load among the servers.</p>
+
+<p>负载均衡是分布式计算中的一大关键挑战。分布式系统需要在服务器之间平均分配消息负载，以避免出现服务器过载，从而导致故障并损害集群性能。一个自然而然的合理选择是根据主题来对消息进行拆分，因为同一主题（或主题分区）下的消息可以组织到一起并分配给单个逻辑服务器处理。包括 Pulsar 在内的多数分布式流系统将主题或一组主题视为负载均衡的实体，系统需要在服务器之间平均分配主题或一组主题的消息负载。</p>
+
+<p>Topic load balancing can be challenging when topic loads are unpredictable. When there is a load increase in certain topics, these topics must offload directly or repartition to redistribute the load to other machines. Alternatively, when machines receive low traffic or become idle, the cluster needs to rebalance to avoid wasting server resources.</p>
+
+<p>当主题负载不可预测时，如何做好主题负载均衡可能会形成挑战。当某些主题的负载增加时，这些主题必须直接卸载或者重新分区，以便将负载重新分配到其他机器。另一种情况是，某些机器流量非常低，甚至空闲，集群需要重平衡来避免服务器资源浪费。</p>
+
+<p>Dynamic rebalancing can be difficult in monolithic architectures, where messages are both served and persisted in the same stateful server. In monolithic streaming systems, rebalancing often involves copying messages from one server to another. Admins must carefully compute the initial topic distribution to avoid future rebalancing as much as possible. In many cases, they need careful orchestration to execute topic rebalancing.</p>
+
+<p>动态重平衡在单体架构中可能会很困难，因为消息在同一个有状态的服务器中处理以及持久化。在单体流式系统中，重平衡通常涉及将消息从一台服务器复制到另一台服务器。管理员必须仔细计算初始主题分布，尽可能避免将来发生重平衡。在许多情况下，管理员需要仔细编排才能执行主题重平衡操作。</p>
+
+<h2>An overview of load balancing in Pulsar - Pulsar 负载均衡概览</h2>
+
+<p>By contrast, Apache Pulsar is equipped with automatic broker load balancing that requires no admin intervention. Pulsar’s architecture separates storage and compute, making the broker-topic assignment more flexible. Pulsar brokers persist messages in the storage servers, which removes the need for Pulsar to copy messages from one broker to another when rebalancing topics among brokers. In this scenario, the new broker simply looks up the metadata store to point to the correct storage servers where the topic messages are located.</p>
+
+<p>相比之下，Apache Pulsar 则实现了 Broker 的动态负载均衡，无需管理员手工干预。Pulsar 从架构上分离了存储层和计算层，可以更加灵活地分配 Broker 与主题的映射关系。Pulsar Broker 将消息持久化保存到存储服务器，当在 Broker 之间重平衡主题时，无需将消息从一个 Broker 复制到另一个 Broker。在这种情况下，新加入的 Broker 只需要查找 Metadata Store 并指向主题消息所在的正确存储服务器即可。</p>
+
+<p>Let&rsquo;s briefly talk about the Pulsar storage architecture to have the complete Pulsar&rsquo;s scaling context here. On the storage side, topic messages are segmented into Ledgers, and these Ledgers are distributed to multiple BookKeeper servers, known as bookies. Pulsar horizontally scales its bookies to distribute as many Ledger (Segment) entities as possible.</p>
+
+<p>这里简要讨论一下 Pulsar 的存储架构，以便全面地了解 Pulsar 的扩展能力。在存储层，主题消息被分割成多个 Ledger，这些 Ledger 分布到多个 BookKeeper 服务器，即 Bookie。Pulsar 通过水平扩展 Bookie，即可存储尽可能多的 Ledger（Segment）条目。</p>
+
+<p>For a high write load, if all bookies are full, you could add more bookies, and the new message entries (new ledgers) will be placed on the new bookies. With this segmentation, during the storage scaling, Pulsar does not involve recopying old messages from bookies. For a high read load, because Pulsar caches messages in the brokers' memory, the read load on the bookies significantly offloads to the brokers, which are load-balanced. You can read more about Pulsar Storage architecture and scaling information in the blog post <a href="https://www.splunk.com/en_us/blog/it/comparing-pulsar-and-kafka-how-a-segment-based-architecture-delivers-better-performance-scalability-and-resilience.html">Comparing Pulsar and Kafka</a>.</p>
+
+<p>对于高写入负载，如果所有 Bookie 都已满，只需增加更多的 Bookie，新的消息条目（即新的 Ledger）即可存储到这些新的 Bookie 上。通过这种分段设计，在存储扩展期间 Pulsar 无需从 Bookie 中重新复制旧消息。对于高读取负载，Pulsar 将消息缓存在 Broker 内存中，所以 Bookie 的读负载会显著卸载到 Broker 上，而 Broker 是负载均衡的。你可以在这篇关于<a href="https://www.splunk.com/en_us/blog/it/comparing-pulsar-and-kafka-how-a-segment-based-architecture-delivers-better-performance-scalability-and-resilience.html">对比 Pulsar 与 Kafka </a> 的博文中了解更多关于 Pulsar 存储架构以及扩展能力的信息。</p>
+
+<h1>Topics are assigned to brokers at the bundle level - 在 Bundle 级别分配主题到 Broker</h1>
+
+<p>From the client perspective, Pulsar topics are the basic units in which clients publish and consume messages. On the broker side, a single broker will serve all the messages for a topic from all clients. A topic can be partitioned, and partitions will be distributed to multiple brokers. You could regard a topic partition as a topic and a partitioned topic as a group of topics.</p>
+
+<p>从客户端的角度来看，Pulsar 主题是客户端发布和消费消息的基本单元。在 Broker 端，单个 Broker 处理所有客户端对某个主题的所有消息请求。主题可以被分区，而分区可以分布在多个 Broker 上。你可以将主题分区视为一个主题，而将被分区的主题视为一组主题。</p>
+
+<p>Because it would be inefficient for each broker to serve only one topic, brokers need to serve multiple topics simultaneously. For this multi-topic ownership, the concept of a bundle was introduced in Pulsar to represent a middle-layer group.</p>
+
+<p>由于每个 Broker 只处理一个主题效率较低，所以一般 Broker 需要同时处理多个主题。对于这种多主题归属关系，Pulsar 引入了 Bundle 的概念来作为一种中间层组。</p>
+
+<p>Related topics are logically grouped into a namespace, which is the administrative unit. For instance, you can set configuration policies that apply to all the topics in a namespace. Internally, a namespace is divided into shards, aka the bundles. Each of these bundles becomes an assignment unit.</p>
+
+<p>在 Pulsar 中，相关的主题可以在逻辑上归到一个命名空间中。命名空间是一个管理单元，例如可以设置一套配置策略，应用到命名空间中的所有主题上。命名空间内部被分成多个分片，即 Bundle，每个 Bundle 是负载均衡的分配单元。</p>
+
+<p>Pulsar uses bundles to shard topics, which will help reduce the amount of information to track. For example, Pulsar LoadManger aggregates topic load statistics, such as message rates at the bundle layer, which helps reduce the number of load samples to monitor. Also, Pulsar needs to track which broker currently serves a particular topic. With bundles, Pulsar can reduce the space needed for this ownership mapping.</p>
+
+<p>Pulsar 使用 Bundle 来对主题进行分片，这有助于减少要跟踪的信息量。例如，Pulsar LoadManager 聚合了主题负载统计信息，比如 Bundle 层的消息速率，这有助于减少要监控的负载样本数量。此外，Pulsar 需要跟踪当前是哪个 Broker 服务于特定主题。得益于 Bundle，Pulsar 可以减少维护这种归属关系所需的存储空间。</p>
+
+<p>Pulsar uses a hash to map topics to bundles. Here’s an example of two bundles in a namespace.</p>
+
+<p>Pulsar 使用哈希算法将主题映射到 Bundle。如下是一个命名空间包含两个 Bundle 的示例。</p>
+
+<pre><code>Bundle_Key_Partitions: [0x00000000, 0x80000000, 0xFFFFFFFF]
+Bundle1_Key_Range: [0x00000000, 0x80000000)
+Bundle2_Key_Range: [0x80000000, 0xFFFFFFFF]
+</code></pre>
+
+<p>Pulsar computes the hashcode given topic name by <code>Long hashcode = hash(topicName)</code>. Let’s say <code>hash(“my-topic”) = 0x0000000F</code>. Then Pulsar could do a binary search by <code>NamespaceBundle getBundle(hashCode)</code> to which bundle the topic belongs given the bundle key ranges. In this example, “Bundle1” is the one to which “my-topic” belongs.</p>
+
+<p>Pulsar 通过 <code>Long hashcode = hash(topicName)</code> 来计算给定主题名的哈希码。假设 <code>hash(“my-topic”) = 0x0000000F</code>，在已知 Bundle Key 范围的情况下，Pulsar 可通过 <code>NamespaceBundle getBundle(hashCode)</code> 进行二分搜索，找到主题所属的 Bundle。在此示例中，“my-topic” 属于 “Bundle1”。</p>
+
+<h1>Brokers dynamically own bundles on demand - Bundle 按需动态归属到 Broker</h1>
+
+<p>One of the advantages of Pulsar’s compute (brokers) and storage (bookies) separation is that Pulsar brokers can be stateless and horizontally scalable with dynamic bundle ownership. When brokers are overloaded, more brokers can be easily added to a cluster and redistribute bundle ownerships.</p>
+
+<p>Pulsar 计算层（Broker）和存储层（Bookie）分离的一大优势是 Pulsar Broker 是无状态的，基于动态 Bundle 归属可以实现良好的水平扩展性。当 Broker 过载后，可以轻松地将更多 Broker 加入集群并重新分配 Bundle 归属关系。</p>
+
+<p>To discover the current bundle-broker ownership in a given topic, Pulsar uses a server-side discovery mechanism that redirects clients to the owner brokers’ URLs. This discovery logic requires:</p>
+
+<ul>
+<li>Bundle key ranges for a given namespace, in order to map a topic to a bundle.</li>
+<li>Bundle-Broker ownership mapping to direct the client to the current owner or to trigger a new ownership acquisition in case there is no broker assigned.</li>
+</ul>
+
+
+<p>Pulsar 使用服务端发现机制来发现给定主题当前的 Bundle-Broker 归属关系，将客户端重定向到 Owner Broker 的 URL。这种发现逻辑需要知道：</p>
+
+<ul>
+<li>给定命名空间的 Bundle Key 范围，以便将主题映射到 Bundle。</li>
+<li>Bundle-Broker 归属关系，以便将客户端定向到当前 Owner；如果尚未分配 Broker，则触发新一轮归属关系分配。</li>
+</ul>
+
+
+<p>Pulsar stores bundle ranges and ownership mapping in the metadata store, such as ZooKeeper or etcd, and the information is also cached by each broker.</p>
+
+<p>Pulsar 将 Bundle 范围和归属关系存储在 Metadata Store 中，例如 ZooKeeper 或 etcd，这些信息也会缓存在每个 Broker 中。</p>
+
+<h1>Load data model - 负载数据模型</h1>
+
+<p>Collecting up-to-date load information from brokers is crucial to load balancing decisions. Pulsar constantly updates the following load data in the memory cache and metadata store and replicates it to the leader broker. Based on this load data, the leader broker runs topic-broker assignment, bundle split, and unload logic:</p>
+
+<ul>
+<li>Bundle Load Data contains bundle-specific load information, such as bundle-specific msg in/out rates.</li>
+<li>Broker Load Data contains broker-specific load information, such as CPU, memory, and network throughput in/out rates.</li>
+</ul>
+
+
+<p>负载均衡决策中至关重要的一点是从 Broker 端收集最新的负载信息。Pulsar 不断将以下负载数据更新到内存缓存和 Metadata Store 中，并将其复制到 Leader Broker。基于这些负载数据，Leader Broker 执行 Topic-Broker 分配、Bundle 拆分以及卸载逻辑：</p>
+
+<ul>
+<li>Bundle 负载数据（Bundle Load Data），包含 Bundle 相关的负载信息，例如 Bundle 的消息输入/输出速率。</li>
+<li>Broker 负载数据（Broker Load Data），包含 Broker 相关的负载信息，例如 CPU、内存以及网络吞吐量输入/输出速率。</li>
+</ul>
+
+
+<h1>Load balance sequence - 负载均衡时序图</h1>
+
+<p>In this section, we’ll walk through load balancing logic with sequence diagrams:</p>
+
+<ul>
+<li>Assigning topics to brokers dynamically (<a href="https://pulsar.apache.org/docs/administration-load-balance/#assign-topics-to-brokers-dynamically">Read the complete documentation</a>.)</li>
+<li>Splitting overloaded bundles (<a href="https://pulsar.apache.org/docs/administration-load-balance/#split-namespace-bundles">Read the complete documentation</a>.)Shedding bundles from overloaded brokers (<a href="https://pulsar.apache.org/docs/administration-load-balance/#shed-load-automatically">Read the complete documentation</a>.)</li>
+</ul>
+
+
+<p>本节将通过时序图来展示负载均衡逻辑：
+- 将主题动态分配到 Broker（<a href="https://pulsar.apache.org/docs/administration-load-balance/#assign-topics-to-brokers-dynamically">阅读完整文档</a>）。
+- 拆分过载的 Bundle（<a href="https://pulsar.apache.org/docs/administration-load-balance/#split-namespace-bundles">阅读完整文档</a>）。
+- 从过载的 Broker 中卸载 Bundle（<a href="https://pulsar.apache.org/docs/administration-load-balance/#shed-load-automatically">阅读完整文档</a>）。</p>
+
+<h2>Assigning topics to brokers dynamically - 将主题动态分配到 Broker</h2>
+
+<p><img src="https://lh3.googleusercontent.com/N9y-xpws0hQE-J7SF0-1m55L9UiYa5xOcyAs6JIUh_0KdBgSgGBO3w2Xqk4NTXHeBG88kA0qYd2pYr_5PVLWJ-cXpwOD860xLUdJmfYfaQE4EO8UvPIKr2WLBm0uhT7orSq66F5IQNQXU4s1EQ72WA" alt="img" />Imagine a client trying to connect to a broker for a topic. The client connects to a random broker, and the broker first searches the matching bundle by the hash of the topic and its namespace bundle ranges. Then the broker checks if any broker already owns the bundle in the metadata store. If already owned, the broker redirects the client to the owner URL. Otherwise, the broker redirects the client to the leader for a broker assignment. For the assignment, the leader first filters out available brokers by the configured rules and then randomly selects one of the least loaded brokers to the bundle, as shown in Section 1 below, and returns its URL. The leader redirects the client to the returned URL, and the client connects to the assigned broker. This new broker-bundle ownership creates an ephemeral lock in the metadata store, and the lock is automatically released if the owner becomes unavailable.</p>
+
+<p>假设某客户端想要读写主题，现在试图连接到一个 Broker。该客户端先会连接到一个随机的 Broker，该 Broker 首先根据主题的哈希码以及命名空间的 Bundle 范围搜索匹配的 Bundle。然后，该 Broker 会查询 Metadata Store，检查所匹配的 Bundle 是否属于某 Broker。如果已经归属，该 Broker 会将客户端重定向到 Owner URL。否则，会将客户端重定向到 Leader 以进行 Broker 分配。Broker 分配逻辑如下：Leader 首先基于配置好的规则过滤出可用的 Broker 列表，然后随机选择一个负载最少的 Broker 分配给 Bundle（如下文第一步所示），并返回该 Broker 的 URL；Leader 将客户端重定向到该 URL，客户端即可连接到分配的 Broker。新的 Broker-Bundle 归属关系会在 Metadata Store 中创建一个临时锁，一旦 Owner 不可用之后该锁会自动释放。</p>
+
+<h3>Section 1: Selecting a broker - 第一步：选定 Broker</h3>
+
+<p>This step selects a broker from the filtered broker list. As a tie-breaker strategy, it uses <code>ModularLoadManagerStrategy</code> (<code>LeastLongTermMessageRate</code> by default). <code>LeastLongTermMessageRate</code> computes brokers’ load scores and randomly selects one among the minimal scores by the following logic:</p>
+
+<ul>
+<li>If the maximum local usage of CPU, memory, and network is bigger than the <code>LoadBalancerBrokerOverloadedThresholdPercentage</code> (default 85%), then <code>score=INF</code>.</li>
+<li>Otherwise, <code>score = longTermMsgIn</code> rate and <code>longTermMsgOut</code> rate.</li>
+</ul>
+
+
+<p>这一步从已过滤的可用 Broker 列表中选定一个 Broker，使用 <code>ModularLoadManagerStrategy</code>（默认为 <code>LeastLongTermMessageRate</code>）。<code>LeastLongTermMessageRate</code> 策略计算 Broker 的负载分数，并从分数最小的 Broker 中随机选择一个，计分规则如下：</p>
+
+<ul>
+<li>如果 CPU、内存和网络的最大本地使用率大于 <code>LoadBalancerBrokerOverloadedThresholdPercentage</code>（默认 85%），则设置 <code>score=INF</code>。</li>
+<li>否则设置分数为 <code>longTermMsgIn</code> 消息输入速率加上 <code>longTermMsgOut</code> 消息输出速率。</li>
+</ul>
+
+
+<h2>Splitting overloaded bundles## 拆分过载的 Bundle</h2>
+
+<p>  <img src="https://lh5.googleusercontent.com/WU90vnuPZGQ99AAsGN8EYdTeECBo_syFHgG678lTdhJMaAeD5Hwy4FzFnOUAl8H4QZAakPL4XWT8dAc8cl3NcNNjIvmLHwR7DxGqp7WHkYvmB3Awq5nz4U2AdXNc6vNG8h3APx65q5wHVhH9Wr3JAQ" alt="img" /></p>
+
+<p>With the bundle load data, the leader broker identifies which bundles are overloaded beyond the threshold as shown in Section 2 below and asks the owner broker to split them. For the split, the owner broker first computes split positions, as shown in Section 3 below, and repartition the target bundles at them, as shown in Section 4 below. After the split, the owner broker updates the bundle ownerships and ranges in the metadata store. The newly split bundles can be automatically unloaded from the owner broker, configurable by the <code>LoadBalancerAutoUnloadSplitBundlesEnabled</code> flag.</p>
+
+<p>Leader Broker 根据 Bundle 负载数据判断哪些 Bundle 的负载超过阈值（见第二步），并要求 Owner Broker 进行 Bundle 拆分。具体的拆分逻辑如下：Owner Broker 首先计算拆分位置（见第三步），然后据此重新拆分目标 Bundle（见第四步）；完成拆分之后，Owner Broker 将最新的 Bundle 归属关系和范围更新到 Metadata Store 中。如果启用了 <code>LoadBalancerAutoUnloadSplitBundlesEnabled</code>，新拆分的 Bundle 可以从 Owner Broker 中自动卸载。</p>
+
+<h3>Section 2: Finding target bundles - 第二步：查找目标 Bundle</h3>
+
+<p>If the auto bundle split is enabled by <code>loadBalancerAutoBundleSplitEnabled</code> (default true) configuration, the leader broker checks if any bundle’s load is beyond <code>LoadBalancerNamespaceBundle</code> thresholds.</p>
+
+<p>如果启用了 <code>loadBalancerAutoBundleSplitEnabled</code>（默认为 true），则启用自动拆分 Bundle 功能，Leader Broker 会判断是否有 Bundle 的负载超过 <code>LoadBalancerNamespaceBundle</code> 配置的阈值。</p>
+
+<pre><code>Defaults
+LoadBalancerNamespaceBundleMaxTopics = 1000
+LoadBalancerNamespaceBundleMaxSessions = 1000
+LoadBalancerNamespaceBundleMaxMsgRate = 30000
+LoadBalancerNamespaceBundleMaxBandwidthMbytes = 100
+LoadBalancerNamespaceMaximumBundles = 128
+</code></pre>
+
+<p>If the number of bundles in the namespace is already larger than or equal to <code>MaximumBundles</code>, it skips the split logic.</p>
+
+<p>如果命名空间中的 Bundle 个数已经达到或超过 <code>MaximumBundles</code>，则会跳过拆分逻辑。</p>
+
+<h3>Section 3: Computing bundle split boundaries - 第三步：计算 Bundle 拆分边界</h3>
+
+<p>Split operations compute the target bundle’s range boundaries to split. The bundle split boundary algorithm is configurable by <code>supportedNamespaceBundleSplitAlgorithms</code>.If we have two bundle ranges in a namespace with range partitions (0x0000, 0X8000, 0xFFFF), and we are currently targeting the first bundle range (0x0000, 0x8000) to split:</p>
+
+<p>接下来计算目标 Bundle 的拆分边界。Bundle 拆分边界算法可通过 <code>supportedNamespaceBundleSplitAlgorithms</code> 配置。假设某个命名空间有两个 Bundle 范围，范围分布是 (0x0000, 0X8000, 0xFFFF)，现在要拆分第一个 Bundle 范围 (0x0000, 0x8000)，可使用如下拆分算法：</p>
+
+<p>RANGE_EQUALLY_DIVIDE_NAME (default): This algorithm divides the bundle into two parts with the same hash range size, for example target bundle to split=(0x0000, 0x8000) => bundle split boundary=[0x4000].</p>
+
+<p>RANGE_EQUALLY_DIVIDE_NAME（默认算法）：该算法将目标 Bundle 拆分为具有相同哈希范围大小的两个部分，例如要拆分的目标 Bundle 为 (0x0000, 0x8000)，则拆分边界为 [0x4000]。</p>
+
+<p>TOPIC_COUNT_EQUALLY_DIVIDE: It divides the bundle into two parts with the same topic count. Let’s say there are 6 topics in the target bundle [0x0000, 0x8000):<code>hash(topic1) = 0x0000hash(topic2) = 0x0005hash(topic3) = 0x0010hash(topic4) = 0x0015hash(topic5) = 0x0020hash(topic6) = 0x0025</code>Here we want to split at 0x0012 to make the left and right sides of the number of topics the same. E.g. target bundle to split [0x0000, 0x8000) => bundle split boundary=[0x0012].</p>
+
+<p>TOPIC_COUNT_EQUALLY_DIVIDE：该算法将目标 Bundle 拆分为具有相同主题数的两个部分。假设在目标 Bundle [0x0000, 0x8000) 中有 6 个主题：<code>hash(topic1) = 0x0000hash(topic2) = 0x0005hash(topic3) = 0x0010hash(topic4) = 0x0015hash(topic5) = 0x0020hash(topic6) = 0x0025</code>这种情况会在 0x0012 处进行拆分，使左右两边的主题数相同。如果要拆分的目标 Bundle 为 [0x0000, 0x8000)，则拆分边界为 [0x0012]。</p>
+
+<h3>Section 4: Splitting bundles by boundaries - 第四步：根据边界拆分 Bundle</h3>
+
+<p>Example:Given bundle partitions [0x0000, 0x8000, 0xFFFF], splitBoundaries: [0x4000]Bundle partitions after split = [0x0000, 0x4000, 0x8000, 0xFFFF]Bundles ranges after split = [[0x0000, 0x4000),[0x4000, 0x8000), [0x8000, 0xFFFF]]</p>
+
+<p>示例：给定 Bundle 分区为 [0x0000, 0x8000, 0xFFFF]，拆分边界为 [0x4000]。拆分后的 Bundle 分布为 [0x0000, 0x4000, 0x8000, 0xFFFF]。拆分后的 Bundle 范围为 [[0x0000, 0x4000), [0x4000, 0x8000), [0x8000, 0xFFFF]]。</p>
+
+<h2>Shedding (unloading) bundles from overloaded brokers - 从过载的 Broker 中缩减（卸载）Bundle</h2>
+
+<p><img src="https://lh6.googleusercontent.com/4sqGjXWJpUeg_MoFLaerNqgOkBffhCLPCHEE9PFQHyO-qjtx2GfPHdW3CDprArFeYaR2bs7OXnIqqAbNKRkbKKSfKePA0a8rO_KDcOGNhJN-6LGoPmCtD-rEAigjk-LRbEmOO3NUG59IzKsIs453Zg" alt="img" />With the broker load information collected from all brokers, the leader broker identifies which brokers are overloaded and triggers bundle unload operations, with the objective of rebalancing the traffic throughout the cluster.</p>
+
+<p>Leader Broker 根据从所有 Broker 中收集的负载信息，识别出哪些 Broker 已经过载，并触发 Bundle 卸载操作，目的是为了重平衡整个集群的流量。</p>
+
+<p>Using the default <code>ThresholdShedder</code> strategy, the leader broker computes the average of the maximal resource usage among CPU, memory, and network IO. After that, the leader finds brokers whose load is higher than the average-based threshold, as shown in Section 5 below. If identified, the leader asks the overloaded brokers to unload some bundles of topics, starting from the high throughput ones, enough to bring the broker load to below the critical threshold.For the unloading request, the owner broker removes the target bundles’ ownerships in the metadata store and closes the client topic connections. Then the clients reinitiate the broker discovery mechanism. Eventually, the leader assigns less-loaded brokers to the unloaded bundles and the clients connect to them.</p>
+
+<p>Leader Broker 默认使用 <code>ThresholdShedder</code> 策略，计算 CPU、内存以及网络 IO 之间最大资源使用率的平均值。之后，Leader 找到那些负载高于此基于平均值阈值的 Broker（见第五步）。找到过载的 Broker 之后，Leader 要求它们从高吞吐量的主题开始卸载一些主题 Bundle，直至将 Broker 负载降低到临界阈值以下。收到卸载请求后，Owner Broker 从 Metadata Store 中移除目标 Bundle 的归属信息，并关闭客户端的主题连接。然后客户端重新启动 Broker 发现机制。最终，Leader 将负载较少的 Broker 分配给被卸载的 Bundle，客户端则连接到新的 Broker。</p>
+
+<h3>Section 5: ThresholdShedder: finding overloaded brokers - 第五步：ThresholdShedder：查找过载的 Broker</h3>
+
+<p>It first computes the average resource usage of all brokers using the following formula.</p>
+
+<p>ThresholdShedder 首先使用如下公式计算出所有 Broker 的平均资源使用率。</p>
+
+<pre><code>For each broker: 
+    usage =  
+    max (
+    %cpu * cpuWeight
+    %memory * memoryWeight,
+    %bandwidthIn * bandwidthInWeight,
+    %bandwidthOut * bandwidthOutWeight) / 100;
+
+    usage = x * prevUsage + (1 - x) * usage
+
+    avgUsage = sum(usage) / numBrokers 
+</code></pre>
+
+<p>If any broker’s usage is bigger than avgUsage + y, it is considered an overloaded broker.</p>
+
+<ul>
+<li>The resource usage “Weight” is by default 1.0 and configurable by <code>loadBalancerResourceWeight</code> configurations.</li>
+<li>The historical usage multiplier x is configurable by <code>loadBalancerHistoryResourcePercentage</code>. By default, it is 0.9, which weighs the previous usage more than the latest.</li>
+<li>The <code>avgUsage</code> buffer y is configurable by <code>loadBalancerBrokerThresholdShedderPercentage</code>, which is 10% by default.</li>
+</ul>
+
+
+<p>如果 Broker 的资源使用率大于 avgUsage + y，则被认为过载。</p>
+
+<ul>
+<li>资源使用率的权重（Weight）默认为 1.0，可通过 <code>loadBalancerResourceWeight</code> 进行配置。</li>
+<li>历史使用率乘子 x 可通过 <code>loadBalancerHistoryResourcePercentage</code> 进行配置。其默认值是 0.9，历史使用率比最近使用率的权重更大。</li>
+<li><code>avgUsage</code> 缓冲值 y 可通过 <code>loadBalancerBrokerThresholdShedderPercentage</code> 进行配置，默认值是 10%。</li>
+</ul>
+
+
+<h1>Takeaways - 总结</h1>
+
+<p>In this blog, we reviewed the Pulsar broker load balance logic focusing on its sequence. Here are the broker load balance behaviors that I found important in this review.</p>
+
+<ul>
+<li>Pulsar groups topics into bundles for easier tracking, and it dynamically assigns and balances the bundles among brokers. If specific bundles are overloaded, they get automatically split to maintain the assignment units to a reasonable level of traffic.</li>
+<li>Pulsar collects the global broker (cpu, memory, network usage) and bundle load data (msg in/out rate) to the leader broker in order to run the algorithmic load balance logic: bundle-broker assignment, bundle splitting, and unloading (shedding).</li>
+<li>The bundle-broker assignment logic randomly selects the least loaded brokers and redirects clients to the assigned brokers’ URLs. The broker-bundle ownerships create ephemeral locks in the metadata store, which are automatically released if the owners become unavailable (lose ownership).</li>
+<li>The bundle-split logic finds target bundles based on the LoadBalancerNamespaceBundle* configuration thresholds, and by default, the bundle ranges are split evenly. After splits, by default, the owner automatically unloads the newly split bundles.</li>
+<li>The auto bundle-unload logic uses the default LoadSheddingStrategy, which finds overloaded brokers based on the average of the max resource usage among CPU, Memory, and Network IO. Then, the leader asks the overloaded brokers to unload some high loaded bundles of topics. Clients’ topic connections under the unloading bundles experience connection close and re-initiate the bundle-broker assignment.</li>
+</ul>
+
+
+<p>在本博文中，我们回顾了 Pulsar Broker 的负载均衡逻辑，重点关注其时序图。我认为 Broker 负载均衡行为有如下几个要点。</p>
+
+<ul>
+<li>Pulsar 通过 Bundle 将主题分组以便于跟踪，并在 Broker 之间动态地分配和平衡 Bundle。如果特定的 Bundle 发生过载，则自动进行拆分，将分配单元维护在合理的流量水平。</li>
+<li>Pulsar 将 Broker 全局负载数据（CPU、内存以及网络使用率）以及 Bundle 负载数据（消息输入/输出速率）收集到 Leader Broker，以运行负载均衡算法逻辑：执行 Bundle-Broker 分配、Bundle 拆分和卸载（缩减）。</li>
+<li>Bundle-Broker 分配逻辑随机选择负载最少的 Broker，并将客户端重定向到分配的 Broker URL。Broker-Bundle 归属关系会在 Metadata Store 中创建临时锁，如果 Owner 不可用（失去归属权）则会自动释放锁。</li>
+<li>Bundle 拆分逻辑根据 LoadBalancerNamespaceBundle* 配置的阈值查找目标 Bundle，默认情况下 Bundle 范围被平均拆分。拆分后，Owner 默认自动卸载新拆分的 Bundle。</li>
+<li>Bundle 自动卸载逻辑默认使用 LoadSheddingStrategy，根据 CPU、内存以及网络 IO 的最大资源使用率平均值来查找过载的 Broker。然后 Leader 要求过载的 Broker 卸载一些高负载的主题 Bundle。被卸载的 Bundle 对应的客户端主题连接会被关闭，并重新发起 Bundle-Broker 分配。</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[What the FLiP Is the FLiP Stack?]]></title>
+    <link href="http://alphawang.github.io/blog/flip/"/>
+    <updated>2022-06-07T23:17:09+08:00</updated>
+    <id>http://alphawang.github.io/blog/flip</id>
+    <content type="html"><![CDATA[<blockquote><p>本文翻译自 StreamNative 博客《What the FLiP is the FLiP Stack?》<br/>
+- 原文链接：<a href="https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/">https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/</a><br/>
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/KoigahiZ2sTG-GhD2fG0Fw">https://mp.weixin.qq.com/s/KoigahiZ2sTG-GhD2fG0Fw</a></p></blockquote>
+
+<p>In this article on the FLiP Stack, we will explain how to build a real-time event driven application using the latest open source frameworks. We will walk through building a Python IoT application utilizing Apache Pulsar, Apache Flink, Apache Spark, and Apache NiFi. You will see how quickly we can build applications for a plethora of use cases. The easy, fast, scalable way: The FLiP Way.</p>
+
+<p>本文将介绍 FLiP 技术栈，我们将解释如何使用最新的开源框架构建实时事件驱动应用程序，并介绍如何通过 Apache Pulsar、Apache Flink、Apache Spark 和 Apache NiFi 构建一个 Python IoT 应用。得益于 FLiP 的简单、快速、可扩展的特性，使用 FLiP 可以快速地为各种场景构建应用程序。</p>
+
+<p>The FLiP Stack is a number of open source technologies that work well together. FLiP is a best practice pattern for building a variety of streaming data applications. The projects in the stack are dictated by the needs of that use case; the available technologies in the builder’s current stack; and the desired end results. As we shall see, there are several variations of the FLiP stack built upon the base of Apache Flink and Apache Pulsar.</p>
+
+<p>FLiP 技术栈由许多可协同工作的开源技术组成，是构建各种流数据应用程序的最佳实践模式。FLiP 技术栈包含哪些项目并不是固定的，而是由特定场景的需求、团队当前掌握的技术栈、以及期望的最终结果决定。建立在 Apache Flink 和 Apache Pulsar 基础上的 FLiP 技术栈有很多变体。</p>
+
+<!--more-->
+
+
+<p>For some use cases like log analytics, you will need a nice dashboard for visualizing, aggregating, and querying your log data. For that one you would most likely want something like FLiPEN, as an enhancement to the <a href="https://www.elastic.co/what-is/elk-stack">ELK Stack</a>. As you can tell, FLiP+ is a moving list of acronyms for open source projects that are commonly used together.</p>
+
+<p>例如对于日志分析这种场景，通常需要清晰直观的仪表板来可视化、聚合并查询日志数据。对于这种场景，你可能需要像 FLiPEN 这样的技术，作为对 <a href="https://www.elastic.co/what-is/elk-stack">ELK 技术栈</a> 的增强。由此可以看出，FLiP+ 是一个可变的缩写，表示多种配合使用的开源项目。</p>
+
+<h2>Common Use Cases - 常见场景</h2>
+
+<p>With so many variations of the FLiP stack, it might be difficult to figure out which one is right for you. Therefore, we have provided some general guidelines for selecting the proper FLiP+ stack to use based on your use case. We already mentioned Log Analytics, which is a common use case. There are many more, driven usually by data sources and data sinks.</p>
+
+<p>由于 FLiP 技术栈的变体非常多，所以可能很难确定哪一种适合你的场景。因此，我们提供了一些通用指南，你可以根据不同的场景选择合适的 FLiP+ 技术栈。上文提到的日志分析是一种常用场景，当然还有其他更多的场景，通常由数据 source 和 sink 驱动。</p>
+
+<table>
+<thead>
+<tr>
+<th> 场景（数据）        </th>
+<th> 技术栈      </th>
+<th> 演示                                                         </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 点击流              </td>
+<td> FLiP-C      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Stream2Clickhouse">https://github.com/tspannhw/FLiP-Stream2Clickhouse</a>           </td>
+</tr>
+<tr>
+<td> IoT                 </td>
+<td> FLiP-I      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-InfluxDB">https://github.com/tspannhw/FLiP-InfluxDB</a>                    </td>
+</tr>
+<tr>
+<td> CDC                 </td>
+<td> FLiPS       </td>
+<td> <a href="https://github.com/tspannhw/FLiPS-SparkOnPulsar">https://github.com/tspannhw/FLiPS-SparkOnPulsar</a>              </td>
+</tr>
+<tr>
+<td> 统一消息            </td>
+<td> FLiP*       </td>
+<td> <a href="https://github.com/tspannhw/FLiPN-Demos">https://github.com/tspannhw/FLiPN-Demos</a>                      </td>
+</tr>
+<tr>
+<td> Lakehouse，云数据湖 </td>
+<td> FLiP        </td>
+<td> <a href="https://github.com/tspannhw/FLiP-CloudIngest">https://github.com/tspannhw/FLiP-CloudIngest</a>                 </td>
+</tr>
+<tr>
+<td> 移动应用            </td>
+<td> FLiP-M      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Mobile">https://github.com/tspannhw/FLiP-Mobile</a>                      </td>
+</tr>
+<tr>
+<td> 微服务              </td>
+<td> FLiP        </td>
+<td> <a href="https://streamnative.io/blog/engineering/2021-12-14-developing-event-driven-microservices-with-apache-pulsar/">https://streamnative.io/blog/engineering/2021-12-14-developing-event-driven-microservices-with-apache-pulsar/</a> </td>
+</tr>
+<tr>
+<td> SQL on Topics       </td>
+<td> FLiPiT      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Into-Trino">https://github.com/tspannhw/FLiP-Into-Trino</a>                  </td>
+</tr>
+<tr>
+<td> 边缘 AI             </td>
+<td> FLip-EdgeAI </td>
+<td> <a href="https://github.com/tspannhw/FLiP-EdgeAI">https://github.com/tspannhw/FLiP-EdgeAI</a>                      </td>
+</tr>
+<tr>
+<td> ETL                 </td>
+<td> FLiPS       </td>
+<td> <a href="https://github.com/tspannhw/FLiPS-SparkOnPulsar">https://github.com/tspannhw/FLiPS-SparkOnPulsar</a>              </td>
+</tr>
+<tr>
+<td> 搜索                </td>
+<td> FLiPEN      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Elastic">https://github.com/tspannhw/FLiP-Elastic</a>                     </td>
+</tr>
+<tr>
+<td> Python 应用         </td>
+<td> FLiP-Py     </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Py-Pi-GasThermal">https://github.com/tspannhw/FLiP-Py-Pi-GasThermal</a>            </td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>Flink-Pulsar Integration - Flink-Pulsar 集成</h2>
+
+<p>A critical component of the FLiP stack is utilizing <a href="https://flink.apache.org/">Apache Flink</a> as a stream processing engine against Apache Pulsar data. This is enabled by the Pulsar-Flink Connector that enables developers to build Flink applications natively and stream in events from Pulsar at scale as they happen. This allows for use cases such as streaming ELT and continuous SQL on joined topic streams. SQL is the language of business that can drive event-driven, real-time applications by writing simple SQL queries against Pulsar streams with Flink SQL, including aggregation and joins.</p>
+
+<p>FLiP 技术栈的一个关键组件是利用 <a href="https://flink.apache.org/">Apache Flink</a> 作为流式处理引擎来处理 Apache Pulsar 数据。这是基于 Pulsar-Flink 连接器实现的，开发人员可以构建原生的 Flink 应用，并在事件发生时从 Pulsar 大规模地流式传输事件，适用于流式 ELT 以及在主题流上持续执行 SQL 等场景。SQL 是一种业务语言，可以通过使用 Flink SQL 编写针对 Pulsar 流的简单 SQL 查询（包括聚合和连接）来实现事件驱动的实时应用程序。</p>
+
+<p>The connector builds an elastic data processing platform enabled by Apache Pulsar and Apache Flink that is seamlessly integrated to allow full read and write access to all Pulsar messages at any scale. As a citizen data engineer or analyst you can focus on building business logic without concern about where the data is coming from or how it is stored.Check out the resources below to learn more about this connector:</p>
+
+<p>Pulsar-Flink 连接器构建了一个弹性数据处理平台，通过无缝集成 Apache Pulsar 和 Apache Flink 允许以任何规模对 Pulsar 消息进行完全读写访问。作为数据工程师或数据分析师，你可以专注于业务逻辑，而无需担心数据来源以及存储。可以通过如下资源学习更多关于 Pulsar-Flink 连接器的知识：</p>
+
+<ul>
+<li>[Blog] <a href="https://flink.apache.org/2021/01/07/pulsar-flink-connector-270.html">What&rsquo;s New in the Pulsar Flink Connector 2.7.0</a>
+[博客] <a href="https://mp.weixin.qq.com/s?__biz=MzUyMjkzMjA1Ng==&amp;mid=2247489855&amp;idx=1&amp;sn=4c45af964787ad4f881e1e69b269c13d&amp;chksm=f9c50308ceb28a1e9593d6478cf2b79b2f0c160b62b5bc1eb92bc75b9207fd46f84f54002797#rd">打造全新批流融合：详解 Apache Flink 1.14.0 发布的 Pulsar Flink Connector</a></li>
+<li>[Blog] <a href="https://streamnative.io/blog/release/2021-04-20-flink-sql-on-streamnative-cloud/">Flink SQL on StreamNative Cloud</a>
+[博客] <a href="https://mp.weixin.qq.com/s?__biz=MzUxOTc4NDc2MQ==&amp;mid=2247488114&amp;idx=1&amp;sn=3eaf397cb698eb75f76cbed34d185d53&amp;chksm=f9f50224ce828b326f0d662b321a14e4721586746945a6721a99d549bd7df18347a6229ccdd2#rd">批流一体上云：StreamNative Cloud 支持 Flink SQL</a></li>
+<li>[Code] <a href="https://github.com/tspannhw/FLiP-SQL">Streaming Analytics with Apache Pulsar and Apache Flink SQL</a>
+[代码] <a href="https://github.com/tspannhw/FLiP-SQL">使用 Apache Pulsar 和 Apache Flink SQL 进行流式分析</a></li>
+</ul>
+
+
+<h2>NiFi-Pulsar Integration - NiFi-Pulsar 集成</h2>
+
+<p>If you have been following <a href="https://streamnative.io/blog/">our blog</a>, you have seen the recent formal <a href="https://streamnative.io/blog/release/2022-03-09-cloudera-and-streamnative-announce-the-integration-of-apache-nifi-and-apache-pulsar/">announcement</a> of the Apache Pulsar processor for Apache NiFi release. We now have an official way to consume and produce messages from any Pulsar topic with the low code streaming tool that is Apache NiFi.</p>
+
+<p>近期，<a href="https://mp.weixin.qq.com/s?__biz=MzUxOTc4NDc2MQ==&amp;mid=2247488900&amp;idx=1&amp;sn=615d76f7ba33287c999ff8633ea9c419&amp;chksm=f9f505d2ce828cc494ffea9c6a2a9db6cb716301870883fa339aea9f6f021b1be42d6ad47395#rd">StreamNative 与 Cloudera 宣布推出 Apache Pulsar + Apache NiFi 联合解决方案</a>。现在我们官方支持利用 Apache NiFi 这种低代码流式工具从任何 Pulsar 主题中消费和生产消息。</p>
+
+<p>This integration allows us to build a real-time data processing and analytics platform for all types of rich data pipelines. This is the keystone connector for the democratization of streaming application development.</p>
+
+<p>利用 NiFi-Pulsar 集成，我们可以为任何数据管道构建实时数据处理和分析平台。这是流式应用程序开发平民化的关键连接器。</p>
+
+<p><img src="https://lh3.googleusercontent.com/8H8Dwfonm-kRyQIC5Ymr1tBJIevxrsiXcLwPuMrZAEJq9vHzi86_6xcN6AgO3_fPgIxoZDpRb7sWpObF8-vUjRNFdnBWHpBdQbUAbqJtP2IXhozx0MsJlimtCOPpZWKe3ERMCFua-BMuVljrY2RDeg" alt="img" />
+Read the articles below to learn more:</p>
+
+<p>若要了解更多信息，可以阅读如下文章：</p>
+
+<ul>
+<li><p>[Blog] <a href="https://streamnative.io/blog/release/2022-03-09-cloudera-and-streamnative-announce-the-integration-of-apache-nifi-and-apache-pulsar/">Cloudera and StreamNative Announce the Integration of Apache NiFi and Apache Pulsar</a>
+[博客] <a href="https://mp.weixin.qq.com/s?__biz=MzUxOTc4NDc2MQ==&amp;mid=2247488900&amp;idx=1&amp;sn=615d76f7ba33287c999ff8633ea9c419&amp;chksm=f9f505d2ce828cc494ffea9c6a2a9db6cb716301870883fa339aea9f6f021b1be42d6ad47395#rd">StreamNative 与 Cloudera 宣布推出 Apache Pulsar + Apache NiFi 联合解决方案</a></p></li>
+<li><p>[Blog] <a href="https://www.datainmotion.dev/2021/11/producing-and-consuming-pulsar-messages.html">Producing and Consuming Pulsar messages with Apache NiFi</a>
+[博客] <a href="https://www.datainmotion.dev/2021/11/producing-and-consuming-pulsar-messages.html">Producing and Consuming Pulsar messages with Apache NiFi</a></p></li>
+<li><p>[Datanami Article] <a href="https://www.datanami.com/2022/03/09/code-for-pulsar-nifi-tie-up-now-open-source/">Code for Pulsar, NiFi Tie-Up Now Open Source</a>
+[Datanami 文章] <a href="https://www.datanami.com/2022/03/09/code-for-pulsar-nifi-tie-up-now-open-source/">Code for Pulsar, NiFi Tie-Up Now Open Source</a></p></li>
+<li><p>[Resources] <a href="https://streamnative.io/apache-nifi-connector/">Pulsar and NiFi Integration Resources</a>
+[资源] <a href="https://streamnative.io/apache-nifi-connector/">Pulsar and NiFi Integration Resources</a></p></li>
+</ul>
+
+
+<h2>An Example FLiP Stack Application - FLiP 技术栈示例</h2>
+
+<p>Now that you have seen the combinations, use cases, and the basic integration, we can walk through an example FLiP Stack application. In this example, we will be ingesting sensor data from a device running a Python Pulsar application.</p>
+
+<p>上文介绍了 FLiP 的技术组合、使用场景以及基本集成，现在我们来看一个 FLiP 技术栈应用的示例。在此示例中，我们从一个运行 Python Pulsar 程序的设备中采集传感数据。</p>
+
+<h3><img src="https://lh5.googleusercontent.com/oGsyno1rf1JN7A3ympFITwpk-qfa2Yl1qkYsJewaR0qNO-SDMiBUIOayEDskUjDJICTK83ON7GuXv8Qfr0XMijdGGIecaF6jx6udJEBFPF_dUFPpJ9bvOyJ3qjF5V26uWmXA-TcM6mo3baqgUgkWKw" alt="img" />Demo Edge Hardware Specifications - 演示使用的边缘端硬件规格</h3>
+
+<ul>
+<li><p>2GB 内存的 Raspberry Pi 4</p></li>
+<li><p>Pimoroni BreakoutGarden Hat</p></li>
+<li><p>Sensiron SGP30 TVOC 及 eCO2 传感器</p>
+
+<ul>
+<li>TVOC 传感器用于 0-60,000 ppb（十亿分之几）</li>
+<li>CO2 传感器用于 400-60,000 ppm（百万分之几）</li>
+</ul>
+</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/y38evgusXR-cOyx_1buIz_4JVytUrWd1Kvt9n9BuN6f0upQLOs8gYR2hF_B73sX7H72ZZaR1tJPIvokB-Oc1UnaS0TkOWynDbEoZX-jvTYxqn4ZMRdTgJcpEEB811gzLwDPfEBOYTz5FO_NzfccHzQ" alt="img" /></p>
+
+<h3>Demo Edge Software Specification - 演示所用的边缘端软件规格</h3>
+
+<ul>
+<li>Apache Pulsar C++ 及 Python 客户端</li>
+<li>Pimoroni <a href="https://github.com/pimoroni/sgp30-python">SGP30</a> Python 库</li>
+</ul>
+
+
+<h3>Streaming Server - 流式服务器</h3>
+
+<ul>
+<li>HP ProLiant DL360 G7 1U RackMount 64 位服务器</li>
+<li>Ubuntu 18.04.6 LTS</li>
+<li>72GB PC3 RAM</li>
+<li>X5677 Xeon 3.46GHz 24 核 CPU</li>
+<li>4×900GB 10K SAS SFF HDD</li>
+<li>Apache Pulsar 2.9.1</li>
+<li>Apache Spark 3.2.0</li>
+<li>Scala 2.12.15 (OpenJDK 64-Bit Server VM, Java 1.8.0_302)</li>
+<li>Apache Flink 1.13.2</li>
+<li>MongoDB</li>
+</ul>
+
+
+<h3>NiFi/AI Server - NiFi/AI 服务器</h3>
+
+<ul>
+<li>NVIDIA® Jetson Xavier™ NX Developer Kit</li>
+<li>AI Perf: 21 TOPS</li>
+<li>GPU: 48 Tensor Core 的 384 核 NVIDIA Volta™ GPU</li>
+<li>CPU：6 核 NVIDIA Carmel ARM®v8.2 64 位 CPU 6 MB L2 + 4 MB L3</li>
+<li>内存：8 GB 128 位 LPDDR4x 59.7GB/s</li>
+<li>Ubuntu 18.04.5 LTS (GNU/Linux 4.9.201-tegra aarch64)</li>
+<li>Apache NiFi 1.15.3</li>
+<li>Apache NiFi Registry 1.15.3</li>
+<li>Apache NiFi Toolkit 1.15.3</li>
+<li>Pulsar 处理器</li>
+<li>OpenJDK 8 and 11</li>
+<li>Jetson Inference GoogleNet</li>
+<li>Python 3</li>
+</ul>
+
+
+<h3>Building the Air Quality Sensors Application with FLiPN-Py - 使用 FLiPN-Py 构建空气质量传感器程序</h3>
+
+<p><img src="https://lh4.googleusercontent.com/QVjIhaUab8L5-jHq2YHccphBhqnohVGm8LIZb6zjcc0SOTMnCPAaNbHTGk52H0YUHthmVrlX6NaqVqZIK8kUqXDPZT9wUgGDPFmKFXyXpbiubIeT5svO5tHQqApDA54n9Yj7hXNrrpZzVhOos-Ptvw" alt="img" />In this application, we want to monitor the air quality in an office continuously and then hand off a large amount of data to a data scientist to make predictions. Once that model is done, we will add that model to a Pulsar function for live anomaly detection to alert office occupants of the situation. We will also want dashboards to monitor trends, aggregates and advanced analytics.</p>
+
+<p>在这个示例程序中，我们希望持续监测办公室的空气质量，然后将大量数据交给数据科学家进行预测。一旦该模型完成，我们会将其添加到 Puslar Function 中进行实时异常检测，发送告警给办公室人员。我们还需要仪表盘来监控趋势、进行聚合和高级分析。</p>
+
+<p>Once the initial prototype proves itself, we will deploy it to all the remote offices for monitoring internal air quality. For future enhancements, we will ingest outside air quality data as well local weather conditions.</p>
+
+<p>一旦初始的原型证明可用，我们将部署到所有远程办公室以监测内部空气质量。未来我们将持续改进，采集外部空气质量数据以及当地天气状况。</p>
+
+<p>On our edge devices, we will perform the following three steps to collect the sensor readings, format the data into the desired schema, and forward the records to Pulsar.</p>
+
+<p>我们的客户端设备执行如下三个步骤来收集传感器读数，将数据格式化为期望的 schema，并将记录发送到 Pulsar。</p>
+
+<h4>Edge Step 1: Collect Sensor Readings - 边缘端第一步：收集传感器读数</h4>
+
+<p>result = sgp30.get_air_quality()</p>
+
+<h4>Edge Step 2: Format Data According to Schema - 边缘端第二步：根据 Schema 格式化数据</h4>
+
+<pre><code>class Garden(Record):
+    cpu = Float()
+    diskusage = String()
+    endtime = String()
+    equivalentco2ppm = String()
+    host = String()
+    hostname = String()
+    ipaddress = String()
+    macaddress = String()
+    memory = Float()
+    rowid = String()
+    runtime = Integer()
+    starttime = String()
+    systemtime = String()
+    totalvocppb = String()
+    ts = Integer()
+    uuid = String()
+</code></pre>
+
+<h4>Edge Step 3: Produce Record to Pulsar Topic - 边缘端第三步：生产记录到 Pulsar 主题</h4>
+
+<pre><code>producer.send(gardenRec,partition_key=str(uniqueid))
+</code></pre>
+
+<p>Now that we have built the edge-to-pulsar ingestion pipeline, let’s do something interesting with the sensor data that we have published to Pulsar.</p>
+
+<p>现在我们构建了从边缘设备到 Pulsar 的数据采集管道，接下来我们对发布到 Pulsar 的传感器数据做一些有意思的处理。</p>
+
+<h4>Cloud Step 1: Spark ETL to Parquet Files - 云端第一步：通过 Spark ETL 转成 Parquet 文件</h4>
+
+<pre><code>val dfPulsar = 
+spark.readStream.format("pulsar")
+.option("service.url", "pulsar://pulsar1:6650")
+.option("admin.url", "http://pulsar1:8080")
+.option("topic","persistent://public/default/garden3")
+.load()
+
+val pQuery = dfPulsar.selectExpr("*")
+.writeStream
+.format("parquet")
+.option("truncate", false) 
+.option("checkpointLocation", "/tmp/checkpoint")
+.option("path", "/opt/demo/gasthermal").start()
+</code></pre>
+
+<h4>Cloud Step 2: Continuous SQL Analytics with Flink SQL - 云端第二步：使用 Flink SQL 进行持续 SQL 分析</h4>
+
+<pre><code>select equivalentco2ppm, totalvocppb, cpu, starttime, systemtime, ts, cpu, diskusage, endtime, memory, uuid from garden3;
+
+select max(equivalentco2ppm) as MaxCO2, max(totalvocppb) as MaxVocPPB from garden3;
+</code></pre>
+
+<h4>Cloud Step 3: SQL Analytics with Pulsar SQL - 云端第三步：使用 Pulsar SQL 进行 SQL 分析</h4>
+
+<pre><code>select * from pulsar."public/default"."garden3"
+</code></pre>
+
+<h4>Cloud Step 4: NiFi Filter, Route, Transform and Store to MongoDB - 云端第四步：NiFi 过滤、路由、转换并存储到 MongoDB</h4>
+
+<p><img src="https://lh5.googleusercontent.com/dMIdWijv2ULWY0VQTKdDlFBaapQmSjDxOJaPzAIg-YzwjzCkk7N3xOIioCUWqQy5XZT_yb1AgpCVSakD5nQ-LUU3kAefmSuVeh92VTtH-lMa5jZv4sVRUH77NX_-06Kh1ad3IVOqymU0cdpfqAf0ag" alt="img" /><img src="https://lh6.googleusercontent.com/_jsQxHMUvW1ph4su-zS9OBLRSIMLPLn9pNr4PY2fqebYQxHEXQB_fQ3LbNi5ofqVpuxXiIswwkZzuYjfto0AyUY2KOQMCLjUIj88mdl-DcI9SXhX3e-a83rohIhgdjGBwG2YzIS_vFnJvZRf0eKp5w" alt="img" /></p>
+
+<p>We could have used a Pulsar Function and Pulsar IO Sink for MongoDB instead, but you may want to do other data enrichment with Apache NiFi without coding.</p>
+
+<p>我们本可以为 MongoDB 使用 Pulsar Function 和 Pulsar IO Sink，但使用 Apache NiFi 无需编码就能完成数据丰富。</p>
+
+<h4>Cloud Step 5: Validate MongoDB Data - 云端第五步：验证 MongoDB 数据</h4>
+
+<pre><code>show collections
+db.garden3.find().pretty()
+</code></pre>
+
+<p><img src="https://lh6.googleusercontent.com/Ih1XG0GKFugYzAJQvHMZ-0sH528BxWN_zxbt3x9XL-0pxPOKUtcDfTvfpUDdeCcGeMg3oBck7ko6WyvC3zd1AzYArENVM1IoddPuBfEel56gFU7Kaiib4Ctxep88ggqo1ktKW8oYgw3-Ny4uU7izZA" alt="img" /><img src="https://lh5.googleusercontent.com/6ujqRSIanJXokhpOmt6NlLqk2tJiWrQrBtIapYiIHeJ8HpVtfcN80e1blxd5L7EgBxSlT5SRtpgAr8UyGEpvgd1YHYeKowpl9Sjt55HC1tvG7FMVIkM9yuc51itXZh5a7F0Y8BN-jCxLMxJbXKpflw" alt="img" /></p>
+
+<h4>Example Row - 示例数据</h4>
+
+<pre><code>{'cpu': 0.3, 'diskusage': '101615.7 MB', 'endtime': '1647276937.7144697', 'equivalentco2ppm': '  411', 'host': 'garden3', 'hostname': 'garden3', 'ipaddress': '192.168.1.199', 'macaddress': 'dc:a6:32:32:98:20', 'memory': 8.9, 'rowid': '20220314165537_a9941b0d-6ce2-48f9-8a1b-4ac7cfbd889e', 'runtime': 0, 'starttime': '03/14/2022 12:55:37', 'systemtime': '03/14/2022 12:55:38', 'totalvocppb': ' 18', 'ts': 1647276938, 'uuid': 'garden3_uuid_oqz_20220314165537'}
+</code></pre>
+
+<h4>Example HTML Data Display Utilizing Web Sockets - 使用 Web Socket 的 HTML 示例数据展示<img src="https://lh6.googleusercontent.com/6JDLc5wYzECJSABKDzcGOgfnwCefsgRslF12920BqNr5KkaONSt96HXYtuDCxGBeEU0fvfV7FTlVodhm9QEmnxqbII2aLNwfHRUXBdfx3FWHUk_E2i_XeQoAAX3wkBGQLzBKFydMPAEHf5c9p8iN2w" alt="img" /></h4>
+
+<h4>Watch the Demo观看演示视频</h4>
+
+<p>(<a href="https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/">https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/</a>)<img src="https://lh3.googleusercontent.com/yfn2HZlPFkGhjjRUAmjM5N0Uy7pDNUaxawJ3dRtAhIMP5tPvPG6_M4bjfqfIF0qpbKV7caFA2yLoBY6LoiJAlblgGQcVGvIOenCYlfU__5sEBHz6SbQ2X1k-nynWbOQOFun0frigxxhpklK71z1Z6g" alt="img" /></p>
+
+<h2>Conclusion - 结论</h2>
+
+<p>In this blog, we explained how to build real-time event driven applications utilizing the latest open source frameworks together as FLiP Stack applications. So now you know what we are talking about when we say “FLiPN Stack”. By using the latest and greatest open source Apache streaming and big data projects together, we can build applications faster, easier, and with known scalable results.</p>
+
+<p>本文介绍了如何利用最新的开源框架组成 FLiP 技术栈，来构建实时事件驱动应用程序。通过使用最新的优秀的开源 Apache 流处理和大数据项目，我们可以更快、更轻松、更可扩展地构建应用程序。</p>
+
+<p>Join us in building scalable applications today with Pulsar and its awesome friends. Start with data, route it through Pulsar, transform it to meet your analytic needs, and stream it to every corner of your enterprise. Dashboards, live reports, applications, and machine learning analytics driven by fast data at scale built by citizen data engineers in hours, not months. Let’s get these FLiPN applications built now.</p>
+
+<p>欢迎大家使用 Pulsar 及其他上下游生态中出色的工具来构建可扩展的应用程序。从数据开始，通过 Pulsar 进行路由，对其进行转换以满足分析需求，并将其流式传输到企业的每个角落。无需数月的时间，数据工程师即可在数小时内构建出大规模快速数据驱动的仪表板、实时报告、应用程序以及机器学习分析数据。现在就开始构建这些 FLiPN 应用程序吧。</p>
+
+<h2>资源</h2>
+
+<ul>
+<li><p>[代码] <a href="https://github.com/tspannhw/FLiP-Py-Pi-GasThermal/">Source code for the air quality sensors application</a></p></li>
+<li><p>[资源] <a href="https://www.flipstack.dev/">FLiP Stack for Apache Pulsar Developer</a></p></li>
+<li><p>[演讲] <a href="https://www.youtube.com/watch?v=pfhoF3yTdHU">Using the FLiPN Stack for Edge AI (Flink, NiFi, Pulsar)</a></p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Apache BookKeeper 外部共识和动态成员]]></title>
+    <link href="http://alphawang.github.io/blog/bookkeepr-external-consensus/"/>
+    <updated>2022-05-29T14:33:50+08:00</updated>
+    <id>http://alphawang.github.io/blog/bookkeepr-external-consensus</id>
+    <content type="html"><![CDATA[<blockquote><p>本文翻译自 《Apache BookKeeper Insights Part 1 — External Consensus and Dynamic Membership》，作者 Jack Vanlightly<br/>
+- 原文链接：<a href="https://medium.com/splunk-maas/apache-bookkeeper-insights-part-1-external-consensus-and-dynamic-membership-c259f388da21">https://medium.com/splunk-maas/apache-bookkeeper-insights-part-1-external-consensus-and-dynamic-membership-c259f388da21</a><br/>
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/i2CzmL8k2EKbjxNlW0OG6w">https://mp.weixin.qq.com/s/i2CzmL8k2EKbjxNlW0OG6w</a></p></blockquote>
+
+<p>The BookKeeper replication protocol is pretty interesting, it’s quite different to other replication protocols that people are used to in the messaging space such as Raft (RabbitMQ Quorum Queues, Red Panda, NATS Streaming) or the Apache Kafka replication protocol. But being different means that people often don’t understand it fully and can either get tripped up when it behaves in a way they don’t expect or not use it to its full potential.</p>
+
+<p>BookKeeper 复制协议非常有趣，它与人们在消息领域习惯使用的其他复制协议大不相同，例如 RabbitMQ Quorum Queues、Red Panda 及 NATS Streaming 使用的 Raft 协议和 Apache Kafka 使用的复制协议。但与众不同意味着人们往往无法完全掌握 BookKeeper 的各项玩法，例如当 BookKeeper 的运行方式不符合预期时不知如何解决，又或是没能充分利用 BookKeeper 的各项优势功能。</p>
+
+<p>This series aims to help people understand some fundamental insights into what makes BookKeeper different and also dig into some of the nuances of the protocol. We’ll dig into the “why” the protocol is the way it is and also some of the ramifications of those design decisions.</p>
+
+<p>本系列文章旨在帮助大家了解那些使 BookKeeper 与众不同的一些基本见解，详细分析该协议的一些细微差别。我们将深入研究 BookKeeper 复制协议背后的设计考量，以及这些设计决策所带来的结果。</p>
+
+<!--more-->
+
+
+<p>One of the best ways I know of how to describe design decisions is via comparison. Comparing one thing against another is a great way to discuss trade-offs, weak/strong points and many other aspects.
+I’m going to use both Raft and Apache Kafka as comparison points. I am not going to try to persuade you that BookKeeper is better than other protocols, this is not a thinly veiled marketing piece. This post is about teaching the mechanics of the BookKeeper protocol and ramifications.</p>
+
+<p>对比是描述设计决策的最好方法之一，可以让我们很好地讨论权衡、优缺点等等方面。本系列文章将同时使用 Raft 和 Apache Kafka 作为比较对象，但本系列并不旨在宣传或说服用户 BookKeeper 比其他协议更好，而是要探讨 BookKeeper 协议的机制及其衍生的结果。</p>
+
+<p>Also note that this is not an in-depth look at Raft or Kafka. I will be describing enough of those protocols for my aims, but will be glossing over large amounts of complexity. If you want to understand Raft and Apache Kafka more, the protocols are well documented elsewhere.</p>
+
+<p>另外请注意，本系列文章旨在通过对比更好地帮助大家理解 BookKeeper，而不是对 Raft 或 Kafka 进行深入研究。我们将有的放矢地尽量多地介绍这些协议，但也会跳过大量复杂的细节。如果想深入学习 Raft 和 Apache Kafka，可以参考其协议文档。</p>
+
+<p>This first post describes the biggest difference between BookKeeper and other replication protocols. This difference informs most of the later posts on the nuances of the protocol also.</p>
+
+<p>本系列的第一篇文章会为大家介绍 BookKeeper 和其他复制协议之间的最大区别，帮助大家理解本系列后续文章中会谈及的协议间的细微差别。</p>
+
+<h2>Integrated vs External Coordination - 集成协调 vs 外部协调</h2>
+
+<p>Raft is an “integrated” protocol. What I mean by that is that the control plane and data plane are both integrated into the same protocol and that protocol is exercised by the storage nodes which are all equal peers. Each node has all the data locally stored in persistent storage.</p>
+
+<p>Raft 是一个“集成”协议。这里的集成是指控制平面和数据平面都集成到同一个协议中，并且该协议由所有对等的存储节点执行。每个节点都将所有数据存储在本地持久化存储中。</p>
+
+<p>The same is true of Apache Kafka albeit with the use of ZooKeeper for metadata, though this will be removed soon (KIP-500).</p>
+
+<p>Apache Kafka 也是如此。之前通过 ZooKeeper 存储 Kafka 的元数据，尽管新版本可在不需要 ZooKeeper 的情况下运行 Kafka (KIP-500)，但也将依赖于 ZooKeeper 的控制器改造成了基于 Kafka Raft 的 Quorum 控制器。</p>
+
+<p>With Raft, we have a steady state where replication is being performed, then periods of perturbation which trigger elections. Once a leader is elected, the leader node handles all client requests and replication of entries to followers.</p>
+
+<p>Raft 在稳定状态时会执行数据复制，一旦出现扰动会触发选举。选举出 Leader 后，Leader 节点会处理所有客户端请求并将 Entry 复制到 Follower。</p>
+
+<p>With Raft the leader learns where in the log each follower is and starts replicating data to each follower according to their position. Because the leader has all the state locally, it can retrieve that state and transmit it, no matter how far behind a follower is.</p>
+
+<p>在 Raft 中，Leader 可以了解每个 Follower 在日志中的位置，并根据这些位置将数据复制到每个 Follower。由于 Leader 在本地拥有所有状态，因此无论 Follower 落后多远，它都可以检索到 Follower 当前的状态并将其后的数据传输给 Follower。</p>
+
+<p><img src="https://lh5.googleusercontent.com/mbBqIeVrIOBKxlrSBS9ly3z5um_z913Lxq21WD9f0uKMDFfp5j-V6haZIIiRmZvdKxMLGPlqxiZIAx3bon7WUDAeFhQ4Mnm51zYd0AjVekLjEdoWViGZSt68MDY3HWTs04_Ek1hLt2eVbcWWNCEjaw" alt="img" /></p>
+
+<p>Fig 1. Integrated replication protocols where the replication is performed by stateful nodes that host the data.</p>
+
+<p>图 1. 集成复制协议，存储数据的有状态节点执行数据复制</p>
+
+<p>With Kafka, the followers send fetch requests to the leader, the requests include their current position. The leader, having all the state locally, simply retrieves the next data and sends it back to the follower.</p>
+
+<p>在 Kafka 中，Follower 向 Leader 发送 fetch 请求，请求中包含它们的当前位置。Leader 因为在本地拥有所有状态，所以只需在本地检索下一个数据并将其发送回 Follower 即可。</p>
+
+<p>A byproduct of replication being performed by stateful fully integrated nodes is that cluster membership is relatively static. Yes you can perform cluster operations to add and remove members, but these are very infrequent operations with limits. The membership of a Raft cluster and the replicas that form a Kafka topic can be considered fixed in terms of the normal operation of the protocol.</p>
+
+<p>有状态的完全集成节点执行复制时，集群成员相对静态。虽然用户可以执行集群操作来添加和移除成员，但这些操作不常发生且有限制。当协议正常运行时，可以认为 Raft 集群的成员和构成 Kafka 主题的副本没有发生变化。</p>
+
+<p>BookKeeper is different. It has the consensus and storage separated. The storage nodes are simple and basically store and retrieve what they are told to. They understand almost nothing of the replication protocol itself. The replication protocol is external to the storage nodes and lives in the BookKeeper client. It is the client that performs the replication to the storage nodes.</p>
+
+<p>BookKeeper 则不同，它将共识和存储分离开来。存储节点很简单，基本上仅存储和检索它们被告知的内容。这些节点本身与复制协议几乎毫无关联——复制协议位于存储节点的外部，封装在 BookKeeper 客户端中，由客户端将数据复制到存储节点。</p>
+
+<p><img src="https://lh6.googleusercontent.com/R7aG2l0-KqcT29ZKFHmLK0V1MMcZdJ9Xl3clQgNSOHi3MHh_ydRjkjcACvkn7WVPLsLuRajhGZmPY5QLa5pG9bR6ZRVtHqGB7mQlx0hDTA3xvy5EHboDIGK98nbP284_4WLawO_EELDbmovQJsg-DQ" alt="img" /></p>
+
+<p>Fig 2. The client performs replication</p>
+
+<p>图 2. 客户端执行复制</p>
+
+<p>BookKeeper was designed to act as the distributed log storage sub-system of another data system, like a messaging system or database, for example Apache Pulsar. Pulsar brokers use BookKeeper to store topics and cursors and each broker uses the BookKeeper client to do the reading and writing to those BookKeeper nodes.</p>
+
+<p>BookKeeper 旨在充当其他数据系统的分布式日志存储子系统，这个其他数据系统可以是消息系统或数据库。例如 Apache Pulsar 使用 BookKeeper 来存储主题和游标，每个 Broker 通过 BookKeeper 客户端从 BookKeeper 节点读取和写入数据。</p>
+
+<p>The client is external and stateless which has a number of cascading effects that inform the design of the rest of the protocol. For example, because the client doesn’t have the full state locally, it needs to treat failure differently.</p>
+
+<p>客户端在存储节点外部且无状态，这会对协议其余部分的设计产生一些级联影响。例如，因为客户端在本地没有完整的状态，所以对待失败的处理方式就会不一样。</p>
+
+<p>With Raft, if one node becomes unavailable for an hour we don’t have a big problem. When the node comes back, the stateful leader will simply resume replication to the follower from where it left off. The BookKeeper client doesn’t have that luxury, if it wants to continue to make progress, it can’t be storing the last X hours of data in memory, it must do something differently.</p>
+
+<p>一个 Raft 节点宕机一个小时，也不会产生太大问题。当节点重新上线时，有状态的 Leader 很容易就能从该 Follower 离开的位置恢复复制数据。BookKeeper 客户端则没有这种功能。如果想恢复复制数据，它不可能将最后 X 小时的数据都存储在内存中，所以必须另寻他法。</p>
+
+<p>Because the replication and coordination logic lives externally of the storage nodes (in the client), the client is free to change the membership of a ledger when failure occurs. This dynamic membership is a fundamental feature differentiator and is one of BookKeeper’s most compelling features.</p>
+
+<p>因为复制和协调逻辑存在于存储节点的外部（即客户端中），所以客户端可以在发生故障时自由更改 Ledger 成员。这种动态成员机制是一个根本上区别于其他协议的功能，也是 <strong>BookKeeper 最引人注目的功能之一</strong>。</p>
+
+<blockquote><p>A data system like Pulsar having a separate storage layer has its downsides, like an extra network hop before any data hits disk and having to operate a separate cluster of bookies. If BookKeeper didn’t offer some truly valuable features, then it would become more of a liability than an asset. Luckily for us, BookKeeper has many wonderful features that make it worth it.</p>
+
+<p>像 Pulsar 这样具有单独存储层的数据系统也有自身的缺陷，例如任何数据在到达磁盘之前需要额外的网络请求，并且必须运维单独的 Bookie 集群。BookKeeper 需要提供一些真正有价值的功能才能为 Pulsar 加码。幸运的是，BookKeeper 具有许多值得使用它的出色功能。</p></blockquote>
+
+<p>Now that we’ve set the scene, we’ll dig further in to explore how an integrated, fixed membership protocol like Raft compares to an external consensus, dynamic membership protocol like BookKeeper.</p>
+
+<p>现在我们已经为大家搭建了认知，在后文中将进一步深入探讨如何将像 Raft 这样集成的、固定成员的协议与像 BookKeeper 这样外部共识、动态成员的协议进行比较。</p>
+
+<h2>Commit Index - 提交索引</h2>
+
+<p>Each of our three protocols all have the concept of a commit index, though they have different names. A commit index is an offset in the log where all entries at that point and before will survive a certain agreed number of node failures.</p>
+
+<p>本文提到的三个协议每个都有提交索引（Commit Index）的概念，不过名称各不相同。提交索引是日志中的一个偏移量，在该偏移量及其之前的所有 Entry 都能在一定数量的节点故障中幸存下来。</p>
+
+<p>In each case, an entry must reach a certain replication factor to be considered committed:</p>
+
+<p>对每个协议来说，Entry 都必须达到特定的复制因子才能被视为已提交：</p>
+
+<ul>
+<li>For Raft it is a cluster majority and the guarantee is that committed entries will survive the permanent loss of any minority of nodes (N/2). So Raft requires a majority quorum to acknowledge an entry and to consider that entry committed.
+对于 Raft 来说，复制因子是集群多数，保证已提交的 Entry 在任意少数节点（N/2）永久丢失后也能幸存下来。因此，Raft 要求多数仲裁确认 Entry 后才能认定该 Entry 已提交。</li>
+<li>For Kafka it depends on various configs. Kafka supports majority quorum behaviour via the use of the client config acks=all and the broker config min-insync-replicas=[majority]. By default it only requires the leader to persist an entry before acknowledging it.
+对于 Kafka 来说，复制因子取决于各种各样的配置。Kafka 通过使用客户端配置 <code>acks=all</code> 以及 Broker 配置 <code>min-insync-replicas=[majority]</code> 支持多数仲裁确认机制。默认情况下，它只需要 Leader 持久化 Entry 即可确认该 Entry。</li>
+<li>For BookKeeper it is the Ack Quorum (AQ)and the guarantee is that committed entries will survive the permanent loss of any (AQ-1) of bookies.
+对于 BookKeeper 来说，复制因子是 Ack Quorum（AQ），保证已提交的 Entry 在（AQ-1）个节点永久丢失后也能幸存下来。</li>
+</ul>
+
+
+<blockquote><p>NOTE: Because each protocol is different I will refer to the quorum that is required for an entry to be considered “committed” as the Commit Quorum. This is my own invented term for this post.</p>
+
+<p>注意：由于每个协议都不同，我将 Entry 被认定为“已提交”所需的仲裁数称为提交仲裁数（Commit Quorum）。这是我自己为这篇文章发明的术语。</p></blockquote>
+
+<p>Raft calls this point in the log the commit index, Kafka calls it the High Watermark and BookKeeper calls it the Last Add Confirmed (LAC). Each protocol relies on this commit index to deliver its consistency guarantees.</p>
+
+<p>Raft 称日志中的这一点为提交索引（Commit Index），Kafka 称其为高水位（High Watermark），BookKeeper 称其为最后添加确认（Last Add Confirmed，缩写 LAC）。每个协议都依赖于这个提交索引来提供一致性保证。</p>
+
+<p>In Raft and Kafka this commit index is transmitted between the leader and followers and so each node will have its own current knowledge of what the commit index is. The leader always knows the fully up to date value of the commit index whereas the followers may have a stale value, but that is ok.</p>
+
+<p>在 Raft 和 Kafka 中，这个提交索引会在 Leader 和 Follower 之间传输，因此每个节点自己都保存了一份当前提交索引的值。Leader 总是知道提交索引的最新值，而 Follower 的值可能滞后，但这没关系。</p>
+
+<p><img src="https://lh6.googleusercontent.com/BDQzUGLw7eNNgNHn4RcriADNyOqgYE_Cy-I9hvWTWw6DdT5IW-5zv5mD92GpFALHkjHa_lZF_1FeknGs5rEfsAFmsZ3XV3z2EmyJAyhLaA69zLjPWFj8thdNKjzig4kW_AQKO5hTLq85AibCtIiZRQ" alt="img" /></p>
+
+<p>Fig 3. All nodes have their own view, sometimes stale, of the current commit index.</p>
+
+<p>图 3. 所有节点都有自己的当前（有时数据滞后）提交索引的信息</p>
+
+<p>With Kafka, the leader includes the High Watermark in its fetch responses to followers.</p>
+
+<p>在 Kafka 中，Leader 在其对 Follower 的 fetch 响应中包含高水位的信息。</p>
+
+<p>With BookKeeper, the LAC is included with every entry that is sent to the storage nodes. The storage nodes themselves have little use for it, but it allows clients to retrieve this vital information at a later point. So the client that is writing a ledger knows the current LAC and the storage nodes may have a slightly stale view of the LAC, but this is also fine and the protocol handles that. More on this later.</p>
+
+<p>在 BookKeeper 中，LAC 包含在发送到各存储节点的每个 Entry 中。存储节点本身几乎不会用到 LAC，但客户端之后可以检索此重要信息。因此，正在写入 Ledger 的客户端知道当前的 LAC，而存储节点的 LAC 信息可能有滞后，但这也没问题，复制协议会处理这种情况。稍后会详细介绍。</p>
+
+<p><img src="https://lh5.googleusercontent.com/yvOWKYnSm24CaYQN3_svB7VSlOUp8rT7a8AMvbkfk6CH0eAdBna_UU6QMR5qNpFgEvv4YbkSK8_G4wjrNNQki_Wz7lhf8ZvBSgmAfV4uGwsNyXSImR2Yy9vtEuvAyeHywB073wXNxvq0I19eB50u1w" alt="img" /></p>
+
+<p>Fig 4. The client knows the current LAC and the bookies have a usually slightly stale view of it.</p>
+
+<p>图 4. 客户端可检索当前最新的 LAC，而 Bookie 的 LAC 信息往往会滞后</p>
+
+<p>Reads that go past the commit index would be dirty reads where there are no guarantees that you’d be able to read the same entry again. Entries beyond the commit index could be lost or could be replaced with a different entry. For that reason each of the protocols don’t allow readers to read past this point.</p>
+
+<p>超过提交索引的读取是脏读，无法保证能够再次读取到相同的 Entry。提交索引之后的 Entry 可能会丢失或被不同的 Entry 替换。出于这个原因，各个协议都不允许读取超过提交索引的数据。</p>
+
+<h2>Raft/Kafka Properties and Behavior - Raft VS Kafka 特性和行为</h2>
+
+<p>With a Raft based system, you’ll specify your replication factor and that will translate into a Raft cluster of that many Raft members. With Kafka, that translates into a topic with that many replicas.</p>
+
+<p>对于基于 Raft 的系统，需要指定复制因子，这决定了 Raft 集群中有多少个成员。Kafka 也需要指定复制因子，这决定了主题有多少个副本。</p>
+
+<h3>Fixed Membership - 固定成员</h3>
+
+<p>Raft members and Kafka replicas are fixed in terms of the steady state replication. One cost of this fixed membership is the tension between replication factor, availability and latency.In an ideal world we’d want each entry to be fully replicated before being acknowledged. But followers can go down or be slow. Having a cluster become unavailable for writes because a single node becomes unavailable is not acceptable to most people with good reason. So the compromise is to reduce safety a little in order to gain availability and lower latency. We allow a minority of members to be unavailable and still offer good data safety and continued availability.</p>
+
+<p>稳定状态下执行数据复制时，Raft 成员和 Kafka 副本固定不变。成员固定所带来的一个后果是复制因子、可用性和延迟之间的冲突。理想情况下，我们希望每个 Entry 在确认前都被完全复制。但是 Follower 可能宕机或者变慢，而大多数人都无法接受仅仅因为单个节点不可用就导致整个集群不可写。为此采取的折中办法是，略微降低安全性以获得较好的可用性和低延迟。在允许少数成员不可用的情况下仍然提供良好的数据安全性和持续的可用性。</p>
+
+<p>That is why Raft and Kafka really need a commit quorum that is lower than the replication factor.</p>
+
+<p>这就是为什么 Raft 和 Kafka 需要一个低于复制因子的提交仲裁（Commit Quorum）。</p>
+
+<p>This reduction in safety can be mitigated by simply increasing the replication factor. So if you want guarantees that committed entries will survive the loss of 2 nodes, then you’d need a replication factor of 5. You pay more for storage and network and also latency takes a small hit, but you only need the fastest 2 of your 4 followers to confirm an entry in order to acknowledge the entry to the client. So even with 2 slow nodes, you have acceptable latency and you reach your minimum rep factor that you are comfortable with.</p>
+
+<p>安全性的降低通过增加复制因子即可缓解。如果想保证已提交的 Entry 在丢失 2 个节点后仍然存活，那么需要指定复制因子为 5。这会增加存储和网络开销，并稍微影响延迟，不过只需要 4 个 Follower 中最快的那 2 个确认 Entry 即可返回确认给客户端。因此即便有 2 个慢速节点，延迟也是可接受的，同时复制因子也达到最小。</p>
+
+<h3>Properties - 属性</h3>
+
+<p>An invariant is something that must be true at all times. You can look at the state of a system at any time and verify that its state conforms to the invariant. For example, an invariant may state that no committed entries are lost.</p>
+
+<p>首先介绍一下不变量（Invariant）和活性属性（Liveness Property）的概念。不变量是指在任何时候都必须为 true 的事情。通过随时查看系统状态可以验证其状态是不是不变量。例如，一个不变量可以是任何已提交 Entry 都不会丢失。</p>
+
+<p>Liveness properties tell us what must happen at some point, for example, eventually a leader must be elected given that a majority of nodes are eventually functional and can see each other.</p>
+
+<p>活性属性则告诉我们在某个时刻一定会发生什么。例如，假定多数节点最终都能正常工作并对彼此可见，那么最终一定能选出 Leader。</p>
+
+<p>Our integrated log replication protocols have, among others, the invariants:</p>
+
+<p>本文讨论的集成日志复制协议至少具有以下不变量：</p>
+
+<ul>
+<li>Entries are appended to the leader’s log in temporal order.
+Entry 按照时间顺序追加到 Leader 的日志中。</li>
+<li>The leader appends entries to follower logs in the same order as its own.
+Leader 按照相同顺序将 Entry 追加到 Follower 的日志中。</li>
+<li>Committed entries are never lost as long as no majority of nodes die with total data loss (Only applies ot Kafka with ack=all, min-insync-replicas=[majority]).
+只要大多数节点没有宕机并丢失所有数据，那么已提交的 Entry 永远不会丢失（仅适用于 Kafka 中 ack=all 且 min-insync-replicas=[majority] 的情况）。</li>
+<li>The log on a follower node, is identical to the current leader’s log, from the follower’s committed index and down.
+在 Follower 的已提交索引及其之前，Follower 节点上的日志与当前 Leader 的日志完全相同。</li>
+</ul>
+
+
+<p>One liveness property is that given all nodes are functional and have visibility of each other then eventually, any given committed entry will become fully replicated (as long as the prefix of the log is also fully replicated). In other words, the log tail will eventually reach the desired replication factor.</p>
+
+<p>集成日志复制协议的一个活性属性是，假定所有节点都正常运行并对彼此可见，那么最终任何给定的已提交 Entry 都将被完全复制（前提是在此之前的日志也被完全复制）。换言之，日志尾部最终会达到所需的复制因子。</p>
+
+<p><img src="https://lh3.googleusercontent.com/W-V9urXDoJ_rF836aSTvqimV80pJ0mZfnj-xOKVy-BGpVJQmSbyfM89KM1eyrY7f1ofhQkfLRd54jxTYz75V0xA8dh9nCKw_GT2eIsj281uqCZW4O998Hktx0QuDB9jPOJxAu_tBtLUSl1kNNqS-Bw" alt="img" /></p>
+
+<p>Fig 5. The three safety zones of a Raft or Kafka log</p>
+
+<p>图 5. Raft 和 Kafka 日志的三种安全区域</p>
+
+<p>We can think of a replicated Raft log as being split into 3 zones of safety. At the head, beyond the committed index we’re in the danger zone, these entries have no guarantees and may be lost. Then the committed prefix of the log can be split into the head that reaches the majority quorum but not fully replicated yet and the tail that is fully replicated.</p>
+
+<p>我们可以认为 Raft 日志能分成 3 种安全区域。其一是“未提交区域（Uncommitted）”，指处于日志头部、在已提交索引之外的危险区域，这里的 Entry 没任何保证，可能会丢失。剩下两个区域），分别是已达到多数仲裁但尚未完全复制的“已提交头部（Committed Head）”，以及已完全复制的“已提交尾部（Committed Tail）”。</p>
+
+<pre><code>Prefix RF &gt;= Entry RF &gt;= Suffix RF
+</code></pre>
+
+<p>The rule is that for any given offset in the log, the prefix from that point must have reached the same or higher replication factor and the suffix after that point must have reached the same or lower replication factor.</p>
+
+<p>对于任意给定的日志偏移量，该点之前的必定达到相同或者更高的复制因子，该点之后的必定达到相同或更低的复制因子。</p>
+
+<p>What does all this mean for the administrator?</p>
+
+<p>那么这一切对管理员意味着什么呢？</p>
+
+<p>When everything is going well, we’d expect a small uncommitted zone, a small committed head and a very large committed tail. But things don’t always go well and the committed head/tail can be of arbitrary length — the tail could be 0 length meaning no there are no fully replicated entries. This could happen because a follower is too slow (and past data retention) or it could mean a follower just died catastrophically and started up empty.</p>
+
+<p>当一切运行顺利时，预计未提交区域很小，已提交头部很小，而已提交尾部则非常大。然而事情并不总是顺利，已提交头部/尾部可能是任意长度——尾部长度可能为 0，意味着没有完全复制的条目。这可能是因为 Follower 太慢（并超过了数据保留期），或者 Follower 刚刚灾难性地宕机并重启。</p>
+
+<p>The point is that the replication factor is not a guarantee but a desired goal. The only guarantee is the commit quorum. So the commit quorum is the minimum guaranteed replication factor. As an administrator, you need to plan your procedures and planning around that value, not just the replication factor. Hence why some people run Raft and Kafka with rep factors of 5.</p>
+
+<p>这里的关键点在于复制因子并不是一个保证，而是一个期望的目标。唯一能保证的是提交仲裁。所以说提交仲裁是最小能保证的复制因子。作为管理员，需要围绕该值而不仅是复制因子来规划流程和计划。这就是为什么有些人使用复制因子 5 来运行 Raft 和 Kafka。</p>
+
+<h3>Recovery from failure - 故障恢复</h3>
+
+<p>Systems that use integrated replication protocols make recovery from total disk failure “relatively” simple. Any empty follower can be refilled from the current leader in exactly the same way as a follower that is mostly caught up. Replication saves the day.</p>
+
+<p>使用集成复制协议的系统可以“相对”简单地从整个磁盘故障中恢复。空的 Follower 可以通过当前 Leader 重新填入数据，这个过程和大多数追赶的 Follower 完全相同。数据复制保证了能从故障中成功恢复。</p>
+
+<h3>Easy to reason about - 易于推理</h3>
+
+<p>All these properties make reasoning about the state of a Raft/Kafka log relatively simple:</p>
+
+<p>上述这些特性使得对 Raft/Kafka 日志状态的推理变得相对简单：</p>
+
+<ul>
+<li>The members are fixed so we know where the data is.
+因为成员是固定的，所以可以确认数据的位置。</li>
+<li>We know only the head of the log might be at the commit quorum or less.
+仅日志头部的副本可能等于或少于提交仲裁。</li>
+<li>We know that if we lose a member it can get rehydrated by its stateful peers via the replication protocol.
+如果失去一个成员，可以通过复制协议从有状态的对等方重新恢复。</li>
+<li>We also have to accept that the replication factor is a goal not a guarantee because the committed head and tail can be of arbitrary length so might need to increase the rep factor to a high value.
+复制因子是一个目标而非一个保证，因为已提交头部和已提交尾部可能是任意长度，所以可能需要将复制因子设为一个较大的值。</li>
+</ul>
+
+
+<p>Now let’s take the same look at BookKeeper.</p>
+
+<p>现在让我们同样来看看 BookKeeper。</p>
+
+<h2>BookKeeper Properties and Behaviour - BookKeeper 的特性和行为</h2>
+
+<p>BookKeeper has similar configurations for the desired replication factor and for the commit quorum.</p>
+
+<p>BookKeeper 也有类似的配置来表示期望的复制因子以及提交仲裁。</p>
+
+<blockquote><p>NOTE: I will assume that the Ensemble Size is equal to our Write Quorum as striping lowers read performance and makes it not worthwhile in practice.
+注意：本文假设 Ensemble Size 和 Write Quorum 相等，因为条带化会降低读取性能，在实践中不值得采用。</p></blockquote>
+
+<p>Write Quorum (WQ) is our replication factor and Ack Quorum (AQ) is our commit quorum. Most people simply set Ack Quorum to be the majority quorum, so with a Write Quorum of 3, the Ack Quorum is set to 2. It would be reasonable to expect that using the quorum values of WQ=3 and AQ=2 would translate to the same behaviour as Raft or Kafka.</p>
+
+<p>Write Quorum（WQ）是 BookKeeper 的复制因子，Ack Quorum（AQ）则是 BookKeeper 的提交仲裁。大多数人简单地将 Ack Quorum 设置为多数仲裁，如果 Write Quorum 为 3，则 Ack Quorum 设为 2。因此可以合理地预期在 BookKeeper 内设置 WQ = 3 且 AQ = 2 的话，其行为与 Raft 或 Kafka 相同。</p>
+
+<p>The answer is WQ and AQ do not map onto their equivalents in Raft or Kafka and to understand why we need to look more closely at the protocol with its external consensus and dynamic membership.</p>
+
+<p>然而实际上是 WQ 和 AQ 在 Raft 或 Kafka 中并没有对等概念。想要理解其原因，我们需要更仔细地研究外部共识和动态成员协议。</p>
+
+<h3>External, Stateless Client - 外部无状态客户端</h3>
+
+<p>The replication and consensus logic lives in the client. The client is stateless, it cannot keep data in memory for any arbitrary length of time until a bookie becomes available. So it stays nimble and simply selects a new bookie to replace the one that it cannot write to and continues on its way. This dynamic membership change is called an ensemble change.</p>
+
+<p>BookKeeper 的复制和共识逻辑封装在客户端内。而客户端是无状态的，在 Bookie 可用之前，它无法将数据保存在内存中（无论保存多久都不行）。因此它灵活简单地选择一个新 Bookie 来替代无法写入数据的 Bookie，然后继续工作。这种动态的成员变化称为 Ensemble Change。</p>
+
+<p><img src="https://lh4.googleusercontent.com/XcmAMRiJL0Ui9zYm9EwDkIHJL197oZAV5DEJvq3Y909zJ0bGp7suVsQkcvGZYThul5YZ9kC9B9oCHhK_iW7UP2SP8rIWcenNvkPV5xmBtZTvdUUHGjTKbqbR2axoxG71Vs1reimIOml1Ogv2NHqvDA" alt="img" /></p>
+
+<p>Fig 6. The client performs an ensemble change after a write failure to bookie3.</p>
+
+<p>图 6. 客户端写入 bookie3 失败后，执行一次 Ensemble Change</p>
+
+<p>This ensemble change is basically an operation to update the ledger metadata in ZooKeeper as well as resending all uncommitted entries to the new bookie.</p>
+
+<p>这种 Ensemble Change 基本上就是对 ZooKeeper 中 Ledger 的元数据进行一次更新操作，并将所有未提交的 Entry 重新发送到新 Bookie 上。</p>
+
+<p>The result of these ensemble changes is that a ledger can be considered a series of mini-logs (we’ll call them fragments) that constitute a larger log. Each fragment has a range of contiguous entries where each entry shares the same bookies (it’s ensemble). Each time a write to a bookie fails, the client does an ensemble change and carries on, creating a ledger that is formed from 1 or more fragments.</p>
+
+<p>Ensemble Change 的结果是，Ledger 可以被认为是由一系列 mini-log（我们称之为 Fragment，即片段）构成的更大的日志。每个片段都有一系列连续的 Entry，其中每个 Entry 都共享相同的 Bookie（即 Ensemble）。每当客户端写入 Bookie 失败时，都会进行一次 Ensemble Change，并继续写入。这就创建出了由一个或多个片段组成的 Ledger。</p>
+
+<p><img src="https://lh5.googleusercontent.com/uv7GiGlTqDfzzchoyU-rTPTzJ8oc7br1o5kfEoCgwY6HfMsqsyvykDDbJSE8yCMguLfU_XREjerNekC06SSWc9wYb3BYGtqu3cQGLpnLLhlHgm5N6iERLPErjSn3YFIj-ofdYKSNDMUIs56PTkiAgw" alt="img" /></p>
+
+<p>Fig 7. A ledger made of 4 fragments.</p>
+
+<p>图 7. 一个由 4 个片段组成的 Ledger。</p>
+
+<p>If we were to look at each individual fragment, we’d see a similar pattern to a Raft log or Kafka topic partition. The current fragment can be split into the same three zones: committed tail, committed head and uncommitted zone.</p>
+
+<p>如果细究每个片段，就会看到类似 Raft 日志和 Kafka 主题分区的模式。当前片段也可以被分为与其相同的三个区域：已提交尾部、已提交头部和未提交区域。</p>
+
+<p><img src="https://lh5.googleusercontent.com/U_au_P3iRXYKD9emWEWBbr5jWdO8u51v8DTGaweWZyEK8buq1fTgwaN9GwQtRtcvdJd2A_HW-Jxr5kA7wU7d1UclO2ZEj0q9r1fF5T8Kp6TrbkqNJi2pswn-6Q9aHIRbfo8zoaIEV7BElAFhFalYQA" alt="img" /></p>
+
+<p>Fig 8. The three safety zones of an active fragment.</p>
+
+<p>图 8. 活跃片段的三个安全区域</p>
+
+<p>When an ensemble change occurs, the current fragment terminates at the end of the committed head (those entries that have reached Ack Quorum). The new fragment starts at the beginning of the uncommitted zone.</p>
+
+<p>当发生 Ensemble Change 时，当前片段终止于已提交头部的末尾（即那些已经达到 Ack Quorum 的 Entry)。新片段则开始于未提交区域的开头。</p>
+
+<p><img src="https://lh6.googleusercontent.com/05dv8OJhepkj7g9dbRdAU19ChKWp8e3_ILuWXWDR6u33gice8YZCzhgzq-bIa0kyWwaan0O2EeFrwyrnmOEwMgmlO1UHpkLUA4rRbX3tGFSOkfSu6ipq84x92SKkTrNfdMJCochh-haIZoWX1niLeQ" alt="img" /></p>
+
+<p>Fig 9. An ensemble change moves uncommitted entries to the next fragment.</p>
+
+<p>图 9. Ensemble Change 将未提交 Entry 移动到下一个片段</p>
+
+<p>This leaves non-active fragments with entries that can remain at the Ack Quorum. Unlike Raft or Kafka, the core BookKeeper replication protocol will not eventually replicate those AQ entries in order to reach WQ — they will remain at Ack Quorum. Those entries can only be brought up to WQ via the use of a separate recovery process but that process is not part of the core protocol (and by default runs daily if enabled).This means that a ledger could look like this:</p>
+
+<p>这样非活跃片段就会包含保留在 Ack Quorum 中的 Entry。与 Raft 或 Kafka 不同，BookKeeper 核心复制协议不会最终复制这些 AQ Entry 以达到 WQ——它们将保留在 Ack Quorum 中。这些 Entry 只能通过单独的恢复过程进入 WQ，而这个恢复过程并不是核心协议的一部分（如果启用恢复过程，则默认情况下每天运行）。Ledger 可能如下所示：</p>
+
+<p><img src="https://lh5.googleusercontent.com/JbvxQHwL84x6-BOGEe0gNi_ZFA6xtdrkQnifMAFMr43ZvT33SRI41kxyXXu1pnYkLKz1my-W6qzsjhR6sSA_-NI7kjPsqkoG89GzgX6boh1Sw31qFK6nlgz4Wvq6JyiLA-O7UPuHutoOqQRbx5h8NQ" alt="img" /></p>
+
+<p>Fig 10. Ensemble changes only move uncommitted entries into the next fragment, leaving committed entries in their original fragment.</p>
+
+<p>图 10. Ensemble Change 只将未提交 Entry 移动到下一个片段，而将已提交 Entry 保留在原始片段</p>
+
+<p>This means that not only the head of a ledger may see entries at AQ, there can be multiple sections at this lower replication factor.</p>
+
+<p>不仅 Ledger 头部有 AQ Entry，Ledger 其他部分也会有这种低于复制因子的 Entry。</p>
+
+<p><img src="https://lh6.googleusercontent.com/mIdS7khHn292Q3-Kzrnt4z1yhmRI7eCzi5gWndgkq59vH3ij4Tosbk0-rrRAM9-Dz8baqCzKYv-OAQ73RxpkwRwATfKNLEHi5GRHJv5FsqAiYTaF-NDCDe1WKtO3z4LllTxwk9-oFr7vAAf7MT6DYA" alt="img" /></p>
+
+<p>Fig 11. Ensemble changes leave AQ replicated blocks mid-ledger.</p>
+
+<p>图 11. Ensemble Change 将 AQ 复制块留在 Ledger 中间</p>
+
+<p>The fact that sections in the middle of a ledger can remain at AQ is a surprise to many. Most people probably expect a Raft/Kafka-like pattern where only the head sees this.Is it important to note that Raft and Kafka logs can have arbitrarily long committed heads where entries have only reached the commit quorum but not replication factor. So whether you are an administrator of Kafka or BookKeeper, the fact is that the commit quorum is what counts.</p>
+
+<p>与 Raft/Kafka 只有头部有 AQ Entry 的模式不同，BookKeeper Ledger 中间的部分可能包含 AQ Entry。需要注意的是 Raft 和 Kafka 日志可能有任意长度的已提交头部，其中的 Entry 仅达到提交仲裁但未达到复制因子。所以无论是对 Kafka 还是 BookKeeper 管理员来说，提交仲裁才是最重要的。</p>
+
+<h2>Ack Quorum Isn’t What You Probably Think It is -  刷新你的 Ack Quorum 认知</h2>
+
+<p>The fact that BookKeeper uses an external replicator (the client) makes a big difference to our choice of commit quorum. Essentially the Ack Quorum isn’t really like it’s equivalents in Raft and Kafka.</p>
+
+<p>BookKeeper 使用外部复制机（即客户端)，因此选择提交仲裁时有很大不同。本质上，BookKeeper Ack Quorum 与 Raft 和 Kafka 中的 Ack Quorum 并不真的相似。</p>
+
+<p>As discussed earlier, because Raft and Kafka have fixed membership they really need a commit quorum that is lower than the replication factor or else suffer big availability and latency issues. The commit quorum is the compromise between safety and availability/latency.</p>
+
+<p>如前所述，由于 Raft 和 Kafka 是固定成员的，所以它们确实需要一个低于复制因子的提交仲裁，否则会有严重的可用性和延迟问题。提交仲裁是在安全性和可用性/延迟之间的一个折中办法。</p>
+
+<p>A BookKeeper ledger is different though, it does not have fixed membership. If one bookie becomes unavailable, we swap it out for another and continue. This makes the Ack Quorum not equal to the Raft majority quorum or Kafka’s configured quorum.</p>
+
+<p>然而 BookKeeper Ledger 则不同，它并没有固定成员。如果一个 Bookie 不可用，我们会将其换成另外一个并继续。这使得 Ack Quorum 并不等同于 Raft 的多数仲裁或者 Kafka 中配置的仲裁。</p>
+
+<p>With BookKeeper we can set the commit quorum to be equal to the replication factor, i.e WQ=AQ. If we set WQ=3, AQ=3 and one bookie is down, we select a new bookie and carry on. Notice that when WQ=AQ we don’t have the three zones of committed head/tail and uncommitted. It’s either fully replicated and committed or not.</p>
+
+<p>对于 BookKeeper，我们可以将提交仲裁设置为等于复制因子，即 WQ = AQ。如果我们设置 WQ = 3、AQ = 3，一个 Bookie 宕机后可以选择一个新 Bookie 继续。请注意当 WQ = AQ 时，没有已提交头部、已提交尾部及未提交等三个区域，当前状态下的 Entry 或是完全复制并提交，或是完全未提交。</p>
+
+<p><img src="https://lh3.googleusercontent.com/5bdiesPcO3F2YknoZ0q5yw6lPc4QIVV5UB6b-x02FAmJtmQrlm_PkIkuxPGPuQsDaDE7ekrmGsgCllw4Ntp07BhCXKA6krXZXqk1OURCDJkBQYAioAYVYSlepxLD_JtgbarhtuI3d38HIAvge3NGgQ" alt="img" /></p>
+
+<p>Fig 12. With WQ=AQ, either entries are fully replicated or not committed. Ensemble changes leave the original fragment in a fully replicated state.</p>
+
+<p>图 12. 当 WQ = AQ 时，Entry 要么完全复制，要么完全未提交。Ensemble Change 后原始片段处于完全复制状态</p>
+
+<p>This also means we don’t have sections in the middle of a ledger at a lower rep factor anymore. The entire tail reaches WQ.</p>
+
+<p>这也意味着 Ledger 中间不存在低于复制因子的部分，整个日志尾部都达到了 WQ。</p>
+
+<p>In terms of data safety this is great. BookKeeper doesn’t need a majority quorum to offer high availability, we can tell BooKeeper to only acknowledge fully replicated entries.</p>
+
+<p>这样很大地保证了数据安全。BookKeeper 不需要靠多数仲裁即可保证高可用，我们可以让 BookKeeper 只确认那些完全复制的 Entry。</p>
+
+<p>There are of course some limits and impacts that need to be considered before you switch your AQ from a majority quorum to your replication factor.</p>
+
+<p>当然，在将 AQ 从多数仲裁切换到复制因子之前，需要考虑一些限制和影响。</p>
+
+<p>Firstly, using WQ=AQ without loss of availability only applies when you have enough bookies. If you only have 3 bookies and use WQ=3, then you have a fixed membership like Raft. If you have 4 bookies then as soon as one bookie is down, you’re down to 3 again and fixed membership. So you would want to have many more than 3, opting for more smaller bookies than fewer large ones. If you have 5 bookies or less you may still want the wriggle room that AQ&lt;WQ gives you.</p>
+
+<p>首先，使用 WQ = AQ 同时又不损失可用性仅适用于 Bookie 足够多的场景。如果只有 3 个Bookie 并且设置 WQ = 3，那么就跟 Raft 一样是固定成员。如果有 4 个 Bookie，那么一旦一个 Bookie 宕机，就会再次降到 3 并成为固定成员。所以 Bookie 数量要远大于 3，建议选择更多的小 Bookie，而不是更少的大 Bookie。如果 Bookie 数量小于或等于 5 个，那么最好还是设置 AQ &lt; WQ 以提供回旋余地。</p>
+
+<p>Availability % does take a small hit when using WQ=AQ as availability now also depends on operations to ZooKeeper succeeding. As soon as a write to a bookie fails, we must be able to complete an ensemble change in order to be able to resume and get entries acknowledged.However, I consider that we’re already in that boat anyway. Ledgers are small, bounded logs unlike Raft and Kafka’s theoretical infinite logs. Ledgers act as log segments and so they are getting created and closed constantly, and this requires successful metadata operations, so you cannot go for long without metadata changes in any case.</p>
+
+<p>其次，设置 WQ = AQ 时，可用性会受到少许影响，因为可用性还取决于随后对 ZooKeeper 的操作。一旦写入 Bookie 失败，我们必须能够完成一次 Ensemble Change，以便可以恢复并确认 Entry。不同于 Raft 和 Kafka 理论上无上限的日志，Ledger 是小而有界的日志。Ledger 由日志片段组成，会不断地被创建和关闭（需要成功地操作元数据)，所以如果不更改元数据，则无法长久运行。</p>
+
+<p>Write latency will have more variance as ensemble changes will cause more write latency. Ensemble changes are normally extremely fast but if ZooKeeper is under heavy load then it could be possible for slow ensemble changes to cause write latency spikes. So if having constant low latency is very important then you’ll likely want to stick with AQ being a majority quorum.</p>
+
+<p>最后，因为 Ensemble Change 会增加写入延迟，所以写入延迟的变化会更大。通常情况下 Ensemble Change 会非常快，但如果 ZooKeeper 负载很大，那么 Ensemble Change 则可能变慢，从而导致写入延迟出现毛刺。因此，如果对延迟要求非常高的话，那么就需要将 AQ 设为多数仲裁。</p>
+
+<h3>Replication Factor of 2 - 当复制因子 = 2</h3>
+
+<p>Why can’t we have Raft clusters of 2 members? Because a single node going down makes the cluster unable to make progress. We still get redundancy but we get worse availability than a single node. Likewise with Kafka, we can either offer a rep factor 1 or of 3 but not 2. To guarantee a rep factor of 2 you need to set min-insync-replicas=2. So if one replica goes down, we have the same issue as Raft.</p>
+
+<p>为什么 Raft 集群的成员不能是 2 个？因为在这种情况下，单个节点宕机会导致整个集群无法工作。虽然有冗余，但却比单节点的可用性更差。与 Kafka 类似，我们可以设置复制因子为 1 或者 3，但不能是 2。为了保证复制因子为 2，需要设置 min-insync-replicas = 2。因此当一个副本宕机，就会遇到和 Raft 一样的问题。</p>
+
+<p>But with BookKeeper, we can use a rep factor 2 without an issue. We simply set WQ=2 and AQ=2. We get redundancy and also don’t lose availability if a single node goes down. That’s pretty neat.</p>
+
+<p>然而在 BookKeeper 内可以将复制因子设为 2。简单地设置 WQ = 2 且 AQ = 2，既能获得冗余又不会在单个节点宕机的情况下失去可用性。</p>
+
+<h2>Summary - 总结</h2>
+
+<p>In this first post we’ve focused on BookKeeper’s external consensus and dynamic ledger membership and how that contrasts to a more traditional fully integrated protocol like Raft and Apache Kafka with fixed membership.</p>
+
+<p>这是本系列的第一篇文章，重点介绍了 BookKeeper 的外部共识和动态 Ledger 成员，并将其与 Raft 和 Apache Kafka 这种固定成员的传统完全集成协议进行对比。</p>
+
+<p>We’ve seen that BookKeeper’s dynamic membership allows it to side step the usual compromise between safety and availability/latency. Where conservative configurations with Raft might choose a rep factor of 5 to ensure it can survive the loss of 2 nodes, with BookKeeper we can achieve similar results with only a replication factor of 3. We can even choose WQ=4, AQ=3 to allow us to reduce the extra latency from slow ensemble changes. You have a bit more freedom than you think when setting your Write Quorum and Ack Quorum.</p>
+
+<p>BookKeeper 的动态成员机制让它不需要降低安全性和可用性/延迟任一性能。如果保守地配置 Raft 的话，可能会设置复制因子为 5，来保证 2 个节点宕机时仍能存活；对于 BookKeeper 来说，设置复制因子为 3 就能达到类似结果。甚至可以选择 WQ = 4、AQ = 3 来减少慢速 Ensemble Change 带来的额外延迟。在设置 Write Quorum 和 Ack Quorum 时，BookKeeper 的用户自由度非常大。</p>
+
+<p>We also saw that when AQ &lt; WQ you may have blocks in the middle of your ledger that only reach AQ replication, which can surprise people. In a later post we’ll look at potential tweaks to the protocol that could change this behaviour and why it might not be worth it or even safe.</p>
+
+<p>当 AQ &lt; WQ 时，Ledger 中间可能包含只达到 AQ 复制的 Entry，这让人们感到惊讶。在后续文章中我们将看到可以通过调整协议来改变这种行为，以及为什么它可能不值得甚至不安全。</p>
+
+<p>This is by no means the end of the ways that BookKeeper differs from integrated protocols like Raft and Kafka. There are many more things to consider when trying to understand the BookKeeper replication protocol in detail.</p>
+
+<p>BookKeeper 与 Raft 和 Kafka 等集成协议的区别绝不仅仅是这些。要详细理解 BookKeeper 复制协议的话需要考虑更多。</p>
+
+<blockquote><p>Finally, as with everything, it’s all about trade-offs. Integrated protocols make different trade-offs to BookKeeper and neither is “the best” and this post or even this series is not an attempt to do a This Versus That comparison. The comparison is there as a vehicle for learning.
+最后，本文乃至本系列文章的目的都不是试图进行两两比较来评判系统的优劣。其他集成协议与 BookKeeper 只不过是有不同的权衡与侧重，不能单纯地评估二者优劣。本文中的对比仅为以更易懂的方式普及概念。</p></blockquote>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[2022 Pulsar Performance Report: Better Performance and Data Resiliency With Apache Pulsar]]></title>
+    <link href="http://alphawang.github.io/blog/pulsar-kafka-benchmark/"/>
+    <updated>2022-05-01T23:17:09+08:00</updated>
+    <id>http://alphawang.github.io/blog/pulsar-kafka-benchmark</id>
+    <content type="html"><![CDATA[<blockquote><p>本文译自 StreamNatvie 官方发布的《2022 Pulsar 性能测试报告》</p></blockquote>
+
+<p>As we move into 2022, the Apache PulsarTM versus Apache KafkaⓇ debate continues. Organizations often make comparisons based on features, capabilities, size of the community, and a number of other metrics of varying importance. This report focuses purely on comparing the technical performance based on benchmark tests.</p>
+
+<p>进入 2022 年，人们对 Apache Pulsar<sup>TM</sup> 与 Apache Kafka<sup>Ⓡ </sup>的争论仍在持续。大家通常会对比二者的特性、能力、社区规模以及其他一系列重要性各异的指标。本报告则侧重于基于基准测试对比二者的技术性能。</p>
+
+<p>The last widely published <a href="https://hubs.ly/Q0179KpD0">Pulsar versus Kafka benchmark</a> was performed in 2020, and a lot has happened since then. In 2021, Pulsar ranked as a <a href="https://hubs.ly/Q01701DL0">Top 5 Apache Software Foundation</a> project and <a href="https://hubs.ly/Q01701DW0">surpassed Apache Kafka</a> in monthly active contributors as shown in the chart below. Pulsar also averaged more monthly active contributors than Kafka for most of the past 18 months.</p>
+
+<p>上一次广泛发布的 <a href="https://hubs.ly/Q0179KpD0">Pulsar 与 Kafka 基准测试</a>是在 2020 年进行的，而此后发生了很多事情。2021 年，Pulsar 被评为 <a href="https://hubs.ly/Q01701DL0">[Apache 软件基金会 Top 5 活跃提交项目]</a>，并在月度活跃贡献者数目上<a href="https://hubs.ly/Q01701DW0">力压 Apache Kafka</a>，如下图所示。在过去 18 个月中，大部分时间 Pulsar 的平均月度活跃贡献者都超越了 Kafka。</p>
+
+<p><img src="https://lh4.googleusercontent.com/D1Rw8-ZiGNxyE9RgMyhUUEmx5Qb0C7T-8uabXTu_e8NUir_LKqcAErCAvvAi-fS0oWY2JOIswsE6wh5uAs6sBlgqx0fuXyau_yps8tvFPdwE8WTbVAppfiXXiochESpcCk67n8fLSPTK7vkpmMZ7nw" alt="img" /></p>
+
+<!--more-->
+
+
+<p><em>Figure 1: Pulsar vs. Kafka Monthly Active Contributors</em>
+<em>图 1：Pulsar 与 Kafka 的月度活跃贡献者对比</em></p>
+
+<p>These contributions led to major performance improvements for Pulsar. To measure the impact of the improvements, the engineering team at StreamNative, led by Matteo Merli, one of the original creators of Apache Pulsar, Apache Pulsar PMC Chairperson, performed a benchmark study using the Linux Foundation Open Messaging benchmark.</p>
+
+<p>这些贡献为 Pulsar 带来了重大的性能改进。为了衡量这些改进的影响，由 Apache Pulsar 创始人之一、Apache Pulsar PMC 主席 Matteo Merli 领导的 StreamNative 工程师团队使用 Linux Foundation Open Messaging 基准进行了基准测试研究。</p>
+
+<p>The team measured Pulsar performance in terms of throughput and latency, and then performed the same tests on Kafka. We’ve included the testing framework and details below and encourage anyone who is interested in validating the tests to do so.</p>
+
+<p>该团队在吞吐量和延迟方面对 Pulsar 的性能进行了测试，同时对 Kafka 进行了相同的测试。下文中包含了测试框架及相关详细信息，欢迎有兴趣的伙伴验证这些测试。</p>
+
+<p>Let’s take a look at three key findings before jumping into the full results.</p>
+
+<p>在介绍完整的测试结果之前，让我们先看看三个主要发现。</p>
+
+<h2>Key Benchmark Findings - 基准测试的主要发现</h2>
+
+<table>
+<thead>
+<tr>
+<th> 2.5x<br />比 Kafka 更高的最大吞吐量          </th>
+<th> Pulsar 能够达到 Kafka 2.5 倍的最大吞吐量。这对于导入并处理大量数据的场景来说是一个巨大优势，例如日志分析、网络安全和传感器数据收集。更高的吞吐量意味着只需要更少的硬件，从而降低运营成本。 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> <strong>100x<br/>比 Kafka 更低的个位数的发布延迟</strong> </td>
+<td> Pulsar 提供稳定的个位数的发布延迟，这比 Kafka 的 P99.99 (ms) 延迟低 100 倍。低发布延迟是很重要的，它使得系统能够快速将消息发布到消息总线。一旦消息发布成功，数据即能安全地进行各种“处理”。 </td>
+</tr>
+<tr>
+<td> <strong>1.5x<br />比 Kafka 更快的历史读取速率</strong>    </td>
+<td> Pulsar 的历史读取速率比 Kafka 快 1.5 倍，因此使用 Pulsar 作为消息系统的应用可以在意外中断后只需一半的时间即可追上数据。对于数据库迁移/复制这类将数据传输到记录系统的场景来说，读取吞吐量至关重要。 </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>Below we provide details on how the benchmark was performed and its results.</p>
+
+<p>下面介绍本次基准测试是如何执行的，以及测试结果相关的详细信息。</p>
+
+<h2>Benchmark Tests - 基准测试</h2>
+
+<p>Using the Linux Foundation Open Messaging benchmark [<a href="https://docs.google.com/document/d/1rjbqxsVWOtVYkrngc3XG6KQJAcuac6KipMlgUfmoi9w/edit#heading=h.ggpi2ey1p5zb">1</a>], we ran the latest versions of Apache Pulsar (2.9.1) and Apache Kafka (3.0.0). To ensure an objective baseline comparison, each test in this Benchmark Report compares Kafka to Pulsar in two scenarios: Pulsar with Journaling and Pulsar without Journaling.</p>
+
+<p>我们使用 Linux Foundation Open Messaging 基准 [<a href="https://docs.google.com/document/d/1rjbqxsVWOtVYkrngc3XG6KQJAcuac6KipMlgUfmoi9w/edit#heading=h.ggpi2ey1p5zb">1</a>]，运行（测试期间）最新版本的 Apache Pulsar (2.9.1) 以及 Apache Kafka (3.0.0)。为了确保客观的基线对比，本基准报告中的每个测试都从如下两个设定对比 Kafka 与 Pulsar：启用 Journaling 情况下的 Pulsar，以及禁用 Journaling 情况下的 Pulsar。</p>
+
+<p>Pulsar’s default configuration includes Journaling, which offers a higher durability guarantee than Kafka’s default configuration. Pulsar without Journaling provides the same durability guarantees as the default Kafka configuration, which results in an apples-to-apples comparison.</p>
+
+<p>Pulsar 默认配置是启用 Journaling 的，这提供了比 Kafka 默认配置更高的持久性保证。而禁用 Journaling 的 Pulsar 则提供了与 Kafka 默认配置相同的持久性保证，这使得对比更公平。</p>
+
+<h2>I. What We Tested - 我们测试了什么</h2>
+
+<p>For this benchmark, we selected a handful of tests to represent common patterns in the messaging and streaming domains and to test the limits of each system:</p>
+
+<p>本次基准测试我们选择了能代表消息领域和流处理领域常见模式的几种测试场景，并测试每个系统的极限：</p>
+
+<h3>A. Maximum Sustainable Throughput - 最大可持续吞吐量</h3>
+
+<p>This test measures the maximum data throughput the system can deliver when consumers are keeping up with the incoming traffic.</p>
+
+<p>本测试测量当消费者跟上传入流量的情况下系统可提供的最大数据吞吐量。</p>
+
+<p>We ran this test in two scenarios to test the upper boundary performance and to test the cost profile for each system:</p>
+
+<p>我们在如下两个前提设定下执行了该测试，用以测试各个系统的上限性能以及成本概况：</p>
+
+<ol>
+<li><p><strong>Topic with a single partition</strong>. This scenario tests the upper boundary performance for a total-order use case or, in the worst case, where partition keys’ data is skewed. At some scale, the design of a system that relies upon single ordering or handling large amounts of skewed data will need to be reconsidered. Pulsar has the ability to handle situations where total ordering is required at higher scale or large amounts of skew arise.
+ <strong>单分区主题。</strong>本设定用于测试全局有序场景的上限性能，或在最坏情况下当分区键数据倾斜时的上限性能。如果系统依赖全局有序或者处理大量倾斜数据，那么在某种程度上其设计需要重新考虑。Pulsar 有能力处理要求全局以更高规模排序、或者存在大量数据倾斜的场景。</p></li>
+<li><p><strong>Topic with 100 partitions</strong>. With more partitions to stress available resources, this test illustrates how well a system scales horizontally (by adding more machines) and its cost effectiveness. For example, by modeling the hardware cost per 1GB/s of traffic, it is easy to derive the cost profile for each system.
+<strong>100 个分区的主题。</strong>更多的分区意味着需要更多的可用资源，本测试说明了系统水平扩展的能力 (通过增加更多机器) 及其成本效益。例如，通过对每 1GB/s 流量的硬件成本进行建模，很容易能得出每个系统的成本概况。</p></li>
+</ol>
+
+
+<h3>B. Publish Latency at a Fixed Throughput - 固定吞吐量下的发布延迟</h3>
+
+<p>For this test, we set a fixed rate for the incoming traffic and measured the publish latency profile. Publish latency begins at the moment when a producer tries to publish a message and ends at the moment when it receives confirmation from the brokers that the message is stored and replicated.</p>
+
+<p>在本测试中，我们设置了固定速率的传入流量并测量发布延迟。发布延迟是指从生产者尝试发布一条消息开始，到它接收到 Broker 确认该消息已被存储并复制为止的时间段。</p>
+
+<p>In many real-world applications, it is required to guarantee a certain latency SLA (service-level agreement). In particular, this is true in cases where the message is published as the result of some user interaction, or when the user is waiting for the confirmation.</p>
+
+<p>在许多现实生产环境的应用中，都要求保证一定的延迟 SLA (服务级别协议)。特别是在当消息发布是由某些用户交互触发的，或者需要用户等待确认的情况下。</p>
+
+<h3>C. Catch-up Reads / Backlog Draining - 追赶读（Catch-up Read） / 积压耗尽（Backlog Draining）</h3>
+
+<p>One of the primary purposes of a messaging bus is to act as a “buffer” between different applications or systems. When the consumers are not available, or when there are not enough of them, the system accumulates the data.</p>
+
+<p>消息总线的一个主要目的是充当不同应用或系统之间的”缓冲区“。当消费者不可用，或消费者数量不足时，消息系统能够积压数据。</p>
+
+<p>In these situations, the system must be able to let the consumers drain the backlog of accumulated data and catch up with the newly produced data as fast as possible.</p>
+
+<p>在这些情况下，消息系统必须能够让消费者尽快耗尽积压数据，并尽快追赶上新生产的数据。</p>
+
+<p>While this catch-up is happening, it is important that there is no impact on the performance of existing producers (in terms of throughput and latency) on the same topic or in other topics that are present in the cluster.</p>
+
+<p>当发生这种数据追赶时，重要的是不影响同一主题或同一集群其他主题的现有生产者的性能（吞吐量及延迟）。</p>
+
+<p>In all the tests, producers and consumers are always running from a dedicated pool of nodes, and all messages contain a 1KB payload. Additionally, in each test, both Pulsar and Kafka are configured to provide two guaranteed copies of each message.</p>
+
+<p>在所有测试中，生产者和消费者总是在专用的节点池上运行，所有消息都包含 1KB 的负载。此外，在每个测试中，Pulsar 和 Kafka 都配置为为每条消息提供两份副本。</p>
+
+<p><strong>Note</strong>: Pulsar also supports message queuing, complex routing, individual and negative acknowledgments, delayed message delivery, and dead-letter-queues (features not available in Kafka). This benchmark does not evaluate these features.</p>
+
+<p><strong>注意</strong>：相比 Kafka，Pulsar 还额外支持消息队列、复杂路由、单条确认、否定确认、延迟消息传递和死信队列等 Kafka 中不可用的功能。本次基准测试并不评估这些功能。</p>
+
+<h2>II. How We Set up the Tests - 我们如何配置测试</h2>
+
+<p>The benchmark uses the Linux Foundation Open Messaging Benchmark suite [<a href="https://docs.google.com/document/d/1rjbqxsVWOtVYkrngc3XG6KQJAcuac6KipMlgUfmoi9w/edit#heading=h.ggpi2ey1p5zb">1</a>]. You can find all deployments, configurations, and workloads in the Open Messaging Benchmark Github repo [<a href="https://docs.google.com/document/d/1rjbqxsVWOtVYkrngc3XG6KQJAcuac6KipMlgUfmoi9w/edit#heading=h.ggpi2ey1p5zb">2</a>].</p>
+
+<p>本基准测试使用 Linux Foundation Open Messaging 基准测试套件[<a href="https://docs.google.com/document/d/1rjbqxsVWOtVYkrngc3XG6KQJAcuac6KipMlgUfmoi9w/edit#heading=h.ggpi2ey1p5zb">1</a>]。您可以在 Open Messaging Benchmark Github 代码库 [<a href="https://docs.google.com/document/d/1rjbqxsVWOtVYkrngc3XG6KQJAcuac6KipMlgUfmoi9w/edit#heading=h.ggpi2ey1p5zb">2</a>] 中找到所有的部署、配置和负载。</p>
+
+<p>The testbed for the OpenMessaging Benchmark is set up as follows:</p>
+
+<p>OpenMessaging 基准测试平台配置如下：</p>
+
+<ol>
+<li>3 Broker VMs of type i3en.6xlarge, with 24-cores, 192GB of memory, 25Gbps guaranteed networking, and two NVMe SSD devices that support up to 1GB/s write throughput on each disk.
+3 个 i3en.6xlarge 类型的 Broker 虚拟机，24 核，192GB 内存，25Gbps 网络，两块 NVMe SSD 硬盘，每块磁盘支持最大 1GB/s 的写入吞吐量。</li>
+<li>4 Client (producers and consumers) VMs of type m5n.8xlarge, with 32-cores and with 25Gbps of guaranteed networking throughput and 128GB of memory to ensure the bottleneck would not be on the client-side.
+4 个 m5n.8xlarge 类型的客户端（生产者和消费者)虚拟机，32 核，25Gbps 网络，128GB 内存，以确保客户端没有瓶颈。t2.small 类型的 ZooKeeper 虚拟机。</li>
+<li>ZooKeeper VMs of type t2.small. These are not critical because ZooKeeper is not stressed in any form during the benchmark execution.
+ZooKeeper 在基准测试执行期间并不会受到任何形式的压力，所以其机器配置并不重要。</li>
+</ol>
+
+
+<p>We tested two configurations for Pulsar:</p>
+
+<p>我们测试了 Pulsar 的两种配置：</p>
+
+<ol>
+<li><strong>Pulsar with Journaling (Default)</strong>:
+<strong>启用 Journaling (默认)</strong>:
+
+<ul>
+<li>Uses a journal for strong durability (this exceeds the durability provided by Kafka).
+使用 Journal 可获得强持久性，这超过了 Kafka 提供的持久性。</li>
+<li>Replicates and f-syncs data on disk before acknowledging producers.
+在确认响应给生产者之前，对数据进行复制并 f-sync 到磁盘。</li>
+</ul>
+</li>
+<li><strong>Pulsar without Journaling</strong>:
+<strong>禁用 Journaling:</strong>
+
+<ul>
+<li>Replicates data in memory on multiple nodes, before acknowledging producers, and then flushes to disk in the background.
+在确认响应给生产者之前，在多节点内存中复制数据，然后在后台刷新数据到磁盘。</li>
+<li>Provides the same durability guarantees as Kafka.
+提供与 Kafka 相同的持久性保证。</li>
+<li>Achieves higher throughput and lower latency when compared to the default Pulsar setup with journaling.
+与默认启用 Journaling 相比，能达到更高的吞吐量和更低的延迟。</li>
+<li>Provides a cost-effective alternative to the standard Pulsar setup, at the expense of strong durability. (“Strong durability” means that the data is flushed to disk before an acknowledgement is returned.)
+为标准的 Pulsar 配置提供了更具成本效益的替代方案，代价是无法提供强持久性。(”强持久性“意味着数据在返回确认之前被刷新到磁盘。)</li>
+</ul>
+</li>
+</ol>
+
+
+<p>We configured Apache Pulsar 2.9.1 to run with the 3/3/2 persistence policy, which writes entries to 3 storage nodes and waits for 2 confirmations. We are deploying 1 broker and 1 bookie for each of the 3 VMs we are using.</p>
+
+<p>我们以 3/3/2 持久化策略运行 Apache Pulsar 2.9.1，将 Entry 写入 3 个存储节点，并等待 2 个节点的确认。我们在 3 个虚拟机上均部署了 1 个 Broker 以及 1 个 Bookie。</p>
+
+<p>We used Apache Kafka 3.0.0 and the configuration recommended by Confluent in its fork of the OpenMessaging benchmark.</p>
+
+<p>我们使用 Apache Kafka 3.0.0 并使用 Confluent 在其 OpenMessaging 基准分支中推荐的配置。</p>
+
+<p>Details on the Kafka configurations include:</p>
+
+<p>Kafka 的详细配置信息如下：</p>
+
+<ol>
+<li>Uses in-memory replication (using the OS page-cache) but it’s not guaranteed to be on disk when a producer is acknowledged.
+使用内存复制（利用操作系统页缓存），但发送确认给生产者时不保证数据已被存储到磁盘。</li>
+<li>Uses the recommended Confluent setup to increase the throughput compared to the defaults:
+使用 Confluent 推荐的配置，达到比默认配置更高的吞吐量：
+
+<ul>
+<li>num.replica.fetchers=8</li>
+<li>message.max.bytes=10485760</li>
+<li>replica.fetch.max.bytes=10485760</li>
+<li>num.network.threads=8</li>
+</ul>
+</li>
+<li>Uses Producers settings to ensure a minimum replication factor of 2:
+配置生产者确保最小复制因子为 2：
+
+<ul>
+<li>acks=all</li>
+<li>replicationFactor=3</li>
+<li>min.insync.replicas=2</li>
+</ul>
+</li>
+</ol>
+
+
+<p><strong>Note</strong>: For both Kafka and Pulsar, the clients were configured to use ZGC to get lower GC pause time.</p>
+
+<p><strong>注意</strong>：对于 Kafka 和 Pulsar，客户端都配置使用 ZGC 来获得更低的 GC 停顿时间。</p>
+
+<h2>III. Benchmark Tests &amp; ResultsIII - 基准测试用例及结果</h2>
+
+<h3>A. Test #1: Maximum Throughput - 测试 #1: 最大吞吐量</h3>
+
+<p>This test measures the maximum “sustainable throughput” reachable on a topic. Eg: The max throughput that is able to push from producers through consumers, without accumulating any backlog.</p>
+
+<p>本测试测量在一个主题上可达到的最大“可持续吞吐量”。亦即在不积压 Backlog 的情况下，能够从生产者推送到消费者的最大吞吐量。</p>
+
+<h4>1. Test #1 / Case #1: Maximum Throughput with 1 Partition1 - 测试 #1 / 场景 #1: 单分区的最大吞吐量</h4>
+
+<p>This first test uses a topic with a single partition to establish the boundary for ingesting data in a totally ordered way. This is common in all the use case scenarios where a single history of all the events in a precise order is required, such as “change data capture” or event sourcing.</p>
+
+<p>Driver files: <a href="https://github.com/openmessaging/benchmark/blob/master/driver-pulsar/pulsar.yaml">pulsar.yaml</a>, <a href="https://github.com/openmessaging/benchmark/blob/master/driver-kafka/kafka-throughput.yaml">kafka-throughput.yaml </a></p>
+
+<p>Workload file: <a href="https://github.com/openmessaging/benchmark/blob/master/workloads/max-rate-1-topic-1-partition-4p-1c-1kb.yaml">max-rate-1-topic-1-partition-4p-1c-1kb.yaml</a></p>
+
+<p>第一个测试用例使用单分区主题，测量以完全有序方式消费数据的吞吐量上限。这个设定在那些要求按精确顺序记录所有事件的单一历史记录的场景中很常见，例如“变更数据捕获”（CDC）或事件溯源等场景。</p>
+
+<p>驱动文件：<a href="https://github.com/openmessaging/benchmark/blob/master/driver-pulsar/pulsar.yaml">pulsar.yaml</a>, <a href="https://github.com/openmessaging/benchmark/blob/master/driver-kafka/kafka-throughput.yaml">kafka-throughput.yaml </a></p>
+
+<p>负载文件：<a href="https://github.com/openmessaging/benchmark/blob/master/workloads/max-rate-1-topic-1-partition-4p-1c-1kb.yaml">max-rate-1-topic-1-partition-4p-1c-1kb.yaml</a></p>
+
+<h5>a. Case #1 Results: Maximum Throughput with 1 Partition - 场景 #1 结果: 单分区的最大吞吐量</h5>
+
+<p><img src="https://lh6.googleusercontent.com/ixaYLY5FjmL0aPBr9QBsj3ugP2i1huR2OjTxZY8Y38VAWpmv2dzsL1aTaJlc7IpCBvoDcQqAJezG0_V-lNwji9nn2BrxD2NtTWjyb6GMV1RMhDerFA4ldfH7-DkU-jmgrs7se9UvNdS0rNTlmWo48Q" alt="img" /></p>
+
+<table>
+<thead>
+<tr>
+<th>               </th>
+<th> 禁用 Journaling 情况下的 Apache Pulsar </th>
+<th> 启用 Journaling 情况下的 Apache Pulsar (默认) </th>
+<th> Apache Kafka </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 吞吐量 (MB/s) </td>
+<td> 700                                    </td>
+<td> 580                                           </td>
+<td> 280          </td>
+</tr>
+</tbody>
+</table>
+
+
+<p><em>Figure 2: Single partition max write throughput (MB/s): Higher is better.</em></p>
+
+<p><em>图 2：单分区的最大写入吞吐量 (MB/s)：数值越高，代表性能越好</em></p>
+
+<h5>b. Case #1 Analysis - 场景 #1 分析</h5>
+
+<p>The difference in throughput between Pulsar and Kafka reflects how efficiently each system is able to “pipeline” data across the different components from producers to brokers, and then the data replication protocol of each system.</p>
+
+<p>Pulsar 与 Kafka 之间的吞吐量差异反映了这两个系统如何有效地将数据跨不同组件从生产者 “传输” 到 Broker，也反映了这两个系统数据复制协议的不同。</p>
+
+<p>Pulsar achieves a throughput of 700 MB/s and 580 MB/s, respectively, on the single partitions, compared to Kafka’s 280 MB/s. This is possible because the Pulsar client library combines messages into batches when sending them to the brokers. The brokers then pipeline data to the storage nodes.</p>
+
+<p>Pulsar 在单分区上的吞吐量分别达到了 700 MB/s 和 580 MB/s，而 Kafka 在单分区上的吞吐量为 280 MB/s。这是因为 Pulsar 客户端库在发送消息到 Broker 之前会将多条消息合并成批量消息。然后 Broker 再将数据传输到存储节点。</p>
+
+<p>In Kafka, two factors impose a bottleneck on the maximum achievable throughput: (1) the producer default limit of 5 maximum outstanding batches; and (2) the producer buffer size (batch.size=1048576) recommended by Confluent for high throughput.</p>
+
+<p>在 Kafka 中，有两个因素妨碍了最大可达吞吐量：(1) 生产者默认限制为 5 个最大未完成批次；(2) Confluent 为实现高吞吐量而推荐的生产者缓冲区大小为 (batch.size=1048576) 。</p>
+
+<p><strong>Note</strong>: Increasing the batch.size setting has negative effects on the latency. This is not the case for Pulsar producers, where the batching latency is controlled by the <code>batchingMaxDelay()</code> setting, in addition to the batch max size.</p>
+
+<p><strong>注意</strong>：在 Kafka 中增加 batch.size 参数会对延迟产生负面影响。而 Pulsar 生产者则不然，其批处理延迟除了受批次最大大小影响，还受 <code>batchingMaxDelay()</code> 控制。</p>
+
+<p>With the increase in single topic throughput, Pulsar provides developers and architects more options in how they build their system. Teams can worry less about finding optimal partition keys and focus instead on mapping their data into streams.</p>
+
+<p>随着单主题吞吐量的增加，Pulsar 为开发人员和架构师提供了更多的构建系统的选择。团队不必操心寻找最佳分区键，而可以专注于将数据映射到流中。</p>
+
+<h4>2. Test #1 / Case #2: Maximum Throughput with 100 Partitions - 测试 #1 / 场景 #2: 100 个分区的最大吞吐量</h4>
+
+<p>Most use cases that involve a significant amount of real-time data use partitioning to avoid the bottleneck of a single node. Partitioning is a way for messaging systems to divide a single topic into smaller chunks that can be assigned to different brokers.</p>
+
+<p>多数涉及大量实时数据的场景都会使用分区来避免单个节点的瓶颈。分区是消息系统将单个主题拆分为较小块的一种方式，这些块可以分配给不同的 Broker。</p>
+
+<p>Given that we tested on a 3-nodes cluster, we used 100 partitions to maximize the throughput of the system across the nodes. There is no advantage to using a higher number of partitions on this cluster because the partitions are handled independently and spread uniformly across the available brokers.</p>
+
+<p>鉴于我们在一个 3 节点集群上做测试，我们使用 100 个分区来最大化系统跨节点的吞吐量。在这个集群上使用更多的分区并没有任何好处，因为分区是独立处理的，并在可用 Broker 中均匀分布。</p>
+
+<p>驱动文件：<a href="https://github.com/openmessaging/benchmark/blob/master/driver-pulsar/pulsar.yaml">pulsar.yaml</a>, <a href="https://github.com/openmessaging/benchmark/blob/master/driver-kafka/kafka-throughput.yaml">kafka-throughput.yaml</a></p>
+
+<p>负载文件：<a href="https://github.com/openmessaging/benchmark/blob/master/workloads/1-topic-100-partitions-1kb-4p-4c-2000k.yaml">1-topic-100-partitions-1kb-4p-4c-2000k.yaml</a></p>
+
+<h5>a. Case #2 Results: Maximum Throughput with 100 Partitions - 场景 #2 结果: 100 个分区的最大吞吐量</h5>
+
+<p><img src="https://lh6.googleusercontent.com/G2BqhkVYs2lPtF9yBuG9TKVajthqlCdhIW75_r8_dO9Ibaw1lbMVFb8hvfNjyA46yAbdWfs8JA_1rEv3HWb5IkIaT-n2fAhvgTTs0z34rlbf3bZ3mJv9F7vZW8HRRwxvpagJHOMil_GM8U_HlKE5tA" alt="img" /></p>
+
+<table>
+<thead>
+<tr>
+<th>               </th>
+<th> 禁用 Journaling 情况下的 Apache Pulsar </th>
+<th> 启用 Journaling 情况下的 Apache Pulsar (默认) </th>
+<th> Apache Kafka </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 吞吐量 (MB/s) </td>
+<td> 1600                                   </td>
+<td> 800                                           </td>
+<td> 1087         </td>
+</tr>
+</tbody>
+</table>
+
+
+<p><em>Figure 3: 100 partitions max write throughput (MB/s): Higher is better.</em></p>
+
+<p><em>图 3: 100 分区的最大写入吞吐量 (MB/s): 数值越高，代表性能越好</em></p>
+
+<h5>b. Case #2 Analysis - 场景 #2 分析</h5>
+
+<p>Pulsar without Journaling achieves a throughput of 1600 (MB/s), Kafka achieves a throughput of 1087 (MB/s) and Pulsar with Journaling (Default) achieves a throughput of 800 (MB/s). At equivalent durability guarantees Pulsar is able to outperform Kafka in terms of maximum write throughput. The difference in performance stems from how Kafka implements access to the disk. Kafka stores data for each partition in different directories and files, resulting in more files open for writing and scattering the IO operations across the disk. This increases the stress and contention on the OS page caching system that Kafka relies on.</p>
+
+<p>禁用 Journaling 情况下 Pulsar 取得了 1600(MB/s) 的吞吐量，Kafka 取得了 1087 (MB/s) 的吞吐量，而默认启用 Journaling 情况下 Pulsar 的吞吐量是 800 (MB/s) 。在同等持久性保证的情况下，Pulsar 在最大写入吞吐量方面能够胜过 Kafka。这个性能上的差异源于 Kafka 实现对磁盘的访问的方式。Kafka 将每个分区的数据存储在不同的目录和文件中，导致需要打开更多的文件用于写入，并将 IO 操作分散到各个磁盘。这增加了 Kafka 所依赖的操作系统页缓存的压力和争用。</p>
+
+<p>When reading a file, the OS tries to cache blocks of data in the available system RAM. When the data is not available in the OS cache, the thread is blocked while the data is read from the disk and pulled in the cache.</p>
+
+<p>读取文件时，操作系统尝试将数据块缓存到可用的系统 RAM 中。当数据在操作系统缓存中不可用时，则会从磁盘中读取数据并拉入缓存，此时线程会被阻塞。</p>
+
+<p>The cost of pulling the blocked data into the cache is a significant delay (~100s of milliseconds) in serving write/read requests for other topics. This delay is observed in the benchmark results in the form of the publish latency experienced by the producers.</p>
+
+<p>将阻塞数据拉入缓存的代价是在为其他主题处理写入/读取请求时会产生显著的延迟 (约 100 毫秒)。在基准测试结果中，这种延迟表现为生产者的发布延迟。</p>
+
+<p>In the case of the default Pulsar deployment (with a journal for strong durability), the throughput is lower because 1 disk (out of 2 available in the VMs) is dedicated to the journal. Therefore we are capping the available IO bandwidth. In a production environment, this cap could be mitigated by having more disks to increase the IOPS/node capacity, but for this benchmark we used the same VM resources for each of the system configurations.</p>
+
+<p>在 Pulsar 的默认部署下（启用 Journal 实现强持久性），吞吐量低于 Kafka，因为虚拟机中两块可用磁盘中的一个会专用于 Journal。因此可用 IO 带宽被限制了。在生产环境中，可以通过增加磁盘来增加每个节点的 IOPS 性能，从而缓解这个限制。但在本基准测试中，我们则为每个系统使用相同的虚拟机资源配置。</p>
+
+<p>The difference in throughput can impact the cost of the solution. With parity of guarantees, this test shows that Pulsar would require 32% less hardware compared to Kafka for the same amount of traffic.</p>
+
+<p>吞吐量的差异会影响解决方案的成本。我们的测试表明，在同等配置、同样的流量的情况下，Pulsar 比 Kafka 减少 32% 的硬件需求。</p>
+
+<h3>B. Test #2: Publish Latency - 测试 #2: 发布延迟</h3>
+
+<p>The purpose of this test is to measure the latency perceived by the producers at a steady state, with a fixed publish rate.</p>
+
+<p>本测试的目的是测量生产者在稳定状态下以固定速率发布时所感知到的延迟。</p>
+
+<p>Messaging systems are often used in applications where data must efficiently and reliably be moved from a producing application to be durably stored in the messaging system. In high volume scenarios, even momentary increases in latency can result in memory resources being exhausted. In other situations, a human user may be “in-the-loop” and waiting on an operation which publishes a message - for example, a web page needs the confirmation of the action before proceeding - and latency spikes can degrade the user experience. In these use cases, it is important to have a latency performance profile that is consistently within a given SLA (service-level agreement).</p>
+
+<p>有些应用要求数据必须能从生产应用程序有效且可靠地移动到消息系统以便持久化存储起来，这也是消息系统的常见使用场景。在大容量前提下，即便只是延迟的瞬时增加也会导致内存资源耗尽。在其他情况下，桌面用户可能处于“循环中”，并等待发送消息的操作执行结束，例如一个网页需要等待确认才能继续下一步操作，而延迟的增加会损害用户体验。在这些场景中，将延迟性能稳定地保持在给定的 SLA（服务级别协议）之内是非常重要的。</p>
+
+<p>It is also important to consider that a high latency in the long tail (eg: 99.9 percentile and above) will still have an outsized impact over an SLA that can be offered by an application. In practical terms, a higher 99.9% latency in the producer will often result in a significantly higher 99% latency for the application request.</p>
+
+<p>同样重要的是要考虑到长尾高延迟（例如 99.9 百分位及以上的延迟）也会对应用可提供的 SLA 产生巨大影响。在实践中，更高的生产者 99.9% 延迟通常会导致应用程序请求的延迟明显高于 99.9% 。</p>
+
+<p>Because the messaging bus sits at the bottom of the stack, it needs to provide a low and consistent latency profile so that applications can provide their own latency SLAs.This test is conducted by publishing and consuming at a fixed rate of 500 MB/s and comparing it to the publish latency seen by producers.</p>
+
+<p>由于消息总线是底层技术栈组件，所以它需要提供稳定的低延迟，这样应用程序才好提供自己的延迟 SLA。本测试以 500 MB/s 的固定速率发布和消费消息，然后比较生产者观测到的发布延迟。</p>
+
+<p>驱动文件：<a href="https://github.com/openmessaging/benchmark/blob/master/driver-pulsar/pulsar.yaml">pulsar.yaml</a>, <a href="https://github.com/openmessaging/benchmark/blob/master/driver-kafka/kafka-latency.yaml">kafka-latency.yaml </a></p>
+
+<p>负载文件：<a href="https://github.com/openmessaging/benchmark/blob/master/workloads/1-topic-100-partitions-1kb-4p-4c-500k.yaml">1-topic-100-partitions-1kb-4p-4c-500k.yaml</a></p>
+
+<h4>a. Test #2 Results: Publish Latency - 测试 #2 结果: 发布延迟</h4>
+
+<p><img src="https://lh5.googleusercontent.com/47aY75VQNUaBsfMpkgxqANtB4-QzucYo2E0ip0VNGamoLLMrWLOQjopYtF4Jv3pOw12xTHGfNGTYbwcXAk80PDIx85EecdnNOtOpiP8z0SfWVkXY1jsZJX5wJoa--Gd4TtxxgILeJ_NsyoDqLTVAeg" alt="img" /></p>
+
+<table>
+<thead>
+<tr>
+<th>             </th>
+<th> 禁用 Journaling 情况下的 Apache Pulsar </th>
+<th> 启用 Journaling 情况下的 Apache Pulsar (默认) </th>
+<th> Apache Kafka </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> P50 (ms)    </td>
+<td> 0.77                                   </td>
+<td> 2.64                                          </td>
+<td> 1.75         </td>
+</tr>
+<tr>
+<td> P75 (ms)    </td>
+<td> 0.85                                   </td>
+<td> 2.86                                          </td>
+<td> 2.09         </td>
+</tr>
+<tr>
+<td> P95 (ms)    </td>
+<td> 1.36                                   </td>
+<td> 4.62                                          </td>
+<td> 2.86         </td>
+</tr>
+<tr>
+<td> P99 (ms)    </td>
+<td> 1.58                                   </td>
+<td> 7.89                                          </td>
+<td> 3.46         </td>
+</tr>
+<tr>
+<td> P99.9 (ms)  </td>
+<td> 1.68                                   </td>
+<td> 12.24                                         </td>
+<td> 54.56        </td>
+</tr>
+<tr>
+<td> P99.99 (ms) </td>
+<td> 1.96                                   </td>
+<td> 18.82                                         </td>
+<td> 207.83       </td>
+</tr>
+<tr>
+<td> Max         </td>
+<td> 13.52                                  </td>
+<td> 79.40                                         </td>
+<td> 405.48       </td>
+</tr>
+</tbody>
+</table>
+
+
+<p><em>Figure 4: 500K rate publish latency percentiles (ms): Lower is better.</em></p>
+
+<p><em>图 4：500K 速率的发布延迟百分位 (毫秒)：数值越低，代表性能越好</em></p>
+
+<h4>b. Test #2 Analysis测试 #2 分析</h4>
+
+<p>In this test, Pulsar is able to maintain a low publish latency while sustaining a high per-node utilization. Pulsar without Journaling is able to sustain 1.58 milliseconds latency at the 99 percentile and Pulsar with Journaling is able to sustain 7.89 milliseconds.</p>
+
+<p>在本测试中，Pulsar 能够在保持较高节点利用率的同时保持较低的发布延迟。禁用 Journaling 情况下 Pulsar 能够维持 1.58 毫秒的 99 百分位延迟，而启用 Journaling 情况下 Pulsar 能够维持在 7.89 毫秒。</p>
+
+<p>Kafka maintains a low publish latency up to the 99 percentile, where it is able to sustain 3.46 milliseconds in latency. But at 99.9%, Kafka’s latency spikes to 54.56 ms.</p>
+
+<p>Kafka 在 99 百分位之内可以保持低发布延迟，最高延迟为 3.46 毫秒。然而当 99.9% 时，Kafka 的延迟飙升至 54.56 毫秒。</p>
+
+<p>Publishing at a fixed rate, below the max burst throughput, at 99.9% and above, Pulsar has lower latency than Kafka for both Pulsar with Journaling (default) and the Pulsar without Journaling.</p>
+
+<p>在以固定速率发布的情况下，在最大突发吞吐量以下，在 99.9% 及以上时，Pulsar 的延迟都比 Kafka 更低，无论是否启用 Journaling。</p>
+
+<p>The reasons for lower latency with Pulsar are:</p>
+
+<p>Pulsar 能做到更低延迟的原因在于：</p>
+
+<ol>
+<li>When running Pulsar without Journaling, the critical data write path is decoupled from the disk access so it is not susceptible to the noise introduced by IO operations. The data is guaranteed to only be copied in memory, (unlike OS page cache which blocks under high load situations,) and then is flushed by background threads.
+在禁用 Journaling 情况下运行 Pulsar 时，关键数据写入路径与磁盘访问是解耦的，因此不易受 IO 操作带来的干扰的影响。数据仅保证被复制到内存（而操作系统页缓存在高负载情况下会被阻塞），然后再被后台线程刷到磁盘。</li>
+<li>Pulsar with Journaling (Default) is able to maintain low latency because the BookKeeper replication protocol is able to ignore the slowest responding storage node. Due to the internal disk garbage collection mechanism, the performance profile of SSD and NVMe disks is characterized by good average write latency but with periodic latency spikes of up to 100 milliseconds. BookKeeper is able to smooth out the latency when used in 3/3/2 configuration, because it only waits for the two fast storage nodes for each entry.
+Pulsar 在默认情况下启用 Journaling 情况下也能保持低延迟，这是因为 BookKeeper 复制协议能够忽略响应最慢的存储节点。由于内部磁盘垃圾收集机制，SSD 和 NVMe 磁盘的性能配置文件具有良好的平均写入延迟，但会有高达 100 毫秒的周期性的延迟峰值。BookKeeper 在使用 3/3/2 配置时能够平滑延迟，因为对每个 Entry 只需等待最快的两个存储节点响应即可。</li>
+</ol>
+
+
+<p>By contrast, Kafka replication protocol is set to wait for all three of the brokers that are in the in-replica-set. Because of that, unless a broker crashes or is falling behind the leader for more than 30 seconds, each entry in Kafka needs to wait for all three brokers to have the entry.</p>
+
+<p>相比之下，Kafka 复制协议要等待同步副本集合中的所有三个 Broker 返回。因此，除非 Broker 崩溃或者落后于 Leader 30 秒以上，否则 Kafka 中每个 Entry 都需要等待写入所有三个 Broker。</p>
+
+<h3>C. Test #3: Catch-up Reads测试 #3: 追赶读（Catch-up Read）</h3>
+
+<p>In the consumer catch-up test, we build a backlog of data and then start the consumers. While the consumers catch-up, the writers continue publishing data at the same rate.</p>
+
+<p>在消费者 catch-up 测试中，我们先构造数据积压，再启动消费者。在消费者 catch-up 的同时，生产者继续以同样的速率发布数据。</p>
+
+<p>This is a common, real-life scenario for a messaging/streaming system. Below are a few common use cases:</p>
+
+<p>这是消息/流系统的一个常见的真实设定。以下是一些常见的场景：</p>
+
+<ol>
+<li>Consumers come back online after a few hours of downtime and try to catch-up.
+消费者在宕机若干小时候重新上线，并尝试追赶数据。</li>
+<li>New consumers get bootstrapped and replay the data in the topic.
+新的消费者被启动，并重放主题中的数据。</li>
+<li>Periodic batch jobs that scan and process the historical data stored in the topic.
+周期性的批处理任务扫描并处理主题中存储的历史数据。</li>
+</ol>
+
+
+<p>With this test, we can measure the following:</p>
+
+<p>本测试可以测量如下内容：</p>
+
+<ol>
+<li>The catch-up speed.
+Catch-up 速度。
+
+<ul>
+<li>Consuming applications want to be able to recover as fast as possible, draining all the pending backlog and catching up with the producers in the shortest time.
+消费应用希望能尽快恢复，在最短时间内耗尽待处理的 Backlog 并追赶上生产者。</li>
+</ul>
+</li>
+<li>The ability to avoid performance degradation and isolate workloads.
+避免性能下降以及隔离负载的能力。
+
+<ul>
+<li>Producing applications need to be decoupled and isolated from consuming applications and also from different, unrelated topics in the same cluster.
+生产应用需要与消费应用以及同一集群中的不同的、不相关的主题解耦并隔离。</li>
+</ul>
+</li>
+</ol>
+
+
+<p>The size of the backlog is 512 GBs. It is larger than the RAM available in the nodes in order to simulate the case where the entire data does not fit in cache and the storage systems are forced to read from disk.</p>
+
+<p>Backlog 的大小为 512 GB，这比节点中的可用 RAM 要大，以便模拟整个数据不适合缓存并迫使存储系统从磁盘读取的情况。</p>
+
+<p>驱动文件：<a href="https://github.com/openmessaging/benchmark/blob/master/driver-pulsar/pulsar.yaml">pulsar.yaml</a>, <a href="https://github.com/openmessaging/benchmark/blob/master/driver-kafka/kafka-latency.yaml">kafka-latency.yaml </a></p>
+
+<p>负载文件：<a href="https://github.com/openmessaging/benchmark/blob/master/workloads/1-topic-100-partitions-1kb-4p-4c-200k-backlog.yaml">1-topic-100-partitions-1kb-4p-4c-200k-backlog.yaml</a></p>
+
+<h4>a. Test #3 Results: Catch-up Reads - 测试 #3 结果: 追赶读（Catch-up Read）</h4>
+
+<p><img src="https://lh4.googleusercontent.com/ZXs516DjnDK9ImA3LJyBYF-uq886y7HIqtgNGY_VAqA_J-F5wIXUySyIT7lWIDUMu6w78JiTPPjWdoFo6ft4gvgdnJ2V2CTMhewyT1-RFGTHY7b5RaIVeFVvFeneRN95LlzXW72mkaf3MhE9pBEekQ" alt="img" /></p>
+
+<table>
+<thead>
+<tr>
+<th>                       </th>
+<th> 禁用 Journaling 情况下的 Apache Pulsar </th>
+<th> 启用 Journaling 情况下的 Apache Pulsar (默认) </th>
+<th> Apache Kafka </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 最大读取吞吐量 (GB/s) </td>
+<td> 3.2GB/s                                </td>
+<td> 3.1GB/s                                       </td>
+<td> 2GB/s        </td>
+</tr>
+</tbody>
+</table>
+
+
+<p><em>Figure 5a: Catch-up read throughput (msgs/s): Higher is better.</em></p>
+
+<p><em>图 5a：追赶读的吞吐量 (msgs/s)：数值越高，代表性能越好。</em></p>
+
+<p><img src="https://lh3.googleusercontent.com/FZU3MTk9WsFZH9JaxS7R7AvfDwiElrC3pC5EcSgorPpIhqgM9ABIHFdGlTaT6ApWU0luLbeP3G-W8YcIW2BeahaMAZsajLzOAH2uyj6c8YRzMiy-mV2-t-Eu_GSKHBocGGhlRbz4uOjlvtugm3GMvA" alt="img" /></p>
+
+<table>
+<thead>
+<tr>
+<th>              </th>
+<th> 禁用 Journaling 情况下的 Apache Pulsar </th>
+<th> 启用 Journaling 情况下的 Apache Pulsar (默认) </th>
+<th> Apache Kafka </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 追赶时间 (s) </td>
+<td> 230                                    </td>
+<td> 260                                           </td>
+<td> 460          </td>
+</tr>
+</tbody>
+</table>
+
+
+<p><em>Figure 5b: Catch-up read chase time (seconds): Shorter is better.</em></p>
+
+<p><em>图 5b：追赶读取时间 (秒)：数值越短，代表性能越好。</em></p>
+
+<p><img src="https://lh5.googleusercontent.com/nYp_fgYMlLTlH5o_smMmQQuhKn8T4ZCARKpWzMFA9o0AewIFb7faXzmVZp8pkZGwk5iMwbl87XPrJX-kWbFWrdnR0HGP5snh6O6wCNzu75-Vaf-v6BNNgwjDgtROl2ArI-sCoV5IMXvcq21QdtKgTw" alt="img" /></p>
+
+<table>
+<thead>
+<tr>
+<th>                     </th>
+<th> 禁用 Journaling 情况下的 Apache Pulsar </th>
+<th> 启用 Journaling 情况下的 Apache Pulsar (默认) </th>
+<th> Apache Kafka </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> P99 发布延迟 (毫秒) </td>
+<td> 最高可达 2.5                           </td>
+<td> 最高可达 21                                   </td>
+<td> 最高可达 380 </td>
+</tr>
+</tbody>
+</table>
+
+
+<p><em>Figure 5c: Impact publish latency during catchup read (ms): Lower is better.</em></p>
+
+<p><em>图 5c：追赶读期间对发布延迟的影响 (毫秒)：数值越低，代表越好。</em></p>
+
+<h4>b. Test #3 Analysis - 测试 #3 分析</h4>
+
+<p>The test shows that Pulsar consumers are able to drain the backlog of data ~2.5x faster than Kafka consumers, without impacting the performance of the connected producers.</p>
+
+<p>测试表明 Pulsar 消费者能够比 Kafka 消费者快约 2.5 倍耗尽 Backlog，而不会影响相关生产者的性能。</p>
+
+<p>With Kafka, the test showed that while the consumers are catching up, the producers are heavily impacted, with 99% latencies up to ~700 milliseconds and consequent throughput reductions.</p>
+
+<p>而对于 Kafka，测试表明当消费者赶上时，生产者受到了严重影响，其 99% 延迟高达约 700 毫秒，吞吐量也因此降低。</p>
+
+<p>The increase in latency is caused by the contention on the OS page cache used by Kafka. When the size of the backlog of data exceeds the RAM available in the Kafka broker, the OS will start to evict pages from the cache. This causes page cache misses that stop the Kafka threads. When there are enough producers and consumers in a broker, it becomes easy to end up in a “cache-thrashing” scenario, where time is spent paging data in from the disk and evicting it from the cache soon after.</p>
+
+<p>这种延迟的增加是由于 Kafka 所使用的操作系统页缓存的争用引起的。当 Backlog 大小超过 Kafka Broker 中的可用 RAM 时，操作系统会从缓存中逐出页。这会导致页缓存未命中，从而停止 Kafka 线程。当 Broker 中有足够多的生产者和消费者时，就会很容易陷入“缓存抖动”场景，时间就会花在从磁盘中缓存数据而很快又将其从缓存中逐出。</p>
+
+<p>In contrast, Pulsar with BookKeeper adopts a more sophisticated approach to write and read operations. Pulsar does not rely on the OS page cache because BookKeeper has its own set of write and read caches, for which the eviction and pre-fetching are specifically designed for streaming storage use cases.</p>
+
+<p>相比之下，Pulsar 底层的 BookKeeper 采用更巧妙的方式来执行写入和读取操作。Pulsar 并不依赖操作系统页缓存，因为 BookKeeper 有自己的一组写入和读取缓存，其逐出和预读都是专门为流式存储场景特别设计的。</p>
+
+<p>This test demonstrates the degradation that consumers can cause in a Kafka cluster. This impacts the performance of the Kafka cluster and can lead to reliability problems.</p>
+
+<p>测试表明在 Kafka 集群中消费者可能导致降级。这会影响 Kafka 集群的性能，并可能导致可靠性问题。</p>
+
+<h2>Conclusion - 总结</h2>
+
+<p>The benchmark demonstrates Apache Pulsar’s ability to provide high performance across a broad range of use cases. In particular, Pulsar provides better and more predictable performance, even for the use cases that are generally associated with Kafka, such as large volume streaming data over partitioned topics. Key highlights on the Pulsar versus Kafka performance comparison include:</p>
+
+<p>本次基准测试展示了在广泛的测试场景中 Apache Pulsar 均有能力提供高性能。特别是，即使面对通常与 Kafka 相关的场景，例如分区主题上的大量流数据，Pulsar 也能提供更高和更可预测的性能。Pulsar 与 Kafka 性能对比的主要亮点包括：</p>
+
+<ol>
+<li><p>Pulsar provides 99pct write latency <strong>&lt;1.6ms</strong> without journal, and <strong>&lt;8ms</strong> with journal for fixed 500MB/s write throughput. The latency profile does not degrade at the higher quantiles, while Kafka latency quickly spikes up to 100s of milliseconds.
+在固定 500MB/s 的写入吞吐量情况下，Pulsar 在禁用 Journal 情况下提供 <strong>&lt;1.6ms</strong> 的 99 百分位写入延迟，在启用 Journal 情况下则为 <strong>&lt;8ms</strong>。在高百分位下，Pulsar 的延迟也仅轻微增加没有降级，而 Kafka 的延迟则快速飙升至 100 毫秒。</p></li>
+<li><p>Pulsar can prove up to <strong>3.2 GB/s</strong> historical data read throughput, <strong>60% more</strong> than Kafka which can only achieve 2.0 GB/s.
+Pulsar 可以达到高达 <strong>3.2 GB/s</strong> 的历史数据读取吞吐量，比只能达到 2.0 GB/s 的 Kafka 高出 <strong>60%</strong>。</p></li>
+<li><p>During historical data reading, Pulsar’s I/O isolation provides a low and consistent publish latency, <strong>2 orders of magnitude lower</strong> than Kafka. This ensures that the real-time data stream will not be affected when reading historical data.
+在历史数据读取过程中，Pulsar 的 I/O 隔离特性提供了稳定的低发布延迟，比 Kafka <strong>低 2 个数量级</strong>。这保证了在读取历史数据时实时数据流不受影响。</p></li>
+</ol>
+
+
+<h3>Pulsar: Unified Messaging &amp; Streaming, and the Future - Pulsar：统一的消息 &amp; 流处理系统，及其未来</h3>
+
+<p>While Pulsar is often adopted for streaming use cases, it also provides a superset of features and is widely adopted for message queuing use cases and for use cases that require unified messaging and streaming capabilities. This benchmark did not cover the message queuing capabilities of Pulsar, but you can learn more in the <em>Pulsar Launches 2.8.0, Unified Messaging and Streaming</em> <a href="https://hubs.ly/Q016_Wjd0">blog</a>.</p>
+
+<p>虽然 Pulsar 常被用于流处理场景，但它同时还提供了许多其他特性并广泛用于消息队列场景，以及需要统一的消息和流处理能力的场景。本基准测试并未涵盖 Pulsar 的消息队列功能，但您可以在<a href="https://mp.weixin.qq.com/s/_WOkJCAnzu8JYyhVkaMGIA">Pulsar 2.8.0 新增特性概览：独占 Producer、事务等</a>、<a href="https://mp.weixin.qq.com/s/BuXbBmjyX9qMlgSMPhUK-w">Apache Pulsar 里程碑简史：打造统一消息流平台与生态</a>中了解更多。</p>
+
+<p>Beyond the development of Pulsar’s capabilities, the Pulsar ecosystem continues to expand. Protocol handlers allow for Pulsar brokers to natively communicate via other protocols, such as Kafka and RabbitMQ, enabling teams to easily integrate existing applications with Pulsar. Integrations with Apache Pinot, Delta Lake, Apache Spark, and Apache Flink have allowed teams to make Pulsar the ideal choice to help teams use one technology across both the data and application tiers.</p>
+
+<p>除了对功能的开发，Pulsar 的生态系统也在不断壮大。协议处理器允许 Pulsar Broker 与 Kafka 和 RabbitMQ 等其他协议天然地进行通信，使得团队能够轻松地将现有应用与 Pulsar 集成。与 Apache Pinot、Delta Lake、Apache Spark 和 Apache Flink 的集成使得 Pulsar 成为团队跨数据层和应用层的一站式技术的理想选择。</p>
+
+<p> For more on Pulsar, check out the resources below.</p>
+
+<p>有关 Pulsar 的更多信息，请查看以下资源。</p>
+
+<h3>Want to Learn More? - 想了解更多？</h3>
+
+<ol>
+<li>To learn more about Apache Pulsar use cases, check out this <a href="https://hubs.ly/Q016_NhQ0">page</a>.
+要了解更多 Apache Pulsar 用户案例，请查看此<a href="https://hubs.ly/Q016_NhQ0">页面</a>。</li>
+<li><a href="https://hubs.ly/Q016_Wgd0">Sign up</a> for the monthly StreamNative Newsletter for Apache Pulsar.
+<a href="https://hubs.ly/Q016_Wgd0">订阅</a>月度 StreamNative Newsletter for Apache Pulsar。</li>
+</ol>
+
+
+<h3>References - 参考资料</h3>
+
+<p>[1] <a href="https://hubs.ly/Q016_P830">Linux Foundation Open Messaging 基准测试套件</a>: <a href="https://hubs.ly/Q016_P830">http://openmessaging.cloud/docs/benchmarks/</a></p>
+
+<p>[2] <a href="https://hubs.ly/Q016_PcP0">Open Messaging Benchmark Github 代码库</a>: <a href="https://hubs.ly/Q016_PcP0">https://github.com/openmessaging/benchmark</a></p>
+
+<p>[3] <a href="https://hubs.ly/Q016_Ph50">更准确地了解 Pulsar 性能</a>:<a href="https://hubs.ly/Q016_Ph50">https://streamnative.io/blog/tech/2020-11-09-benchmark-pulsar-kafka-performance/</a></p>
+]]></content>
+  </entry>
+  
+</feed>

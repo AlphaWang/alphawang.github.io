@@ -1,0 +1,686 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Alpha's Programming Notes</title>
+  <meta name="author" content="Alpha Wang">
+
+  
+  <meta name="description" content="本文可能是全网最好的对比 Kafka 与 Pulsar 的文章之一。 翻译自 https://learning.oreilly.com/library/view/apache-pulsar-versus/9781492076551/ch01.html#what_is_apache_pulsar ， &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://alphawang.github.io">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <link href="/atom.xml" rel="alternate" title="Alpha's Programming Notes" type="application/atom+xml">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="./javascripts/libs/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="//fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="//fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<script>
+function addBlankTargetForLinks () {
+  $('a[href^="http"]').each(function(){
+      $(this).attr('target', '_blank');
+  });
+}
+
+$(document).bind('DOMNodeInserted', function(event) {
+  addBlankTargetForLinks();
+});
+</script>
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-54659411-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+<script type="text/javascript" src="/fancybox/jquery.fancybox.pack.js"></script>
+
+<script language="Javascript" type="text/javascript">
+$(document).ready(
+  function() {
+    (function($) {
+      $(".fancybox[data-content-id]").each(function() {
+        this.href = $(this).data('content-id');
+      });
+      $(".fancybox").fancybox({
+        beforeLoad: function() {
+          var el, 
+              id = $(this.element).data('title-id');
+
+          if (id) {
+            el = $('#' + id);
+
+            if (el.length) {
+              this.title = el.html();
+            }
+          }
+          if ($(this).data('content')) {
+            this.content = $(this).data('content');
+          }
+        },
+        helpers: {
+          title: {
+            type: 'inside'
+          }
+        }
+      });
+    })(jQuery);
+  }
+);
+</script>
+
+</head>
+
+<body   >
+  <header role="banner"><hgroup>
+  <h1><a href="/">AlphaWang.com</a></h1>
+  
+    <h2>Alpha's Programming Notes | 一个程序员的日常</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation"><ul class="subscription" data-subscription="rss">
+  <li><a href="/atom.xml" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  
+</ul>
+  
+<form action="https://www.google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:alphawang.github.io" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/tag-cloud/">Tags</a></li>
+  <li><a href="/photography/">Photo</a></li>
+  <li><a href="/about/">About</a></li>
+</ul>
+
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2022-08-17T21:35:10+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2022</span></span> <span class='time'>9:35 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>本文可能是全网最好的对比 Kafka 与 Pulsar 的文章之一。</p>
+
+<ul>
+<li><p>翻译自 <a href="https://learning.oreilly.com/library/view/apache-pulsar-versus/9781492076551/ch01.html#what_is_apache_pulsar">https://learning.oreilly.com/library/view/apache-pulsar-versus/9781492076551/ch01.html#what_is_apache_pulsar</a> ，原作者 Chris Bartholomew。</p></li>
+<li><p>如有错漏，欢迎提 PR 至 <a href="https://github.com/AlphaWang/Translation-Apache-Pulsar-Versus-Apache-Kafka">https://github.com/AlphaWang/Translation-Apache-Pulsar-Versus-Apache-Kafka</a></p></li>
+</ul>
+</blockquote>
+
+<p>Apache Kafka 是一种广泛使用的发布订阅（pub-sub）消息系统，起源于 LinkedIn，并于 2011 年成为 Apache 软件基金会（ASF）项目。而近年来，Apache Pulsar 逐渐成为 Kafka 的重要替代品，原本被 Kafka 占据的使用场景正越来越多地转向 Pulsar。在本报告中，我们将回顾 Kafka 与 Pulsar 之间的主要区别，并深入了解 Pulsar 为何势头如此强劲。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/kafka-versus-pulsar/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/pulsar-load-balancing/">详解 Pulsar Broker 负载均衡</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2022-08-14T18:30:10+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>14</span><span class='date-suffix'>th</span>, <span class='date-year'>2022</span></span> <span class='time'>6:30 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>本文翻译自 StreamNative 博客《Achieving Broker Load Balancing with Apache Pulsar》
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew">https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew</a></p></blockquote>
+
+<p>In this blog, we talk about the importance of load balancing in distributed computing systems and provide a deep dive on how Pulsar handles broker load balancing. First, we’ll cover Pulsar’s topic-bundle grouping, bundle-broker ownership, and load data models. Then, we&rsquo;ll walk through Pulsar’s load balancing logic with sequence diagrams that demonstrate bundle assignment, split, and shedding. By the end of this blog, you’ll understand how Pulsar dynamically balances brokers.</p>
+
+<p>本文将探讨负载均衡在分布式计算系统中的重要性，并深入分析 Pulsar 处理 Broker 负载均衡的方式。首先我们介绍 Pulsar 中的 Topic-Bundle 分组、Bundle-Broker 归属关系以及负载数据模型。然后讲解 Pulsar 的负载均衡逻辑，通过时序图来展示 Bundle 的分配、拆分和缩减过程。通过本文，你将了解 Pulsar Broker 是如何做到动态均衡的。</p>
+
+<p>Before we dive into the details of Pulsar’s broker load balancing, we&rsquo;ll briefly discuss the challenges of distributed computing, and specifically, systems with monolithic architectures.</p>
+
+<p>在深入探讨 Pulsar Broker 负载均衡的细节之前，我们先简要讨论分布式计算的挑战，特别是单体架构系统的挑战。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/pulsar-load-balancing/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/flip/">What the FLiP Is the FLiP Stack?</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2022-06-07T23:17:09+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>7</span><span class='date-suffix'>th</span>, <span class='date-year'>2022</span></span> <span class='time'>11:17 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>本文翻译自 StreamNative 博客《What the FLiP is the FLiP Stack?》<br/>
+- 原文链接：<a href="https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/">https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/</a><br/>
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/KoigahiZ2sTG-GhD2fG0Fw">https://mp.weixin.qq.com/s/KoigahiZ2sTG-GhD2fG0Fw</a></p></blockquote>
+
+<p>In this article on the FLiP Stack, we will explain how to build a real-time event driven application using the latest open source frameworks. We will walk through building a Python IoT application utilizing Apache Pulsar, Apache Flink, Apache Spark, and Apache NiFi. You will see how quickly we can build applications for a plethora of use cases. The easy, fast, scalable way: The FLiP Way.</p>
+
+<p>本文将介绍 FLiP 技术栈，我们将解释如何使用最新的开源框架构建实时事件驱动应用程序，并介绍如何通过 Apache Pulsar、Apache Flink、Apache Spark 和 Apache NiFi 构建一个 Python IoT 应用。得益于 FLiP 的简单、快速、可扩展的特性，使用 FLiP 可以快速地为各种场景构建应用程序。</p>
+
+<p>The FLiP Stack is a number of open source technologies that work well together. FLiP is a best practice pattern for building a variety of streaming data applications. The projects in the stack are dictated by the needs of that use case; the available technologies in the builder’s current stack; and the desired end results. As we shall see, there are several variations of the FLiP stack built upon the base of Apache Flink and Apache Pulsar.</p>
+
+<p>FLiP 技术栈由许多可协同工作的开源技术组成，是构建各种流数据应用程序的最佳实践模式。FLiP 技术栈包含哪些项目并不是固定的，而是由特定场景的需求、团队当前掌握的技术栈、以及期望的最终结果决定。建立在 Apache Flink 和 Apache Pulsar 基础上的 FLiP 技术栈有很多变体。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/flip/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/bookkeepr-external-consensus/">Apache BookKeeper 外部共识和动态成员</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2022-05-29T14:33:50+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>29</span><span class='date-suffix'>th</span>, <span class='date-year'>2022</span></span> <span class='time'>2:33 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>本文翻译自 《Apache BookKeeper Insights Part 1 — External Consensus and Dynamic Membership》，作者 Jack Vanlightly<br/>
+- 原文链接：<a href="https://medium.com/splunk-maas/apache-bookkeeper-insights-part-1-external-consensus-and-dynamic-membership-c259f388da21">https://medium.com/splunk-maas/apache-bookkeeper-insights-part-1-external-consensus-and-dynamic-membership-c259f388da21</a><br/>
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/i2CzmL8k2EKbjxNlW0OG6w">https://mp.weixin.qq.com/s/i2CzmL8k2EKbjxNlW0OG6w</a></p></blockquote>
+
+<p>The BookKeeper replication protocol is pretty interesting, it’s quite different to other replication protocols that people are used to in the messaging space such as Raft (RabbitMQ Quorum Queues, Red Panda, NATS Streaming) or the Apache Kafka replication protocol. But being different means that people often don’t understand it fully and can either get tripped up when it behaves in a way they don’t expect or not use it to its full potential.</p>
+
+<p>BookKeeper 复制协议非常有趣，它与人们在消息领域习惯使用的其他复制协议大不相同，例如 RabbitMQ Quorum Queues、Red Panda 及 NATS Streaming 使用的 Raft 协议和 Apache Kafka 使用的复制协议。但与众不同意味着人们往往无法完全掌握 BookKeeper 的各项玩法，例如当 BookKeeper 的运行方式不符合预期时不知如何解决，又或是没能充分利用 BookKeeper 的各项优势功能。</p>
+
+<p>This series aims to help people understand some fundamental insights into what makes BookKeeper different and also dig into some of the nuances of the protocol. We’ll dig into the “why” the protocol is the way it is and also some of the ramifications of those design decisions.</p>
+
+<p>本系列文章旨在帮助大家了解那些使 BookKeeper 与众不同的一些基本见解，详细分析该协议的一些细微差别。我们将深入研究 BookKeeper 复制协议背后的设计考量，以及这些设计决策所带来的结果。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/bookkeepr-external-consensus/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/pulsar-kafka-benchmark/">2022 Pulsar Performance Report: Better Performance and Data Resiliency With Apache Pulsar</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2022-05-01T23:17:09+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2022</span></span> <span class='time'>11:17 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>本文译自 StreamNatvie 官方发布的《2022 Pulsar 性能测试报告》</p></blockquote>
+
+<p>As we move into 2022, the Apache PulsarTM versus Apache KafkaⓇ debate continues. Organizations often make comparisons based on features, capabilities, size of the community, and a number of other metrics of varying importance. This report focuses purely on comparing the technical performance based on benchmark tests.</p>
+
+<p>进入 2022 年，人们对 Apache Pulsar<sup>TM</sup> 与 Apache Kafka<sup>Ⓡ </sup>的争论仍在持续。大家通常会对比二者的特性、能力、社区规模以及其他一系列重要性各异的指标。本报告则侧重于基于基准测试对比二者的技术性能。</p>
+
+<p>The last widely published <a href="https://hubs.ly/Q0179KpD0">Pulsar versus Kafka benchmark</a> was performed in 2020, and a lot has happened since then. In 2021, Pulsar ranked as a <a href="https://hubs.ly/Q01701DL0">Top 5 Apache Software Foundation</a> project and <a href="https://hubs.ly/Q01701DW0">surpassed Apache Kafka</a> in monthly active contributors as shown in the chart below. Pulsar also averaged more monthly active contributors than Kafka for most of the past 18 months.</p>
+
+<p>上一次广泛发布的 <a href="https://hubs.ly/Q0179KpD0">Pulsar 与 Kafka 基准测试</a>是在 2020 年进行的，而此后发生了很多事情。2021 年，Pulsar 被评为 <a href="https://hubs.ly/Q01701DL0">[Apache 软件基金会 Top 5 活跃提交项目]</a>，并在月度活跃贡献者数目上<a href="https://hubs.ly/Q01701DW0">力压 Apache Kafka</a>，如下图所示。在过去 18 个月中，大部分时间 Pulsar 的平均月度活跃贡献者都超越了 Kafka。</p>
+
+<p><img src="https://lh4.googleusercontent.com/D1Rw8-ZiGNxyE9RgMyhUUEmx5Qb0C7T-8uabXTu_e8NUir_LKqcAErCAvvAi-fS0oWY2JOIswsE6wh5uAs6sBlgqx0fuXyau_yps8tvFPdwE8WTbVAppfiXXiochESpcCk67n8fLSPTK7vkpmMZ7nw" alt="img" /></p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/pulsar-kafka-benchmark/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/kop-offset/">Offset Implementation in Kafka-on-Pulsar</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2022-04-21T18:30:10+08:00'><span class='date'><span class='date-month'>Apr</span> <span class='date-day'>21</span><span class='date-suffix'>st</span>, <span class='date-year'>2022</span></span> <span class='time'>6:30 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>本文翻译自《Offset Implementation in Kafka-on-Pulsar》<br/>
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/JXLquQkJFAzu8uw_lJaIcg">https://mp.weixin.qq.com/s/JXLquQkJFAzu8uw_lJaIcg</a></p></blockquote>
+
+<p><a href="https://github.com/apache/pulsar/wiki/PIP-41%3A-Pluggable-Protocol-Handler">Protocol handlers</a> were introduced in Pulsar 2.5.0 (released in January 2020) to extend Pulsar’s capabilities to other messaging domains. By default, Pulsar brokers only support Pulsar protocol. With protocol handlers, Pulsar brokers can support other messaging protocols, including Kafka, AMQP, and MQTT. This allows Pulsar to interact with applications built on other messaging technologies, expanding the Pulsar ecosystem.</p>
+
+<p><a href="https://github.com/apache/pulsar/wiki/PIP-41%3A-Pluggable-Protocol-Handler">协议处理器</a> 是 2020 年一月份发布的 Pulsar 2.5.0 所引入的新功能，目的是将 Pulsar 的能力扩展到其他消息领域。默认情况下 Pulsar Broker 仅支持 Pulsar 协议。而通过协议处理器，Pulsar Broker 就可以支持其他消息协议，包括 Kafka、AMQP 以及 MQTT（现已新增 RocketMQ）。这使得 Pulsar 可以与基于其他消息技术的应用进行交互，从而扩展 Pulsar 生态系统。</p>
+
+<p><a href="https://github.com/streamnative/kop">Kafka-on-Pulsar (KoP)</a> is a protocol handler that brings native Kafka protocol into Pulsar. It enables developers to publish data into or fetch data from Pulsar using existing Kafka applications without code change. KoP significantly lowers the barrier to Pulsar adoption for Kafka users, making it one of the most popular protocol handlers.</p>
+
+<p><a href="https://github.com/streamnative/kop">Kafka-on-Pulsar (KoP)</a> 就是一种协议处理协议，它将原生 Kafka 协议引入了 Pulsar，使得开发人员能够使用现有的 Kafka 应用将数据发布到 Pulsar 或从 Pulsar 读取数据，而无需更改代码。KoP 极大降低了 Kafka 用户使用 Pulsar 的壁垒，这让 KoP 成为最受欢迎的协议处理器之一。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/kop-offset/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-12-23T17:20:44+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>23</span><span class='date-suffix'>rd</span>, <span class='date-year'>2019</span></span> <span class='time'>5:20 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Resilience4j is a widely-used library which inspired by Hystrix, it helps with building fault tolerance distributed systems. We are using its circuit breakder module to prevent a cascade of failures when a remote service is down.</p>
+
+<p>You can implement a circuit break based on <a href="https://resilience4j.readme.io/docs/examples">the official manual</a>, and you may want to verify if it works well or not after . Here&rsquo;re some tips</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/clean-code/">Clean Code Summary</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-08-16T17:46:12+08:00'><span class='date'><span class='date-month'>Aug</span> <span class='date-day'>16</span><span class='date-suffix'>th</span>, <span class='date-year'>2019</span></span> <span class='time'>5:46 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>2019年在大团队内部组织了一个 Study Group，主要目的是一起学习、一起分享、一起成长；上个季度我们的一项重点是完成了《Clean Code》这本书的拆解和分享，本文是对其中最后一章的一个总结。其实最后一章是对全书的总结，随意本文也可以近似看成是对全书的总结吧。</p>
+
+<p>原始总结请参考 <a href="https://github.com/AlphaWang/alpha-book-clean-code/tree/master/17_smells_heuristics">https://github.com/AlphaWang/alpha-book-clean-code/tree/master/17_smells_heuristics</a></p></blockquote>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/clean-code/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/redis-mind-map/">Redis Mind Map</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-05-01T22:57:45+08:00'><span class='date'><span class='date-month'>May</span> <span class='date-day'>1</span><span class='date-suffix'>st</span>, <span class='date-year'>2019</span></span> <span class='time'>10:57 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>最近梳理了下 Redis 知识图谱，画了个脑图，涵盖了 Redis 数据类型、持久化机制、主从、哨兵、集群、应用及运维；具体见下图：</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/redis-mind-map/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/google-dapper-translation/">Dapper, a Large-Scale Distributed Systems Tracing Infrastructure</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2019-03-24T12:04:46+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2019</span></span> <span class='time'>12:04 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>最近在研究分布式链路跟踪系统，Google Dapper 当然是必读的论文了，目前网上能搜到一些中文翻译版，然而读下来个人感觉略生硬；这里试着在前人的肩膀上重新翻译一遍这个论文，权当是个人的学习笔记，如果同时能给其他人带来好处那就更好了。</p>
+
+<p>同时把译文放到了 github，如您发现翻译错误或者不通顺之处，恳请提交 github PR: <a href="https://github.com/AlphaWang/alpha-dapper-translation">https://github.com/AlphaWang/alpha-dapper-translation</a></p>
+
+<ul>
+<li>原文：<a href="https://ai.google/research/pubs/pub36356">https://ai.google/research/pubs/pub36356</a></li>
+<li>译文：<a href="http://alphawang.com/blog/google-dapper-translation">http://alphawang.com/blog/google-dapper-translation</a></li>
+</ul>
+</blockquote>
+
+<h2>摘要</h2>
+
+<p>现代互联网服务通常都是复杂的大规模分布式系统。这些系统由多个软件模块构成，这些软件模块可能由不同的团队开发、可能使用不同的编程语言实现、可能布在横跨多个数据中心的几千台服务器上。这种环境下就急需能帮助理解系统行为、能用于分析性能问题的工具。</p>
+
+<p>本文将介绍 Dapper 这个在 Google 生产环境下的分布式系统跟踪服务的设计，并阐述它是如何满足在一个超大规模系统上达到<strong>低损耗</strong>（low overhead）、<strong>应用级透明</strong>（application-level transparency）、<strong>大范围部署</strong>（ubiquitous deployment）这三个需求的。Dapper 与其他一些跟踪系统的概念类似，尤其是 Magpie<sup>[3]</sup> 和X-Trace<sup>[12]</sup>，但是我们进行了一些特定的设计，使得 Dapper 能成功应用在我们的环境上，例如我们使用了采样并将性能测量（instrumentation）限制在很小一部分公用库里。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/google-dapper-translation/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/posts/2">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    <section>
+ <h1>Categories</h1>
+ <ul id="categories">
+	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (8)</a></li>
+<li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
+<li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (6)</a></li>
+<li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
+<li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
+<li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (7)</a></li>
+<li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
+
+ </ul>
+</section>
+<section>
+<h1>Tags</h1>
+<ul class="tag-cloud">
+	<a style="font-size: 90%" href="/blog/tags/css/">CSS</a>
+<a style="font-size: 119%" href="/blog/tags/collection/">Collection</a>
+<a style="font-size: 171%" href="/blog/tags/design-pattern/">Design Pattern</a>
+<a style="font-size: 119%" href="/blog/tags/guava/">Guava</a>
+<a style="font-size: 171%" href="/blog/tags/jdk/">JDK</a>
+<a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
+<a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
+<a style="font-size: 210%" href="/blog/tags/java/">Java</a>
+<a style="font-size: 119%" href="/blog/tags/kafka/">Kafka</a>
+<a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
+<a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
+<a style="font-size: 164%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
+<a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
+<a style="font-size: 119%" href="/blog/tags/site/">Site</a>
+<a style="font-size: 119%" href="/blog/tags/solr/">Solr</a>
+<a style="font-size: 164%" href="/blog/tags/source-code/">Source Code</a>
+<a style="font-size: 90%" href="/blog/tags/spring-mvc/">Spring MVC</a>
+<a style="font-size: 119%" href="/blog/tags/spring-solr/">Spring Solr</a>
+<a style="font-size: 136%" href="/blog/tags/string/">String</a>
+<a style="font-size: 119%" href="/blog/tags/tool/">Tool</a>
+<a style="font-size: 119%" href="/blog/tags/web/">Web</a>
+<a style="font-size: 90%" href="/blog/tags/ajax/">ajax</a>
+<a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
+<a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
+<a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
+<a style="font-size: 176%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 164%" href="/blog/tags/messaging/">messaging</a>
+<a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
+<a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
+<a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
+<a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
+<a style="font-size: 164%" href="/blog/tags/translation/">translation</a>
+<a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
+<a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
+
+</ul>
+</section>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    
+      <li class="post">
+        <a href="/blog/kafka-versus-pulsar/">Apache Pulsar 与 Apache Kafka 之对比分析</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/pulsar-load-balancing/">详解 Pulsar Broker 负载均衡</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/flip/">What the FLiP Is the FLiP Stack?</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/bookkeepr-external-consensus/">Apache BookKeeper 外部共识和动态成员</a>
+      </li>
+    
+      <li class="post">
+        <a href="/blog/pulsar-kafka-benchmark/">2022 Pulsar Performance Report: Better Performance and Data Resiliency With Apache Pulsar</a>
+      </li>
+    
+  </ul>
+</section>
+
+<section>
+  <h1>Links</h1>
+  <ul id="recent_posts">
+    <li class="post"><a href="https://alpha.blog.csdn.net/">Alpha's CSDN Blog</a></li>
+    <li class="post"><a href="https://github.com/AlphaWang/">Alpha's Github</a></li>
+  </ul>
+</section><section>
+  <h1>Visitors Map</h1>
+  <div class="earth">
+    <script type="text/javascript" src="//ri.revolvermaps.com/0/0/8.js?i=awaok66hddi&amp;m=0&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=49" async="async"></script>
+  </div>
+</section>
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2022 - Alpha Wang -
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+  <script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_1253224710'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s5.cnzz.com/z_stat.php%3Fid%3D1253224710%26show%3Dpic' type='text/javascript'%3E%3C/script%3E"));</script>
+</p>
+
+</footer>
+  
+
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
