@@ -9,7 +9,16 @@
   <meta name="author" content="Alpha Wang">
 
   
-  <meta name="description" content="Please ref to the demo code: git clone https://github.com/AlphaWang/guava-demo.git Many of Guava&rsquo;s utilities are designed to fail fast in the &hellip;">
+  <meta name="description" content="下图展示了JVM的主要结构： 可以看出，JVM主要由以下几部分组成：
+- 类加载器子系统
+- 运行时数据区（内存空间）
+- 执行引擎
+- 本地方法接口 运行时数据区又分为：
+1. 程序计数器
+2. Java栈
+3. 本地方法栈
+4. 方法区
+5. 堆 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -127,6 +136,92 @@ $(document).ready(
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/jmm-runtime-data-area/">JMM: Java Runtime Data Area</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2018-06-03T14:00:40+08:00'><span class='date'><span class='date-month'>Jun</span> <span class='date-day'>3</span><span class='date-suffix'>rd</span>, <span class='date-year'>2018</span></span> <span class='time'>2:00 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>下图展示了JVM的主要结构：
+<img src="/images/post/2018/jmm/runtime-data-area.png" alt="user icon" /></p>
+
+<p>可以看出，JVM主要由以下几部分组成：
+- 类加载器子系统
+- 运行时数据区（内存空间）
+- 执行引擎
+- 本地方法接口</p>
+
+<p>运行时数据区又分为：
+1. 程序计数器
+2. Java栈
+3. 本地方法栈
+4. 方法区
+5. 堆</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/jmm-runtime-data-area/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/google-guava-collections/">Google Guava: 2. Collections</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2015-03-24T14:00:40+08:00'><span class='date'><span class='date-month'>Mar</span> <span class='date-day'>24</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:00 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><blockquote><p>Please ref to the demo code: <code>git clone https://github.com/AlphaWang/guava-demo.git</code></p></blockquote>
+
+<p>The Guava library has its history rooted in working with collections, starting out as <code>google-collections</code>. The Google Collections Library has long since been abandoned, and all the functionality from the original library has been merged into Guava.</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/google-guava-collections/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
   
   
     <article>
@@ -445,77 +540,6 @@ $(document).ready(
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/how-to-implement-a-hashmap/">How to Implement a HashMap</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-11-17T19:24:35+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:24 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>作为一个Java开发民工，对<code>HashMap</code>可以说是经常使用的，不过要是想更好地使用它，还是需要了解其内部实现原理的。当了解了实现原理后，自己实现一个HashMap也就不难了。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/how-to-implement-a-hashmap/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/collection-map-uml%20copy/">Uml Class Diagram of Collection and Map</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2014-11-15T14:05:15+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:05 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>网络上能搜到很多Java集合类的UML类图，但是大多不够明晰；所以我之前自己绘制了一份，在这里贴出来：</p>
-
-<p><img src="/images/post/2014/11/collection.jpg" alt="collection icon" /></p>
-
-<p><img src="/images/post/2014/11/map.jpg" alt="map icon" /></p>
-
-<blockquote><p>btw, 这些图是用astah绘制的，这是个很好用的软件，推荐一下。官网：<a href="http://astah.net/editions/community">http://astah.net/editions/community</a></p></blockquote>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/3">&larr; Older</a>
@@ -532,14 +556,14 @@ $(document).ready(
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (6)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (8)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
-<li class='category'><a href='/blog/categories/messaging/'>messaging (4)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (6)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
-<li class='category'><a href='/blog/categories/translation/'>translation (5)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (7)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -555,10 +579,10 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
 <a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
 <a style="font-size: 210%" href="/blog/tags/java/">Java</a>
-<a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
+<a style="font-size: 119%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
-<a style="font-size: 148%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 164%" href="/blog/tags/pulsar/">Pulsar</a>
 <a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
@@ -573,13 +597,13 @@ $(document).ready(
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 164%" href="/blog/tags/distributed-system/">distributed system</a>
-<a style="font-size: 148%" href="/blog/tags/messaging/">messaging</a>
+<a style="font-size: 176%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 164%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
-<a style="font-size: 148%" href="/blog/tags/translation/">translation</a>
+<a style="font-size: 164%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -598,15 +622,15 @@ $(document).ready(
       </li>
     
       <li class="post">
+        <a href="/blog/flip/">What the FLiP Is the FLiP Stack?</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/bookkeepr-external-consensus/">Apache BookKeeper 外部共识和动态成员</a>
       </li>
     
       <li class="post">
-        <a href="/blog/kop-offset/">Offset Implementation in Kafka-on-Pulsar</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
+        <a href="/blog/pulsar-kafka-benchmark/">2022 Pulsar Performance Report: Better Performance and Data Resiliency With Apache Pulsar</a>
       </li>
     
   </ul>

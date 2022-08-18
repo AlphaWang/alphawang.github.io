@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Translation | Alpha's Programming Notes]]></title>
   <link href="http://alphawang.github.io/blog/categories/translation/atom.xml" rel="self"/>
   <link href="http://alphawang.github.io/"/>
-  <updated>2022-08-18T21:38:20+08:00</updated>
+  <updated>2022-08-18T23:32:14+08:00</updated>
   <id>http://alphawang.github.io/</id>
   <author>
     <name><![CDATA[Alpha Wang]]></name>
@@ -772,6 +772,347 @@ LoadBalancerNamespaceMaximumBundles = 128
   </entry>
   
   <entry>
+    <title type="html"><![CDATA[What the FLiP Is the FLiP Stack?]]></title>
+    <link href="http://alphawang.github.io/blog/flip/"/>
+    <updated>2022-06-07T23:17:09+08:00</updated>
+    <id>http://alphawang.github.io/blog/flip</id>
+    <content type="html"><![CDATA[<blockquote><p>本文翻译自 StreamNative 博客《What the FLiP is the FLiP Stack?》<br/>
+- 原文链接：<a href="https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/">https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/</a><br/>
+- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/KoigahiZ2sTG-GhD2fG0Fw">https://mp.weixin.qq.com/s/KoigahiZ2sTG-GhD2fG0Fw</a></p></blockquote>
+
+<p>In this article on the FLiP Stack, we will explain how to build a real-time event driven application using the latest open source frameworks. We will walk through building a Python IoT application utilizing Apache Pulsar, Apache Flink, Apache Spark, and Apache NiFi. You will see how quickly we can build applications for a plethora of use cases. The easy, fast, scalable way: The FLiP Way.</p>
+
+<p>本文将介绍 FLiP 技术栈，我们将解释如何使用最新的开源框架构建实时事件驱动应用程序，并介绍如何通过 Apache Pulsar、Apache Flink、Apache Spark 和 Apache NiFi 构建一个 Python IoT 应用。得益于 FLiP 的简单、快速、可扩展的特性，使用 FLiP 可以快速地为各种场景构建应用程序。</p>
+
+<p>The FLiP Stack is a number of open source technologies that work well together. FLiP is a best practice pattern for building a variety of streaming data applications. The projects in the stack are dictated by the needs of that use case; the available technologies in the builder’s current stack; and the desired end results. As we shall see, there are several variations of the FLiP stack built upon the base of Apache Flink and Apache Pulsar.</p>
+
+<p>FLiP 技术栈由许多可协同工作的开源技术组成，是构建各种流数据应用程序的最佳实践模式。FLiP 技术栈包含哪些项目并不是固定的，而是由特定场景的需求、团队当前掌握的技术栈、以及期望的最终结果决定。建立在 Apache Flink 和 Apache Pulsar 基础上的 FLiP 技术栈有很多变体。</p>
+
+<!--more-->
+
+
+<p>For some use cases like log analytics, you will need a nice dashboard for visualizing, aggregating, and querying your log data. For that one you would most likely want something like FLiPEN, as an enhancement to the <a href="https://www.elastic.co/what-is/elk-stack">ELK Stack</a>. As you can tell, FLiP+ is a moving list of acronyms for open source projects that are commonly used together.</p>
+
+<p>例如对于日志分析这种场景，通常需要清晰直观的仪表板来可视化、聚合并查询日志数据。对于这种场景，你可能需要像 FLiPEN 这样的技术，作为对 <a href="https://www.elastic.co/what-is/elk-stack">ELK 技术栈</a> 的增强。由此可以看出，FLiP+ 是一个可变的缩写，表示多种配合使用的开源项目。</p>
+
+<h2>Common Use Cases - 常见场景</h2>
+
+<p>With so many variations of the FLiP stack, it might be difficult to figure out which one is right for you. Therefore, we have provided some general guidelines for selecting the proper FLiP+ stack to use based on your use case. We already mentioned Log Analytics, which is a common use case. There are many more, driven usually by data sources and data sinks.</p>
+
+<p>由于 FLiP 技术栈的变体非常多，所以可能很难确定哪一种适合你的场景。因此，我们提供了一些通用指南，你可以根据不同的场景选择合适的 FLiP+ 技术栈。上文提到的日志分析是一种常用场景，当然还有其他更多的场景，通常由数据 source 和 sink 驱动。</p>
+
+<table>
+<thead>
+<tr>
+<th> 场景（数据）        </th>
+<th> 技术栈      </th>
+<th> 演示                                                         </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 点击流              </td>
+<td> FLiP-C      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Stream2Clickhouse">https://github.com/tspannhw/FLiP-Stream2Clickhouse</a>           </td>
+</tr>
+<tr>
+<td> IoT                 </td>
+<td> FLiP-I      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-InfluxDB">https://github.com/tspannhw/FLiP-InfluxDB</a>                    </td>
+</tr>
+<tr>
+<td> CDC                 </td>
+<td> FLiPS       </td>
+<td> <a href="https://github.com/tspannhw/FLiPS-SparkOnPulsar">https://github.com/tspannhw/FLiPS-SparkOnPulsar</a>              </td>
+</tr>
+<tr>
+<td> 统一消息            </td>
+<td> FLiP*       </td>
+<td> <a href="https://github.com/tspannhw/FLiPN-Demos">https://github.com/tspannhw/FLiPN-Demos</a>                      </td>
+</tr>
+<tr>
+<td> Lakehouse，云数据湖 </td>
+<td> FLiP        </td>
+<td> <a href="https://github.com/tspannhw/FLiP-CloudIngest">https://github.com/tspannhw/FLiP-CloudIngest</a>                 </td>
+</tr>
+<tr>
+<td> 移动应用            </td>
+<td> FLiP-M      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Mobile">https://github.com/tspannhw/FLiP-Mobile</a>                      </td>
+</tr>
+<tr>
+<td> 微服务              </td>
+<td> FLiP        </td>
+<td> <a href="https://streamnative.io/blog/engineering/2021-12-14-developing-event-driven-microservices-with-apache-pulsar/">https://streamnative.io/blog/engineering/2021-12-14-developing-event-driven-microservices-with-apache-pulsar/</a> </td>
+</tr>
+<tr>
+<td> SQL on Topics       </td>
+<td> FLiPiT      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Into-Trino">https://github.com/tspannhw/FLiP-Into-Trino</a>                  </td>
+</tr>
+<tr>
+<td> 边缘 AI             </td>
+<td> FLip-EdgeAI </td>
+<td> <a href="https://github.com/tspannhw/FLiP-EdgeAI">https://github.com/tspannhw/FLiP-EdgeAI</a>                      </td>
+</tr>
+<tr>
+<td> ETL                 </td>
+<td> FLiPS       </td>
+<td> <a href="https://github.com/tspannhw/FLiPS-SparkOnPulsar">https://github.com/tspannhw/FLiPS-SparkOnPulsar</a>              </td>
+</tr>
+<tr>
+<td> 搜索                </td>
+<td> FLiPEN      </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Elastic">https://github.com/tspannhw/FLiP-Elastic</a>                     </td>
+</tr>
+<tr>
+<td> Python 应用         </td>
+<td> FLiP-Py     </td>
+<td> <a href="https://github.com/tspannhw/FLiP-Py-Pi-GasThermal">https://github.com/tspannhw/FLiP-Py-Pi-GasThermal</a>            </td>
+</tr>
+</tbody>
+</table>
+
+
+<h2>Flink-Pulsar Integration - Flink-Pulsar 集成</h2>
+
+<p>A critical component of the FLiP stack is utilizing <a href="https://flink.apache.org/">Apache Flink</a> as a stream processing engine against Apache Pulsar data. This is enabled by the Pulsar-Flink Connector that enables developers to build Flink applications natively and stream in events from Pulsar at scale as they happen. This allows for use cases such as streaming ELT and continuous SQL on joined topic streams. SQL is the language of business that can drive event-driven, real-time applications by writing simple SQL queries against Pulsar streams with Flink SQL, including aggregation and joins.</p>
+
+<p>FLiP 技术栈的一个关键组件是利用 <a href="https://flink.apache.org/">Apache Flink</a> 作为流式处理引擎来处理 Apache Pulsar 数据。这是基于 Pulsar-Flink 连接器实现的，开发人员可以构建原生的 Flink 应用，并在事件发生时从 Pulsar 大规模地流式传输事件，适用于流式 ELT 以及在主题流上持续执行 SQL 等场景。SQL 是一种业务语言，可以通过使用 Flink SQL 编写针对 Pulsar 流的简单 SQL 查询（包括聚合和连接）来实现事件驱动的实时应用程序。</p>
+
+<p>The connector builds an elastic data processing platform enabled by Apache Pulsar and Apache Flink that is seamlessly integrated to allow full read and write access to all Pulsar messages at any scale. As a citizen data engineer or analyst you can focus on building business logic without concern about where the data is coming from or how it is stored.Check out the resources below to learn more about this connector:</p>
+
+<p>Pulsar-Flink 连接器构建了一个弹性数据处理平台，通过无缝集成 Apache Pulsar 和 Apache Flink 允许以任何规模对 Pulsar 消息进行完全读写访问。作为数据工程师或数据分析师，你可以专注于业务逻辑，而无需担心数据来源以及存储。可以通过如下资源学习更多关于 Pulsar-Flink 连接器的知识：</p>
+
+<ul>
+<li>[Blog] <a href="https://flink.apache.org/2021/01/07/pulsar-flink-connector-270.html">What&rsquo;s New in the Pulsar Flink Connector 2.7.0</a>
+[博客] <a href="https://mp.weixin.qq.com/s?__biz=MzUyMjkzMjA1Ng==&amp;mid=2247489855&amp;idx=1&amp;sn=4c45af964787ad4f881e1e69b269c13d&amp;chksm=f9c50308ceb28a1e9593d6478cf2b79b2f0c160b62b5bc1eb92bc75b9207fd46f84f54002797#rd">打造全新批流融合：详解 Apache Flink 1.14.0 发布的 Pulsar Flink Connector</a></li>
+<li>[Blog] <a href="https://streamnative.io/blog/release/2021-04-20-flink-sql-on-streamnative-cloud/">Flink SQL on StreamNative Cloud</a>
+[博客] <a href="https://mp.weixin.qq.com/s?__biz=MzUxOTc4NDc2MQ==&amp;mid=2247488114&amp;idx=1&amp;sn=3eaf397cb698eb75f76cbed34d185d53&amp;chksm=f9f50224ce828b326f0d662b321a14e4721586746945a6721a99d549bd7df18347a6229ccdd2#rd">批流一体上云：StreamNative Cloud 支持 Flink SQL</a></li>
+<li>[Code] <a href="https://github.com/tspannhw/FLiP-SQL">Streaming Analytics with Apache Pulsar and Apache Flink SQL</a>
+[代码] <a href="https://github.com/tspannhw/FLiP-SQL">使用 Apache Pulsar 和 Apache Flink SQL 进行流式分析</a></li>
+</ul>
+
+
+<h2>NiFi-Pulsar Integration - NiFi-Pulsar 集成</h2>
+
+<p>If you have been following <a href="https://streamnative.io/blog/">our blog</a>, you have seen the recent formal <a href="https://streamnative.io/blog/release/2022-03-09-cloudera-and-streamnative-announce-the-integration-of-apache-nifi-and-apache-pulsar/">announcement</a> of the Apache Pulsar processor for Apache NiFi release. We now have an official way to consume and produce messages from any Pulsar topic with the low code streaming tool that is Apache NiFi.</p>
+
+<p>近期，<a href="https://mp.weixin.qq.com/s?__biz=MzUxOTc4NDc2MQ==&amp;mid=2247488900&amp;idx=1&amp;sn=615d76f7ba33287c999ff8633ea9c419&amp;chksm=f9f505d2ce828cc494ffea9c6a2a9db6cb716301870883fa339aea9f6f021b1be42d6ad47395#rd">StreamNative 与 Cloudera 宣布推出 Apache Pulsar + Apache NiFi 联合解决方案</a>。现在我们官方支持利用 Apache NiFi 这种低代码流式工具从任何 Pulsar 主题中消费和生产消息。</p>
+
+<p>This integration allows us to build a real-time data processing and analytics platform for all types of rich data pipelines. This is the keystone connector for the democratization of streaming application development.</p>
+
+<p>利用 NiFi-Pulsar 集成，我们可以为任何数据管道构建实时数据处理和分析平台。这是流式应用程序开发平民化的关键连接器。</p>
+
+<p><img src="https://lh3.googleusercontent.com/8H8Dwfonm-kRyQIC5Ymr1tBJIevxrsiXcLwPuMrZAEJq9vHzi86_6xcN6AgO3_fPgIxoZDpRb7sWpObF8-vUjRNFdnBWHpBdQbUAbqJtP2IXhozx0MsJlimtCOPpZWKe3ERMCFua-BMuVljrY2RDeg" alt="img" />
+Read the articles below to learn more:</p>
+
+<p>若要了解更多信息，可以阅读如下文章：</p>
+
+<ul>
+<li><p>[Blog] <a href="https://streamnative.io/blog/release/2022-03-09-cloudera-and-streamnative-announce-the-integration-of-apache-nifi-and-apache-pulsar/">Cloudera and StreamNative Announce the Integration of Apache NiFi and Apache Pulsar</a>
+[博客] <a href="https://mp.weixin.qq.com/s?__biz=MzUxOTc4NDc2MQ==&amp;mid=2247488900&amp;idx=1&amp;sn=615d76f7ba33287c999ff8633ea9c419&amp;chksm=f9f505d2ce828cc494ffea9c6a2a9db6cb716301870883fa339aea9f6f021b1be42d6ad47395#rd">StreamNative 与 Cloudera 宣布推出 Apache Pulsar + Apache NiFi 联合解决方案</a></p></li>
+<li><p>[Blog] <a href="https://www.datainmotion.dev/2021/11/producing-and-consuming-pulsar-messages.html">Producing and Consuming Pulsar messages with Apache NiFi</a>
+[博客] <a href="https://www.datainmotion.dev/2021/11/producing-and-consuming-pulsar-messages.html">Producing and Consuming Pulsar messages with Apache NiFi</a></p></li>
+<li><p>[Datanami Article] <a href="https://www.datanami.com/2022/03/09/code-for-pulsar-nifi-tie-up-now-open-source/">Code for Pulsar, NiFi Tie-Up Now Open Source</a>
+[Datanami 文章] <a href="https://www.datanami.com/2022/03/09/code-for-pulsar-nifi-tie-up-now-open-source/">Code for Pulsar, NiFi Tie-Up Now Open Source</a></p></li>
+<li><p>[Resources] <a href="https://streamnative.io/apache-nifi-connector/">Pulsar and NiFi Integration Resources</a>
+[资源] <a href="https://streamnative.io/apache-nifi-connector/">Pulsar and NiFi Integration Resources</a></p></li>
+</ul>
+
+
+<h2>An Example FLiP Stack Application - FLiP 技术栈示例</h2>
+
+<p>Now that you have seen the combinations, use cases, and the basic integration, we can walk through an example FLiP Stack application. In this example, we will be ingesting sensor data from a device running a Python Pulsar application.</p>
+
+<p>上文介绍了 FLiP 的技术组合、使用场景以及基本集成，现在我们来看一个 FLiP 技术栈应用的示例。在此示例中，我们从一个运行 Python Pulsar 程序的设备中采集传感数据。</p>
+
+<h3><img src="https://lh5.googleusercontent.com/oGsyno1rf1JN7A3ympFITwpk-qfa2Yl1qkYsJewaR0qNO-SDMiBUIOayEDskUjDJICTK83ON7GuXv8Qfr0XMijdGGIecaF6jx6udJEBFPF_dUFPpJ9bvOyJ3qjF5V26uWmXA-TcM6mo3baqgUgkWKw" alt="img" />Demo Edge Hardware Specifications - 演示使用的边缘端硬件规格</h3>
+
+<ul>
+<li><p>2GB 内存的 Raspberry Pi 4</p></li>
+<li><p>Pimoroni BreakoutGarden Hat</p></li>
+<li><p>Sensiron SGP30 TVOC 及 eCO2 传感器</p>
+
+<ul>
+<li>TVOC 传感器用于 0-60,000 ppb（十亿分之几）</li>
+<li>CO2 传感器用于 400-60,000 ppm（百万分之几）</li>
+</ul>
+</li>
+</ul>
+
+
+<p><img src="https://lh3.googleusercontent.com/y38evgusXR-cOyx_1buIz_4JVytUrWd1Kvt9n9BuN6f0upQLOs8gYR2hF_B73sX7H72ZZaR1tJPIvokB-Oc1UnaS0TkOWynDbEoZX-jvTYxqn4ZMRdTgJcpEEB811gzLwDPfEBOYTz5FO_NzfccHzQ" alt="img" /></p>
+
+<h3>Demo Edge Software Specification - 演示所用的边缘端软件规格</h3>
+
+<ul>
+<li>Apache Pulsar C++ 及 Python 客户端</li>
+<li>Pimoroni <a href="https://github.com/pimoroni/sgp30-python">SGP30</a> Python 库</li>
+</ul>
+
+
+<h3>Streaming Server - 流式服务器</h3>
+
+<ul>
+<li>HP ProLiant DL360 G7 1U RackMount 64 位服务器</li>
+<li>Ubuntu 18.04.6 LTS</li>
+<li>72GB PC3 RAM</li>
+<li>X5677 Xeon 3.46GHz 24 核 CPU</li>
+<li>4×900GB 10K SAS SFF HDD</li>
+<li>Apache Pulsar 2.9.1</li>
+<li>Apache Spark 3.2.0</li>
+<li>Scala 2.12.15 (OpenJDK 64-Bit Server VM, Java 1.8.0_302)</li>
+<li>Apache Flink 1.13.2</li>
+<li>MongoDB</li>
+</ul>
+
+
+<h3>NiFi/AI Server - NiFi/AI 服务器</h3>
+
+<ul>
+<li>NVIDIA® Jetson Xavier™ NX Developer Kit</li>
+<li>AI Perf: 21 TOPS</li>
+<li>GPU: 48 Tensor Core 的 384 核 NVIDIA Volta™ GPU</li>
+<li>CPU：6 核 NVIDIA Carmel ARM®v8.2 64 位 CPU 6 MB L2 + 4 MB L3</li>
+<li>内存：8 GB 128 位 LPDDR4x 59.7GB/s</li>
+<li>Ubuntu 18.04.5 LTS (GNU/Linux 4.9.201-tegra aarch64)</li>
+<li>Apache NiFi 1.15.3</li>
+<li>Apache NiFi Registry 1.15.3</li>
+<li>Apache NiFi Toolkit 1.15.3</li>
+<li>Pulsar 处理器</li>
+<li>OpenJDK 8 and 11</li>
+<li>Jetson Inference GoogleNet</li>
+<li>Python 3</li>
+</ul>
+
+
+<h3>Building the Air Quality Sensors Application with FLiPN-Py - 使用 FLiPN-Py 构建空气质量传感器程序</h3>
+
+<p><img src="https://lh4.googleusercontent.com/QVjIhaUab8L5-jHq2YHccphBhqnohVGm8LIZb6zjcc0SOTMnCPAaNbHTGk52H0YUHthmVrlX6NaqVqZIK8kUqXDPZT9wUgGDPFmKFXyXpbiubIeT5svO5tHQqApDA54n9Yj7hXNrrpZzVhOos-Ptvw" alt="img" />In this application, we want to monitor the air quality in an office continuously and then hand off a large amount of data to a data scientist to make predictions. Once that model is done, we will add that model to a Pulsar function for live anomaly detection to alert office occupants of the situation. We will also want dashboards to monitor trends, aggregates and advanced analytics.</p>
+
+<p>在这个示例程序中，我们希望持续监测办公室的空气质量，然后将大量数据交给数据科学家进行预测。一旦该模型完成，我们会将其添加到 Puslar Function 中进行实时异常检测，发送告警给办公室人员。我们还需要仪表盘来监控趋势、进行聚合和高级分析。</p>
+
+<p>Once the initial prototype proves itself, we will deploy it to all the remote offices for monitoring internal air quality. For future enhancements, we will ingest outside air quality data as well local weather conditions.</p>
+
+<p>一旦初始的原型证明可用，我们将部署到所有远程办公室以监测内部空气质量。未来我们将持续改进，采集外部空气质量数据以及当地天气状况。</p>
+
+<p>On our edge devices, we will perform the following three steps to collect the sensor readings, format the data into the desired schema, and forward the records to Pulsar.</p>
+
+<p>我们的客户端设备执行如下三个步骤来收集传感器读数，将数据格式化为期望的 schema，并将记录发送到 Pulsar。</p>
+
+<h4>Edge Step 1: Collect Sensor Readings - 边缘端第一步：收集传感器读数</h4>
+
+<p>result = sgp30.get_air_quality()</p>
+
+<h4>Edge Step 2: Format Data According to Schema - 边缘端第二步：根据 Schema 格式化数据</h4>
+
+<pre><code>class Garden(Record):
+    cpu = Float()
+    diskusage = String()
+    endtime = String()
+    equivalentco2ppm = String()
+    host = String()
+    hostname = String()
+    ipaddress = String()
+    macaddress = String()
+    memory = Float()
+    rowid = String()
+    runtime = Integer()
+    starttime = String()
+    systemtime = String()
+    totalvocppb = String()
+    ts = Integer()
+    uuid = String()
+</code></pre>
+
+<h4>Edge Step 3: Produce Record to Pulsar Topic - 边缘端第三步：生产记录到 Pulsar 主题</h4>
+
+<pre><code>producer.send(gardenRec,partition_key=str(uniqueid))
+</code></pre>
+
+<p>Now that we have built the edge-to-pulsar ingestion pipeline, let’s do something interesting with the sensor data that we have published to Pulsar.</p>
+
+<p>现在我们构建了从边缘设备到 Pulsar 的数据采集管道，接下来我们对发布到 Pulsar 的传感器数据做一些有意思的处理。</p>
+
+<h4>Cloud Step 1: Spark ETL to Parquet Files - 云端第一步：通过 Spark ETL 转成 Parquet 文件</h4>
+
+<pre><code>val dfPulsar = 
+spark.readStream.format("pulsar")
+.option("service.url", "pulsar://pulsar1:6650")
+.option("admin.url", "http://pulsar1:8080")
+.option("topic","persistent://public/default/garden3")
+.load()
+
+val pQuery = dfPulsar.selectExpr("*")
+.writeStream
+.format("parquet")
+.option("truncate", false) 
+.option("checkpointLocation", "/tmp/checkpoint")
+.option("path", "/opt/demo/gasthermal").start()
+</code></pre>
+
+<h4>Cloud Step 2: Continuous SQL Analytics with Flink SQL - 云端第二步：使用 Flink SQL 进行持续 SQL 分析</h4>
+
+<pre><code>select equivalentco2ppm, totalvocppb, cpu, starttime, systemtime, ts, cpu, diskusage, endtime, memory, uuid from garden3;
+
+select max(equivalentco2ppm) as MaxCO2, max(totalvocppb) as MaxVocPPB from garden3;
+</code></pre>
+
+<h4>Cloud Step 3: SQL Analytics with Pulsar SQL - 云端第三步：使用 Pulsar SQL 进行 SQL 分析</h4>
+
+<pre><code>select * from pulsar."public/default"."garden3"
+</code></pre>
+
+<h4>Cloud Step 4: NiFi Filter, Route, Transform and Store to MongoDB - 云端第四步：NiFi 过滤、路由、转换并存储到 MongoDB</h4>
+
+<p><img src="https://lh5.googleusercontent.com/dMIdWijv2ULWY0VQTKdDlFBaapQmSjDxOJaPzAIg-YzwjzCkk7N3xOIioCUWqQy5XZT_yb1AgpCVSakD5nQ-LUU3kAefmSuVeh92VTtH-lMa5jZv4sVRUH77NX_-06Kh1ad3IVOqymU0cdpfqAf0ag" alt="img" /><img src="https://lh6.googleusercontent.com/_jsQxHMUvW1ph4su-zS9OBLRSIMLPLn9pNr4PY2fqebYQxHEXQB_fQ3LbNi5ofqVpuxXiIswwkZzuYjfto0AyUY2KOQMCLjUIj88mdl-DcI9SXhX3e-a83rohIhgdjGBwG2YzIS_vFnJvZRf0eKp5w" alt="img" /></p>
+
+<p>We could have used a Pulsar Function and Pulsar IO Sink for MongoDB instead, but you may want to do other data enrichment with Apache NiFi without coding.</p>
+
+<p>我们本可以为 MongoDB 使用 Pulsar Function 和 Pulsar IO Sink，但使用 Apache NiFi 无需编码就能完成数据丰富。</p>
+
+<h4>Cloud Step 5: Validate MongoDB Data - 云端第五步：验证 MongoDB 数据</h4>
+
+<pre><code>show collections
+db.garden3.find().pretty()
+</code></pre>
+
+<p><img src="https://lh6.googleusercontent.com/Ih1XG0GKFugYzAJQvHMZ-0sH528BxWN_zxbt3x9XL-0pxPOKUtcDfTvfpUDdeCcGeMg3oBck7ko6WyvC3zd1AzYArENVM1IoddPuBfEel56gFU7Kaiib4Ctxep88ggqo1ktKW8oYgw3-Ny4uU7izZA" alt="img" /><img src="https://lh5.googleusercontent.com/6ujqRSIanJXokhpOmt6NlLqk2tJiWrQrBtIapYiIHeJ8HpVtfcN80e1blxd5L7EgBxSlT5SRtpgAr8UyGEpvgd1YHYeKowpl9Sjt55HC1tvG7FMVIkM9yuc51itXZh5a7F0Y8BN-jCxLMxJbXKpflw" alt="img" /></p>
+
+<h4>Example Row - 示例数据</h4>
+
+<pre><code>{'cpu': 0.3, 'diskusage': '101615.7 MB', 'endtime': '1647276937.7144697', 'equivalentco2ppm': '  411', 'host': 'garden3', 'hostname': 'garden3', 'ipaddress': '192.168.1.199', 'macaddress': 'dc:a6:32:32:98:20', 'memory': 8.9, 'rowid': '20220314165537_a9941b0d-6ce2-48f9-8a1b-4ac7cfbd889e', 'runtime': 0, 'starttime': '03/14/2022 12:55:37', 'systemtime': '03/14/2022 12:55:38', 'totalvocppb': ' 18', 'ts': 1647276938, 'uuid': 'garden3_uuid_oqz_20220314165537'}
+</code></pre>
+
+<h4>Example HTML Data Display Utilizing Web Sockets - 使用 Web Socket 的 HTML 示例数据展示<img src="https://lh6.googleusercontent.com/6JDLc5wYzECJSABKDzcGOgfnwCefsgRslF12920BqNr5KkaONSt96HXYtuDCxGBeEU0fvfV7FTlVodhm9QEmnxqbII2aLNwfHRUXBdfx3FWHUk_E2i_XeQoAAX3wkBGQLzBKFydMPAEHf5c9p8iN2w" alt="img" /></h4>
+
+<h4>Watch the Demo观看演示视频</h4>
+
+<p>(<a href="https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/">https://streamnative.io/blog/engineering/2022-04-14-what-the-flip-is-the-flip-stack/</a>)<img src="https://lh3.googleusercontent.com/yfn2HZlPFkGhjjRUAmjM5N0Uy7pDNUaxawJ3dRtAhIMP5tPvPG6_M4bjfqfIF0qpbKV7caFA2yLoBY6LoiJAlblgGQcVGvIOenCYlfU__5sEBHz6SbQ2X1k-nynWbOQOFun0frigxxhpklK71z1Z6g" alt="img" /></p>
+
+<h2>Conclusion - 结论</h2>
+
+<p>In this blog, we explained how to build real-time event driven applications utilizing the latest open source frameworks together as FLiP Stack applications. So now you know what we are talking about when we say “FLiPN Stack”. By using the latest and greatest open source Apache streaming and big data projects together, we can build applications faster, easier, and with known scalable results.</p>
+
+<p>本文介绍了如何利用最新的开源框架组成 FLiP 技术栈，来构建实时事件驱动应用程序。通过使用最新的优秀的开源 Apache 流处理和大数据项目，我们可以更快、更轻松、更可扩展地构建应用程序。</p>
+
+<p>Join us in building scalable applications today with Pulsar and its awesome friends. Start with data, route it through Pulsar, transform it to meet your analytic needs, and stream it to every corner of your enterprise. Dashboards, live reports, applications, and machine learning analytics driven by fast data at scale built by citizen data engineers in hours, not months. Let’s get these FLiPN applications built now.</p>
+
+<p>欢迎大家使用 Pulsar 及其他上下游生态中出色的工具来构建可扩展的应用程序。从数据开始，通过 Pulsar 进行路由，对其进行转换以满足分析需求，并将其流式传输到企业的每个角落。无需数月的时间，数据工程师即可在数小时内构建出大规模快速数据驱动的仪表板、实时报告、应用程序以及机器学习分析数据。现在就开始构建这些 FLiPN 应用程序吧。</p>
+
+<h2>资源</h2>
+
+<ul>
+<li><p>[代码] <a href="https://github.com/tspannhw/FLiP-Py-Pi-GasThermal/">Source code for the air quality sensors application</a></p></li>
+<li><p>[资源] <a href="https://www.flipstack.dev/">FLiP Stack for Apache Pulsar Developer</a></p></li>
+<li><p>[演讲] <a href="https://www.youtube.com/watch?v=pfhoF3yTdHU">Using the FLiPN Stack for Edge AI (Flink, NiFi, Pulsar)</a></p></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Apache BookKeeper 外部共识和动态成员]]></title>
     <link href="http://alphawang.github.io/blog/bookkeepr-external-consensus/"/>
     <updated>2022-05-29T14:33:50+08:00</updated>
@@ -1202,805 +1543,678 @@ Leader 按照相同顺序将 Entry 追加到 Follower 的日志中。</li>
   </entry>
   
   <entry>
-    <title type="html"><![CDATA[Offset Implementation in Kafka-on-Pulsar]]></title>
-    <link href="http://alphawang.github.io/blog/kop-offset/"/>
-    <updated>2022-04-21T18:30:10+08:00</updated>
-    <id>http://alphawang.github.io/blog/kop-offset</id>
-    <content type="html"><![CDATA[<blockquote><p>本文翻译自《Offset Implementation in Kafka-on-Pulsar》<br/>
-- 译文发表于 Apache Pulsar 公众号：<a href="https://mp.weixin.qq.com/s/JXLquQkJFAzu8uw_lJaIcg">https://mp.weixin.qq.com/s/JXLquQkJFAzu8uw_lJaIcg</a></p></blockquote>
+    <title type="html"><![CDATA[2022 Pulsar Performance Report: Better Performance and Data Resiliency With Apache Pulsar]]></title>
+    <link href="http://alphawang.github.io/blog/pulsar-kafka-benchmark/"/>
+    <updated>2022-05-01T23:17:09+08:00</updated>
+    <id>http://alphawang.github.io/blog/pulsar-kafka-benchmark</id>
+    <content type="html"><![CDATA[<blockquote><p>本文译自 StreamNatvie 官方发布的《2022 Pulsar 性能测试报告》</p></blockquote>
 
-<p><a href="https://github.com/apache/pulsar/wiki/PIP-41%3A-Pluggable-Protocol-Handler">Protocol handlers</a> were introduced in Pulsar 2.5.0 (released in January 2020) to extend Pulsar’s capabilities to other messaging domains. By default, Pulsar brokers only support Pulsar protocol. With protocol handlers, Pulsar brokers can support other messaging protocols, including Kafka, AMQP, and MQTT. This allows Pulsar to interact with applications built on other messaging technologies, expanding the Pulsar ecosystem.</p>
+<p>As we move into 2022, the Apache PulsarTM versus Apache KafkaⓇ debate continues. Organizations often make comparisons based on features, capabilities, size of the community, and a number of other metrics of varying importance. This report focuses purely on comparing the technical performance based on benchmark tests.</p>
 
-<p><a href="https://github.com/apache/pulsar/wiki/PIP-41%3A-Pluggable-Protocol-Handler">协议处理器</a> 是 2020 年一月份发布的 Pulsar 2.5.0 所引入的新功能，目的是将 Pulsar 的能力扩展到其他消息领域。默认情况下 Pulsar Broker 仅支持 Pulsar 协议。而通过协议处理器，Pulsar Broker 就可以支持其他消息协议，包括 Kafka、AMQP 以及 MQTT（现已新增 RocketMQ）。这使得 Pulsar 可以与基于其他消息技术的应用进行交互，从而扩展 Pulsar 生态系统。</p>
+<p>进入 2022 年，人们对 Apache Pulsar<sup>TM</sup> 与 Apache Kafka<sup>Ⓡ </sup>的争论仍在持续。大家通常会对比二者的特性、能力、社区规模以及其他一系列重要性各异的指标。本报告则侧重于基于基准测试对比二者的技术性能。</p>
 
-<p><a href="https://github.com/streamnative/kop">Kafka-on-Pulsar (KoP)</a> is a protocol handler that brings native Kafka protocol into Pulsar. It enables developers to publish data into or fetch data from Pulsar using existing Kafka applications without code change. KoP significantly lowers the barrier to Pulsar adoption for Kafka users, making it one of the most popular protocol handlers.</p>
+<p>The last widely published <a href="https://hubs.ly/Q0179KpD0">Pulsar versus Kafka benchmark</a> was performed in 2020, and a lot has happened since then. In 2021, Pulsar ranked as a <a href="https://hubs.ly/Q01701DL0">Top 5 Apache Software Foundation</a> project and <a href="https://hubs.ly/Q01701DW0">surpassed Apache Kafka</a> in monthly active contributors as shown in the chart below. Pulsar also averaged more monthly active contributors than Kafka for most of the past 18 months.</p>
 
-<p><a href="https://github.com/streamnative/kop">Kafka-on-Pulsar (KoP)</a> 就是一种协议处理协议，它将原生 Kafka 协议引入了 Pulsar，使得开发人员能够使用现有的 Kafka 应用将数据发布到 Pulsar 或从 Pulsar 读取数据，而无需更改代码。KoP 极大降低了 Kafka 用户使用 Pulsar 的壁垒，这让 KoP 成为最受欢迎的协议处理器之一。</p>
+<p>上一次广泛发布的 <a href="https://hubs.ly/Q0179KpD0">Pulsar 与 Kafka 基准测试</a>是在 2020 年进行的，而此后发生了很多事情。2021 年，Pulsar 被评为 <a href="https://hubs.ly/Q01701DL0">[Apache 软件基金会 Top 5 活跃提交项目]</a>，并在月度活跃贡献者数目上<a href="https://hubs.ly/Q01701DW0">力压 Apache Kafka</a>，如下图所示。在过去 18 个月中，大部分时间 Pulsar 的平均月度活跃贡献者都超越了 Kafka。</p>
+
+<p><img src="https://lh4.googleusercontent.com/D1Rw8-ZiGNxyE9RgMyhUUEmx5Qb0C7T-8uabXTu_e8NUir_LKqcAErCAvvAi-fS0oWY2JOIswsE6wh5uAs6sBlgqx0fuXyau_yps8tvFPdwE8WTbVAppfiXXiochESpcCk67n8fLSPTK7vkpmMZ7nw" alt="img" /></p>
 
 <!--more-->
 
 
-<p>KoP works by parsing Kafka protocol and accessing BookKeeper storage directly via streaming storage abstraction provided by Pulsar. While Kafka and Pulsar share many common concepts, such as topic and partition, there is no corresponding concept of Kafka’s offset in Pulsar. Early versions of KoP tackled this problem with a simple conversion method, which did not allow continuous offset and was prone to problems.</p>
+<p><em>Figure 1: Pulsar vs. Kafka Monthly Active Contributors</em>
+<em>图 1：Pulsar 与 Kafka 的月度活跃贡献者对比</em></p>
 
-<p>KoP 解析 Kafka 协议，并通过 Pulsar 提供的流式存储抽象接口直接访问 BookKeeper。虽然 Kafka 和 Pulsar 有许多通用的概念，例如主题和分区，但在 Pulsar 中没有对应 Kafka 偏移量的概念。KoP 的早期版本通过一种简单的转换来应对这个问题，但这种转换不支持连续偏移量，同时也容易出现问题。</p>
+<p>These contributions led to major performance improvements for Pulsar. To measure the impact of the improvements, the engineering team at StreamNative, led by Matteo Merli, one of the original creators of Apache Pulsar, Apache Pulsar PMC Chairperson, performed a benchmark study using the Linux Foundation Open Messaging benchmark.</p>
 
-<p>To solve this pain point, broker entry metadata was introduced in KoP 2.8.0 to enable continuous offset. With this update, KoP is available and production-ready. It is important to note that with this update backward compatibility is broken. In this blog, we dive into how KoP implemented offset before and after 2.8.0. and explain the rationale behind the breaking change.</p>
+<p>这些贡献为 Pulsar 带来了重大的性能改进。为了衡量这些改进的影响，由 Apache Pulsar 创始人之一、Apache Pulsar PMC 主席 Matteo Merli 领导的 StreamNative 工程师团队使用 Linux Foundation Open Messaging 基准进行了基准测试研究。</p>
 
-<p>为了解决这个痛点，KoP 2.8.0 引入了 Broker Entry Metadata，以实现连续偏移量。这个更新使得 KoP 可用并且生产就绪。需要特别注意的是，这个更新破坏了向后兼容性。本文将深入探讨 KoP 2.8.0 之前和之后分别是如何实现偏移量的，并解释该突破性变化背后的基本原理。</p>
+<p>The team measured Pulsar performance in terms of throughput and latency, and then performed the same tests on Kafka. We’ve included the testing framework and details below and encourage anyone who is interested in validating the tests to do so.</p>
 
-<blockquote><p><strong>Note on Version Compatibility</strong></p>
+<p>该团队在吞吐量和延迟方面对 Pulsar 的性能进行了测试，同时对 Kafka 进行了相同的测试。下文中包含了测试框架及相关详细信息，欢迎有兴趣的伙伴验证这些测试。</p>
 
-<p>Since Pulsar 2.6.2, KoP version has been updated with Pulsar version accordingly. The version of KoP x.y.z.m conforms to Pulsar x.y.z, while m is the patch version number. For instance, the latest KoP release 2.8.1.22 is compatible with Pulsar 2.8.1. In this blog, 2.8.0 refers to both Pulsar 2.8.0 and KoP 2.8.0.</p>
+<p>Let’s take a look at three key findings before jumping into the full results.</p>
 
-<p><strong>版本兼容性说明</strong></p>
+<p>在介绍完整的测试结果之前，让我们先看看三个主要发现。</p>
 
-<p>Pulsar 2.6.2 版本之后，KoP 版本即随着相应的 Pulsar 版本而更新。KoP x.y.z.m 版本对应 Pulsar x.y.z 版本，其中 m 是补丁版本号。例如，最新的 KoP 2.8.1.22 版本与 Pulsar 2.8.1 版本兼容。本文中 2.8.0 同时指代 Pulsar 2.8.0 和 KoP 2.8.0。</p></blockquote>
+<h2>Key Benchmark Findings - 基准测试的主要发现</h2>
 
-<h1>Message Identifier in Kafka and Pulsar - Kafka 和 Pulsar 的消息标识符</h1>
+<table>
+<thead>
+<tr>
+<th> 2.5x<br />比 Kafka 更高的最大吞吐量          </th>
+<th> Pulsar 能够达到 Kafka 2.5 倍的最大吞吐量。这对于导入并处理大量数据的场景来说是一个巨大优势，例如日志分析、网络安全和传感器数据收集。更高的吞吐量意味着只需要更少的硬件，从而降低运营成本。 </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> <strong>100x<br/>比 Kafka 更低的个位数的发布延迟</strong> </td>
+<td> Pulsar 提供稳定的个位数的发布延迟，这比 Kafka 的 P99.99 (ms) 延迟低 100 倍。低发布延迟是很重要的，它使得系统能够快速将消息发布到消息总线。一旦消息发布成功，数据即能安全地进行各种“处理”。 </td>
+</tr>
+<tr>
+<td> <strong>1.5x<br />比 Kafka 更快的历史读取速率</strong>    </td>
+<td> Pulsar 的历史读取速率比 Kafka 快 1.5 倍，因此使用 Pulsar 作为消息系统的应用可以在意外中断后只需一半的时间即可追上数据。对于数据库迁移/复制这类将数据传输到记录系统的场景来说，读取吞吐量至关重要。 </td>
+</tr>
+</tbody>
+</table>
 
-<h2>Offset in Kafka - Kafka 偏移量</h2>
 
-<p>In Kafka, offset is a 64-bit integer that represents the position of a message in a specific partition. Kafka consumers can commit an offset to a partition. If the offset is committed successfully, after the consumer restarts, it can continue consuming from the committed offset.</p>
+<p>Below we provide details on how the benchmark was performed and its results.</p>
 
-<p>在 Kafka 中，偏移量是一个 64 位整数，表示消息在特定分区中的位置。Kafka 消费者可以向分区提交偏移量。如果偏移量提交成功，那么消费者重启后就能够从已提交的偏移量位置继续消费。</p>
+<p>下面介绍本次基准测试是如何执行的，以及测试结果相关的详细信息。</p>
+
+<h2>Benchmark Tests - 基准测试</h2>
+
+<p>Using the Linux Foundation Open Messaging benchmark [<a href="https://docs.google.com/document/d/1rjbqxsVWOtVYkrngc3XG6KQJAcuac6KipMlgUfmoi9w/edit#heading=h.ggpi2ey1p5zb">1</a>], we ran the latest versions of Apache Pulsar (2.9.1) and Apache Kafka (3.0.0). To ensure an objective baseline comparison, each test in this Benchmark Report compares Kafka to Pulsar in two scenarios: Pulsar with Journaling and Pulsar without Journaling.</p>
+
+<p>我们使用 Linux Foundation Open Messaging 基准 [<a href="https://docs.google.com/document/d/1rjbqxsVWOtVYkrngc3XG6KQJAcuac6KipMlgUfmoi9w/edit#heading=h.ggpi2ey1p5zb">1</a>]，运行（测试期间）最新版本的 Apache Pulsar (2.9.1) 以及 Apache Kafka (3.0.0)。为了确保客观的基线对比，本基准报告中的每个测试都从如下两个设定对比 Kafka 与 Pulsar：启用 Journaling 情况下的 Pulsar，以及禁用 Journaling 情况下的 Pulsar。</p>
+
+<p>Pulsar’s default configuration includes Journaling, which offers a higher durability guarantee than Kafka’s default configuration. Pulsar without Journaling provides the same durability guarantees as the default Kafka configuration, which results in an apples-to-apples comparison.</p>
+
+<p>Pulsar 默认配置是启用 Journaling 的，这提供了比 Kafka 默认配置更高的持久性保证。而禁用 Journaling 的 Pulsar 则提供了与 Kafka 默认配置相同的持久性保证，这使得对比更公平。</p>
+
+<h2>I. What We Tested - 我们测试了什么</h2>
+
+<p>For this benchmark, we selected a handful of tests to represent common patterns in the messaging and streaming domains and to test the limits of each system:</p>
+
+<p>本次基准测试我们选择了能代表消息领域和流处理领域常见模式的几种测试场景，并测试每个系统的极限：</p>
+
+<h3>A. Maximum Sustainable Throughput - 最大可持续吞吐量</h3>
+
+<p>This test measures the maximum data throughput the system can deliver when consumers are keeping up with the incoming traffic.</p>
+
+<p>本测试测量当消费者跟上传入流量的情况下系统可提供的最大数据吞吐量。</p>
+
+<p>We ran this test in two scenarios to test the upper boundary performance and to test the cost profile for each system:</p>
+
+<p>我们在如下两个前提设定下执行了该测试，用以测试各个系统的上限性能以及成本概况：</p>
 
 <ol>
-<li>The first message&rsquo;s offset is 0.
-第一条消息的偏移量为 0。</li>
-<li>If the latest message&rsquo;s offset is N, then the next message&rsquo;s offset will be N+1.
-如果最后一条消息的偏移量为 N，那么下一条消息的偏移量将会是 N + 1。</li>
+<li><p><strong>Topic with a single partition</strong>. This scenario tests the upper boundary performance for a total-order use case or, in the worst case, where partition keys’ data is skewed. At some scale, the design of a system that relies upon single ordering or handling large amounts of skewed data will need to be reconsidered. Pulsar has the ability to handle situations where total ordering is required at higher scale or large amounts of skew arise.
+ <strong>单分区主题。</strong>本设定用于测试全局有序场景的上限性能，或在最坏情况下当分区键数据倾斜时的上限性能。如果系统依赖全局有序或者处理大量倾斜数据，那么在某种程度上其设计需要重新考虑。Pulsar 有能力处理要求全局以更高规模排序、或者存在大量数据倾斜的场景。</p></li>
+<li><p><strong>Topic with 100 partitions</strong>. With more partitions to stress available resources, this test illustrates how well a system scales horizontally (by adding more machines) and its cost effectiveness. For example, by modeling the hardware cost per 1GB/s of traffic, it is easy to derive the cost profile for each system.
+<strong>100 个分区的主题。</strong>更多的分区意味着需要更多的可用资源，本测试说明了系统水平扩展的能力 (通过增加更多机器) 及其成本效益。例如，通过对每 1GB/s 流量的硬件成本进行建模，很容易能得出每个系统的成本概况。</p></li>
 </ol>
 
 
-<p>Kafka stores messages in each broker&rsquo;s file system:
-Kafka 将消息存储在每个 broker 的文件系统中：</p>
+<h3>B. Publish Latency at a Fixed Throughput - 固定吞吐量下的发布延迟</h3>
 
-<p>Since each message records the message size in the header, for a given offset, Kafka can easily find its segment file and position.</p>
+<p>For this test, we set a fixed rate for the incoming traffic and measured the publish latency profile. Publish latency begins at the moment when a producer tries to publish a message and ends at the moment when it receives confirmation from the brokers that the message is stored and replicated.</p>
 
-<p>由于每条消息的头部都记录了消息大小，所以对于给定偏移量，Kafka 可以很容易地找到其分片文件以及位置。</p>
+<p>在本测试中，我们设置了固定速率的传入流量并测量发布延迟。发布延迟是指从生产者尝试发布一条消息开始，到它接收到 Broker 确认该消息已被存储并复制为止的时间段。</p>
 
-<h2>Message ID in Pulsar - Pulsar 消息 ID</h2>
+<p>In many real-world applications, it is required to guarantee a certain latency SLA (service-level agreement). In particular, this is true in cases where the message is published as the result of some user interaction, or when the user is waiting for the confirmation.</p>
 
-<p>Unlike Kafka, which stores messages in each broker&rsquo;s file system, Pulsar uses BookKeeper as its storage system. In BookKeeper:</p>
+<p>在许多现实生产环境的应用中，都要求保证一定的延迟 SLA (服务级别协议)。特别是在当消息发布是由某些用户交互触发的，或者需要用户等待确认的情况下。</p>
 
-<p>Kafka 将消息存储到每个 Broker 上的文件系统，而 Pulsar 则不同，它使用 BookKeeper 作为其存储系统。在 BookKeeper 中：</p>
+<h3>C. Catch-up Reads / Backlog Draining - 追赶读（Catch-up Read） / 积压耗尽（Backlog Draining）</h3>
 
-<ul>
-<li>Each log unit is an <strong>entry</strong>
-每个日志单元称为一个 <strong>Entry</strong></li>
-<li>Streams of log entries are <strong>ledgers</strong>
-日志 Entry 流称为 <strong>Ledger</strong></li>
-<li>Individual servers storing ledgers of entries are called <strong>bookies</strong>
-存储 Entry Ledger 的单独的服务器称为 <strong>Bookie</strong></li>
-</ul>
+<p>One of the primary purposes of a messaging bus is to act as a “buffer” between different applications or systems. When the consumers are not available, or when there are not enough of them, the system accumulates the data.</p>
 
+<p>消息总线的一个主要目的是充当不同应用或系统之间的”缓冲区“。当消费者不可用，或消费者数量不足时，消息系统能够积压数据。</p>
 
-<p>A bookie can find any entry via a 64-bit ledger ID and a 64-bit entry ID. Pulsar can store a message or a batch (one or more messages) in an entry. Therefore, Pulsar finds a message via its message ID that consists of a ledger ID, an entry ID, and a batch index (-1 if it’s not batched). In addition, the message ID also contains the partition number.</p>
+<p>In these situations, the system must be able to let the consumers drain the backlog of accumulated data and catch up with the newly produced data as fast as possible.</p>
 
-<p>Bookie 可以通过 64 位 Ledger ID 和 64 位 Entry ID 找到任何 Entry。Pulsar 可以在一个 Entry 中存储单条消息或一批消息。因此，Pulsar 的消息 ID 由 Ledger ID、Entry ID、 批索引（如果不是批量消息则为 -1）以及分区编号组成，Pulsar 可通过这种消息 ID 找到一条消息。</p>
+<p>在这些情况下，消息系统必须能够让消费者尽快耗尽积压数据，并尽快追赶上新生产的数据。</p>
 
-<p>Just like a Kafka consumer can commit an offset to record the consumer position, a Pulsar consumer can acknowledge a message ID to record the consumer position.</p>
+<p>While this catch-up is happening, it is important that there is no impact on the performance of existing producers (in terms of throughput and latency) on the same topic or in other topics that are present in the cluster.</p>
 
-<p>就像 Kafka 消费者可以提交偏移量来记录消费位置一样，Pulsar 消费者可以确认消息 ID 来记录消费位置。</p>
+<p>当发生这种数据追赶时，重要的是不影响同一主题或同一集群其他主题的现有生产者的性能（吞吐量及延迟）。</p>
 
-<h2>How Does KoP Deal with a Kafka Offset - KoP 如何处理 Kafka 偏移量</h2>
+<p>In all the tests, producers and consumers are always running from a dedicated pool of nodes, and all messages contain a 1KB payload. Additionally, in each test, both Pulsar and Kafka are configured to provide two guaranteed copies of each message.</p>
 
-<p>KoP needs the following Kafka requests to deal with a Kafka offset:</p>
+<p>在所有测试中，生产者和消费者总是在专用的节点池上运行，所有消息都包含 1KB 的负载。此外，在每个测试中，Pulsar 和 Kafka 都配置为为每条消息提供两份副本。</p>
 
-<p>KoP 需要如下 Kafka 请求来处理 Kafka 偏移量：</p>
+<p><strong>Note</strong>: Pulsar also supports message queuing, complex routing, individual and negative acknowledgments, delayed message delivery, and dead-letter-queues (features not available in Kafka). This benchmark does not evaluate these features.</p>
 
-<ul>
-<li>PRODUCE: After messages from a Kafka producer are persisted, KoP needs to tell the Kafka producer the offset of the first message. However, the BookKeeper client only returns a message ID.
-PRODUCE：当 Kafka 生产者生产的消息被持久化之后，KoP 需要告诉 Kafka 生产者第一条消息的偏移量。然而 BookKeeper 客户端只返回一个消息 ID。</li>
-<li>FETCH : When a Kafka consumer wants to fetch some messages from a given offset, KoP needs to find the corresponding message ID to read entries from the ledger.
-FETCH：当 Kafka 消费者想要从指定偏移量开始获取消息时，KoP 需要找到对应的消息 ID 并从 Ledger 中读取相应的 Entry。</li>
-<li>LIST_OFFSET: Find the earliest or latest available message, or find a message by timestamp.
-We must support computing a specific message offset or locating a message by a given offset.
-LIST_OFFSET：查找最早或最新的可用消息，或者按时间戳查找消息。</li>
-</ul>
+<p><strong>注意</strong>：相比 Kafka，Pulsar 还额外支持消息队列、复杂路由、单条确认、否定确认、延迟消息传递和死信队列等 Kafka 中不可用的功能。本次基准测试并不评估这些功能。</p>
 
+<h2>II. How We Set up the Tests - 我们如何配置测试</h2>
 
-<p>We must support computing a specific message offset or locating a message by a given offset.</p>
+<p>The benchmark uses the Linux Foundation Open Messaging Benchmark suite [<a href="https://docs.google.com/document/d/1rjbqxsVWOtVYkrngc3XG6KQJAcuac6KipMlgUfmoi9w/edit#heading=h.ggpi2ey1p5zb">1</a>]. You can find all deployments, configurations, and workloads in the Open Messaging Benchmark Github repo [<a href="https://docs.google.com/document/d/1rjbqxsVWOtVYkrngc3XG6KQJAcuac6KipMlgUfmoi9w/edit#heading=h.ggpi2ey1p5zb">2</a>].</p>
 
-<p>我们必须支持计算特定消息的偏移量，或通过给定的偏移量定位消息。</p>
+<p>本基准测试使用 Linux Foundation Open Messaging 基准测试套件[<a href="https://docs.google.com/document/d/1rjbqxsVWOtVYkrngc3XG6KQJAcuac6KipMlgUfmoi9w/edit#heading=h.ggpi2ey1p5zb">1</a>]。您可以在 Open Messaging Benchmark Github 代码库 [<a href="https://docs.google.com/document/d/1rjbqxsVWOtVYkrngc3XG6KQJAcuac6KipMlgUfmoi9w/edit#heading=h.ggpi2ey1p5zb">2</a>] 中找到所有的部署、配置和负载。</p>
 
-<h1>How KoP Implements Offset before 2.8.0 -KoP 2.8.0 之前版本如何实现偏移量</h1>
+<p>The testbed for the OpenMessaging Benchmark is set up as follows:</p>
 
-<h2>The Implementation - 实现细节</h2>
-
-<p>As explained earlier, Kafka locates a message via <strong>a partition number and an offset</strong>, while Pulsar locates a message via <strong>a message ID</strong>. Before Pulsar 2.8.0, KoP simply performed conversions between Kafka offsets and Pulsar message IDs. A 64-bit offset is mapped into a 20-bit ledger ID, a 32-bit entry id, and a 12-bit batch index. Here is a simple Java implementation.</p>
-
-<p>如前文所述，Kafka 通过 <strong>分区编号和偏移量</strong> 来定位消息，而 Pulsar 通过 <strong>消息 ID</strong> 来定位消息。在 Pulsar 2.8.0 之前，KoP 简单地在 Kafka 偏移量和 Pulsar 消息 ID 之间进行一个转换。将 64 位的偏移量映射为 20 位 Ledger ID、32 位 Entry ID 以及 12 位批索引。如下是一个简单的 Java 实现。</p>
-
-<pre><code>
-    public static long getOffset(long ledgerId, long entryId, int batchIndex) {
-        return (ledgerId &lt;&lt; (32 + 12) | (entryId &lt;&lt; 12)) + batchIndex;
-    }
-
-    public static PositionImpl getPosition(long offset) {
-        long ledgerId = offset &gt;&gt;&gt; (32 + 12);
-        long entryId = (offset &amp; 0x0F_FF_FF_FF_FF_FFL) &gt;&gt;&gt; BATCH_BITS;
-        // BookKeeper only needs a ledger id and an entry id to locate an entry
-        return new PositionImpl(ledgerId, entryId);
-    }
-</code></pre>
-
-<p>In this blog, we use <code>(ledger id, entry id, batch index)</code> to represent a message ID. For example, assuming a message&rsquo;s message ID is <code>(10, 0, 0)</code>, the converted offset will be 175921860444160. This works in some cases because the offset is monotonically increasing. But it’s problematic when a ledger rollover happens or the application wants to manage offsets manually. The section below goes into details about the problems of this simple conversion implementation.</p>
-
-<p>在本文中，我们使用 <code>(ledger id, entry id, batch index)</code> 来表示一个消息 ID。例如，假设一个消息的 ID 是 <code>(10, 0, 0)</code>，则转换后的偏移量为 175921860444160。在一些情况下这样的数值能正常工作，因为偏移量是单调递增的。然而当发生 Ledger 翻转，或应用程序想要手动管理偏移量时，就会出现问题。下面详细介绍这种简单转换方法存在的问题。</p>
-
-<h2>The Problems of the Simple Conversion - 简单转换存在的问题</h2>
-
-<p>The converted offset <strong>is not continuous</strong>, which causes many serious problems.</p>
-
-<p>转换后的偏移量<strong>不连续</strong>，这会导致许多严重问题。</p>
-
-<p>For example, let’s assume the current message&rsquo;s ID is <code>(10, 5, 100)</code>. The next message&rsquo;s ID could be <code>(11, 0, 0)</code> if a ledger rollover happens. In this case, the offsets of these two messages are 175921860464740 and 193514046488576. The delta value between the two is 17,592,186,023,836.</p>
-
-<p>例如，假设当前消息 ID 是 <code>(10, 5, 100)</code>。如果发生 Ledger 翻转，则下一条消息的 ID 可能是 <code>(11, 0, 0)</code>。在这种情况下，两条消息的偏移量分别为 175921860464740 和 193514046488576，两者差了 17,592,186,023,836。</p>
-
-<p>KoP leverages Kafka&rsquo;s <code>MemoryRecordBuilder</code> to merge multiple messages into a batch. The <code>MemoryRecordBuilder</code> must ensure the batch size is less than the maximum value of a 32-bit integer (4,294,967,296). In our example, the delta value of the two continuous offsets is much greater than 4,294,967,296. This will result in an exception that says <code>Maximum offset delta exceeded</code>.</p>
-
-<p>KoP 利用 Kafka 的 <code>MemoryRecordBuilder</code> 将多条消息合并为一个批量消息。 <code>MemoryRecordBuilder</code> 必须确保批量大小小于 32 位整数的最大值 (4,294,967,296)。在上文示例中，两个连续偏移量的差值远大于 4,294,967,296。这将导致抛出 <code>Maximum offset delta exceeded</code> 异常。</p>
-
-<p>To avoid the exception, before KoP 2.8.0, we must configure <code>maxReadEntriesNum</code> (this config limits the maximum number of entries read by the BookKeeper client) to 1. Naturally, reading only one entry for each FETCH request worsens the performance significantly.</p>
-
-<p>为了避免该异常，在使用 KoP 2.8.0 之前版本时，我们必须配置 <code>maxReadEntriesNum</code> 为 1 (此配置限制 BookKeeper 客户端读取的最大 Entry 条数)。如此一来，每个 FETCH 请求只读取一个 Entry，会显著降低性能。</p>
-
-<p>However, even with the workaround of <code>maxReadEntriesNum=1</code>, this conversion implementation doesn’t work in some scenarios. For example, the Kafka integration with Spark relies on the continuance of Kafka offsets. After it consumes a message with an offset of N, it will seek the next offset (N+1). However, the offset N+1 might not be able to convert to a valid message ID.</p>
-
-<p>然而，即使使用 <code>maxReadEntriesNum=1</code> 这种变通方法，这种转换实现在某些场景下也不能正常工作。例如，Kafka 与 Spark 的集成依赖于 Kafka 偏移量的连续性。当消费偏移量为 N 的消息后，Spark 会寻找下一个偏移量 (N + 1)。但是偏移量 N + 1 可能无法转换为有效的消息 ID。</p>
-
-<p>There are other problems caused by the conversion method. And before 2.8.0, there is no good way to implement the continuous offset.</p>
-
-<p>转换方法还存在其他问题。而在 2.8.0 之前版本，没有好办法实现连续偏移量。</p>
-
-<h1>The Continuous Offset Implementation since 2.8.0 - 自 KoP 2.8.0 版本的连续偏移量实现</h1>
-
-<p>The solution to implement continuous offset is to record the offset into the metadata of a message. However, an offset is determined at the broker side before publishing messages to bookies, while the metadata of a message is constructed at the client side. To solve this problem, we need to do some extra jobs at the broker side:</p>
-
-<p>实现连续偏移量的解决方案是将偏移量记录到消息的元数据中。然而，偏移量是由 Broker 端在将消息发布到 Bookie 之前决定的，而消息的元数据则是在客户端构建的。为了解决这个问题，我们需要在 Broker 端做一些额外的工作：</p>
+<p>OpenMessaging 基准测试平台配置如下：</p>
 
 <ol>
-<li><p>Deserialize the metadata
-反序列化元数据</p></li>
-<li><p>Set the &ldquo;offset&rdquo; property of metadata
-设置元数据的“偏移量”属性</p></li>
-<li><p>Serialize the metadata again, including re-computing the checksum value
-再次序列化元数据，包括重新计算校验和值</p></li>
+<li>3 Broker VMs of type i3en.6xlarge, with 24-cores, 192GB of memory, 25Gbps guaranteed networking, and two NVMe SSD devices that support up to 1GB/s write throughput on each disk.
+3 个 i3en.6xlarge 类型的 Broker 虚拟机，24 核，192GB 内存，25Gbps 网络，两块 NVMe SSD 硬盘，每块磁盘支持最大 1GB/s 的写入吞吐量。</li>
+<li>4 Client (producers and consumers) VMs of type m5n.8xlarge, with 32-cores and with 25Gbps of guaranteed networking throughput and 128GB of memory to ensure the bottleneck would not be on the client-side.
+4 个 m5n.8xlarge 类型的客户端（生产者和消费者)虚拟机，32 核，25Gbps 网络，128GB 内存，以确保客户端没有瓶颈。t2.small 类型的 ZooKeeper 虚拟机。</li>
+<li>ZooKeeper VMs of type t2.small. These are not critical because ZooKeeper is not stressed in any form during the benchmark execution.
+ZooKeeper 在基准测试执行期间并不会受到任何形式的压力，所以其机器配置并不重要。</li>
 </ol>
 
 
-<p>This results in a significant increase in CPU overhead on the broker side.</p>
+<p>We tested two configurations for Pulsar:</p>
 
-<p>这会导致 Broker 端的 CPU 开销显著增加。</p>
-
-<h2>Broker Entry Metadata - 轻量级 Broker Entry 元数据</h2>
-
-<p><a href="https://github.com/apache/pulsar/wiki/PIP-70:-Introduce-lightweight-broker-entry-metadata">PIP 70</a> introduced lightweight broker entry metadata. It&rsquo;s a metadata of a BookKeeper entry and should only be visible inside the broker.</p>
-
-<p><a href="https://github.com/apache/pulsar/wiki/PIP-70:-Introduce-lightweight-broker-entry-metadata">PIP 70</a> 引入了轻量级 Broker Entry 元数据。它是 BookKeeper Entry 的元数据，并且只在 Broker 内部可见。
-The default message flow is:默认的消息流如下图所示：</p>
-
-<p><img src="https://lh3.googleusercontent.com/eS6w7ZRshhoBcsk3t0Q7O9njkV-Wej0b6n00rbcxnfW2BKK6qYxIbAlWsbZT4M1yh-9H534GpTM3YWd3Wg9lal4O26HmNjX1qDsS7Xk6FiS3k9kmk1QAS39Jk22bsGN6z9X4unD7WBeBK-9MUN1jnQ" alt="img" /></p>
-
-<p>If you configured <code>brokerEntryMetadataInterceptors</code>, which represents a list of <strong>broker entry metadata interceptors</strong>, then the message flow would be:</p>
-
-<p>如果配置了 <code>brokerEntryMetadataInterceptors</code>，即配置一组 <strong>Broker Entry 元数据拦截器</strong>，那么消息流将会是：</p>
-
-<p><img src="https://lh3.googleusercontent.com/eNYmZkvZx1ZDWCsr-XOLw1B2OZ6ku4_mx02uWZuZbIJvFWWYRmeCWV5nbVmI_zaZreo0_syq3bowX0wTNAk-Ls9wFl32q6XeKYjnbueQ02uhqIX01F6gueJgqC2DTj6tiTP1Rdm4Cd3Wb9ZWlt0flA" alt="img" />
-We can see the broker entry metadata is stored in bookies, but is not visible to a Pulsar consumer.</p>
-
-<p>可以看到 Broker Entry 元数据存储在 Bookie 上，但对 Pulsar 消费者不可见。</p>
-
-<blockquote><p>From 2.9.0, a Pulsar consumer can be configured to read the broker entry metadata.</p>
-
-<p>2.9.0 版本之后，可以将 Pulsar 消费者配置为可以读取 Broker Entry 元数据。</p></blockquote>
-
-<p>Each broker entry metadata interceptor adds the specific metadata (called &ldquo;broker entry metadata&rdquo;) before the message metadata. Since the broker entry metadata is independent of the message metadata, the broker does not need to deserialize the message metadata. In addition, the BookKeeper client supports sending a Netty <code>CompositeByteBuf</code> that is a list of <code>ByteBuf</code> without any copy operation. From the perspective of a BookKeeper client, only some extra bytes are sent into the socket buffer. Therefore, the extra overhead is low and acceptable.</p>
-
-<p>每个 Broker Entry 元数据拦截器都在消息元数据前面加上特定的元数据（称之为 “Broker Entry 元数据”）。由于 Broker Entry 元数据和消息元数据是独立的，所以 Broker 无需反序列化消息元数据。此外，BookKeeper 客户端支持发送包含多个 <code>ByteBuf</code> 的 Netty <code>CompositeByteBuf</code>，而无需任何复制操作。从 BookKeeper 客户端角度看，只是将一些额外字节发送到套接字缓冲区。因此，额外的开销会很低且可接受。</p>
-
-<h2>The Index Metadata - 索引元数据</h2>
-
-<p>We need to configure the <code>AppendIndexMetadataInterceptor</code> (we say <strong>index metadata interceptor</strong>) to support the Kafka offset.</p>
-
-<p>我们需要配置 <code>AppendIndexMetadataInterceptor</code> (即 <strong>索引元数据拦截器</strong>) 来支持 Kafka 偏移量。</p>
-
-<pre><code>brokerEntryMetadataInterceptors=org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor
-</code></pre>
-
-<p>In Pulsar brokers, there is a component named &ldquo;managed ledger&rdquo; that manages all ledgers of a partition. The index metadata interceptor maintains an index that starts from 0. The &ldquo;index&rdquo; term is used instead of &ldquo;offset&rdquo;.</p>
-
-<p>Pulsar Broker 中有个名为 “Managed Ledger” 的组件，它管理分区中的所有 Ledger。索引元数据拦截器维护了一个从 0 开始的索引。Pulsar 使用术语“索引”而不是“偏移量”。</p>
-
-<p>Each time before an entry is written to bookies, the following two things happen:</p>
-
-<p>每次将 Entry 写入 Bookie 之前，都会发生如下两件事：</p>
+<p>我们测试了 Pulsar 的两种配置：</p>
 
 <ol>
-<li>The index is serialized into the broker entry metadata.
-将索引序列化到 Broker Entry 元数据中。</li>
-<li>The index increases by the number of messages in the entry.
-将索引自增 Entry 中的消息数目。</li>
-</ol>
-
-
-<p>After that, each entry records the first message&rsquo;s index, which is equivalent to the &ldquo;base offset&rdquo; concept in Kafka.</p>
-
-<p>之后，每个 Entry 记录第一条消息的索引，相当于 Kafka 中的“基础偏移量”概念。</p>
-
-<p>Now, we must make sure even if the partition&rsquo;s owner broker was down, the index metadata interceptor would recover the index from somewhere.</p>
-
-<p>现在，我们需要保证即使分区的 owner Broker 宕机，索引元数据拦截器也能从某个地方恢复索引。</p>
-
-<p>There are some cases where the managed ledger needs to store its metadata (usually in ZooKeeper). For example, when a ledger is rolled over, the managed ledger must archive all ledger IDs in a z-node. Here we don&rsquo;t look deeper into the metadata format. We only need to know there is a property map in the managed ledger&rsquo;s metadata.</p>
-
-<p>在某些场景下，Managed Ledger 需要将其元数据存储起来（通常存储到 ZooKeeper）。例如，当一个 Ledger 发生翻转，Managed Ledger 需要将所有 Ledger ID 归档到一个 z-node。这里我们不深入研究元数据的格式，只需要知道在 Managed Ledger 元数据中有一个属性映射。</p>
-
-<p>Before metadata is stored in ZooKeeper (or another metadata store):</p>
-
-<p>在将元数据存储到 ZooKeeper (或其他元数据存储) 之前：</p>
-
-<ol>
-<li>Retrieve the index from the index metadata interceptor, which represents the latest message&rsquo;s index.
-从索引元数据拦截器中检索索引，该索引代表了最新消息的索引。</li>
-<li>Add the property whose key is &ldquo;index&rdquo; and value is the index to the property map.
-向属性映射中添加一条属性，属性名为 “index”，属性值为索引值。</li>
-</ol>
-
-
-<p>Each time a managed ledger is initialized, it will restore the metadata from the metadata store. At that time, we can set the index metadata intercerptor&rsquo;s index to the value associated with the &ldquo;index&rdquo; key.</p>
-
-<p>每次初始 Managed Ledger 时，都会从元数据存储中恢复元数据。那时，我们可以将索引元数据拦截器中的索引设置为“index”键关联值。</p>
-
-<h2>How KoP Implements the Continuous Offsets - KoP 如何实现连续偏移量</h2>
-
-<p>Let&rsquo;s look back to the <strong>How does KoP deal with a Kafka offset</strong> section and review how we deal with the offset in following Kafka requests.</p>
-
-<p>让我们回顾一下 <strong>KoP 如何处理 Kafka 偏移量</strong> 一节，看看在如下 Kafka 请求中如何处理偏移量。</p>
+<li><strong>Pulsar with Journaling (Default)</strong>:
+<strong>启用 Journaling (默认)</strong>:
 
 <ul>
-<li>PRODUCE</li>
-</ul>
-
-
-<p>When KoP handles PRODUCE requests, it leverages the managed ledger to write messages to bookies. The API has a callback that can access the entry&rsquo;s data.</p>
-
-<p>当 KoP 处理 PRODUCE 请求时，它利用 Managed Ledger 将消息写入 Bookie。相关 API 有一个回调可以访问 Entry 数据。</p>
-
-<pre><code>      @Override
-      public void addComplete(Position pos, ByteBuf entryData, Object ctx) {
-</code></pre>
-
-<p> We only need to parse the broker entry metadata from <code>entryData</code> and then retrieve the index. The index is just the base offset returned to the Kafka producer.</p>
-
-<p>我们只需要从 <code>entryData</code> 中解析出 Broker Entry 元数据，然后检索索引即可。该索引就是返回给 Kafka 生产者的基础偏移量。</p>
-
-<ul>
-<li>FETCH</li>
-</ul>
-
-
-<p>The task is to find the position (ledger id and entry id) for a given offset. KoP implements a callback that reads the index from the entry and compares it with the given offset. It then passes the callback to a class named <code>OpFindNewest</code>, which uses binary search to find an entry.</p>
-
-<p> The binary search could take some time. But it only happens on the initial search unless the Kafka consumer disconnects. After the position is found, a non-durable cursor will be created to record the position. The cursor will move to a newer position as the fetch offset increases.</p>
-
-<p>FETCH 是通过给定偏移量找到消息位置 (Ledger ID 和 Entry ID)。KoP 实现了一个回调，从 Entry 中读取索引并与给定的偏移量进行比较。然后将回调传给 <code>OpFindNewest</code> 类，该类使用二分查找算法来查找 Entry。</p>
-
-<p>二分查找可能要花一些时间。但它仅发生在初始搜索中，除非 Kafka 消费者断开连接。当找到位置后，会创建一个非持久化的游标来记录该位置。随着 fetch 偏移量的增加，游标会移动到更新的位置。</p>
-
-<ul>
-<li>LIST_OFFSET
-
-<ul>
-<li><strong>Earliest</strong>: Get the first valid position in a managed ledger. Then read the entry of the position, and parse the index.
-最早：获得 Managed Ledger 中的第一个有效位置，然后读取该位置的 Entry，并解析索引。</li>
-<li><strong>Latest</strong>: Retrieve the index from the index metadata interceptor and increase by one. It should be noted that the latest offset (or called LEO) in Kafka is the next offset to be assigned to a message, while the index metadata interceptor&rsquo;s index is the offset assigned to the latest message.
-最新：从索引元数据拦截器中检索索引，并加一。需要注意的是，Kafka 中的最新偏移量（也被称为 LEO）是下一个将要分配给消息的偏移量，而索引元数据拦截器中的索引则是分配给最新消息的偏移量。</li>
-<li><strong>By timestamp</strong>: First leverage broker&rsquo;s timestamp based binary search to find the target entry. Then parse the index from the entry.
-按时间戳：首先利用 Broker 的基于时间戳的二分查找找到目标 Entry，然后从 Entry 中解析出索引。</li>
+<li>Uses a journal for strong durability (this exceeds the durability provided by Kafka).
+使用 Journal 可获得强持久性，这超过了 Kafka 提供的持久性。</li>
+<li>Replicates and f-syncs data on disk before acknowledging producers.
+在确认响应给生产者之前，对数据进行复制并 f-sync 到磁盘。</li>
 </ul>
 </li>
-</ul>
-
-
-<h1>Upgrade from KoP Version before 2.8.0 to 2.8.0 or Higher - 从 KoP 2.8.0 之前的版本升级到 2.8.0 或更高版本</h1>
-
-<p>KoP 2.8.0 implements continuous offset with a tradeoff – <a href="https://github.com/streamnative/kop/blob/master/docs/upgrade.md">the backward compatibility is broken</a>. The offset stored by KoP versions before 2.8.0 cannot be recognized by KoP 2.8.0 or higher.</p>
-
-<p>KoP 2.8.0 实现的连续偏移量是有折衷的 —— <a href="https://github.com/streamnative/kop/blob/master/docs/upgrade.md">向后兼容性被破坏</a>。KoP 2.8.0 之前版本存储的偏移量无法被 KoP 2.8.0 或更高版本识别。</p>
-
-<p>If you have not tried KoP, please upgrade your Pulsar to 2.8.0 or higher and then use the corresponding KoP. As of this writing, the latest KoP release for Pulsar 2.8.1 is 2.8.1.22.</p>
-
-<p>如果在此之前你还没有使用过 KoP，需将 Pulsar 升级到 2.8.0 或更高版本后使用相应版本的 KoP。</p>
-
-<p>If you have already tried KoP before 2.8.0, you need to know that there&rsquo;s a breaking change from version less than 2.8.0 to version 2.8.0 or higher. You must delete the <code>__consumer_offsets</code> topic and all existing topics previously used by KoP.</p>
-
-<p>如果你在此之前已经使用过 2.8.0 之前版本的 KoP，则需要知道从低于 2.8.0 版本到 2.8.0 或更高版本有突破性变化。使用新版本前，你必须删除 <code>__consumer_offsets</code> 主题以及 KoP 之前使用过的所有主题。</p>
-
-<p>There is a latest feature in KoP that can skip these old messages by enabling a config. It would be included in 2.8.1.23 or later. Note that the old messages still won’t be accessible. It just saves the work of deleting old topics.</p>
-
-<p>KoP 中有一个最新的功能，可以通过启用配置来跳过这些旧消息。这个功能将包含在 2.8.1.23 或更高版本。注意：旧消息仍将无法访问，这个功能只是节省了删除旧主题的工作量。</p>
-
-<h1>Summary - 总结</h1>
-
-<p>In this blog, we first explained the concept of Kafka offset and the similar concept of message ID in Pulsar. Then we talked about how KoP implemented Kafka offset before 2.8.0 and the related problems.</p>
-
-<p>本文首先解释了 Kafka 偏移量的概念，以及 Pulsar 类似的消息 ID 概念。然后讲了 KoP 在 2.8.0 版本之前是如何实现 Kafka 偏移量的及其带来的相关问题。</p>
-
-<p>To solve these problems, the broker entry metadata was introduced from Pulsar 2.8.0. Based on this feature, index metadata is implemented via a corresponding interceptor. After that, KoP can leverage the index metadata interceptor to implement the continuous offset.</p>
-
-<p>为了解决这些问题，Pulsar 2.8.0 引入了 Broker Entry 元数据。基于此特性，通过相应的拦截器实现了索引元数据。之后，KoP 可以利用索引元数据拦截器来实现连续偏移量。</p>
-
-<p>Finally, since it&rsquo;s a breaking change, we talked about the upgrade from KoP version less than 2.8.0 to 2.8.0 or higher. It&rsquo;s highly recommended to try KoP 2.8.0 or higher directly.</p>
-
-<p>最后，由于这是一个突破性的变化，我们谈了从 2.8.0 之前版本到 2.8.0 或更高版本的升级。强烈建议直接尝试 KoP 2.8.0 或更高版本。</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Dapper, a Large-Scale Distributed Systems Tracing Infrastructure]]></title>
-    <link href="http://alphawang.github.io/blog/google-dapper-translation/"/>
-    <updated>2019-03-24T12:04:46+08:00</updated>
-    <id>http://alphawang.github.io/blog/google-dapper-translation</id>
-    <content type="html"><![CDATA[<blockquote><p>最近在研究分布式链路跟踪系统，Google Dapper 当然是必读的论文了，目前网上能搜到一些中文翻译版，然而读下来个人感觉略生硬；这里试着在前人的肩膀上重新翻译一遍这个论文，权当是个人的学习笔记，如果同时能给其他人带来好处那就更好了。</p>
-
-<p>同时把译文放到了 github，如您发现翻译错误或者不通顺之处，恳请提交 github PR: <a href="https://github.com/AlphaWang/alpha-dapper-translation">https://github.com/AlphaWang/alpha-dapper-translation</a></p>
+<li><strong>Pulsar without Journaling</strong>:
+<strong>禁用 Journaling:</strong>
 
 <ul>
-<li>原文：<a href="https://ai.google/research/pubs/pub36356">https://ai.google/research/pubs/pub36356</a></li>
-<li>译文：<a href="http://alphawang.com/blog/google-dapper-translation">http://alphawang.com/blog/google-dapper-translation</a></li>
+<li>Replicates data in memory on multiple nodes, before acknowledging producers, and then flushes to disk in the background.
+在确认响应给生产者之前，在多节点内存中复制数据，然后在后台刷新数据到磁盘。</li>
+<li>Provides the same durability guarantees as Kafka.
+提供与 Kafka 相同的持久性保证。</li>
+<li>Achieves higher throughput and lower latency when compared to the default Pulsar setup with journaling.
+与默认启用 Journaling 相比，能达到更高的吞吐量和更低的延迟。</li>
+<li>Provides a cost-effective alternative to the standard Pulsar setup, at the expense of strong durability. (“Strong durability” means that the data is flushed to disk before an acknowledgement is returned.)
+为标准的 Pulsar 配置提供了更具成本效益的替代方案，代价是无法提供强持久性。(”强持久性“意味着数据在返回确认之前被刷新到磁盘。)</li>
 </ul>
-</blockquote>
-
-<h2>摘要</h2>
-
-<p>现代互联网服务通常都是复杂的大规模分布式系统。这些系统由多个软件模块构成，这些软件模块可能由不同的团队开发、可能使用不同的编程语言实现、可能布在横跨多个数据中心的几千台服务器上。这种环境下就急需能帮助理解系统行为、能用于分析性能问题的工具。</p>
-
-<p>本文将介绍 Dapper 这个在 Google 生产环境下的分布式系统跟踪服务的设计，并阐述它是如何满足在一个超大规模系统上达到<strong>低损耗</strong>（low overhead）、<strong>应用级透明</strong>（application-level transparency）、<strong>大范围部署</strong>（ubiquitous deployment）这三个需求的。Dapper 与其他一些跟踪系统的概念类似，尤其是 Magpie<sup>[3]</sup> 和X-Trace<sup>[12]</sup>，但是我们进行了一些特定的设计，使得 Dapper 能成功应用在我们的环境上，例如我们使用了采样并将性能测量（instrumentation）限制在很小一部分公用库里。</p>
-
-<!--more-->
-
-
-<p>本文的主要目的是汇报两年多以来我们构建、部署并应用 Dapper 的经历，这两年多里 Dapper 对开发和运维团队非常有用，取得了显著的成功。最初 Dapper 只是一个自包含（self-contained）的跟踪工具，后来演化成了一个监控平台并促生出许多不同的工具，有些工具甚至 Dapper 的设计者都未曾预期到。我们将介绍一些基于 Dapper 构造的分析工具，分享这些工具在 Google 内部使用的统计数据，展示一些使用场景的例子，并讨论我们学习到的经验教训。</p>
-
-<h2>1 介绍</h2>
-
-<p>Dapper 的目的是为了将复杂分布式系统的更多行为信息提供给 Google 开发者。这种分布式系统利用大规模的小服务器，通常对于互联网服务是一个非常经济的平台，所以很受关注。要理解在这种上下文中要的系统行为的话，就需要观察横跨不同程序和不同机器的关联行为。</p>
-
-<p>下面基于一个 web 搜索的例子来说明这种系统需要应对哪些挑战。前端服务器将一个 web 查询分发给上百台搜索服务器，每个搜索服务器在自己的 index 中完成搜索。同时这个 web 查询可能还会被发送给多个其他子系统，进行广告处理、拼写检查、查找相关的图片/视频/新闻等。所有这些服务的结果会被有选择地合并成结果页面；我们把这种模型称之为<code>全局搜索 (universal search)</code>。处理一次全局搜索查询，总计需要上千台机器，涉及多种服务。而且 web 搜索的用户对延时很敏感，而任何一个子系统的性能差了都可能导致延时。工程师如果只看总体耗时的话，他能知道出问题了，但是他猜不到是哪个系统出问题、为什么出问题。<strong>首先，工程师可能无法准确知道到底调用了哪些服务</strong>；每周我们都会添加新的服务，用于实现用户需求、提升性能或安全性。<strong>其次，工程师不可能对每个服务的内部都了如指掌</strong>；每个服务都是由不同的团队开发维护的。<strong>第三，服务和服务器可能被许多不同的客户端调用</strong>，所以性能问题有可能是其他应用造成的。举例来说，前端服务器可能要处理多个不同的请求类型，或者类似 Bigtable 这种存储系统在被多个应用共享时效率最高。</p>
-
-<p>上面描述的场景就对 Dapper 提出了两条最基本的要求：大范围部署 (uniquitous deployment)、持续监控 (continuous monitoring)。即便只有很小一部分系统没有被监控到，跟踪系统的作用也会大打折扣，所以大范围部署非常重要。另外，应该始终开启监控，因为通常来说异常系统行为很难重现，甚至根本无法重现。这两条基本要求提出了三个具体的设计目标：</p>
-
-<ul>
-<li><strong>低消耗 (Low overhead)</strong>：跟踪系统对在线服务的性能影响应该做到可忽略不计。对于一些高度优化过的服务，监控系统的一点小消耗都会很显眼，都可能迫使部署团队不得不关停跟踪系统。</li>
-<li><strong>应用级透明 (Application-level transparency)</strong>：程序员应该不需要感知到跟踪系统。如果跟踪系统要求应用开发者的配合才能生效，那么这个跟踪系统就太脆弱了，经常会由于应用侵入代码的 bug 或者疏忽导致无法正常工作，这就违反了"大范围部署"的要求。这在我们这种快速开发的环境下尤为重要。</li>
-<li><strong>可扩展性 (Scalability)</strong>：需要能处理 Google 在未来几年的服务和集群规模。</li>
-</ul>
-
-
-<p>另外一个设计目标是生成跟踪数据后要很快可用于分析：最好是在一分钟内。尽管一个能处理几小时前数据的跟踪分析系统已经很有用了，但是能分析最新数据的话会让我们能对生产环境的异常情况作出快速反应。</p>
-
-<p>我们通过把 Dapper 跟踪植入的核心代码限制在线程调用、控制流以及 RPC 等库代码中，实现了真正的应用透明这个最具挑战性的目标。使用自适应的采样（见4.4节），我们做到了可扩展性、降低性能损耗。最终的系统还包括收集跟踪数据的代码、可视化数据的工具、用于分析大规模跟踪数据的库和 API。尽管开发人员有时通过 Dapper 就足以找出性能问题的根源，但 Dapper 并不会替代所有其他的工具。我们发现 Dapper 的数据往往侧重于性能排查，所以其他工具也有自己的用处。</p>
-
-<h3>1.1 贡献总结</h3>
-
-<p>之前已有一些优秀的文章探讨了分布式系统跟踪工具的设计空间，其中 Pinpoint<sup>[9]</sup>、Magpie<sup>[3]</sup> 和 X-Trace<sup>[12]</sup>  与 Dapper 最为相关。这些系统倾向于在开发过程中的早期就写成研究报告，而此时还没有机会明确地评估重要的设计选型。Dapper 已经在生产环境中被大型系统应用好几年了，我们认为本文最适合的侧重点是讨论我们在 Dapper 开发过程中有哪些收获、我们的设计决策是如何制定的、它在哪些方面最有用。Dapper 作为一个开发性能分析工具的平台以及作为一个监控工具，其价值是我们可以在回顾评估中找到一些意想不到的产出。</p>
-
-<p>虽然 Dapper 的许多高层理念和 Pinpoint、Magpie 等其他系统是共通的，但是我们的实现包含了一系列新的贡献。举个例子，我们发现要想降低消耗的话采样就必不可少，尤其是在高度优化后的对延迟非常敏感的 web 服务中。或许最令人惊讶的是，我们发现即便只使用 1/1000 的采样率，已经能为跟踪数据的通用用例提供足够多的信息了。</p>
-
-<p>Dapper 的另一个重要特征是我们实现的应用透明程度非常高。我们将性能测量限制在足够底层，所以即便是像 Google web 搜索这样的大型分布式系统也能进行跟踪，而无需额外的注解。虽然由于我们的部署环境具有一定的同质性，所以更容易实现应用透明这个目标，但是我们的结果也论证了实现透明性的充分条件。</p>
-
-<h2>2 Dapper 的分布式跟踪</h2>
-
-<p>分布式服务的跟踪系统需要记录在一次请求后系统完成的所有工作的信息。举个例子，图-1展示了拥有 5 台服务器的服务：一个前端服务器 A，两个中间层 B 和 C，两个后端服务器 D 和 E。当用户发起请求到前端服务器 A 之后，会发送两个 RPC 调用到 B 和 C。B 马上会返回结果，但是 C 还需要继续调用后端服务器 D 和 E，然后返回结果给 A，A 再响应最初的请求。对这个请求来说，一个简单的分布式跟踪系统需要记录每台机器上的每次信息发送和接收的信息标识符和时间戳。</p>
-
-<p><img src="/images/post/2019/dapper/dapper-1_tree.png" alt="dapper-1_tree" /></p>
-
-<p><em>(图-1. 由用户请求X 发起的穿过一个简单服务系统的请求路径。字母标识的节点表示分布式系统中的处理过程)</em></p>
-
-<p>为了能将信息聚合到一起以便人们能将所有记录信息关联到一个初始请求（如图1中的请求 X），我们提出了两种解决方案：<code>黑盒监控模式</code> 和 <code>基于标注的监控模式</code>。<strong>黑盒模式</strong><sup>[1, 15, 2] </sup>假定除了上面描述的信息记录之外无需任何额外的信息，而使用统计回归技术来推断关联关系。<strong>基于标注的模式</strong><sup>[3, 12, 9, 16]</sup> 则要求应用程序或中间件显式地将每个记录关联到一个全局 ID，从而将这些信息记录关联回初始请求。黑盒模式比基于标注的模式更加轻便，但是它依赖统计推断，所以需要更多的数据以便获取足够的准确性。很明显，基于标注的模式关键缺点是需要有代码侵入。在我们的环境中，由于所有应用系统都使用相同的线程模型、控制流和 RPC 系统，所以我们可以将性能测量限制在小规模的公用库中，以此实现对开发人员有效透明的监控系统。</p>
-
-<p>我们倾向于认为 Dapper 的跟踪是一个嵌入式的 RPC 树。然而，我们的核心数据模型并不局限于特定的RPC 框架；我们也能跟踪例如 Gmail SMTP 会话、来自外界的 HTTP 请求、对 SQL 服务器的查询等行为。正式一点说，Dapper 跟踪模型使用了<code>树</code>、<code>span</code>和 <code>标注</code>。</p>
-
-<h3>2.1 跟踪树与span</h3>
-
-<p>在 Dapper 跟踪树中，树节点是基本单元，我们称之为 <code>span</code>。节点之间的连线表示 span 与其<code>父span</code> 之间的关系。虽然节点在整个跟踪树中的位置是独立的，但 span 也是一个简单的时间戳日志，其中编码了这个 span 的开始时间、结束时间、RPC 时间数据、以及0或多个应用程序相关的标注，我们将在 2.3 节讨论这些内容。</p>
-
-<p><img src="/images/post/2019/dapper/dapper-2_span.png" alt="dapper-2_span" /></p>
-
-<p><em>(图-2. Dapper 跟踪树中5个 span 的因果和实时关系)</em></p>
-
-<p>图2 阐释了 span 是如何构造成更大的跟踪结构的。Dapper 为每个 span 记录了一个可读的<code>span name</code>、<code>span id</code>和 <code>parent id</code>，这样就能重建出一次分布式跟踪过程中不同 span 之间的关系。没有parent id 的 span被称为 <code>根span</code>。一次特定跟踪的所有相关 span 会共享同一个通用的<code>trace id</code> （trace id在图中没有绘出）。所有这些 ID 可能是唯一的 64 位整数。在一个典型的 Dapper 跟踪中，我们希望每个 RPC 对应一个 span，每一个组件层对应跟踪树上的一个层级。</p>
-
-<p><img src="/images/post/2019/dapper/dapper-3_span_detail.png" alt="dapper-3_span_detail" /></p>
-
-<p><em>(图-3. span 的详细视图)</em></p>
-
-<p>图3 给出了 Dapper 跟踪 span 中记录的事件的更详细视图。这个 span 标示图 2 中更长的那次 <code>Helper.Call</code> RPC 调用。Dapper 的 RPC 库记录下了 span 的开始时间和结束时间、RPC 的计时信息。如果应用程序负责人选择用他们自己的标注来注释这次跟踪（例如图中的<code>foo</code>），那么这些信息也会跟随 span 的其他信息一起记录下来。</p>
-
-<p>要着重强调的是，一个 span 中的信息可能来自多个不同的主机；实际上，每个 RPC span 都包含 client和 server 端的标注，这使得<code>二主机span (two host span)</code>是最常见的情况。由于 client 和 server 的时间戳来自不同的主机，所以我们需要注意时钟偏差。在我们的分析工具中，我们利用了如下事实：RPC client 发送请求总是会先于 server 接受到请求，对于 server 响应也是如此。这样一来，RPC server 端的 span 时间戳就有了下限和上限。</p>
-
-<h3>2.2 性能测量点 Instrumention points</h3>
-
-<p>通过对部分通用库进行性能测量，Dapper 能够做到在对应用程序开发者零干扰的情况下进行分布式路径跟踪：</p>
-
-<ul>
-<li>当一个线程处理被跟踪的控制路径时，Dapper 会把一个<code>跟踪上下文（trace context）</code>存储到ThreadLocal 中。跟踪上下文是一个小而容易复制的容器，里面包含了 trace id 和 span id 等 span属性。</li>
-<li>当计算过程是延迟调用或异步执行时，多数 Google 开发者会使用一个通用的控制流程库来构造回调函数，并用线程池或其他 executor 来执行回调。Dapper 确保所有的回调都会存储其创建者的跟踪上下文，而当执行回调时这个跟踪上下文会关联到合适的线程上。通过这种方式，Dapper 用于重建跟踪的 ID 也能透明地用于异步控制流程。</li>
-<li>Google 进程间的通讯几乎都是建立在一个用 C++ 和 Java 开发的 RPC 框架上。我们在这个框架上进行性能测量，定义了所有 RPC 调用相关的 span。被跟踪的 RPC 调用的 span id 和 trace id 会从客户端传送到服务端。对于这种在Google内广泛使用的基于RPC的系统来说，这是一个非常必要的性能测量点。我们计划当非 RPC 通讯框架发展成熟并找到其用户群后，再对非 RPC 通信框架进行性能测量。</li>
-</ul>
-
-
-<p>Dapper 的跟踪数据是语言无关的，生产环境中的许多跟踪结合了 C++ 和 Java 进程中的数据。在 3.2 节我们将讨论我们在实践中达到了何种程度的应用程序透明。</p>
-
-<h3>2.3 标注 Annotation</h3>
-
-<p>上述性能测量点足够推导出复杂分布式系统的跟踪细节，这使得 Dapper 的核心功能也适用于那些不可修改的 Google 应用程序。然而，Dapper 也允许应用程序开发者添加额外的信息，以丰富 Dapper 的跟踪数据，从而帮助监控更高级别的系统行为，或者帮助调试问题。我们允许用户通过一个简单的 API 来定义带时间戳的标注，其核心代码如图4 所示。这些标注支持任意内容。为了保护 Dapper 用户不至于意外加入太多日志，每个跟踪 span 都可配置一个标注量的上限。应用程序级别的标注是不能替代结构化的 span 信息以及 RPC 信息的。</p>
-
-<p><img src="/images/post/2019/dapper/dapper-4_annotation.png" alt="dapper-4_annotation" /></p>
-
-<p><em>(图-4. Dapper 标注 API 在 C++ 和 Java 中的通用使用模式)</em></p>
-
-<p>除了简单的文本标注，Dapper 也支持 key-value map 的标注，给开发者提供更强的跟踪能力，例如维护计数器、记录二进制消息、传输任意用户自定义的数据。这些 key-value 标注可用于在分布式跟踪上下文中定义应用程序相关的对等类（equivalence classes）。</p>
-
-<h3>2.4 采样 Sampling</h3>
-
-<p>Dapper 的一个关键设计目标是低损耗，因为如果一个新工具的价值还未证实，而对性能有影响的话，服务运维人员是不会愿意去部署这个工具的。而且，我们还想要允许开发人员使用标注 API，而无需担心额外的损耗。我们同时也发现 web 服务确实对性能测量的损耗很敏感。所以，除了把 Dapper 的基本性能测量损耗限制得尽可能小，我们还通过仅记录一部分跟踪信息，来进一步降低损耗。我们将在 4.4 节详细讨论这种跟踪采样模式。</p>
-
-<h3>2.5 跟踪收集</h3>
-
-<p><img src="/images/post/2019/dapper/dapper-5_collection.png" alt="dapper-5_collection" /></p>
-
-<p><em>(图-5. Dapper 收集管道概览)</em></p>
-
-<p>Dapper 的跟踪记录和收集管道分为三个阶段（如图5）。首先，把 span 数据写入(1) 到本地日志文件。然后 Dapper 守护进程从所有生产主机中将他们拉取出来(2)，最终写入(3) 到 Dapper 的 Bigtable 仓库中。Bigtable 中的行表示一次跟踪，列表示一个 span。Bigtable 对稀疏表格布局的支持正适合这种情况，因为每个跟踪都可能有任意多个 span。跟踪数据收集即将应用程序二进制数据传输到中央仓库，其延迟中位数小于 15 秒。98 分位延迟呈现双峰形；大约 75% 时间里，98 分位延迟小于 2 分钟，但是在另外 25% 时间里可能会涨到几小时。</p>
-
-<p>Dapper 还提供了一个 API 来简化对仓库中跟踪数据的访问。Google 开发者利用这个API来构造通用的或者特定应用程序的分析工具。5.1 节将介绍这个 API 的使用。</p>
-
-<h4>2.5.1 带外（out-of-band）跟踪收集</h4>
-
-<p>Dapper 系统在请求树 <code>带外(out-of-band)</code> 进行日志跟踪与收集。这样做有两个原因：首先，带内收集模式（in-band collection scheme）通过 RPC 响应头回传跟踪数据，这会影响应用的网络动态。Google 的许多大型系统里，一次跟踪有几千个 span 的情况并不少见。而即便是在大型分布式跟踪的根节点附近，RPC 响应仍然是相当小的：通常小于 10K。在这种情况下，带内跟踪数据会影响应用数据，并且使后续的分析结果产生偏差。其次，带内收集模式假定所有 RPC 调用时完美嵌套的。而我们发现许多中间件系统会在其后端服务返回最终结果前，返回一个结果给其调用者。带内收集系统不能适用于这种非嵌套的分布式执行模式。</p>
-
-<h3>2.6 安全和隐私考虑</h3>
-
-<p>记录 RPC payload 信息会丰富 Dapper 的跟踪能力，因为分析工具可能能从 payload 数据中找到导致性能异常的模式。然而在某些情况下，payload 数据可能会包含一些信息，这些信息不应该暴露给非授权内部用户，包括正在调试性能的工程师。</p>
-
-<p>由于安全和隐私是不可忽略的问题，所以 Dapper 存储了 RPC 方法名，但不会存储任何 payload 数据。相反，应用级别的标注则提供了一个方便的可选机制：应用开发人员可以选择将那些对以后分析有用的任何数据关联到一个 span 上。</p>
-
-<p>Dapper 还提供了一些设计者没料到的安全性好处。例如 Dapper 通过跟踪公开的安全协议参数，用来监控应用是否满足认证或加密的安全策略。Dapper 还可以提供信息以确保系统是否执行了预期的基于策略的隔离，例如承载敏感数据的应用不与未授权的系统组件交互。这种方法可比代码审核强多了。</p>
-
-<h2>3 Dapper 的部署状况</h2>
-
-<p>我们把 Dapper 作为生产环境跟踪系统超过两年了。本节我们将汇报 Dapper 系统的状态，着重讲解Dapper 如何很好地满足大范围部署、应用级透明等目标的。</p>
-
-<h3>3.1 Dapper 运行时库</h3>
-
-<p>Dapper 代码中最关键的部分也许就是对基础 RPC、线程、控制流库的性能测量了，包含创建 span、采样以及记录到本地磁盘。我们的代码不仅需要轻量，还需要稳定、健壮，因为它与海量应用连接，维护和 bug 修复是很困难的。我们的C++ 性能测量的核心代码少于 1000 行，而 Java 代码则少于 800 行。key-value 标注的代码实现额外有 500 行代码。</p>
-
-<h3>3.2 生产环境覆盖率</h3>
-
-<p>Dapper 的渗透率可以通过两方面来衡量：其一是可以<strong>产生</strong> Dapper 跟踪的生产环境进程比率（即与 Dapper 性能测量运行时库连接的那些），其二是运行 Dapper 跟踪<strong>收集</strong>守护进程的生产环境机器比率。Dapper 守护进程是我们基本机器镜像的一部分，所以实际上它在 Google 的每台服务器上都有。很难确定 Dapper-ready 进程精确比率，因为那些不产生跟踪信息的进程是对 Dapper 不可见的。尽管如此，因为 Dapper 性能测量库几乎无处不在，我们估么着几乎每一个 Google 生产环境进程都支持跟踪。</p>
-
-<p>在有些情况下 Dapper 不能正确地跟踪控制流程。这通常是由于使用了非标准的控制流程，或是由于Dapper 错误地将因果关系归到无关的事件上。Dapper 提供了一个简单的库作为一种变通方法，可以帮助开发者手动控制跟踪的传播。目前有 40 个 C++ 应用和 33 个 Java 应用需要手工的跟踪传播，这对总计几千个应用来说只是很小的一部分。还有很小一部分程序使用的是没有性能测量的通讯库（例如通过原生 TCP Socket 或者 SOAP RPC），所以是不支持 Dapper 跟踪的。但如果真的需要的话，这些应用也可以做到支持 Dapper。</p>
-
-<p>为了生产环境的安全性，Dapper 跟踪是可以被关闭的。实际上在早期它默认是关闭的，直到我们对Dapper 的稳定性和低损耗有信心之后，我们才把它开启了。Dapper 团队偶尔会进行审计检查配置文件的变化，找到那些关闭了跟踪配置的服务。这种变化很少见，并且通常是因为担心监控的消耗。经过对实际消耗的进一步调查和衡量，发现其消耗已经很小了，所以现在这些改动都已经被回退回去了。</p>
-
-<h3>3.3 跟踪标注的使用</h3>
-
-<p>程序员们喜欢用应用程序特定的标注来作为一种分布式调试日志文件，或者通过应用程序的特定功能来对跟踪进行分类。例如所有 Bigtable 的请求都标注了访问的表名。目前 Dapper 中 70% 的 span 和 90% 的 trace 都至少有一个应用指定的标注。</p>
-
-<p>我们有 41 个 Java 应用和 68 个 C++ 应用添加了自定义的标注以便更好地理解 span 内的行为。值得注意的是 Java 开发者在每个 span 上加的标注比 C++ 开发者更多，这也许是因为 Java 的负载更接近最终用户；这类应用经常处理更广的请求，所以控制路径也相对更复杂。</p>
-
-<h2>4 管理跟踪损耗</h2>
-
-<p>跟踪系统的成本是由于生成追踪和收集数据造成的系统性能下降，以及用来存储和分析跟踪数据的资源量。尽管你可以说一个有价值的跟踪系统即便造成一点性能损耗也是值得的，但是我们相信如果基线损耗达到可以忽略的程度，那么一定会对跟踪系统的最初推广大有裨益。</p>
-
-<p>本节我们将展示 Dapper 性能测量操作的消耗、跟踪收集的消耗、以及 Dapper 对生产环境负载的影响。同时还会介绍 Dapper 的适应性采样机制是如何帮助我们平衡低损耗的需求与代表性跟踪的需求。</p>
-
-<h3>4.1 跟踪生成的损耗</h3>
-
-<p>跟踪生成的损耗是 Dapper 性能影响中最重要的部分，因为收集和分析可以在紧急情况下关闭掉。Dapper 运行库生成跟踪的消耗最重要的原因是创建销毁 span 和标注、以及记录到本地磁盘以便后续的收集。非根 span 的创建和销毁平均需要 176 纳秒，而根 span 则需要 204 纳秒。这个差别是因为要对根 span 分配全局唯一 trace id 的时间。</p>
-
-<p>如果一个 span 没有被采样的话，那么额外标注的成本则几乎可以忽略不计，只需 Dapper 运行时在ThreadLocal 中查找，平均花费 9 纳秒。而如果这个 span 被采样的话，对 span 进行字符串标注（见图4）则平均需要花费 40 纳秒。这些数据都是基于 2.2GHz x86 服务器测量得出的。</p>
-
-<p>Dapper 运行时库最昂贵的操作就是写入本地磁盘了，不过这个损耗可以大大减少，因为每个磁盘都会合并对多个日志文件写入操作，并且相对于被跟踪的应用系统来说是异步执行的。尽管如此，日志写入对高吞吐量系统仍然可能有可见的性能影响，尤其是当所有请求都都被跟踪时。在 4.3 节我们对一次Web 搜索过程中生成跟踪的损耗进行了量化。</p>
-
-<h3>4.2 跟踪收集的损耗</h3>
-
-<p>读出本地的跟踪数据也会对正在监控的系统产生影响。表1 展示了在高于实际负载的测试情况下，Dapper 守护进程 CPU 使用率的最坏情况。</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:right;"> Process Count (per host) </th>
-<th style="text-align:right;"> Data Rate (per process) </th>
-<th style="text-align:right;"> Daemon CPU Usage (single CPU core) </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">                       25 </td>
-<td style="text-align:right;">                 10K/sec </td>
-<td style="text-align:right;">                             0.125% </td>
-</tr>
-<tr>
-<td style="text-align:right;">                       10 </td>
-<td style="text-align:right;">                200K/sec </td>
-<td style="text-align:right;">                             0.267% </td>
-</tr>
-<tr>
-<td style="text-align:right;">                       50 </td>
-<td style="text-align:right;">                  2K/sec </td>
-<td style="text-align:right;">                             0.130% </td>
-</tr>
-</tbody>
-</table>
-
-
-<p><em>(表-1. Dapper 守护进程在负载测试中 CPU 资源使用率)</em></p>
-
-<p>Dapper 守护进程在跟踪收集过程中，对生产环境单核 CPU 的占用率从未超过 0.3%，并且内存占用也很小。同时我们把 Dapper 守护进程在内核 scheduler 中的优先级限制到尽可能最低，以防在高负载机器上出现 CPU 竞争。</p>
-
-<p>Dapper 对网络资源的消耗也轻量，我们仓库中每个 span 平均只有 426 byte。Dapper 跟踪数据在Google 生产环境中占用的网络流量小于 0.01%。</p>
-
-<h3>4.3 对生产环境负载的影响</h3>
-
-<p>高吞吐量的在线服务处理每个请求都会用到大量的机器，这种在线服务最有需求进行高效的跟踪；他们会生成大量的跟踪数据，同时也对性能影响是最敏感的。在表2 中我们用 web 搜索集群作为例子，通过调整采样率，来测量 Dapper 对平均延迟和吞吐量的性能影响。</p>
-
-<table>
-<thead>
-<tr>
-<th style="text-align:right;"> Sampling frequency </th>
-<th style="text-align:right;"> Avg. Latency (% change) </th>
-<th style="text-align:right;"> Avg. Throughput (% change) </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:right;">                1/1 </td>
-<td style="text-align:right;">                   16.3% </td>
-<td style="text-align:right;">                     -1.48% </td>
-</tr>
-<tr>
-<td style="text-align:right;">                &frac12; </td>
-<td style="text-align:right;">                   9.40% </td>
-<td style="text-align:right;">                     -0.73% </td>
-</tr>
-<tr>
-<td style="text-align:right;">                &frac14; </td>
-<td style="text-align:right;">                   6.38% </td>
-<td style="text-align:right;">                     -0.30% </td>
-</tr>
-<tr>
-<td style="text-align:right;">                1/8 </td>
-<td style="text-align:right;">                   4.12% </td>
-<td style="text-align:right;">                     -0.23% </td>
-</tr>
-<tr>
-<td style="text-align:right;">               1/16 </td>
-<td style="text-align:right;">                   2.12% </td>
-<td style="text-align:right;">                     -0.08% </td>
-</tr>
-<tr>
-<td style="text-align:right;">             1/1024 </td>
-<td style="text-align:right;">                  -0.20% </td>
-<td style="text-align:right;">                     -0.06% </td>
-</tr>
-</tbody>
-</table>
-
-
-<p><em>(表-2. Dapper 采样频率对 Web 搜索集群延迟及吞吐量的影响。延迟及吞吐量的实验误差分别为 2.5% 和 0.15%)</em></p>
-
-<p>可以看到，虽然对吞吐量的影响不是很明显，但为了避免明显的延迟，跟踪采样还是非常有必要的。然而，当采样率小于 1/16 时的延迟和吞吐量损失是在实验误差范围内的。实践中，我们发现对于高容量服务来说，即便把采样率设为 1/1024 这样低，仍然能够得到足够多的跟踪数据。保持 Dapper 的性能损耗基线极其低是很重要的，因为这就能为应用程度提供一个宽松的环境来使用完整的标注 API，而无需担心性能损失。使用低采样率还有一个额外的好处，可以让主机磁盘中的数据在被垃圾回收之前能持久化更长的时间，这就让收集组件有了更多的灵活性。</p>
-
-<h3>4.4 适应性采样</h3>
-
-<p>Dapper 对于任何给定进程的损耗是与单位时间内进程跟踪的数目成正比的。Dapper 的第一个生产版本在 Google 的几乎所有进程上使用同一个采样率，每 1024 个候选中平均采样一个。这个简单的方案对高吞吐量在线服务是有效的，因为大多数我们感兴趣的事件仍然会经常出现并被捕捉到。</p>
-
-<p>然而，低流量的服务在这种低采样率下就可能会错失重要的事件，而更高采样率带来的性能损耗是可接受的。针对这种系统的解决方案是覆盖默认采样率，而这就需要手工干预，我们不想在 Dapper 中出现这种手工干预。</p>
-
-<p>我们正在部署一种适应性的采样机制，不使用统一的采样率，而使用单位时间内的期望采样率。这样，低流量负载会自动提高采样率，而高流量负载则会自动降低采样率，从而掌控损耗。实际采样率会和跟踪数据一起记录下来；这有利于在基于 Dapper 数据的分析工具中精准使用采样率。</p>
-
-<h3>4.5 应对激进采样</h3>
-
-<p>Dapper 新用户往往觉得低采样率（高流量服务中通常会低于 0.01%）会干扰他们的分析。我们在Google 中应用的经验让我们相信，对于高吞吐量服务来说，激进采样并不会妨碍最重要的那些分析。如果一个重要的执行模式在这种系统中出现过一次，那么就会出现上千次。每秒请求几十次而不是上万次的那些低流量服务则可以承受跟踪每一个请求；这驱动着我们往适应性采样方向前进。</p>
-
-<h3>4.6 收集过程中的额外采样</h3>
-
-<p>上述采样机制用来尽量减少与 Dapper 运行时库协作的应用程序中的性能损耗。Dapper 团队还需要控制写入中央仓库的数据量，为此我们引入了第二轮采样。</p>
-
-<p>目前我们生产集群每天产生超过 1 TB 的采样跟踪数据。Dapper 用户希望跟踪数据从生产进程中记录下来后最少保留两周时间。逐渐增长的跟踪数据带来了好处，同时 Dapper 仓库的机器和磁盘存储成本也在增加，我们需要作出权衡。对请求的高采样率还会使得 Dapper 收集器接近 Dapper Bigtable 仓库的写入吞吐量极限。</p>
-
-<p>为了维持物资资源的需求和 Bigtable 的累积写入吞吐量之间的灵活性，我们在收集系统自身上增加了额外的采样。一个特定 trace 中的所有 span 都共享同一个trace id，即便这些span可能横跨数千个不同的主机。<strong>对于在收集系统中的每个 span，我们将其 trace id 哈希成一个标量 z （0&lt;=z&lt;=1）。如果 z 小于我们的收集采样系数，我们就保留这个 span 并将它写入 Bigtable；否则就丢弃</strong>。在采样决策中通过依靠 trace id，我们要么采样整个 trace，要么抛弃整个 trace，而不会对 trace 中的某些span进行处理。我们发现这种额外配置参数让我们对收集管道的管理变得简单得多，因为可以很容易地调整全局写入率，仅仅修改配置文件中的一个参数即可。</p>
-
-<p>如果整个跟踪和收集系统都是用同一个采样参数则会更简单，但是那样就无法灵活地快速调整所有部署环境中的运行时采样配置。我们选择的运行时采样率产生的数据会稍微高于我们能写入仓库的数据，而我们可以通过调整收集系统中的二级采样参数对写入速度进行限流。因为我们可以通过对二级采样配置一下就能增加或减少全局覆盖率和写入速率，所以 Dapper 管道的维护工作变得更简单了。</p>
-
-<h2>5 通用 Dapper 工具</h2>
-
-<p>几年前当 Dapper 还是一个原型时，在开发者的耐心支持下才能把 Dapper 用起来。从那时起，我们逐渐建立了收集组件、编程接口、以及基于 web 的用户交互界面，帮助 Dapper 用户独立地解决自己的问题。本节将总结哪些方法有用，哪些没用，并提供这些通用的分析工具的基本使用信息。</p>
-
-<h3>5.1 Dapper Depot API</h3>
-
-<p>Dapper Deport API 又称 DAPI，通过它可以直接访问 Dapper 区域仓库中的分布式跟踪数据。DAPI 和 Dapper 跟踪仓库是串行设计的，DAPI 意在为 Dapper 仓库中的原始数据提供一个干净而直观的接口。我们的用例推荐如下三种方式来访问跟踪数据：</p>
-
-<p><strong>通过trace id访问（Access by trace id）：</strong>DAPI 可以根据全局唯一的 trace id 来加载任何一次跟踪。</p>
-
-<p><strong>批量访问（Bulk access）：</strong>DAPI 可通过 MapReduce 来并行访问数亿条 Dapper 跟踪数据。用户重写一个虚拟函数，它的唯一参数接受一个 Dapper 跟踪信息，然后框架将会对用户指定时间窗口内的每一条跟踪信息调用一次该函数。</p>
-
-<p><strong>索引访问（Indexed access）：</strong>Dapper 仓库支持一个唯一索引，可用于匹配我们通用的访问模式。该索引将通用请求的跟踪特性映射到特定的 Dapper 跟踪。因为 trace id 是伪随机创建的，所以这是快速访问某个特定服务或特定主机追踪信息的最佳方式。</p>
-
-<p>所有这三种访问方式都将用户引导到特定的 Dapper 追踪记录。正如 2.1 节所述，Dapper 的跟踪信息是由 trace span 组成的树，所以 <code>Trace</code> 数据结构就是一个由不同 <code>Span</code> 结构组成的遍历树。Span 通常对应 RPC 调用，在这种情况下，RPC 的耗时信息是有的。通过 span 结构还可访问基于时间戳的引用标注信息。</p>
-
-<p>选择合适的用户索引是DAPI 设计中最具挑战性的部分。索引要求的压缩存储只比实际数据本身小 26%，所以成本是巨大的。最初我们部署了两个索引：<strong>一个是主机索引，另一个是服务名索引</strong>。然而我们发现相对于存储成本来说，用户对主机索引的兴趣尚不足够。当用户对某台机器的跟踪感兴趣的时候，他们也会对特定的服务感兴趣，所以我们最终将这两个索引合并成一个组合索引，允许按服务名、主机、时间戳高效地进行查找。</p>
-
-<h4>5.1.1 DAPI 在 Google 内部的使用</h4>
-
-<p>Dapper 在 Google 的使用有三类：使用 DAPI 的持久在线 web 应用，可在命令行启动的维护良好的基于 DAPI 的工具，以及编写、运行、然后即被遗忘的一次性分析工具。我们知道的有3 个基于DAPI的持久性应用、8个基于DAPI的分析工具、约15~20个一次性分析工具。在这之后就很难统计这些工具了，因为开发者可以构建、运行、然后丢弃，而不需要让 Dapper 团队知道。</p>
-
-<h3>5.2 Dapper 用户接口</h3>
-
-<p>绝大多数情况下，人们通过基于 web 的用户交互接口来使用 Dapper。篇幅所限我们不能展示每一个特性，不过图6 列出了一个典型的用户工作流。</p>
-
-<p><img src="/images/post/2019/dapper/dapper-6_workflow.png" alt="dapper-6_workflow" /></p>
-
-<p><em>(图-6. 通用 Dapper 用户接口中的一个典型用户工作流)</em></p>
-
-<ol>
-<li>用户输入他们关心的服务名以及时间窗口，再加上任何需要来区分跟踪模式的信息（例如span名称）。同时指定与他们的搜索最相关的成本度量（例如服务响应时间）。</li>
-<li>然后就会出现一个性能概要的大表格，总结了与给定服务相关的所有分布式执行模式。用户可以根据他们的需要对执行模式进行排序，并选择其中一个查看更多细节。</li>
-<li>一旦选中一个分布式执行模式，用户则会看到关于这个执行模式的图形化描述。被选中的服务在图表中央被高亮显示。</li>
-<li>在创建与第 1 步选中的成本度量相关的统计信息后，Dapper 用户界面会展示一个简单的频率直方图。所以在这个例子中，我们能看到选中的执行模式相关的响应时间大概是对数正态分布的。用户还会看到一个特定跟踪样例的列表，这些样例分布在直方图的不同区间。本例中，用户点击第二个跟踪样例，在 Dapper 用户界面打开跟踪详细视图。</li>
-<li>绝大多数 Dapper 用户最终会检查特定的跟踪，希望收集系统行为根本原因的信息。我们没有足够的空间去做跟踪视图的审查，但我们有个全局时间线，并能交互地展开或折叠子树，这是我们的特点。分布式跟踪树的连续层用内嵌的不同颜色的矩形表示。每个 RPC span 分为服务进程处理时间（绿色）和网络消耗时间（蓝色）。用户标注没有显示在这个截图中，不过可以以 span 为基础将他们选择性地包含在全局时间线上。</li>
+</li>
 </ol>
 
 
-<p>对于想查询实时数据的用户，Dapper 用户界面支持直接与每台生产环境服务器上的守护进程通信。在这个模式下，不能像上图那样查看系统级别的图表，不过仍然很容易地基于耗时和网络特性选择一个跟踪。在这个模式下，可在几秒内实时地查到数据。</p>
+<p>We configured Apache Pulsar 2.9.1 to run with the 3/3/2 persistence policy, which writes entries to 3 storage nodes and waits for 2 confirmations. We are deploying 1 broker and 1 bookie for each of the 3 VMs we are using.</p>
 
-<p>根据我们的日志，每个工作日大概有 200 个 Google 工程师使用 Dapper UI；每周大约有 750 到 1000个独立用户访问。忽略掉发布新功能的因素，这个数据每个月都是一致的。用户通常会发送出特定跟踪的链接，这会不可避免地在跟踪查询中产生很多一次性的、短期的流量。</p>
+<p>我们以 3/3/2 持久化策略运行 Apache Pulsar 2.9.1，将 Entry 写入 3 个存储节点，并等待 2 个节点的确认。我们在 3 个虚拟机上均部署了 1 个 Broker 以及 1 个 Bookie。</p>
 
-<h2>6 经验</h2>
+<p>We used Apache Kafka 3.0.0 and the configuration recommended by Confluent in its fork of the OpenMessaging benchmark.</p>
 
-<p>Dapper 在 Google中被广泛使用，通过 Dapper 用户界面直接访问，或者通过编程 API 以及基于这些API 构建的程序访问。本节我们不打算罗列出每一种已知的 Dapper 的使用方式，而会尝试讲解 Dapper 使用的"基本向量"，阐述何种应用是最成功的。</p>
+<p>我们使用 Apache Kafka 3.0.0 并使用 Confluent 在其 OpenMessaging 基准分支中推荐的配置。</p>
 
-<h3>6.1 开发过程中使用 Dapper</h3>
+<p>Details on the Kafka configurations include:</p>
 
-<p>Google AdWords 系统建立在关键词定位准则和相关文字广告的大型数据库之上。当新的关键词被插入或修改时，必须对他们进行校验，以遵循服务策略条款（例如检查不恰当的语言）；这个过程使用自动审查系统来做的话会更有效率。</p>
+<p>Kafka 的详细配置信息如下：</p>
 
-<p>当从头开始重新设计一个广告审查服务时，团队从第一个系统原型开始，直到最终的系统维护，都使用了 Dapper。他们的服务通过 Dapper 有了以下方面的提高：</p>
-
-<p><strong>性能（Performance）：</strong>开发人员跟踪请求延迟目标的进度，精确找到可优化的机会。Dapper 还被用来找出关键路径中的不必要请求序列（这种不必要请求通常源于不是开发者自己开发的子系统），然后促使相关团队修复这些问题。</p>
-
-<p><strong>正确性（Correctness）：</strong>广告审查服务是围绕大型数据库系统的。系统同时具有只读副本服务器（廉价访问），以及可读写的主服务器（昂贵访问）。他们通过 Dapper 找到了好些不必要地访问主服务器而不是访问副本服务器的查询。Dapper 现在可用于解释主服务器被直接访问的原因，确保重要系统的不变式。</p>
-
-<p><strong>理解性（Understanding）：</strong>广告审查查询跨越多种类型的系统，包括 Bigtable（即前文提到的数据库）、多维索引服务、以及许多其他 C++ 和 Java 后端服务。Dapper 跟踪用来评估总查询成本，促进对业务重新设计，使得系统依赖的负载最小。</p>
-
-<p><strong>测试（Testing）：</strong>新代码的发布会经过一个 Dapper 跟踪的 QA 过程，验证正确的系统行为和性能。这个过程中发现了很多问题，包括广告审查代码自身的问题，及其依赖包的问题。</p>
-
-<p>广告审查团队广泛使用了 Dapper 标注 API。Guice<sup>[13]</sup> 开源的 AOP 框架用来在重要的软件组件上标注 <code>@Traced</code>。跟踪信息进一步标注的信息有重要子程序的输入输出大小、状态消息、以及其他调试信息；否则这些信息会被发到日志文件中。</p>
-
-<p>Dapper 在广告审查团队的应用有一些不足的地方。例如，他们想在交互时间内搜索所有的跟踪标注，然而必须运行自定义的 MapReduce 或者手工检查每个跟踪。另外，Google 内还有其他的系统对通用目的的调试日志进行收集并进行集中化，把这些系统中的海量数据和 Dapper 仓库进行整合是有价值的。</p>
-
-<p>即便如此，总的来说广告审查团队估计通过 Dapper 跟踪平台的数据分析，他们的延迟数据已经优化了两个数量级。</p>
-
-<h4>6.1.1 与异常监控的集成</h4>
-
-<p>Google 维护了一个从运行进程中不断收集并集中异常报告的服务。如果这些异常发生在被采样的Dapper 跟踪中，则异常报告中会包含相关的 trace id 和 span id。然后异常监控服务前端就会在特定异常报告里提供一个链接，指向相应分布式跟踪。广告审查团队利用这个特性，来了解异常监控服务发现的那些 bug 的更大范围的上下文。Dapper 平台通过导出基于简单唯一 ID 构建的接口，相对容易地集成到其他事件监控系统中。</p>
-
-<h3>6.2 解决长尾延迟</h3>
-
-<p>由于移动部件的数量、代码库及部署的规模，调试一个像全文搜索（universal search）那样的服务是非常有挑战性的。这里我们描述在减轻全文搜索延迟分布的长尾效应上做的努力。Dapper 能够验证端到端延迟的假设，更具体地说，它能够<strong>验证全文搜索请求的关键路径</strong>。当系统不仅涉及多个子系统，还涉及多个开发团队时，即便我们最好最有经验的工程师也经常猜错端到端性能差的根本原因。在这种情况下，Dapper 可以提供必需的事实，可以回答许多重要的性能问题。</p>
-
-<p>一个工程师在调试长尾延迟的过程中建立了一个小型库，可以根据 DAPI <code>Trace</code>对象推断出层次性的关键路径。这些关键路径结构可用来诊断问题、为全文搜索可预期的性能改进调整优先级。Dapper 的这项工作引出了下列发现：</p>
+<ol>
+<li>Uses in-memory replication (using the OS page-cache) but it’s not guaranteed to be on disk when a producer is acknowledged.
+使用内存复制（利用操作系统页缓存），但发送确认给生产者时不保证数据已被存储到磁盘。</li>
+<li>Uses the recommended Confluent setup to increase the throughput compared to the defaults:
+使用 Confluent 推荐的配置，达到比默认配置更高的吞吐量：
 
 <ul>
-<li>关键路径上短暂的网络性能退化不会影响系统吞吐量，但能对延迟异常值产生巨大影响。在图7 中，大多数全文搜索的慢跟踪都在关键路径上有网络退化。
-<img src="/images/post/2019/dapper/dapper-7_network-lag.png" alt="dapper-7_network-lag" />
-<em>(图-7. 关键路径上遇到非正常网络延迟的全文搜索跟踪，与端到端请求延迟的关系)</em></li>
-<li>许多有问题的昂贵查询模式都源自服务间不经意的交互。一旦发现，他们往往很容易纠正；但是在没有 Dapper 时如何发现他们是很困难的。</li>
-<li>通用查询是从 Dapper 之外的安全日志仓库中获取，并且使用 Dapper 的唯一 trace id，与Dapper 仓库做关联。这种映射随后被用于构建全文搜索每个独立子系统中的慢查询列表。</li>
+<li>num.replica.fetchers=8</li>
+<li>message.max.bytes=10485760</li>
+<li>replica.fetch.max.bytes=10485760</li>
+<li>num.network.threads=8</li>
 </ul>
+</li>
+<li>Uses Producers settings to ensure a minimum replication factor of 2:
+配置生产者确保最小复制因子为 2：
+
+<ul>
+<li>acks=all</li>
+<li>replicationFactor=3</li>
+<li>min.insync.replicas=2</li>
+</ul>
+</li>
+</ol>
 
 
-<h3>6.3 推断服务依赖</h3>
+<p><strong>Note</strong>: For both Kafka and Pulsar, the clients were configured to use ZGC to get lower GC pause time.</p>
 
-<p>在任意指定时刻，Google 的典型计算集群是成千上万个逻辑"任务"组成；一系列进程执行通用函数。Google 维护着许多这种集群，当然我们发现一个计算集群中的任务往往依赖其他集群中的任务。由于任务间的依赖是动态改变的，所以不可能仅仅从配置信息中推断出所有的服务间依赖。尽管如此，公司内部的许多进程要求知道准确的服务依赖信息，以便找出瓶颈，计划服务的迁移。Google 的"服务依赖"项目通过使用跟踪标注以及 DAPI MapReduce 接口，自动探测服务间的依赖。</p>
+<p><strong>注意</strong>：对于 Kafka 和 Pulsar，客户端都配置使用 ZGC 来获得更低的 GC 停顿时间。</p>
 
-<p>使用 Dapper 核心性能检测以及 Dapper 的跟踪标注，服务依赖项目能够推断出任务之间的依赖关系，还能推断出这些任务所依赖的程序组件。例如，所有 Bigtable 的操作被标记上受影响的表名。通过 Dapper 平台，服务依赖团队就可以自动推断出多种服务粒度的依赖关系。</p>
+<h2>III. Benchmark Tests &amp; ResultsIII - 基准测试用例及结果</h2>
 
-<h3>6.4 不同服务的网络使用率</h3>
+<h3>A. Test #1: Maximum Throughput - 测试 #1: 最大吞吐量</h3>
 
-<p>Google 在网络结构上投入了大量的人力物力。毫无疑问，网络运维人员要关注单个硬件的监控信息、自定义工具和 dashboard，来查看全局网络使用情况的鸟瞰图。网络运维人员可以一览整个网络的健康状况，但是当出现问题时，他们却缺少工具找到网络负载问题在应用级别的罪魁祸首。</p>
+<p>This test measures the maximum “sustainable throughput” reachable on a topic. Eg: The max throughput that is able to push from producers through consumers, without accumulating any backlog.</p>
 
-<p>虽然 Dapper 并不是设计用来做链路级的监控，但我们发现它非常适合集群之间网络活动应用级别分析的任务。Google 利用 Dapper 平台得以建立不断更新的终端，来显示集群间网络流量中最活跃的那些应用级别端点。此外，通过 Dapper 我们可以找出引起昂贵网络请求的跟踪，而不是面对孤立的机器。在 Dapper API 之上建立 dashboard 花费的时间没超过两周。</p>
+<p>本测试测量在一个主题上可达到的最大“可持续吞吐量”。亦即在不积压 Backlog 的情况下，能够从生产者推送到消费者的最大吞吐量。</p>
 
-<h3>6.5 分层及共享的存储系统</h3>
+<h4>1. Test #1 / Case #1: Maximum Throughput with 1 Partition1 - 测试 #1 / 场景 #1: 单分区的最大吞吐量</h4>
 
-<p>Google 的许多存储系统都由多个独立的复杂层次的分布式基础设施组成。例如，Google App Engine<sup>[5]</sup> 就是建立在一个可扩展实体存储系统之上。这个实体存储系统基于底层的 BigTable 暴露出一些 RDBMS 功能。Bigtable 则同时使用 Chubby<sup>[7]</sup>（一个分布式锁系统）及 GFS。此外，像 BigTable这类系统会作为共享服务来管理，以简化部署并更好地利用计算资源。</p>
+<p>This first test uses a topic with a single partition to establish the boundary for ingesting data in a totally ordered way. This is common in all the use case scenarios where a single history of all the events in a precise order is required, such as “change data capture” or event sourcing.</p>
 
-<p>在这种分层系统中，并不总是很容易发现终端用户的资源消费模式。例如，给定 BigTable 单元对 GFS 的大量请求可能来自一个用户或者许多用户，而在 GFS 层面这两种不同的使用模式的区别是模糊的。而且，如果缺乏像 Dapper 这种工具的话，对这种共享服务的竞争同样是难以调试的。</p>
+<p>Driver files: <a href="https://github.com/openmessaging/benchmark/blob/master/driver-pulsar/pulsar.yaml">pulsar.yaml</a>, <a href="https://github.com/openmessaging/benchmark/blob/master/driver-kafka/kafka-throughput.yaml">kafka-throughput.yaml </a></p>
 
-<p>5.2节展示的 Dapper 用户界面可以分组聚合共享服务横跨多个客户端的跟踪性能信息。这就使得共享服务的负责人可以容易地根据多个指标对其用户进行排名（例如根据inbound网络负载、outbound网络负载、或者服务请求的总时间）。</p>
+<p>Workload file: <a href="https://github.com/openmessaging/benchmark/blob/master/workloads/max-rate-1-topic-1-partition-4p-1c-1kb.yaml">max-rate-1-topic-1-partition-4p-1c-1kb.yaml</a></p>
 
-<h3>6.6 用 Dapper 来救火</h3>
+<p>第一个测试用例使用单分区主题，测量以完全有序方式消费数据的吞吐量上限。这个设定在那些要求按精确顺序记录所有事件的单一历史记录的场景中很常见，例如“变更数据捕获”（CDC）或事件溯源等场景。</p>
 
-<p>Dapper 对于某些救火任务是有用的。这里的"救火"指的是对处于危险中的分布式系统进行的操作。典型情况下，Dapper 用户在进行救火时需要访问新鲜数据，并且没有时间写新的 DAPI 代码，也没时间等待周期性的报告运行。</p>
+<p>驱动文件：<a href="https://github.com/openmessaging/benchmark/blob/master/driver-pulsar/pulsar.yaml">pulsar.yaml</a>, <a href="https://github.com/openmessaging/benchmark/blob/master/driver-kafka/kafka-throughput.yaml">kafka-throughput.yaml </a></p>
 
-<p>对于那些正在经历高延迟的服务，或者更糟的在正常负载下都会超时的服务，Dapper 用户界面通常能把这些延迟的瓶颈隔离出来。通过与 Dapper 守护进程直接通信，可以容易地收集特定高延迟跟踪的新鲜数据。在灾难性故障时，通常没必要分析统计数据来确定根本原因，而查看示例跟踪就足够了。</p>
+<p>负载文件：<a href="https://github.com/openmessaging/benchmark/blob/master/workloads/max-rate-1-topic-1-partition-4p-1c-1kb.yaml">max-rate-1-topic-1-partition-4p-1c-1kb.yaml</a></p>
 
-<p>然而，6.5 节描述的那种共享存储服务则要求当用户活动突然激增时能快速聚合信息。对于事后检验，共享服务仍然可以利用 Dapper 的聚合数据，但是除非可以在十分钟之内完成对 Dapper 数据的批量分析，否则 Dapper 对共享存储服务的救火就不会那么有用了。</p>
+<h5>a. Case #1 Results: Maximum Throughput with 1 Partition - 场景 #1 结果: 单分区的最大吞吐量</h5>
 
-<h2>7 其他经验教训</h2>
+<p><img src="https://lh6.googleusercontent.com/ixaYLY5FjmL0aPBr9QBsj3ugP2i1huR2OjTxZY8Y38VAWpmv2dzsL1aTaJlc7IpCBvoDcQqAJezG0_V-lNwji9nn2BrxD2NtTWjyb6GMV1RMhDerFA4ldfH7-DkU-jmgrs7se9UvNdS0rNTlmWo48Q" alt="img" /></p>
 
-<p>虽然我们在 Dapper 上的经验已经基本满足我们的预期，但是也有一些积极的方面是我们没有充分预料到的。我们对非计划中的用例数目感到高兴。除了在第6节描述的一些经验外，还包括资源核算系统，用来检查敏感服务是否遵从指定的通讯模式的工具，RPC 压缩策略的分析工具，等等。这些非计划中的用例一定程度上归功于我们通过一个简单的编程接口开放了跟踪数据存储，这就允许我们利用上这个大得多的社区的创造力。Dapper 对旧系统的支持也比预期更简单，只需要基于新版本的库重新编译即可，这个库提供通用线程、控制流和 RPC 框架。</p>
+<table>
+<thead>
+<tr>
+<th>               </th>
+<th> 禁用 Journaling 情况下的 Apache Pulsar </th>
+<th> 启用 Journaling 情况下的 Apache Pulsar (默认) </th>
+<th> Apache Kafka </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 吞吐量 (MB/s) </td>
+<td> 700                                    </td>
+<td> 580                                           </td>
+<td> 280          </td>
+</tr>
+</tbody>
+</table>
 
-<p>Dapper 在 Google 内部的广泛使用还为我们提供了关于其局限性的宝贵反馈。下面我们将介绍一些我们已知的最重要的一些不足之处。</p>
 
-<p><strong>合并的影响（Coalescing effects）：</strong>Dapper 模型隐式地设想不同子系统一次只会处理一个跟踪请求。在某些情况下，在对一组请求执行操作之前缓冲一些请求会更有效率（例如对磁盘写入进行合并）。在这些情况下，一个跟踪请求可以看做是一个大型工作单元(a traced request can be blamed for a deceptively large unit of work)。此外，如果多个跟踪请求被批量执行，那么只会有一个请求被 span使用，这是因为我们我们对每个跟踪只会有一个唯一 trace id（if multiple traced requests are batched together, only one of them will appear responsible for the span due to our reliance on a single unique trace id for each trace）。我们正在考虑解决方案以识别这种情况，并记录最少的信息来区别这些请求。</p>
+<p><em>Figure 2: Single partition max write throughput (MB/s): Higher is better.</em></p>
 
-<p><strong>跟踪批处理系统（Tracing batch workloads）：</strong>Dapper 的设计是针对在线服务系统，最初的目标是了解 Google 的用户请求引起的系统行为。然而，离线的数据密集型系统也可以从对性能的洞悉中获益，例如适合 MapReduce 模型的系统。在这种情况下，我们需要把 trace id 关联到一些其他的有意义的工作单元，例如输入数据的 key（或key范围），或是一个 MapReduce shard。</p>
+<p><em>图 2：单分区的最大写入吞吐量 (MB/s)：数值越高，代表性能越好</em></p>
 
-<p><strong>寻找根本原因（Finding a root cause）：</strong>Dapper 可以有效地确定系统中的哪个部分正在经历速度变慢，但并不总是足够找出问题的根本原因。举个例子，一个请求变慢可能并不是因为他自己的行为，而是因为其他请求还排在他前面。程序可以利用应用级别的标注把队列大小和过载情况转播到跟踪系统。同时，如果这种情况很常见，那么在ProfileMe<sup>[11]</sup> 中提出的成对采样技术就很有用了。它对两个时间重叠的请求进行采样、并观察它们在系统中的相对延迟。</p>
+<h5>b. Case #1 Analysis - 场景 #1 分析</h5>
 
-<p><strong>记录内核级别的信息（Logging kernel-level information）：</strong>内核可见事件的详细信息有时对确定问题根本原因很有用。我们有一些工具能够跟踪或者描述内核的执行，但是要想将这些信息绑定到用户级别的跟踪上下文上，用通用或是不那么突兀的方式是很难的。我们正在研究一种可能的妥协方案，对用户层面上的一些内核级别活动参数做快照，将其关联到一个活动 span 上。</p>
+<p>The difference in throughput between Pulsar and Kafka reflects how efficiently each system is able to “pipeline” data across the different components from producers to brokers, and then the data replication protocol of each system.</p>
 
-<h2>8 相关工作</h2>
+<p>Pulsar 与 Kafka 之间的吞吐量差异反映了这两个系统如何有效地将数据跨不同组件从生产者 “传输” 到 Broker，也反映了这两个系统数据复制协议的不同。</p>
 
-<p>在分布式系统跟踪领域，有一套完整的体系，一些系统主要关注定位到故障位置，另一些系统关注性能优化。Dapper 曾被用于故障发现，但它在发现性能问题、提升对大型复杂系统行为的理解方面更有用。</p>
+<p>Pulsar achieves a throughput of 700 MB/s and 580 MB/s, respectively, on the single partitions, compared to Kafka’s 280 MB/s. This is possible because the Pulsar client library combines messages into batches when sending them to the brokers. The brokers then pipeline data to the storage nodes.</p>
 
-<p>Dapper 与黑盒监控系统有关，就像 Project5<sup>[1]</sup>、WAP5<sup>[15] </sup>和 Sherlock<sup>[2]</sup>，黑盒监控系统不依赖于运行时库的性能测量，能够实现更高度的应用级透明。黑盒的缺点是有些不精确，并在统计推断因果路径过程中可能损耗更大。</p>
+<p>Pulsar 在单分区上的吞吐量分别达到了 700 MB/s 和 580 MB/s，而 Kafka 在单分区上的吞吐量为 280 MB/s。这是因为 Pulsar 客户端库在发送消息到 Broker 之前会将多条消息合并成批量消息。然后 Broker 再将数据传输到存储节点。</p>
 
-<p>对分布式系统的监控来说，显式的基于标注的中间件或应用本身的性能测量或许是更受欢迎的方式。Pip<sup>[14] </sup>和 Webmon<sup>[16] </sup>更依赖于应用级的标注，而 X-Trace<sup>[12]</sup>、Pinpoint<sup>[9] </sup>和 Magpie<sup>[3]</sup> 则侧重对库和中间件的修改。Dapper 更接近后者。Dapper 与 Pinpoint、X-Trace 以及最新版本的 Magpie 类似，使用全局 ID 将分布式系统不同部分的相关事件关联起来。同样和这些系统类似，Dapper 把性能测量隐藏在通用软件模块中，尝试避免标注应用程序。Magpie 放弃使用全局 ID，就不用处理正确传播全局 ID 带来的挑战，而是为每个应用写入<code>事件模式（event schema）</code>并显式地描述事件之间的关系。我们不清楚 schema 在实践中实现透明性到底有多有效。X-Trace 的核心标注需求比 Dapper 更有雄心，不仅在节点边界收集跟踪，还在节点内部不同软件层级间收集跟踪。而我们对于性能测量低损耗的要求迫使我们不能采用这种模式，而是朝着把一个请求连接起来完整跟踪所能做到的最小代价而努力。Dapper 跟踪仍然能通过可选的应用标注来扩展。</p>
+<p>In Kafka, two factors impose a bottleneck on the maximum achievable throughput: (1) the producer default limit of 5 maximum outstanding batches; and (2) the producer buffer size (batch.size=1048576) recommended by Confluent for high throughput.</p>
 
-<h2>9 总结</h2>
+<p>在 Kafka 中，有两个因素妨碍了最大可达吞吐量：(1) 生产者默认限制为 5 个最大未完成批次；(2) Confluent 为实现高吞吐量而推荐的生产者缓冲区大小为 (batch.size=1048576) 。</p>
 
-<p>本文介绍了 Google 生产环境下的分布式系统跟踪平台 Dapper，并汇报了我们开发和使用 Dapper 的经验。Dapper 部署在 Google 的几乎所有系统上，使得大型系统得以被跟踪而无需修改应用程序，同时没有明显的性能影响。通过 Dapper 主跟踪用户界面的受欢迎程度可以看出 Dapper 对开发团队和运维团队的实用性，本文通过一些使用场景的例子也阐明了 Dapper 的实用性，甚至有些使用场景 Dapper 的设计者都未曾预料到。</p>
+<p><strong>Note</strong>: Increasing the batch.size setting has negative effects on the latency. This is not the case for Pulsar producers, where the batching latency is controlled by the <code>batchingMaxDelay()</code> setting, in addition to the batch max size.</p>
 
-<p>据我们所知，本文是第一篇汇报一个大型的生产环境下的分布式系统跟踪框架的论文。实际上我们主要的贡献源于这样一个事实：我们汇报回顾的系统已经被使用超过两年了。我们发现，决定结合最小化应用透明的跟踪功能以及对程序员提供简单的 API 来增强跟踪是非常值得的。</p>
+<p><strong>注意</strong>：在 Kafka 中增加 batch.size 参数会对延迟产生负面影响。而 Pulsar 生产者则不然，其批处理延迟除了受批次最大大小影响，还受 <code>batchingMaxDelay()</code> 控制。</p>
 
-<p>我们相信，Dapper 比之前基于标注的分布式跟踪系统达到了更高的应用级透明性，只需要很少的人工干预。虽然这也归功于我们计算部署的一定程度上的同质性，但仍然是一个重大的挑战。最重要的是，我们的设计提出了一些实现应用级透明的充分条件，我们希望能够对更异质的环境下的解决方案有所帮助。</p>
+<p>With the increase in single topic throughput, Pulsar provides developers and architects more options in how they build their system. Teams can worry less about finding optimal partition keys and focus instead on mapping their data into streams.</p>
 
-<p>最后，通过把 Dapper 跟踪仓库开放给内部开发者，促使了更多分析工具的产生，而仅仅由 Dapper 团队封闭地独自开发肯定产生不了这么多工具，这大大提高了设计和实现的成就。</p>
+<p>随着单主题吞吐量的增加，Pulsar 为开发人员和架构师提供了更多的构建系统的选择。团队不必操心寻找最佳分区键，而可以专注于将数据映射到流中。</p>
 
-<h2>Acknowledgments</h2>
+<h4>2. Test #1 / Case #2: Maximum Throughput with 100 Partitions - 测试 #1 / 场景 #2: 100 个分区的最大吞吐量</h4>
 
-<p>We thank Mahesh Palekar, Cliff Biffle, Thomas Kotzmann, Kevin Gibbs, Yonatan Zunger, Michael Kleber, and Toby Smith for their experimental data and feedback about Dapper experiences. We also thank Silvius Rus for his assistance with load testing. Most importantly, though, we thank the outstanding team of engineers who have continued to develop and improve Dapper over the years; in order of appearance, Sharon Perl, Dick Sites, Rob von Behren, Tony DeWitt, Don Pazel, Ofer Zajicek, Anthony Zana, Hyang-Ah Kim, Joshua MacDonald, Dan Sturman, Glenn Willen, Alex Kehlenbeck, Brian McBarron, Michael Kleber, Chris Povirk, Bradley White, Toby Smith, Todd Derr, Michael De Rosa, and Athicha Muthitacharoen. They have all done a tremendous amount of work to make Dapper a day-to-day reality at Google.</p>
+<p>Most use cases that involve a significant amount of real-time data use partitioning to avoid the bottleneck of a single node. Partitioning is a way for messaging systems to divide a single topic into smaller chunks that can be assigned to different brokers.</p>
 
-<h2>References</h2>
+<p>多数涉及大量实时数据的场景都会使用分区来避免单个节点的瓶颈。分区是消息系统将单个主题拆分为较小块的一种方式，这些块可以分配给不同的 Broker。</p>
 
-<p>[1]  M. K. Aguilera, J. C. Mogul, J. L. Wiener, P. Reynolds, and A. Muthitacharoen. Performance Debugging for Dis- tributed Systems of Black Boxes. In <em>Proceedings of the 19th ACM Symposium on Operating Systems Principles</em>, December 2003.</p>
+<p>Given that we tested on a 3-nodes cluster, we used 100 partitions to maximize the throughput of the system across the nodes. There is no advantage to using a higher number of partitions on this cluster because the partitions are handled independently and spread uniformly across the available brokers.</p>
 
-<p>[2]  P. Bahl, R. Chandra, A. Greenberg, S. Kandula, D. A. Maltz, and M. Zhang. Towards Highly Reliable Enter- prise Network Services Via Inference of Multi-level De- pendencies. In <em>Proceedings of SIGCOMM</em>, 2007.</p>
+<p>鉴于我们在一个 3 节点集群上做测试，我们使用 100 个分区来最大化系统跨节点的吞吐量。在这个集群上使用更多的分区并没有任何好处，因为分区是独立处理的，并在可用 Broker 中均匀分布。</p>
 
-<p>[3]  P.Barham,R.Isaacs,R.Mortier,andD.Narayanan.Mag- pie: online modelling and performance-aware systems. In <em>Proceedings of USENIX HotOS IX</em>, 2003.</p>
+<p>驱动文件：<a href="https://github.com/openmessaging/benchmark/blob/master/driver-pulsar/pulsar.yaml">pulsar.yaml</a>, <a href="https://github.com/openmessaging/benchmark/blob/master/driver-kafka/kafka-throughput.yaml">kafka-throughput.yaml</a></p>
 
-<p>[4]  L. A. Barroso, J. Dean, and U. Ho ̈lzle. Web Search for a Planet: The Google Cluster Architecture. <em>IEEE Micro</em>, 23(2):22–28, March/April 2003.</p>
+<p>负载文件：<a href="https://github.com/openmessaging/benchmark/blob/master/workloads/1-topic-100-partitions-1kb-4p-4c-2000k.yaml">1-topic-100-partitions-1kb-4p-4c-2000k.yaml</a></p>
 
-<p>[5]  T. O. G. Blog. Developers, start your engines. <a href="http://googleblog.blogspot.com/2008/04/developers-">http://googleblog.blogspot.com/2008/04/developers-</a> start-your-engines.html, 2007.</p>
+<h5>a. Case #2 Results: Maximum Throughput with 100 Partitions - 场景 #2 结果: 100 个分区的最大吞吐量</h5>
 
-<p>[6]  T. O. G. Blog. Universal search: The best answer is still the best answer. <a href="http://googleblog.blogspot.com/2007/05/universal-">http://googleblog.blogspot.com/2007/05/universal-</a> search-best-answer-is-still.html, 2007.</p>
+<p><img src="https://lh6.googleusercontent.com/G2BqhkVYs2lPtF9yBuG9TKVajthqlCdhIW75_r8_dO9Ibaw1lbMVFb8hvfNjyA46yAbdWfs8JA_1rEv3HWb5IkIaT-n2fAhvgTTs0z34rlbf3bZ3mJv9F7vZW8HRRwxvpagJHOMil_GM8U_HlKE5tA" alt="img" /></p>
 
-<p>[7]  M. Burrows. The Chubby lock service for loosely- coupled distributed systems. In <em>Proceedings of the 7th USENIX Symposium on Operating Systems Design and Implementation</em>, pages 335 – 350, 2006.</p>
+<table>
+<thead>
+<tr>
+<th>               </th>
+<th> 禁用 Journaling 情况下的 Apache Pulsar </th>
+<th> 启用 Journaling 情况下的 Apache Pulsar (默认) </th>
+<th> Apache Kafka </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 吞吐量 (MB/s) </td>
+<td> 1600                                   </td>
+<td> 800                                           </td>
+<td> 1087         </td>
+</tr>
+</tbody>
+</table>
 
-<p>[8]  F. Chang, J. Dean, S. Ghemawat, W. C. Hsieh, D. A. Wal- lach, M. Burrows, T. Chandra, A. Fikes, and R. E. Gru- ber. Bigtable: A Distributed Storage System for Struc- tured Data. In <em>Proceedings of the 7th USENIX Sympo- sium on Operating Systems Design and Implementation (OSDI’06)</em>, November 2006.</p>
 
-<p>[9]  M. Y. Chen, E. Kiciman, E. Fratkin, A. fox, and E. Brewer. Pinpoint: Problem Determination in Large, Dynamic Internet Services. In <em>Proceedings of ACM In- ternational Conference on Dependable Systems and Net- works</em>, 2002.</p>
+<p><em>Figure 3: 100 partitions max write throughput (MB/s): Higher is better.</em></p>
 
-<p>[10]  J. Dean and S. Ghemawat. MapReduce: Simplified Data Processing on Large Clusters. In <em>Proceedings of the 6th USENIX Symposium on Operating Systems Design and Implementation (OSDI’04)</em>, pages 137 – 150, December 2004.</p>
+<p><em>图 3: 100 分区的最大写入吞吐量 (MB/s): 数值越高，代表性能越好</em></p>
 
-<p>[11]  J. Dean, J. E. Hicks, C. A. Waldspurger, W. E. Weihl, and G. Chrysos. ProfileMe: Hardware Support for Instruction-Level Profiling on Out-of-Order Processors. In <em>Proceedings of the IEEE/ACM International Sympo- sium on Microarchitecture</em>, 1997.</p>
+<h5>b. Case #2 Analysis - 场景 #2 分析</h5>
 
-<p>[12]  R. Fonseca, G. Porter, R. H. Katz, S. Shenker, and I. Sto- ica. X-Trace: A Pervasive Network Tracing Framework. In <em>Proceedings of USENIX NSDI</em>, 2007.</p>
+<p>Pulsar without Journaling achieves a throughput of 1600 (MB/s), Kafka achieves a throughput of 1087 (MB/s) and Pulsar with Journaling (Default) achieves a throughput of 800 (MB/s). At equivalent durability guarantees Pulsar is able to outperform Kafka in terms of maximum write throughput. The difference in performance stems from how Kafka implements access to the disk. Kafka stores data for each partition in different directories and files, resulting in more files open for writing and scattering the IO operations across the disk. This increases the stress and contention on the OS page caching system that Kafka relies on.</p>
 
-<p>[13]  B. Lee and K. Bourrillion. The Guice Project Home Page. <a href="http://code.google.com/p/google-guice/,">http://code.google.com/p/google-guice/,</a> 2007.</p>
+<p>禁用 Journaling 情况下 Pulsar 取得了 1600(MB/s) 的吞吐量，Kafka 取得了 1087 (MB/s) 的吞吐量，而默认启用 Journaling 情况下 Pulsar 的吞吐量是 800 (MB/s) 。在同等持久性保证的情况下，Pulsar 在最大写入吞吐量方面能够胜过 Kafka。这个性能上的差异源于 Kafka 实现对磁盘的访问的方式。Kafka 将每个分区的数据存储在不同的目录和文件中，导致需要打开更多的文件用于写入，并将 IO 操作分散到各个磁盘。这增加了 Kafka 所依赖的操作系统页缓存的压力和争用。</p>
 
-<p>[14]  P. Reynolds, C. Killian, J. L. Wiener, J. C. Mogul, M. A. Shah, and A. Vahdat. Pip: Detecting the Unexpected in Distributed Systems. In <em>Proceedings of USENIX NSDI</em>, 2006.</p>
+<p>When reading a file, the OS tries to cache blocks of data in the available system RAM. When the data is not available in the OS cache, the thread is blocked while the data is read from the disk and pulled in the cache.</p>
 
-<p>[15]  P. Reynolds, J. L. Wiener, J. C. Mogul, M. K. Aguilera, and A. Vahdat. WAP5: Black Box Performance Debug- ging for Wide-Area Systems. In <em>Proceedings of the 15th International World Wide Web Conference</em>, 2006.</p>
+<p>读取文件时，操作系统尝试将数据块缓存到可用的系统 RAM 中。当数据在操作系统缓存中不可用时，则会从磁盘中读取数据并拉入缓存，此时线程会被阻塞。</p>
 
-<p>[16]  P. K. G. T. Gschwind, K. Eshghi and K. Wurster. Web- Mon: A Performance Profiler for Web Transactions. In <em>E-Commerce Workshop</em>, 2002.</p>
+<p>The cost of pulling the blocked data into the cache is a significant delay (~100s of milliseconds) in serving write/read requests for other topics. This delay is observed in the benchmark results in the form of the publish latency experienced by the producers.</p>
+
+<p>将阻塞数据拉入缓存的代价是在为其他主题处理写入/读取请求时会产生显著的延迟 (约 100 毫秒)。在基准测试结果中，这种延迟表现为生产者的发布延迟。</p>
+
+<p>In the case of the default Pulsar deployment (with a journal for strong durability), the throughput is lower because 1 disk (out of 2 available in the VMs) is dedicated to the journal. Therefore we are capping the available IO bandwidth. In a production environment, this cap could be mitigated by having more disks to increase the IOPS/node capacity, but for this benchmark we used the same VM resources for each of the system configurations.</p>
+
+<p>在 Pulsar 的默认部署下（启用 Journal 实现强持久性），吞吐量低于 Kafka，因为虚拟机中两块可用磁盘中的一个会专用于 Journal。因此可用 IO 带宽被限制了。在生产环境中，可以通过增加磁盘来增加每个节点的 IOPS 性能，从而缓解这个限制。但在本基准测试中，我们则为每个系统使用相同的虚拟机资源配置。</p>
+
+<p>The difference in throughput can impact the cost of the solution. With parity of guarantees, this test shows that Pulsar would require 32% less hardware compared to Kafka for the same amount of traffic.</p>
+
+<p>吞吐量的差异会影响解决方案的成本。我们的测试表明，在同等配置、同样的流量的情况下，Pulsar 比 Kafka 减少 32% 的硬件需求。</p>
+
+<h3>B. Test #2: Publish Latency - 测试 #2: 发布延迟</h3>
+
+<p>The purpose of this test is to measure the latency perceived by the producers at a steady state, with a fixed publish rate.</p>
+
+<p>本测试的目的是测量生产者在稳定状态下以固定速率发布时所感知到的延迟。</p>
+
+<p>Messaging systems are often used in applications where data must efficiently and reliably be moved from a producing application to be durably stored in the messaging system. In high volume scenarios, even momentary increases in latency can result in memory resources being exhausted. In other situations, a human user may be “in-the-loop” and waiting on an operation which publishes a message - for example, a web page needs the confirmation of the action before proceeding - and latency spikes can degrade the user experience. In these use cases, it is important to have a latency performance profile that is consistently within a given SLA (service-level agreement).</p>
+
+<p>有些应用要求数据必须能从生产应用程序有效且可靠地移动到消息系统以便持久化存储起来，这也是消息系统的常见使用场景。在大容量前提下，即便只是延迟的瞬时增加也会导致内存资源耗尽。在其他情况下，桌面用户可能处于“循环中”，并等待发送消息的操作执行结束，例如一个网页需要等待确认才能继续下一步操作，而延迟的增加会损害用户体验。在这些场景中，将延迟性能稳定地保持在给定的 SLA（服务级别协议）之内是非常重要的。</p>
+
+<p>It is also important to consider that a high latency in the long tail (eg: 99.9 percentile and above) will still have an outsized impact over an SLA that can be offered by an application. In practical terms, a higher 99.9% latency in the producer will often result in a significantly higher 99% latency for the application request.</p>
+
+<p>同样重要的是要考虑到长尾高延迟（例如 99.9 百分位及以上的延迟）也会对应用可提供的 SLA 产生巨大影响。在实践中，更高的生产者 99.9% 延迟通常会导致应用程序请求的延迟明显高于 99.9% 。</p>
+
+<p>Because the messaging bus sits at the bottom of the stack, it needs to provide a low and consistent latency profile so that applications can provide their own latency SLAs.This test is conducted by publishing and consuming at a fixed rate of 500 MB/s and comparing it to the publish latency seen by producers.</p>
+
+<p>由于消息总线是底层技术栈组件，所以它需要提供稳定的低延迟，这样应用程序才好提供自己的延迟 SLA。本测试以 500 MB/s 的固定速率发布和消费消息，然后比较生产者观测到的发布延迟。</p>
+
+<p>驱动文件：<a href="https://github.com/openmessaging/benchmark/blob/master/driver-pulsar/pulsar.yaml">pulsar.yaml</a>, <a href="https://github.com/openmessaging/benchmark/blob/master/driver-kafka/kafka-latency.yaml">kafka-latency.yaml </a></p>
+
+<p>负载文件：<a href="https://github.com/openmessaging/benchmark/blob/master/workloads/1-topic-100-partitions-1kb-4p-4c-500k.yaml">1-topic-100-partitions-1kb-4p-4c-500k.yaml</a></p>
+
+<h4>a. Test #2 Results: Publish Latency - 测试 #2 结果: 发布延迟</h4>
+
+<p><img src="https://lh5.googleusercontent.com/47aY75VQNUaBsfMpkgxqANtB4-QzucYo2E0ip0VNGamoLLMrWLOQjopYtF4Jv3pOw12xTHGfNGTYbwcXAk80PDIx85EecdnNOtOpiP8z0SfWVkXY1jsZJX5wJoa--Gd4TtxxgILeJ_NsyoDqLTVAeg" alt="img" /></p>
+
+<table>
+<thead>
+<tr>
+<th>             </th>
+<th> 禁用 Journaling 情况下的 Apache Pulsar </th>
+<th> 启用 Journaling 情况下的 Apache Pulsar (默认) </th>
+<th> Apache Kafka </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> P50 (ms)    </td>
+<td> 0.77                                   </td>
+<td> 2.64                                          </td>
+<td> 1.75         </td>
+</tr>
+<tr>
+<td> P75 (ms)    </td>
+<td> 0.85                                   </td>
+<td> 2.86                                          </td>
+<td> 2.09         </td>
+</tr>
+<tr>
+<td> P95 (ms)    </td>
+<td> 1.36                                   </td>
+<td> 4.62                                          </td>
+<td> 2.86         </td>
+</tr>
+<tr>
+<td> P99 (ms)    </td>
+<td> 1.58                                   </td>
+<td> 7.89                                          </td>
+<td> 3.46         </td>
+</tr>
+<tr>
+<td> P99.9 (ms)  </td>
+<td> 1.68                                   </td>
+<td> 12.24                                         </td>
+<td> 54.56        </td>
+</tr>
+<tr>
+<td> P99.99 (ms) </td>
+<td> 1.96                                   </td>
+<td> 18.82                                         </td>
+<td> 207.83       </td>
+</tr>
+<tr>
+<td> Max         </td>
+<td> 13.52                                  </td>
+<td> 79.40                                         </td>
+<td> 405.48       </td>
+</tr>
+</tbody>
+</table>
+
+
+<p><em>Figure 4: 500K rate publish latency percentiles (ms): Lower is better.</em></p>
+
+<p><em>图 4：500K 速率的发布延迟百分位 (毫秒)：数值越低，代表性能越好</em></p>
+
+<h4>b. Test #2 Analysis测试 #2 分析</h4>
+
+<p>In this test, Pulsar is able to maintain a low publish latency while sustaining a high per-node utilization. Pulsar without Journaling is able to sustain 1.58 milliseconds latency at the 99 percentile and Pulsar with Journaling is able to sustain 7.89 milliseconds.</p>
+
+<p>在本测试中，Pulsar 能够在保持较高节点利用率的同时保持较低的发布延迟。禁用 Journaling 情况下 Pulsar 能够维持 1.58 毫秒的 99 百分位延迟，而启用 Journaling 情况下 Pulsar 能够维持在 7.89 毫秒。</p>
+
+<p>Kafka maintains a low publish latency up to the 99 percentile, where it is able to sustain 3.46 milliseconds in latency. But at 99.9%, Kafka’s latency spikes to 54.56 ms.</p>
+
+<p>Kafka 在 99 百分位之内可以保持低发布延迟，最高延迟为 3.46 毫秒。然而当 99.9% 时，Kafka 的延迟飙升至 54.56 毫秒。</p>
+
+<p>Publishing at a fixed rate, below the max burst throughput, at 99.9% and above, Pulsar has lower latency than Kafka for both Pulsar with Journaling (default) and the Pulsar without Journaling.</p>
+
+<p>在以固定速率发布的情况下，在最大突发吞吐量以下，在 99.9% 及以上时，Pulsar 的延迟都比 Kafka 更低，无论是否启用 Journaling。</p>
+
+<p>The reasons for lower latency with Pulsar are:</p>
+
+<p>Pulsar 能做到更低延迟的原因在于：</p>
+
+<ol>
+<li>When running Pulsar without Journaling, the critical data write path is decoupled from the disk access so it is not susceptible to the noise introduced by IO operations. The data is guaranteed to only be copied in memory, (unlike OS page cache which blocks under high load situations,) and then is flushed by background threads.
+在禁用 Journaling 情况下运行 Pulsar 时，关键数据写入路径与磁盘访问是解耦的，因此不易受 IO 操作带来的干扰的影响。数据仅保证被复制到内存（而操作系统页缓存在高负载情况下会被阻塞），然后再被后台线程刷到磁盘。</li>
+<li>Pulsar with Journaling (Default) is able to maintain low latency because the BookKeeper replication protocol is able to ignore the slowest responding storage node. Due to the internal disk garbage collection mechanism, the performance profile of SSD and NVMe disks is characterized by good average write latency but with periodic latency spikes of up to 100 milliseconds. BookKeeper is able to smooth out the latency when used in 3/3/2 configuration, because it only waits for the two fast storage nodes for each entry.
+Pulsar 在默认情况下启用 Journaling 情况下也能保持低延迟，这是因为 BookKeeper 复制协议能够忽略响应最慢的存储节点。由于内部磁盘垃圾收集机制，SSD 和 NVMe 磁盘的性能配置文件具有良好的平均写入延迟，但会有高达 100 毫秒的周期性的延迟峰值。BookKeeper 在使用 3/3/2 配置时能够平滑延迟，因为对每个 Entry 只需等待最快的两个存储节点响应即可。</li>
+</ol>
+
+
+<p>By contrast, Kafka replication protocol is set to wait for all three of the brokers that are in the in-replica-set. Because of that, unless a broker crashes or is falling behind the leader for more than 30 seconds, each entry in Kafka needs to wait for all three brokers to have the entry.</p>
+
+<p>相比之下，Kafka 复制协议要等待同步副本集合中的所有三个 Broker 返回。因此，除非 Broker 崩溃或者落后于 Leader 30 秒以上，否则 Kafka 中每个 Entry 都需要等待写入所有三个 Broker。</p>
+
+<h3>C. Test #3: Catch-up Reads测试 #3: 追赶读（Catch-up Read）</h3>
+
+<p>In the consumer catch-up test, we build a backlog of data and then start the consumers. While the consumers catch-up, the writers continue publishing data at the same rate.</p>
+
+<p>在消费者 catch-up 测试中，我们先构造数据积压，再启动消费者。在消费者 catch-up 的同时，生产者继续以同样的速率发布数据。</p>
+
+<p>This is a common, real-life scenario for a messaging/streaming system. Below are a few common use cases:</p>
+
+<p>这是消息/流系统的一个常见的真实设定。以下是一些常见的场景：</p>
+
+<ol>
+<li>Consumers come back online after a few hours of downtime and try to catch-up.
+消费者在宕机若干小时候重新上线，并尝试追赶数据。</li>
+<li>New consumers get bootstrapped and replay the data in the topic.
+新的消费者被启动，并重放主题中的数据。</li>
+<li>Periodic batch jobs that scan and process the historical data stored in the topic.
+周期性的批处理任务扫描并处理主题中存储的历史数据。</li>
+</ol>
+
+
+<p>With this test, we can measure the following:</p>
+
+<p>本测试可以测量如下内容：</p>
+
+<ol>
+<li>The catch-up speed.
+Catch-up 速度。
+
+<ul>
+<li>Consuming applications want to be able to recover as fast as possible, draining all the pending backlog and catching up with the producers in the shortest time.
+消费应用希望能尽快恢复，在最短时间内耗尽待处理的 Backlog 并追赶上生产者。</li>
+</ul>
+</li>
+<li>The ability to avoid performance degradation and isolate workloads.
+避免性能下降以及隔离负载的能力。
+
+<ul>
+<li>Producing applications need to be decoupled and isolated from consuming applications and also from different, unrelated topics in the same cluster.
+生产应用需要与消费应用以及同一集群中的不同的、不相关的主题解耦并隔离。</li>
+</ul>
+</li>
+</ol>
+
+
+<p>The size of the backlog is 512 GBs. It is larger than the RAM available in the nodes in order to simulate the case where the entire data does not fit in cache and the storage systems are forced to read from disk.</p>
+
+<p>Backlog 的大小为 512 GB，这比节点中的可用 RAM 要大，以便模拟整个数据不适合缓存并迫使存储系统从磁盘读取的情况。</p>
+
+<p>驱动文件：<a href="https://github.com/openmessaging/benchmark/blob/master/driver-pulsar/pulsar.yaml">pulsar.yaml</a>, <a href="https://github.com/openmessaging/benchmark/blob/master/driver-kafka/kafka-latency.yaml">kafka-latency.yaml </a></p>
+
+<p>负载文件：<a href="https://github.com/openmessaging/benchmark/blob/master/workloads/1-topic-100-partitions-1kb-4p-4c-200k-backlog.yaml">1-topic-100-partitions-1kb-4p-4c-200k-backlog.yaml</a></p>
+
+<h4>a. Test #3 Results: Catch-up Reads - 测试 #3 结果: 追赶读（Catch-up Read）</h4>
+
+<p><img src="https://lh4.googleusercontent.com/ZXs516DjnDK9ImA3LJyBYF-uq886y7HIqtgNGY_VAqA_J-F5wIXUySyIT7lWIDUMu6w78JiTPPjWdoFo6ft4gvgdnJ2V2CTMhewyT1-RFGTHY7b5RaIVeFVvFeneRN95LlzXW72mkaf3MhE9pBEekQ" alt="img" /></p>
+
+<table>
+<thead>
+<tr>
+<th>                       </th>
+<th> 禁用 Journaling 情况下的 Apache Pulsar </th>
+<th> 启用 Journaling 情况下的 Apache Pulsar (默认) </th>
+<th> Apache Kafka </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 最大读取吞吐量 (GB/s) </td>
+<td> 3.2GB/s                                </td>
+<td> 3.1GB/s                                       </td>
+<td> 2GB/s        </td>
+</tr>
+</tbody>
+</table>
+
+
+<p><em>Figure 5a: Catch-up read throughput (msgs/s): Higher is better.</em></p>
+
+<p><em>图 5a：追赶读的吞吐量 (msgs/s)：数值越高，代表性能越好。</em></p>
+
+<p><img src="https://lh3.googleusercontent.com/FZU3MTk9WsFZH9JaxS7R7AvfDwiElrC3pC5EcSgorPpIhqgM9ABIHFdGlTaT6ApWU0luLbeP3G-W8YcIW2BeahaMAZsajLzOAH2uyj6c8YRzMiy-mV2-t-Eu_GSKHBocGGhlRbz4uOjlvtugm3GMvA" alt="img" /></p>
+
+<table>
+<thead>
+<tr>
+<th>              </th>
+<th> 禁用 Journaling 情况下的 Apache Pulsar </th>
+<th> 启用 Journaling 情况下的 Apache Pulsar (默认) </th>
+<th> Apache Kafka </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> 追赶时间 (s) </td>
+<td> 230                                    </td>
+<td> 260                                           </td>
+<td> 460          </td>
+</tr>
+</tbody>
+</table>
+
+
+<p><em>Figure 5b: Catch-up read chase time (seconds): Shorter is better.</em></p>
+
+<p><em>图 5b：追赶读取时间 (秒)：数值越短，代表性能越好。</em></p>
+
+<p><img src="https://lh5.googleusercontent.com/nYp_fgYMlLTlH5o_smMmQQuhKn8T4ZCARKpWzMFA9o0AewIFb7faXzmVZp8pkZGwk5iMwbl87XPrJX-kWbFWrdnR0HGP5snh6O6wCNzu75-Vaf-v6BNNgwjDgtROl2ArI-sCoV5IMXvcq21QdtKgTw" alt="img" /></p>
+
+<table>
+<thead>
+<tr>
+<th>                     </th>
+<th> 禁用 Journaling 情况下的 Apache Pulsar </th>
+<th> 启用 Journaling 情况下的 Apache Pulsar (默认) </th>
+<th> Apache Kafka </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> P99 发布延迟 (毫秒) </td>
+<td> 最高可达 2.5                           </td>
+<td> 最高可达 21                                   </td>
+<td> 最高可达 380 </td>
+</tr>
+</tbody>
+</table>
+
+
+<p><em>Figure 5c: Impact publish latency during catchup read (ms): Lower is better.</em></p>
+
+<p><em>图 5c：追赶读期间对发布延迟的影响 (毫秒)：数值越低，代表越好。</em></p>
+
+<h4>b. Test #3 Analysis - 测试 #3 分析</h4>
+
+<p>The test shows that Pulsar consumers are able to drain the backlog of data ~2.5x faster than Kafka consumers, without impacting the performance of the connected producers.</p>
+
+<p>测试表明 Pulsar 消费者能够比 Kafka 消费者快约 2.5 倍耗尽 Backlog，而不会影响相关生产者的性能。</p>
+
+<p>With Kafka, the test showed that while the consumers are catching up, the producers are heavily impacted, with 99% latencies up to ~700 milliseconds and consequent throughput reductions.</p>
+
+<p>而对于 Kafka，测试表明当消费者赶上时，生产者受到了严重影响，其 99% 延迟高达约 700 毫秒，吞吐量也因此降低。</p>
+
+<p>The increase in latency is caused by the contention on the OS page cache used by Kafka. When the size of the backlog of data exceeds the RAM available in the Kafka broker, the OS will start to evict pages from the cache. This causes page cache misses that stop the Kafka threads. When there are enough producers and consumers in a broker, it becomes easy to end up in a “cache-thrashing” scenario, where time is spent paging data in from the disk and evicting it from the cache soon after.</p>
+
+<p>这种延迟的增加是由于 Kafka 所使用的操作系统页缓存的争用引起的。当 Backlog 大小超过 Kafka Broker 中的可用 RAM 时，操作系统会从缓存中逐出页。这会导致页缓存未命中，从而停止 Kafka 线程。当 Broker 中有足够多的生产者和消费者时，就会很容易陷入“缓存抖动”场景，时间就会花在从磁盘中缓存数据而很快又将其从缓存中逐出。</p>
+
+<p>In contrast, Pulsar with BookKeeper adopts a more sophisticated approach to write and read operations. Pulsar does not rely on the OS page cache because BookKeeper has its own set of write and read caches, for which the eviction and pre-fetching are specifically designed for streaming storage use cases.</p>
+
+<p>相比之下，Pulsar 底层的 BookKeeper 采用更巧妙的方式来执行写入和读取操作。Pulsar 并不依赖操作系统页缓存，因为 BookKeeper 有自己的一组写入和读取缓存，其逐出和预读都是专门为流式存储场景特别设计的。</p>
+
+<p>This test demonstrates the degradation that consumers can cause in a Kafka cluster. This impacts the performance of the Kafka cluster and can lead to reliability problems.</p>
+
+<p>测试表明在 Kafka 集群中消费者可能导致降级。这会影响 Kafka 集群的性能，并可能导致可靠性问题。</p>
+
+<h2>Conclusion - 总结</h2>
+
+<p>The benchmark demonstrates Apache Pulsar’s ability to provide high performance across a broad range of use cases. In particular, Pulsar provides better and more predictable performance, even for the use cases that are generally associated with Kafka, such as large volume streaming data over partitioned topics. Key highlights on the Pulsar versus Kafka performance comparison include:</p>
+
+<p>本次基准测试展示了在广泛的测试场景中 Apache Pulsar 均有能力提供高性能。特别是，即使面对通常与 Kafka 相关的场景，例如分区主题上的大量流数据，Pulsar 也能提供更高和更可预测的性能。Pulsar 与 Kafka 性能对比的主要亮点包括：</p>
+
+<ol>
+<li><p>Pulsar provides 99pct write latency <strong>&lt;1.6ms</strong> without journal, and <strong>&lt;8ms</strong> with journal for fixed 500MB/s write throughput. The latency profile does not degrade at the higher quantiles, while Kafka latency quickly spikes up to 100s of milliseconds.
+在固定 500MB/s 的写入吞吐量情况下，Pulsar 在禁用 Journal 情况下提供 <strong>&lt;1.6ms</strong> 的 99 百分位写入延迟，在启用 Journal 情况下则为 <strong>&lt;8ms</strong>。在高百分位下，Pulsar 的延迟也仅轻微增加没有降级，而 Kafka 的延迟则快速飙升至 100 毫秒。</p></li>
+<li><p>Pulsar can prove up to <strong>3.2 GB/s</strong> historical data read throughput, <strong>60% more</strong> than Kafka which can only achieve 2.0 GB/s.
+Pulsar 可以达到高达 <strong>3.2 GB/s</strong> 的历史数据读取吞吐量，比只能达到 2.0 GB/s 的 Kafka 高出 <strong>60%</strong>。</p></li>
+<li><p>During historical data reading, Pulsar’s I/O isolation provides a low and consistent publish latency, <strong>2 orders of magnitude lower</strong> than Kafka. This ensures that the real-time data stream will not be affected when reading historical data.
+在历史数据读取过程中，Pulsar 的 I/O 隔离特性提供了稳定的低发布延迟，比 Kafka <strong>低 2 个数量级</strong>。这保证了在读取历史数据时实时数据流不受影响。</p></li>
+</ol>
+
+
+<h3>Pulsar: Unified Messaging &amp; Streaming, and the Future - Pulsar：统一的消息 &amp; 流处理系统，及其未来</h3>
+
+<p>While Pulsar is often adopted for streaming use cases, it also provides a superset of features and is widely adopted for message queuing use cases and for use cases that require unified messaging and streaming capabilities. This benchmark did not cover the message queuing capabilities of Pulsar, but you can learn more in the <em>Pulsar Launches 2.8.0, Unified Messaging and Streaming</em> <a href="https://hubs.ly/Q016_Wjd0">blog</a>.</p>
+
+<p>虽然 Pulsar 常被用于流处理场景，但它同时还提供了许多其他特性并广泛用于消息队列场景，以及需要统一的消息和流处理能力的场景。本基准测试并未涵盖 Pulsar 的消息队列功能，但您可以在<a href="https://mp.weixin.qq.com/s/_WOkJCAnzu8JYyhVkaMGIA">Pulsar 2.8.0 新增特性概览：独占 Producer、事务等</a>、<a href="https://mp.weixin.qq.com/s/BuXbBmjyX9qMlgSMPhUK-w">Apache Pulsar 里程碑简史：打造统一消息流平台与生态</a>中了解更多。</p>
+
+<p>Beyond the development of Pulsar’s capabilities, the Pulsar ecosystem continues to expand. Protocol handlers allow for Pulsar brokers to natively communicate via other protocols, such as Kafka and RabbitMQ, enabling teams to easily integrate existing applications with Pulsar. Integrations with Apache Pinot, Delta Lake, Apache Spark, and Apache Flink have allowed teams to make Pulsar the ideal choice to help teams use one technology across both the data and application tiers.</p>
+
+<p>除了对功能的开发，Pulsar 的生态系统也在不断壮大。协议处理器允许 Pulsar Broker 与 Kafka 和 RabbitMQ 等其他协议天然地进行通信，使得团队能够轻松地将现有应用与 Pulsar 集成。与 Apache Pinot、Delta Lake、Apache Spark 和 Apache Flink 的集成使得 Pulsar 成为团队跨数据层和应用层的一站式技术的理想选择。</p>
+
+<p> For more on Pulsar, check out the resources below.</p>
+
+<p>有关 Pulsar 的更多信息，请查看以下资源。</p>
+
+<h3>Want to Learn More? - 想了解更多？</h3>
+
+<ol>
+<li>To learn more about Apache Pulsar use cases, check out this <a href="https://hubs.ly/Q016_NhQ0">page</a>.
+要了解更多 Apache Pulsar 用户案例，请查看此<a href="https://hubs.ly/Q016_NhQ0">页面</a>。</li>
+<li><a href="https://hubs.ly/Q016_Wgd0">Sign up</a> for the monthly StreamNative Newsletter for Apache Pulsar.
+<a href="https://hubs.ly/Q016_Wgd0">订阅</a>月度 StreamNative Newsletter for Apache Pulsar。</li>
+</ol>
+
+
+<h3>References - 参考资料</h3>
+
+<p>[1] <a href="https://hubs.ly/Q016_P830">Linux Foundation Open Messaging 基准测试套件</a>: <a href="https://hubs.ly/Q016_P830">http://openmessaging.cloud/docs/benchmarks/</a></p>
+
+<p>[2] <a href="https://hubs.ly/Q016_PcP0">Open Messaging Benchmark Github 代码库</a>: <a href="https://hubs.ly/Q016_PcP0">https://github.com/openmessaging/benchmark</a></p>
+
+<p>[3] <a href="https://hubs.ly/Q016_Ph50">更准确地了解 Pulsar 性能</a>:<a href="https://hubs.ly/Q016_Ph50">https://streamnative.io/blog/tech/2020-11-09-benchmark-pulsar-kafka-performance/</a></p>
 ]]></content>
   </entry>
   

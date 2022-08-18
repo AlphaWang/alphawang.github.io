@@ -9,29 +9,7 @@
   <meta name="author" content="Alpha Wang">
 
   
-  <meta name="description" content="问题 最近遇到个需求，需要将一个对象数组从前端用ajax传递给后端的Spring MVC Controller，例如传递如下数据： 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-{ products: [ { category: &hellip;">
+  <meta name="description" content="作为一个Java开发民工，对HashMap可以说是经常使用的，不过要是想更好地使用它，还是需要了解其内部实现原理的。当了解了实现原理后，自己实现一个HashMap也就不难了。 ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -149,6 +127,77 @@ $(document).ready(
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/how-to-implement-a-hashmap/">How to Implement a HashMap</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-17T19:24:35+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>17</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>7:24 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>作为一个Java开发民工，对<code>HashMap</code>可以说是经常使用的，不过要是想更好地使用它，还是需要了解其内部实现原理的。当了解了实现原理后，自己实现一个HashMap也就不难了。</p>
+
+</div>
+  
+  
+    <footer>
+      <a rel="full-article" href="/blog/how-to-implement-a-hashmap/">Read on &rarr;</a>
+    </footer>
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/blog/collection-map-uml%20copy/">Uml Class Diagram of Collection and Map</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+<time class='entry-date' datetime='2014-11-15T14:05:15+08:00'><span class='date'><span class='date-month'>Nov</span> <span class='date-day'>15</span><span class='date-suffix'>th</span>, <span class='date-year'>2014</span></span> <span class='time'>2:05 pm</span></time>
+
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>网络上能搜到很多Java集合类的UML类图，但是大多不够明晰；所以我之前自己绘制了一份，在这里贴出来：</p>
+
+<p><img src="/images/post/2014/11/collection.jpg" alt="collection icon" /></p>
+
+<p><img src="/images/post/2014/11/map.jpg" alt="map icon" /></p>
+
+<blockquote><p>btw, 这些图是用astah绘制的，这是个很好用的软件，推荐一下。官网：<a href="http://astah.net/editions/community">http://astah.net/editions/community</a></p></blockquote>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -544,121 +593,6 @@ Fortunately, we can do this just by writing a configuration file, then the termi
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/4_interface-segrefation-principle/">[六大设计原则] 4. Interface Segrefation Principle</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2012-12-31T16:11:26+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>31</span><span class='date-suffix'>st</span>, <span class='date-year'>2012</span></span> <span class='time'>4:11 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>定义</h2>
-
-<p>Interface Segregation Principle:</p>
-
-<ul>
-<li><p>Clients should not be forced to depend upon interfaces that they don&rsquo;t use.</p>
-
-<blockquote><p>客户端只依赖于它所需要的接口；它需要什么接口就提供什么接口，把不需要的接口剔除掉。</p></blockquote></li>
-<li><p>The dependency of one class to another one should depend on the smallest possible interface.</p>
-
-<blockquote><p>类间的依赖关系应建立在最小的接口上。<br/>
-即，接口尽量细化，接口中的方法尽量少</p></blockquote></li>
-</ul>
-
-
-<h2>问题由来</h2>
-
-<p>类<code>A</code>通过接口<code>I</code>依赖类<code>B</code>，类<code>C</code>通过接口<code>I</code>依赖类<code>D</code>。如果接口<code>I</code>对于类<code>A</code>和类<code>B</code>来说不是最小接口，则类<code>B</code>和类<code>D</code>必须去实现他们不需要的方法。</p>
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/4_interface-segrefation-principle/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/blog/3_dependence-inversion-principle/">[六大设计原则] 3. Dependence Inversion Principle</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-<time class='entry-date' datetime='2012-12-30T19:41:26+08:00'><span class='date'><span class='date-month'>Dec</span> <span class='date-day'>30</span><span class='date-suffix'>th</span>, <span class='date-year'>2012</span></span> <span class='time'>7:41 pm</span></time>
-
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>定义</h2>
-
-<p>DIP，Dependence Inversion Principle:</p>
-
-<ul>
-<li>High level modules should not depend upon low level modules. Both should depend upon abstractions.</li>
-<li>Abstractions should not depend upon details. Details should depend upon abstractions.</li>
-</ul>
-
-
-<p>即“面向接口编程”：</p>
-
-<ul>
-<li>高层模块不应该依赖低层模块，两者都应该依赖其抽象；
-
-<blockquote><p>模块间的依赖通过抽象发生。实现类之间不发生直接的依赖关系（eg. 类B被用作类A的方法中的参数），其依赖关系是通过接口或抽象类产生的；</p></blockquote></li>
-<li>抽象不应该依赖细节；
-
-<blockquote><p>接口或抽象类不依赖于实现类</p></blockquote></li>
-<li>细节应该依赖抽象；
-
-<blockquote><p>实现类依赖接口或抽象类</p></blockquote>
-
-<pre><code>  **何为“倒置”？**  
-  依赖正置：类间的依赖是实实在在的实现类间的依赖，即面向实现编程，这是正常人的思维方式；     
-  而依赖倒置是对现实世界进行抽象，产生了抽象间的依赖，代替了人们传统思维中的事物间的依赖。
-</code></pre></li>
-</ul>
-
-
-</div>
-  
-  
-    <footer>
-      <a rel="full-article" href="/blog/3_dependence-inversion-principle/">Read on &rarr;</a>
-    </footer>
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/posts/4">&larr; Older</a>
@@ -675,14 +609,14 @@ Fortunately, we can do this just by writing a configuration file, then the termi
  <h1>Categories</h1>
  <ul id="categories">
 	 <li class='category'><a href='/blog/categories/design-patterns/'>design patterns (7)</a></li>
-<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (6)</a></li>
+<li class='category'><a href='/blog/categories/distributed-system/'>distributed system (8)</a></li>
 <li class='category'><a href='/blog/categories/java/'>java (12)</a></li>
 <li class='category'><a href='/blog/categories/mac/'>mac (2)</a></li>
-<li class='category'><a href='/blog/categories/messaging/'>messaging (4)</a></li>
+<li class='category'><a href='/blog/categories/messaging/'>messaging (6)</a></li>
 <li class='category'><a href='/blog/categories/nosql/'>nosql (1)</a></li>
 <li class='category'><a href='/blog/categories/site/'>site (1)</a></li>
 <li class='category'><a href='/blog/categories/solr/'>solr (2)</a></li>
-<li class='category'><a href='/blog/categories/translation/'>translation (5)</a></li>
+<li class='category'><a href='/blog/categories/translation/'>translation (7)</a></li>
 <li class='category'><a href='/blog/categories/web/'>web (1)</a></li>
 
  </ul>
@@ -698,10 +632,10 @@ Fortunately, we can do this just by writing a configuration file, then the termi
 <a style="font-size: 90%" href="/blog/tags/jmm/">JMM</a>
 <a style="font-size: 90%" href="/blog/tags/jvm/">JVM</a>
 <a style="font-size: 210%" href="/blog/tags/java/">Java</a>
-<a style="font-size: 90%" href="/blog/tags/kafka/">Kafka</a>
+<a style="font-size: 119%" href="/blog/tags/kafka/">Kafka</a>
 <a style="font-size: 119%" href="/blog/tags/mac/">Mac</a>
 <a style="font-size: 90%" href="/blog/tags/photography/">Photography</a>
-<a style="font-size: 148%" href="/blog/tags/pulsar/">Pulsar</a>
+<a style="font-size: 164%" href="/blog/tags/pulsar/">Pulsar</a>
 <a style="font-size: 90%" href="/blog/tags/resilience/">Resilience</a>
 <a style="font-size: 164%" href="/blog/tags/solid/">SOLID</a>
 <a style="font-size: 119%" href="/blog/tags/site/">Site</a>
@@ -716,13 +650,13 @@ Fortunately, we can do this just by writing a configuration file, then the termi
 <a style="font-size: 90%" href="/blog/tags/clean-code/">clean code</a>
 <a style="font-size: 90%" href="/blog/tags/cluster/">cluster</a>
 <a style="font-size: 90%" href="/blog/tags/dapper/">dapper</a>
-<a style="font-size: 164%" href="/blog/tags/distributed-system/">distributed system</a>
-<a style="font-size: 148%" href="/blog/tags/messaging/">messaging</a>
+<a style="font-size: 176%" href="/blog/tags/distributed-system/">distributed system</a>
+<a style="font-size: 164%" href="/blog/tags/messaging/">messaging</a>
 <a style="font-size: 90%" href="/blog/tags/nosql/">nosql</a>
 <a style="font-size: 90%" href="/blog/tags/redis/">redis</a>
 <a style="font-size: 90%" href="/blog/tags/sentinel/">sentinel</a>
 <a style="font-size: 90%" href="/blog/tags/tracing/">tracing</a>
-<a style="font-size: 148%" href="/blog/tags/translation/">translation</a>
+<a style="font-size: 164%" href="/blog/tags/translation/">translation</a>
 <a style="font-size: 90%" href="/blog/tags/dai-ma-zheng-ji-zhi-dao/">代码整洁之道</a>
 <a style="font-size: 90%" href="/blog/tags/xue-xi-zong-jie/">学习总结</a>
 
@@ -741,15 +675,15 @@ Fortunately, we can do this just by writing a configuration file, then the termi
       </li>
     
       <li class="post">
+        <a href="/blog/flip/">What the FLiP Is the FLiP Stack?</a>
+      </li>
+    
+      <li class="post">
         <a href="/blog/bookkeepr-external-consensus/">Apache BookKeeper 外部共识和动态成员</a>
       </li>
     
       <li class="post">
-        <a href="/blog/kop-offset/">Offset Implementation in Kafka-on-Pulsar</a>
-      </li>
-    
-      <li class="post">
-        <a href="/blog/how-to-verify-if-resilience4j-circuit-breaker-works/">How to Verify if Resilience4j Circuit Breaker Works</a>
+        <a href="/blog/pulsar-kafka-benchmark/">2022 Pulsar Performance Report: Better Performance and Data Resiliency With Apache Pulsar</a>
       </li>
     
   </ul>
