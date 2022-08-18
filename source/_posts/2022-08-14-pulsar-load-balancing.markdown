@@ -8,13 +8,16 @@ tags: [distributed system, translation, Pulsar, messaging]
 description: Apache Pulsar 负载均衡 Load Balancing
 ---
 
-> 最终版本发表于 Apache Pulsar 公众号：https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew
+> 本文翻译自 StreamNative 博客《Achieving Broker Load Balancing with Apache Pulsar》
+> - 译文发表于 Apache Pulsar 公众号：https://mp.weixin.qq.com/s/p9nWE_cyzYENNxEzXGXcew
 
 
 
 In this blog, we talk about the importance of load balancing in distributed computing systems and provide a deep dive on how Pulsar handles broker load balancing. First, we’ll cover Pulsar’s topic-bundle grouping, bundle-broker ownership, and load data models. Then, we'll walk through Pulsar’s load balancing logic with sequence diagrams that demonstrate bundle assignment, split, and shedding. By the end of this blog, you’ll understand how Pulsar dynamically balances brokers.
 
 本文将探讨负载均衡在分布式计算系统中的重要性，并深入分析 Pulsar 处理 Broker 负载均衡的方式。首先我们介绍 Pulsar 中的 Topic-Bundle 分组、Bundle-Broker 归属关系以及负载数据模型。然后讲解 Pulsar 的负载均衡逻辑，通过时序图来展示 Bundle 的分配、拆分和缩减过程。通过本文，你将了解 Pulsar Broker 是如何做到动态均衡的。
+
+
 
 Before we dive into the details of Pulsar’s broker load balancing, we'll briefly discuss the challenges of distributed computing, and specifically, systems with monolithic architectures.
 
@@ -240,6 +243,7 @@ Example:Given bundle partitions [0x0000, 0x8000, 0xFFFF], splitBoundaries: [0x40
 ## Shedding (unloading) bundles from overloaded brokers - 从过载的 Broker 中缩减（卸载）Bundle
 
 ![img](https://lh6.googleusercontent.com/4sqGjXWJpUeg_MoFLaerNqgOkBffhCLPCHEE9PFQHyO-qjtx2GfPHdW3CDprArFeYaR2bs7OXnIqqAbNKRkbKKSfKePA0a8rO_KDcOGNhJN-6LGoPmCtD-rEAigjk-LRbEmOO3NUG59IzKsIs453Zg)With the broker load information collected from all brokers, the leader broker identifies which brokers are overloaded and triggers bundle unload operations, with the objective of rebalancing the traffic throughout the cluster.
+
 Leader Broker 根据从所有 Broker 中收集的负载信息，识别出哪些 Broker 已经过载，并触发 Bundle 卸载操作，目的是为了重平衡整个集群的流量。
 
 
